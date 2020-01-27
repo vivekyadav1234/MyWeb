@@ -9,7 +9,7 @@ import { SmsLogsComponent } from './sms-logs/sms-logs.component';
 import { LoginComponent } from './authentication/login/login.component';
 import { ForgotpasswordComponent } from './authentication/forgotpassword/forgotpassword.component';
 
-const routes: Routes = [
+const routes: Routes = [//vivek
   {
     path: '',
     component: LoginComponent,
