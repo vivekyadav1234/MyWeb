@@ -1,0 +1,251 @@
+<div class="row title">
+  <div class="col-md-6">
+    <h3>Dashboard / <span>Brokers</span></h3>
+  </div>
+</div>
+<div class="marginTop row">
+  <div class="col-12" *ngIf="erroralert">
+    <div class="alert-box grid-100" *ngIf="errorMessage">
+      <div class="alert alert-danger mt-3 text-center">
+        <a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a>
+        {{errorMessage}}
+      </div>
+    </div>
+  </div>
+  <div class="col-12" *ngIf="successalert">
+    <div class="alert-box grid-100" *ngIf="successMessage">
+      <div class="alert alert-success mt-3 text-center">
+        <a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+        {{successMessage}}
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row justify-content-center">
+  <div class="col-12 table-responsive p-0">
+    <h5 *ngIf="leads && leads.length ==0" class="text-center my-5">No Leads Available</h5>
+    <table class="table table-hover" *ngIf="leads && leads.length >0">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Contact</th>
+          <th>Email</th>
+          <th>Status</th>
+          <th>Date of Acquisition <br>(dd-mm-yyyy)</th>
+          <th class="text-center activeCol">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let lead of leads">
+          <td class="capitalize"><a class="addCursor" href="" data-toggle="modal" data-target="#leadDetailsModal" (click)="viewLeadDetails(lead.id,lead.user_reference)">{{lead.name}}</a></td>
+          <td>{{lead.contact}}</td>
+          <td>{{lead.email}}</td>
+          <td class="capitalize">{{lead.lead_status | replaceChar}}</td>
+          <td>{{lead.created_at}} ({{lead.hours_ago}})</td>
+          <td class="text-center">
+            <a class="addCursor" data-toggle="modal" data-target="#editLeadDetailsModal"><i data-toggle="tooltip" title="Edit" data-placement="top" class="fa fa-pencil" aria-hidden="true"></i></a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="modal fade" id="leadDetailsModal" tabindex="-1" role="dialog" aria-labelledby="leadDetailsModalTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" *ngIf=" leadDetails && leadDetails.lead_status != 'qualified'">
+      <div class="modal-header">
+        <h5 class="modal-title addClass" id="exampleModalLabel">Lead Details</h5>
+          <img class="close" (click)="closeModal()" data-dismiss="modal" src="https://www.homepolish.com/assets/close-ee1bfd7a4473933b6dd934b2c284dc856361b63581c8f43b8cdc1abe07c91765.svg">
+      </div>
+      <div class="modal-body leadView" *ngIf="leadDetails">
+        <div class="col-12" *ngIf="successalertmodal">
+          <div class="alert-box grid-100" *ngIf="successMessageModal">
+            <div class="alert alert-success mt-3 text-center">
+              <a class="close link" data-dismiss="alert"  (click)="successalertmodal=false">×</a>
+              {{successMessageModal}}
+            </div>
+          </div>
+        </div>
+        <div class="col-12" *ngIf="erroralertmodal">
+          <div class="alert-box grid-100" *ngIf="errorMessageModal">
+            <div class="alert alert-danger mt-3 text-center">
+              <a class="close link" data-dismiss="alert" (click)="erroralertmodal=false">×</a>
+              {{errorMessageModal}}
+            </div>
+          </div>
+        </div>
+        <div class="row addClass">
+          <div class="col-sm-10 col-md-5">
+            <div class="form-group">
+              <label>Lead Name</label>
+              <input type="text" class="form-control" placeholder="{{leadDetails.name}}" readonly>
+            </div>
+          </div>
+          <div class="col-sm-10 col-md-5">
+            <div class="form-group">
+              <label>Lead Contact</label>
+              <input type="text" class="form-control" placeholder="{{leadDetails.contact}}" readonly>
+            </div>
+          </div>
+          <div class="col-sm-10 col-md-5">
+            <div class="form-group">
+              <label>Date Of Acquisition (dd-mm-yyyy)</label>
+              <input type="text" class="form-control" placeholder="{{leadDetails.created_at}}" readonly>
+            </div>
+          </div>
+          <div class="col-sm-10 col-md-5">
+            <div class="form-group">
+              <label>Lead Source</label>
+              <input type="text" class="form-control" placeholder="{{leadDetails.source}}" readonly>
+            </div>
+          </div>
+          <div class="col-sm-10 col-md-5">
+            <div class="form-group">
+              <label>Lead Role</label>
+              <input type="text" class="form-control" placeholder="{{leadDetails.user_type}}" readonly>
+            </div>
+          </div>
+          <div class="col-sm-10 col-md-5">
+            <div class="form-group">
+              <label>Lead Status</label>
+              <input type="text" class="form-control" placeholder="{{leadDetails.lead_status | replaceChar}}" readonly>
+            </div>
+          </div>
+          <div class="col-sm-10 col-md-5" *ngIf="leadDetails.lead_status=='lost'">
+             <div class="form-group">
+              <label>Remarks</label>
+              <input type="text" class="form-control" placeholder="{{leadDetails.lost_remark}}" readonly>
+            </div>
+          </div>
+          <div class="col-sm-10 col-md-5">
+            <div class="form-group">
+              <label>Lead Email</label>
+              <input type="text" class="form-control" placeholder="{{leadDetails.email}}" readonly>
+            </div>
+          </div>
+          <div class="col-sm-10 col-md-5">
+            <div class="form-group">
+              <label>Pincode</label>
+              <input type="text" class="form-control" placeholder="{{leadDetails.pincode}}" readonly>
+            </div>
+          </div>
+          <div class="col-10">
+            <div class="form-group">
+              <form [formGroup]="leadStatusUpdateForm">
+                <div class="row">
+                  <div class="col-6">
+                    <label>Change Status</label>
+                    <select class="form-control" (change)="setLeadStatus($event.target.value)" formControlName="lead_status">
+                      <option value="" disabled>Select Status</option>
+                      <option value="qualified">Qualified</option>
+                      <option value="lost">Lost</option>
+                    </select>
+                  </div>
+                  <div class="col-6" style="display: none;" id="lostremark">
+                    <div class="form-group">
+                      <label >Remarks</label>
+                      <textarea class="form-control" rows="2" formControlName="lost_remark"></textarea>
+                    </div>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <button class="button_emi" (click)="updateStatus(leadStatusUpdateForm.value,leadDetails.id,leadDetails.user_reference)" [disabled]="!leadStatusUpdateForm.valid">Update</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-content" *ngIf="leadDetails && leadDetails.lead_status == 'qualified'">
+    	<div class="modal-header">
+        <h5 class="modal-title addClass" id="exampleModalLabel">Broker Details</h5>
+        <img class="close" (click)="closeModal()" data-dismiss="modal" src="https://www.homepolish.com/assets/close-ee1bfd7a4473933b6dd934b2c284dc856361b63581c8f43b8cdc1abe07c91765.svg">
+      </div>
+      <div class="modal-body leadView" *ngIf="brokerDetails">
+        <div class="col-12" *ngIf="successalertmodal">
+          <div class="alert-box grid-100" *ngIf="successMessageModal">
+            <div class="alert alert-success mt-3 text-center">
+              <a class="close link" data-dismiss="alert"  (click)="successalertmodal=false">×</a>
+              {{successMessageModal}}
+            </div>
+          </div>
+        </div>
+        <div class="col-12" *ngIf="erroralertmodal">
+          <div class="alert-box grid-100" *ngIf="errorMessageModal">
+            <div class="alert alert-danger mt-3 text-center">
+              <a class="close link" data-dismiss="alert" (click)="erroralertmodal=false">×</a>
+              {{errorMessageModal}}
+            </div>
+          </div>
+        </div>
+        <div class="row addClass">
+          <div class="col-sm-10 col-md-5">
+            <div class="form-group">
+              <label>Name</label>
+              <input type="text" class="form-control" placeholder="{{brokerDetails.name}}" readonly>
+            </div>
+          </div>
+          <div class="col-sm-10 col-md-5">
+            <div class="form-group">
+              <label>Contact</label>
+              <input type="text" class="form-control" placeholder="{{brokerDetails.contact !='' && brokerDetails.contact != null && brokerDetails.contact || 'NA'}}" readonly>
+            </div>
+          </div>
+          <div class="col-sm-10 col-md-5">
+            <div class="form-group">
+              <label>Email</label>
+              <input type="text" class="form-control" placeholder="{{brokerDetails.email !='' && brokerDetails.email != null && brokerDetails.email || 'NA'}}" readonly>
+            </div>
+          </div>
+          <div class="col-sm-10 col-md-5">
+            <div class="form-group">
+              <label>Pincode</label>
+              <input type="text" class="form-control" placeholder="{{brokerDetails.pincode !='' && brokerDetails.pincode != null && brokerDetails.pincode || 'NA'}}" readonly>
+            </div>
+          </div>
+          <div class="col-sm-10 col-md-5">
+            <div class="form-group">
+              <label>GST</label>
+              <input type="text" class="form-control" placeholder="{{brokerDetails.gst_number !='' && brokerDetails.gst_number != null && brokerDetails.gst_number || 'NA'}}" readonly>
+            </div>
+          </div>
+          <div class="col-sm-10 col-md-5">
+            <div class="form-group">
+              <label>Pan</label>
+              <input type="text" class="form-control" placeholder="{{brokerDetails.pan !='' && brokerDetails.pan != null && brokerDetails.pan || 'NA'}}" readonly>
+            </div>
+          </div>
+          <div class="col-sm-10 col-md-5">
+            <div class="form-group">
+              <label>KYC Status</label>
+              <input type="text" class="form-control" placeholder="{{ brokerDetails.kyc_approved != true && 'Not Approved' || 'Approved' }}" readonly>
+            </div>
+          </div>
+          <div class="col-sm-10 col-md-5">
+            <div class="form-group">
+              <label>Address Proof</label><br>
+              <a download href="{{brokerDetails.address_proof}}">Download Address Proof</a>
+            </div>
+          </div>
+          <div class="col-sm-10 col-md-10">
+            <button type="button" class="btn btn-success" (click)="approveBrokerKYCData(brokerDetails.id,true)">Approved</button>
+            <button type="button" class="btn btn-danger" (click)="approveBrokerKYCData(brokerDetails.id,false)">Rejected</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="editLeadDetailsModal" role="dialog" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title mt-5 addClass" id="exampleModalLabel">Lead Details</h5>
+          <img class="close" (click)="closeModal()" data-dismiss="modal" src="https://www.homepolish.com/assets/close-ee1bfd7a4473933b6dd934b2c284dc856361b63581c8f43b8cdc1abe07c91765.svg">
+      </div>
+    </div>
+  </div>
+</div>

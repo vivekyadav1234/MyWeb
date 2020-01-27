@@ -1,0 +1,138 @@
+<div class="row ss-top-menu">
+  <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-xs-4">
+    <span class="ss-text-light navigation-indicators">Dashboard
+      <i class="rightArrow fa fa-angle-right"></i>
+    </span>
+      <span class="ss-text-dark navigation-indicators">Tasks</span>
+      <span class="ss-text-dark navigation-indicators" *ngIf="activeTab">
+          <i class="rightArrow fa fa-angle-right"></i> {{activeTab}}
+    </span>
+    </div>
+    <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2" *ngIf="role && (role=='admin' || role=='category_head')">
+      <button class="rk-interalBtnColor" data-toggle="modal" data-target="#getUserCategorySplit" style="outline: none;">Users by Segment</button>
+    </div>
+    <div class="justify-content-between col-xl-5 col-lg-5 col-md-5 col-sm-5 col-xs-5 pr-4">
+      <div class="ss-searchbox">
+        <i class="fa fa-search"></i>
+        <input class="form-control" type="text" 
+        placeholder="Type in lead name, id to search..." 
+        [(ngModel)]="searchparam">
+        </div>
+      </div>
+      <button  class="btn btn-outline-secondary" (click)="searchCategoryProjects(searchparam)">Search</button>
+  </div>
+  <div class="row task-cards justify-content-center" *ngIf="project_count_list">
+      <a class="nav-link ss-nav-link card p-3 addCursor" id="handover-for-production"
+      (click)="activateTab('handover_for_production')" [ngClass]="{'active': selectedTab == 'handover_for_production'}">
+        <div class="card-header border-bottom-0 p-2 text-center bg-white">
+            {{project_count_list["final_boq_count"]}}
+        </div>
+        <div class="card-footer border-top-0 text-center bg-white p-0">
+          Handover/<br>Feasibility
+        </div>
+      </a> 
+      <a class="nav-link ss-nav-link card p-3 addCursor" id="custom-element-approvals-tab"
+      (click)="activateTab('custom_element_approvals')" [ngClass]="{'active': selectedTab == 'custom_element_approvals'}">
+        <div class="card-header border-bottom-0 p-2 text-center bg-white">
+            {{project_count_list.custom_elements_count}}
+        </div>
+        <div class="card-footer border-top-0 text-center bg-white p-0">
+          Custom Element Approvals
+        </div>
+      </a>
+      <a class="nav-link ss-nav-link card p-3 addCursor" id="custom-element-approvals-tab"
+      (click)="activateTab('pre_production')" [ngClass]="{'active': selectedTab == 'pre_production'}">
+        <div class="card-header border-bottom-0 p-2 text-center bg-white">
+            {{project_count_list["pre_production_count"]}}
+        </div>
+        <div class="card-footer border-top-0 text-center bg-white p-0">
+          Pre Production
+        </div>
+      </a>
+    </div>
+
+  <div class="row" *ngIf="this.selectedTab == 'initial_boqs'">
+    <div class="component-parent w-100">
+        <initial-boqs></initial-boqs>
+    </div>
+  </div>
+
+  <div class="row" *ngIf="this.selectedTab == 'cad_approvals'">
+    <div class="component-parent w-100">
+        <app-cad-approvals></app-cad-approvals>
+    </div>
+  </div>
+
+
+  <div class="row" *ngIf="this.selectedTab == 'handover_for_production'">
+      <div class="w-100">
+          <app-handover-for-production></app-handover-for-production>
+        </div>
+  </div>
+  <div class="row" *ngIf="this.selectedTab == 'custom_element_approvals'">
+      <div class="w-100">
+          <custom-element-approvals></custom-element-approvals>
+        </div>
+  </div>
+  <div class="row mx-0" *ngIf="this.selectedTab == 'pre_production'">
+      <div class="w-100">
+          <pre-production></pre-production>
+        </div>
+  </div>
+  
+<!-- modal Category role split user list-->
+<div class="modal fade" id="getUserCategorySplit" tabindex="-1" role="dialog" aria-labelledby="getUserCategorySplitLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title mt-2" id="getUserCategorySplitLabel">Users by Segment</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>  
+      <div class="modal-body">
+        <div class="col-md-12 text-center mt-3 mb-5">
+          <label class="name">Type<span class="text-danger">:</span></label>
+          <select (change) = "getUserCategorySplit($event)" style="outline: none;">
+            <option value="" disabled>Select Type</option>
+            <option value="category_panel">Category Panel</option>
+            <option value="category_non_panel">Category Non Panel</option>
+            <option value="category_services">Category Services</option>
+          </select>
+        </div>
+        <div class="row" *ngIf="!this.Vusers">
+          <div class="col-12 text-center">
+             <!-- <i class="fas fa-spinner fa-spin mt-4" style="font-size: 40px;color:#8C031F"></i> -->
+             <p class="mt-4" style="color:#8C031F">Select One Type To Show User List</p>
+          </div>
+        </div>
+        <div class="row mt-4"  *ngIf="this.Vusers && this.Vusers.length > 0">
+          <div class="col-md-12">
+            <div class="tableDiv">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead class="thead-dark">
+                      <tr>
+                        <th scope="col" class="firstTh">#</th>
+                        <!-- <th scope="col" class="w-25">USER ID</th> -->
+                        <th scope="col" class="">USER NAME</th>
+                        <th scope="col" class="">EMAIL</th>
+                      </tr>
+                  </thead>
+                  <tbody lass="ss-tbody">
+                    <tr *ngFor="let obj of Vusers; let i = index" [attr.data-index]="i">
+                      <td style="min-width: 1rem;">{{i+1}}</td>
+                      <!-- <td class="capitalize">{{obj.id}}</td> -->
+                      <td class="capitalize">{{obj.name}}</td>
+                      <td class="capitalize">{{obj.email}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>          
+          </div> 
+        </div>
+      </div>   
+    </div>
+  </div>
+</div>

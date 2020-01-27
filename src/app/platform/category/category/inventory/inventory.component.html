@@ -1,0 +1,119 @@
+<!--Notification-->
+<div class="rk-ui-notification" *ngIf="successalert">
+  <span id="notificationMessageText">{{successMessage}}</span>
+  <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+<div class="rk-ui-notification err" *ngIf="erroralert">
+  <span id="notificationMessageText">{{errorMessage}}</span>
+  <a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="dropdown pull-right" style="display: inline-block;">
+            <span class="mr-2" style="font-weight: 600;color: #a5a5a5">Filter by:</span>
+      <button aria-expanded="false" aria-haspopup="true" class="btn btn-border dropdown-toggle1  text-capitalize" data-toggle="dropdown" id="dropdownMenu2" type="button cursor-pointer">Select Location</button>
+      <div aria-labelledby="dropdownMenu2" class="dropdown-menu" x-placement="bottom-start" style="position: absolute; transform: translate3d(16px, 38px, 0px); top: 0px; left: 0px; will-change: transform;">
+        <button class="dropdown-item text-capitalize cursor-pointer" type="button"  (click)="selectCity('')">All</button>
+        <button class="dropdown-item text-capitalize cursor-pointer" type="button" *ngFor="let item of city_list" (click)="selectCity(item)">{{ item }}</button>
+        
+      </div>
+    </div>
+      
+    </div>
+  </div>
+	<div class="row">
+		<div class="col-lg-12 col-md-12 mt-3" *ngIf="wipData && wipData.length>0">
+			<!--Table start-->
+			<table class="table mt-3 table-width" style="background-color: transparent;">
+				<tr style="border:1px solid">
+					<th class="tableheadColor border-top-0 tableth11rem" style="border-left: 1px solid">Item</th>
+					<th class="tableheadColor border-top-0 tableth2rem">Quantity</th>
+					<th class="tableheadColor border-top-0 tableth6rem">UOM</th>
+					<th class="tableheadColor border-top-0 tableth6rem">Minimum Stock</th>
+					<th class="tableheadColor border-top-0 tableth6rem">Location</th>
+					<th class="tableheadColor border-top-0 tableth6rem">TAT(in days)</th>
+					<th class="tableheadColor border-top-0 tableth6rem">Last used</th>
+					<th class="tableheadColor border-top-0">Vendor</th>
+				</tr>
+
+				<tbody style="border-top: 2px solid black;font-size: 14px">
+					<tr *ngFor="let item of wipData;let j = index" class="bg-white">
+						<td>{{item.attributes.sli_name}}</td>
+						<td>{{item.attributes.quantity | number: '.1-2'}}</td>
+						<td>{{item.attributes.unit | replaceChar}}</td>
+						<td><button class="btn btn-sm btn-pink" data-target="#editQuantityModal" data-toggle="modal" (click)="setInventoriesId(item.id)" *ngIf="!item.attributes.min_stock">Update</button>
+						<span *ngIf="item.attributes.min_stock">{{ item.attributes.min_stock }}<i class="fa fa-pencil-square-o ml-4 cursor-pointer text-danger" data-target="#editQuantityModal" data-toggle="modal" (click)="setInventoriesId(item.id)"></i></span>	
+						</td>
+						<td>
+							<div title="{{item.attributes.location}}" (mouseenter)="openpopup($event)">
+								{{item.attributes.location | slice:0:17}}
+							</div>
+						</td>
+						<td><button class="btn btn-sm btn-pink" data-target="#editTatModal" data-toggle="modal" (click)="setInventoriesId(item.id)" *ngIf="!item.attributes.tat">Update</button>
+            <span *ngIf="item.attributes.tat">{{ item.attributes.tat }}<i class="fa fa-pencil-square-o ml-4 cursor-pointer text-danger" data-target="#editTatModal" data-toggle="modal" (click)="setInventoriesId(item.id)"></i></span>  
+            </td>
+						<td>{{item.attributes.updated_at | date:"dd MMMM, y @ h:mma"}}</td>
+						<td class="capitalize">{{item.attributes.vendor_name}}</td>
+					</tr>
+				</tbody>
+			</table>
+
+		</div>
+
+		<div class="col-md-12 not-found" *ngIf="wipData && wipData.length==0">
+	    <div class="boq-img text-center justify-content-center">
+	      <img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+	    </div>
+	    <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing to show...</p>
+	  </div>
+	</div>
+</div>
+<!-- Update Recived quantity Modal -->
+<div class="modal  animated fadeIn" id="editQuantityModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header border">
+        <h5 class="modal-title" id="exampleModalLabel">UPDATE MINIMUM STOCK</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <label for="example-text-input" class="col-2 col-form-label" style="display: inline;">MINIMUM STOCK QUANTITY:</label>
+            
+        <input type="number" class="form-control my-2  place-chng" placeholder="Enter New Minimum Quantity"  id="minimum_qty">
+
+        <div class="modal-footer">
+          <input type="button" value="Update" class="btn btn-pink"  (click) = "submitMinimumTATQty('minimum')"  >
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--  -->
+<!-- Update Recived quantity Modal -->
+<div class="modal  animated fadeIn" id="editTatModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header border">
+        <h5 class="modal-title" id="exampleModalLabel">UPDATE TAT</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="resetForm()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <label for="example-text-input" class="col-2 col-form-label" style="display: inline;">TAT:</label>
+            
+        <input type="number" class="form-control my-2  place-chng" placeholder="Enter New TAT Value"  id="tat_qty">
+
+        <div class="modal-footer">
+          <input type="button" value="Update" class="btn btn-pink"  (click) = "submitMinimumTATQty('tat')"  >
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--  -->

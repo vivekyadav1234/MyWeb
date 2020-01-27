@@ -1,0 +1,76 @@
+box-shadow-none{
+    box-shadow: none
+}
+
+.download-icon{
+    color: #8c031f!important;
+    font-weight:bold;
+    font-size:20px;
+}
+
+.card{
+    border:none;
+    box-shadow: 1px 1px 7px 0px #dadada;
+    border-radius: 0px;
+    padding:10px; 
+    font-size:14px;
+}
+.custom-element-image{
+    width:200px;
+    height:200px;
+}
+.category-btn.active{
+    background: rgb(243, 245, 247)!important;
+    border:none;
+}
+.close-project-row{
+    font-size: 40px;
+    font-weight: 300;
+    color: #8c031f!important;
+}
+collapsible-table-row-detail{
+    border-spacing:0px;
+}
+.card-parent-custom{
+    width:30%;
+    vertical-align: top;
+}
+.text-ellipsis{
+    display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;overflow: hidden;text-overflow: ellipsis;
+}
+.Vcard-img-top{
+    width: 300px!important;
+    height: 153px!important;
+    border-radius: 20px;
+}
+.myCard{
+    height: 500px;
+}
+
+.myCardView{
+    height:500px;
+}
+
+table th{
+    min-width: auto !important;
+}
+.btn-service{
+  
+  border-radius: 18px;
+  color: black;
+  border-color: #a5a5a5;
+  cursor: pointer;
+  white-space: normal;
+  word-wrap: break-word;
+  width: 9rem;
+ height: 2rem;
+}
+.btn2{
+  height: 31px!important;
+ line-height: 0.25!important;
+}
+
+.Vcard:hover {
+  box-shadow: 1px 1px 18px 5px rgba(1,1,1,0.2);
+}
+ 

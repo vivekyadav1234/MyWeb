@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="71px" height="71px" viewBox="0 0 71 71" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48.1 (47250) - http://www.bohemiancoding.com/sketch -->
+    <title>Location</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Contact-us-Copy-3" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-600.000000, -358.000000)">
+        <g id="Group-3" transform="translate(502.000000, 359.000000)">
+            <g id="Location" transform="translate(99.000000, 0.000000)">
+                <circle id="Oval-5" stroke="#8C031F" fill="#8C031F" cx="34.5" cy="34.5" r="34.5"></circle>
+                <g id="placeholder" transform="translate(22.000000, 16.000000)" fill="#FFFFFF" fill-rule="nonzero">
+                    <path d="M22.1942925,3.7954782 C19.7387643,1.34804683 16.4737659,0 13.0013155,0 C9.52818703,0 6.26386663,1.34804683 3.80833839,3.7954782 C-0.735948133,8.32410468 -1.30067895,16.8448418 2.58531991,22.0072867 L13.0013155,37 L23.4017182,22.0282338 C27.3033099,16.8448418 26.7385791,8.32410468 22.1942925,3.7954782 Z M13.1213123,17.5685301 C10.5051103,17.5685301 8.37567515,15.4461165 8.37567515,12.8385412 C8.37567515,10.2309659 10.5051103,8.10855233 13.1213123,8.10855233 C15.7375142,8.10855233 17.8669494,10.2309659 17.8669494,12.8385412 C17.8669494,15.4461165 15.7375142,17.5685301 13.1213123,17.5685301 Z" id="Shape"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

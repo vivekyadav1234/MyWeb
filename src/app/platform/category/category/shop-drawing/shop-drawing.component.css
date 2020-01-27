@@ -1,0 +1,365 @@
+.customerBg{
+	background-image: url("../../../../../assets/img/customer/Image6.png");
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+	height: 37rem;
+}
+.customerBgColor{
+	background-color: rgba(0, 0, 0, 0.35);
+	height: 37rem;
+}
+.bannerText{
+	margin-top: 18%;
+}
+.customerBg h1{
+  color: #fff;
+  text-shadow: 0 0 15px black;
+  font-size: 3.5rem;
+  font-weight: 500;
+  word-spacing: 6px;
+  line-height: 75px;
+  letter-spacing: 2px;
+  max-width: 76%;
+  margin: auto;
+}
+.grayBg{
+  background-color: #f1f2f9;
+}
+.Slider{
+  background-image: url("../../../../../assets/img/customer/Image2.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  margin-bottom: 7px;
+}
+/*.customerBg h3{*/
+  /*color: #eaeaea;*/
+  /*text-shadow: 0 0 15px black;*/
+  /*width: 80%;*/
+  /*letter-spacing: 2px;*/
+  /*line-height: 50px;*/
+  /*font-weight: 300;*/
+/*}*/
+.secondSection{
+	padding: 2.7rem 2rem;
+	margin-top: -4rem;
+	background-color: #fff;
+	box-shadow: 0px 2px 5px #c1c1c1;
+}
+.secondSection h3{
+  font-weight: 500;
+  font-size: 2rem;
+  letter-spacing: 1px;
+  margin-top: 1rem;
+}
+.borderBottom{
+	border: 1px solid #ff819b;
+	display: block;
+	width: 15%;
+	margin: 0px 0px 3px 0;
+}
+.borderBottom.span{
+	border: 1px solid #da002d;
+}
+.secondSection .borderBottom{
+  margin-top: 2px !important;
+  width: 8rem;
+}
+.secondSection h4{
+  margin-top: 2.5rem;
+  letter-spacing: 1px;
+  font-weight: 500;
+  word-spacing: 1px;
+  font-size: 25px;
+  line-height: 35px;
+  color: #3a3a3a;
+}
+.secondSection h4 span{
+	color: #8c031f;
+}
+.worksDiv{
+  width: 20%;
+  text-align: center;
+}
+.worksDiv p{
+  margin-top: 1rem;
+  font-size: 14px;
+  color: #505050;
+}
+.hrLine{
+  border: 1px solid #ececec;
+  width: calc(100% - 22rem);
+  margin: 0px 0px 3px 0;
+  position: absolute;
+  margin-top: 5rem;
+  margin-left: 8rem;
+  z-index: 0;
+}
+.worksImgDiv{
+  display: block;
+  width: 100%;
+  position: relative;
+}
+.worksImgDiv div{
+  width: 9.5rem;
+  height: 9.5rem;
+  margin: auto;
+  border: 2px solid #ccc;
+  border-radius: 100%;
+  background-color: #fff;
+  z-index: 2;
+}
+.worksImgDiv img{
+  width: 5rem;
+  margin-top: 2rem;
+}
+.para{
+  font-size: 15px;
+  color: #666;
+  letter-spacing: 1px;
+  word-spacing: 1px;
+  line-height: 28px;
+  margin-top: 3rem;
+  padding-right: 2rem;
+}
+.secondSectionRight h3{
+  font-weight: 400;
+  font-size: 1.6rem;
+}
+.secondSectionRight p{
+  margin-top: 1rem;
+  padding-right: 0;
+}
+.sign{
+  font-size: 18px;
+  font-weight: 500;
+}
+.sign span{
+  font-style: italic;
+  font-weight: 200;
+  color: #9c9c9c;
+  font-size: 1.2rem;
+}
+.arrivae{
+	font-style: italic;
+	color: #8c031f;
+}
+.secondSectionRight{
+  margin-top: 4.5rem;
+}
+.promiseBg{
+	background-color: #000;
+	margin-bottom: 7px;
+}
+.promiseDiv{
+	padding: 4rem 2rem 2rem 4rem;
+}
+.promiseDiv h2{
+  color: #fff;
+  font-weight: 400;
+}
+.promiseDiv p{
+  font-size: 19px;
+  color: #797979;
+  border-bottom: dashed 2px rgba(86, 86, 86, 0.76);
+  width: 88%;
+  padding-bottom: 2.8rem;
+  padding-top: 10px;
+}
+.spacesDiv{
+	text-align: center;
+}
+.spacesDiv h3{
+  margin-bottom: 14px;
+  font-weight: 500;
+  font-size: 2rem;
+}
+.spacesDiv .borderBottom{
+	margin-top: 2px !important;
+	width: 5rem;
+}
+.spacesDiv p{
+  margin: 1.3rem auto 2rem auto;
+  color: #777777;
+  font-size: 17px;
+  font-weight: 300;
+  letter-spacing: 1px;
+  width: 74%;
+  line-height: 30px;
+}
+.card .card-img-top{
+	padding: 1rem;
+}
+.card{
+	border: none;
+  box-shadow: 0 0 7px #cecece;
+}
+.card h6{
+  font-size: 18px;
+  color: #777;
+  font-weight: 400;
+}
+.Bg360{
+	background-color: rgba(0, 0, 0, 0.75);
+	height: 35rem;
+	position: absolute;
+	width: 100%;
+	top: 0;
+}
+.Bg360 .spacesDiv h3{
+  color: #fff;
+  font-weight: 400;
+}
+.Bg360 .spacesDiv p{
+  color: #eaeaea;
+  font-weight: 300;
+}
+.offer{
+	color: #fff;
+	text-align: left;
+}
+.offer img{
+	width: 60px;
+}
+.offer h5{
+  font-weight: 400;
+  letter-spacing: 1px;
+}
+.offer p{
+  line-height: 25px;
+  letter-spacing: 1px;
+  color: #cccccc;
+  font-size: 14px;
+}
+.offer h6{
+	color: #dc002d;
+}
+.offer h6 i{
+	font-size: 19px;
+}
+.verticalBorder{
+	margin: 15px auto !important;
+	border-bottom: 10rem solid #eae7e7;
+	display: block;
+	width: 2px;
+}
+.ProcessH4{
+  font-weight: 400;
+  word-spacing: 2px;
+}
+.ProcessP{
+  letter-spacing: 1px;
+  word-spacing: 2px;
+  color: #666;
+  font-weight: 300;
+  line-height: 26px;
+  font-size: 15px;
+}
+
+
+
+a{
+    color: #000;
+}
+/*.table th {
+    font-size: 12px;
+    color: #fff;
+    background-color: #5A5A5A;
+}*/
+.table td {
+  font-size: 14px;
+}
+
+.container-set{
+  background-color: white;
+
+
+}
+
+
+
+ul{
+  margin-top: 40px;
+}
+
+.nav-items{
+  width: 150px;
+}
+
+.nav-items .nav-link{
+  font-size: 14px !important;
+  font-weight: 600 !important;
+}
+
+.addCursor.active{
+  color: #980029;
+  border-color: #fff #fff #fff;
+}
+
+.addCursor{
+  font-size: 12px;
+  /* font-family: bold; */
+  font-weight: bold;
+
+}
+.tabs-chng{
+  border-bottom: none;
+}
+
+.bt-boqs{
+  display: block;
+  margin: 0px auto;
+  border-color: #93001E;
+  color: #93001E;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+
+
+.box-list{
+  -webkit-box-shadow: 0 10px 6px -6px #dedbdb;
+  -moz-box-shadow: 0 10px 6px -6px #dedbdb;
+  box-shadow: 0 10px 6px -6px #dedbdb;
+}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
+
+
+.table{
+  border-collapse: separate;
+  border-spacing: 0 5px;
+}
+.table td{
+    padding: 0.7rem 0.75rem;
+    vertical-align: middle;
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.7);
+    border: none;
+}
+.table th {
+    padding: .9rem;
+    vertical-align: middle;
+    border: none;
+    font-size: 12px;
+    text-transform: uppercase;
+    color: #fff;
+    background-color: #5A5A5A;
+}
+.tableDiv tbody{
+  background-color: #fff;
+}
+.tableDiv tbody tr{
+  box-shadow: 1px 1px 7px 0px #dadada;
+  border-radius: 5px;
+}
+.firstTh{
+  border-radius: 5px 0 0 0;
+}
+.lastTh{
+  border-radius: 0px 5px 0 0;
+}

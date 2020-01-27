@@ -1,0 +1,131 @@
+<div class="row title">
+  <h3>Dashboard / <span>EMI Calculator</span></h3>
+</div>
+<form class="viewProfileForm" [formGroup]="emicalculatorForm" (ngSubmit)="onSubmit(emicalculatorForm.value);">
+  <div class="row marginTop">
+    <div class="col-12 my-5">
+      <h5 class="emi pl-1">EMI Calculator</h5>
+    </div>
+  </div>
+
+  <div class="row mt-4 justify-content-center">
+    <div class="col-sm-11 col-md-10 col-lg-2">
+      <p class="mt-1">Loan Amount</p>
+    </div>
+    <div class="col-sm-11 col-md-10 col-lg-6">
+      <form class="viewProfileForm" [formGroup]="emicalculatorForm" (ngSubmit)="onSubmit(emicalculatorForm.value);">
+        <div class="form-group text-center">
+            <div class="slidecontainer">            
+              <input type="range" min="0" max="10000000" step="100000" value="1" class="slider" id="loanAmtRange" formControlName="principal" (input)="sliderOnInput($event.target.value,'loanamount')">
+              <p class="text-danger" *ngIf="amtMsg"> Please select valid amount.</p>
+            </div>
+        </div>
+      </form>
+    </div>
+    <div class="col-sm-11 col-md-10 col-lg-2">
+      <div class="input-group">
+        <input type="text" class="form-control rate" readonly id="inlineFormInputGroup amtval" [(ngModel)]="output" [ngModelOptions]="{standalone: true}">
+        <div class="input-group-addon"><i class="fa fa-inr" aria-hidden="true"></i></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-4 justify-content-center">
+    <div class="col-sm-11 col-md-10 col-lg-2">
+      <p class="mt-1">Loan Tenure</p>
+    </div>
+    <div class="col-sm-11 col-md-10 col-lg-6">
+      <form class="viewProfileForm" [formGroup]="emicalculatorForm" (ngSubmit)="onSubmit(emicalculatorForm.value);">
+        <div class="form-group text-center">
+            <div class="slidecontainer">            
+              <input type="range" min="0" max="30" step="1" value="0" class="slider" id="tenure" formControlName="tenure" (input)="sliderOnInput($event.target.value,'tenure')">
+              <p class="text-danger" *ngIf="tenureMsg"> Please select valid tenure.</p>
+            </div>
+        </div>
+      </form>
+    </div>
+    <div class="col-sm-11 col-md-10 col-lg-2">
+      <div class="input-group">
+        <input type="text" class="form-control rate" readonly id="inlineFormInputGroup tenureval" [(ngModel)]="output1" [ngModelOptions]="{standalone: true}">
+        <div class="input-group-addon"><i class="fa fa-calendar" aria-hidden="true"></i></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-4 justify-content-center">
+    <div class="col-5 text-right">
+      <label class="mt-1">Current Interest Rate</label>
+    </div>
+    <div class="col-6">
+      <div class="input-group mb-2 mb-sm-0">
+        <input type="number" min="0" formControlName="rate" class="form-control rate m-0" id="inlineFormInputGroup" placeholder="Interest Rate"  (keydown)="numberCheck($event)">
+        <div class="input-group-addon">%</div>
+      </div>
+      <div *ngIf="emicalculatorForm.controls['rate'].invalid && (emicalculatorForm.controls['rate'].dirty || emicalculatorForm.controls['rate'].touched)" class=" text-danger">
+        <p *ngIf="emicalculatorForm.controls['rate'].errors.required"> Rate is required.</p>
+        <p *ngIf="emicalculatorForm.controls['rate'].errors.min"> Invalid interest rate .</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-4 text-center">
+    <div class="col-12">
+      <button class="button mt-3" type="submit rk-interalBtnColor"  [disabled]="!emicalculatorForm.valid">Calculate</button>
+    </div>
+  </div>
+
+  <div class="row mt-5 mb-3 justify-content-center" *ngIf="emicalculationResponse">
+    <div class="col-sm-11 col-md-10 col-lg-6">
+      <div class="border py-5">
+        <div class="row">
+          <div class="col-5 text-right">
+            <label class="currentEmi">Current EMI</label>
+          </div>
+          <div class="col-6">
+            <div class="input-group">
+              <input type="number" class="currentEmiPrice pl-2" placeholder="{{emicalculationResponse.emi}}" readonly>
+              <div class="input-group-addon"><i class="fa fa-inr" aria-hidden="true"></i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mb-5 justify-content-center" *ngIf="emicalculationResponse">
+    <div class="col-sm-11 col-md-10 col-lg-6">
+      <div class="border py-5">
+        <div class="row justify-content-center">
+          <div class="col-5">
+            <p>New Interest Rate : </p>
+          </div>
+          <div class="col-4">
+            <p>8.55 %</p>
+          </div>
+          <div class="col-5">
+            <p>New EMI : </p>
+          </div>
+          <div class="col-4">
+            <p><i class="fa fa-inr" aria-hidden="true"></i> {{emicalculationResponse.arrivae_emi}}</p>
+          </div>
+          <div class="col-10">
+            <hr>
+          </div>
+          <div class="col-5">
+            <p>Savings per month: </p>
+          </div>
+          <div class="col-4">
+            <p><i class="fa fa-inr" aria-hidden="true"></i> {{emicalculationResponse.emi_saving}}</p>
+          </div>
+          <div class="col-5">
+            <p>Total Savings : </p>
+          </div>
+          <div class="col-4">
+            <p><i class="fa fa-inr" aria-hidden="true"></i> {{emicalculationResponse.total_saving}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</form>

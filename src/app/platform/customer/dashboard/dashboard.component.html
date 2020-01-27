@@ -1,0 +1,1168 @@
+<div class="rk-ui-notification" *ngIf="successalert">
+  <span id="notificationMessageText">{{successMessage}}</span>
+  <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+<div class="rk-ui-notification err" *ngIf="erroralert">
+  <span id="notificationMessageText">{{errorMessage}}</span>
+  <a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+
+
+<div class="row client-margin mb-0">
+  <div class="col-sm-12 project-col" *ngIf="projectList">
+    <div class="row box-shadow justify-content-between" *ngFor="let element of projectList">
+      <div class="col-sm-3 project-tag box-shadow {{ActivateTab('project',element.attributes.id)}}" (click)= "setActiveProject(element.attributes.id)" >
+        {{ element.attributes.name }}
+      </div>
+
+      <div class="col-sm-2 text-center">
+        <a class="nav-link dropdown-toggle mt-3" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: #505050;">
+          <span>Go To</span>
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+          <a class="dropdown-item cursor-pointer" [routerLink]="['projects/'+selected_project+'/meet-team']" routerLinkActive="active">Meet Us</a>
+        </div>
+      </div>
+      
+      <button class="bt-boq btn btn-pink mr-2 p-2 pull-right" type="button" data-toggle="modal" data-target="#inviteChampionModal" *ngIf = "is_champion=='true'" (click)="referralinvitechampions.getChampionList()">Invite Level 2 & Level 3 User</button>
+    </div>
+  </div>
+</div>
+
+<div class="row client-margin mt-2 box-shadow">
+
+  <div class="col-sm-12" *ngFor="let quote of client_quotation">
+    <div class="row mb-1">
+      <div class="col-sm-3 boq-tag box-shadow">
+        {{quote.attributes.reference_number}}
+        <span class="status-notifier">
+          <img src="./assets/img/client/red_alert.svg" *ngIf="quote.attributes.is_approved == null">
+          <img src="./assets/img/client/red_check.svg" *ngIf="quote.attributes.is_approved == true">
+          <img src="./assets/img/client/red_cross.svg" *ngIf="quote.attributes.is_approved == false">
+        </span>
+      </div>
+      <div class="col-sm-9 boq-status">
+        <!-- Custom code for stages -->
+        <div class="row justify-content-md-center" style="margin-top: 2rem;">
+          <div class="col-sm-12">
+            <div class="row justify-content-md-center">
+              <div class="col-sm-3 text-center">
+                <div class="row">
+                  <div class="col-sm-12">
+                    <input type="radio" name="stages" value="book_order" id="book_order_{{quote.attributes.id}}" (click) = "stageActivate($event,quote.attributes.id)">
+                    <label class="stages stage-1 active" for="book_order_{{quote.attributes.id}}" >
+                      <img src="./assets/img/client/book_order_red.svg">
+                    </label>
+                  </div>
+                  <div class="col-sm-12" style="margin-top: -0.3rem;">
+                    Initial Design
+                  </div>
+                </div>
+                
+              </div>
+
+              <div class="col-sm-3 text-center">
+                <div class="row">
+                  <div class="col-sm-12" *ngIf="quote.attributes.finalize_design_present">
+                    <input type="radio" name="stages" value="finalize_design" id="finalize_design_{{quote.attributes.id}}" (click) = "stageActivate($event,quote.attributes.id)">
+                    <label class="stages stage-2 active" for="finalize_design_{{quote.attributes.id}}">
+                      <img src="./assets/img/client/finalize_design_red.svg">
+                    </label>
+                  </div>
+
+                  <div class="col-sm-12" *ngIf="!quote.attributes.finalize_design_present">
+                    <input type="radio" name="stages" value="finalize_design" id="finalize_design_{{quote.attributes.id}}">
+                    <label class="stages stage-2 disabled" for="finalize_design_{{quote.attributes.id}}">
+                      <img src="./assets/img/client/finalize_design_grey.svg">
+                    </label>
+                  </div>
+
+
+                  <div class="col-sm-12" style="margin-top: -0.3rem;">
+                    Final Design
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-sm-3 text-center">
+                <div class="row">
+
+                  <div class="col-sm-12" *ngIf="quote.attributes.production_kickoff">
+                    <input type="radio" name="stages" value="prod_kickoff" id="prod_kickoff_{{quote.attributes.id}}" (click) = "stageActivate($event,quote.attributes.id)">
+                    <label class="stages stage-3 active" for="prod_kickoff_{{quote.attributes.id}}">
+                      <img src="./assets/img/client/prod_kickoff_red.svg">
+                    </label>
+                  </div>
+
+                  <div class="col-sm-12" *ngIf="!quote.attributes.production_kickoff">
+                    <input type="radio" name="stages" value="prod_kickoff" id="prod_kickoff_{{quote.attributes.id}}">
+                    <label class="stages stage-3 disabled" for="prod_kickoff_{{quote.attributes.id}}">
+                      <img src="./assets/img/client/prod_kickoff_grey.svg">
+                    </label>
+                  </div>
+
+                  <div class="col-sm-12" style="margin-top: -0.3rem;">
+                    Production Kickoff
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-sm-3 text-center">
+                <div class="row">
+                  <div class="col-sm-12" *ngIf="quote.attributes.last_mile">
+                    <input type="radio" name="stages" value="last_mile" id="last_mile_{{quote.attributes.id}}" (click) = "stageActivate($event,quote.attributes.id)">
+                    <label class="stages stage-4 active" for="last_mile_{{quote.attributes.id}}">
+                      <img src="./assets/img/client/last_mile_grey.svg">
+                    </label>
+                  </div>
+
+                  <div class="col-sm-12" *ngIf="!quote.attributes.last_mile">
+                    <input type="radio" name="stages" value="last_mile" id="last_mile_{{quote.attributes.id}}">
+                    <label class="stages stage-4 disabled" for="last_mile_{{quote.attributes.id}}">
+                      <img src="./assets/img/client/last_mile_grey.svg">
+                    </label>
+                  </div>
+
+                  <div class="col-sm-12" style="margin-top: -0.3rem;">
+                    Last Mile
+                  </div>
+                </div>
+              </div>
+              <div class="col-sm-9" style="position: absolute;margin-top: 1.5rem;flex: 0 0 79%;max-width: 79%;">
+                <div class="progress" style="position: absolute;width: 95%;height: 0.1rem;">
+                  <div class="progress-bar" [ngStyle]="{'width':assignProgress(quote.attributes.finalize_design_present,quote.attributes.production_kickoff,quote.attributes.last_mile), 'position':'absolute'}"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row hide_div book_order_{{quote.attributes.id}}">
+          <div class="col-sm-12">
+            <div class="row justify-content-md-center" style="margin-top: 2rem;border-top: 1px solid #e5e5e5;padding-top: 2rem;padding-bottom: 2rem;">
+              <div class="col-sm-10">
+                <div class="row justify-content-md-center">
+                  <div class="col-sm-3 text-center">
+                    <div class="row">
+
+                      <div class="col-sm-12" *ngIf="book_order_details && book_order_details.attributes">
+                        <input type="radio" name="stages" value="initial_estimate" id="initial_estimate_{{quote.attributes.id}}" (click) = "openBoq(book_order_details.attributes.id)" data-toggle="modal" data-target=".InvoiceModal">
+                        <label class="stages stage-1 active" for="initial_estimate_{{quote.attributes.id}}" >
+                          <img src="./assets/img/client/initial_estimate_black.svg" >
+                        </label>
+                      </div>
+
+                      <div class="col-sm-12" style="margin-top: -0.3rem;">
+                        Click here for Initial Estimate
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-3 text-center">
+                    <div class="row">
+
+                      <div class="col-sm-12" *ngIf="(book_order_details && book_order_details.attributes && book_order_details.attributes.proposed_ppts.length > 0) || (book_order_details && book_order_details.attributes && book_order_details.attributes.proposed_uploaded_ppts.length > 0) ">
+                        <input type="radio" name="stages" value="initial_ppt" id="initial_ppt_{{quote.attributes.id}}" (click)="removeRightClick()" data-target=".pptModal" data-toggle="modal">
+                        <label class="stages stage-2 active" for="initial_ppt_{{quote.attributes.id}}">
+                          <img src="./assets/img/client/ppt_black.svg" (click)="removeSet()">
+                        </label>
+                      </div>
+
+                      <div class="col-sm-12" *ngIf="(book_order_details && book_order_details.attributes && book_order_details.attributes.proposed_ppts.length <= 0) && (book_order_details && book_order_details.attributes && book_order_details.attributes.proposed_uploaded_ppts.length <= 0) " title = "No PPT file is available" data-toggle="tooltip">
+                        <input type="radio" name="stages" value="initial_ppt" id="initial_ppt_{{quote.attributes.id}}">
+                        <label class="stages stage-2 disabled" for="initial_ppt_{{quote.attributes.id}}">
+                          <img src="./assets/img/client/ppt_black.svg">
+                        </label>
+                      </div>
+
+
+
+                      <div class="col-sm-12" style="margin-top: -0.3rem;">
+                        Click here for Presentation
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-3 text-center">
+                    <div class="row">
+
+                      <div class="col-sm-12" *ngIf="book_order_details && book_order_details.attributes && book_order_details.attributes.is_approved">
+                        <input type="radio" name="stages" value="tnc" id="tnc_{{quote.attributes.id}}" (click)="removeRightClick()" data-target="#approvalModal" data-toggle="modal">
+                        <label class="stages stage-3 active" for="tnc_{{quote.attributes.id}}">
+                          <img src="./assets/img/client/tnc_black.svg">
+                        </label>
+                      </div>
+
+                      <div class="col-sm-12" *ngIf="book_order_details && book_order_details.attributes && !book_order_details.attributes.is_approved">
+                        <input type="radio" name="stages" value="tnc" id="tnc_{{quote.attributes.id}}">
+                        <label class="stages stage-3 disabled" for="tnc_{{quote.attributes.id}}">
+                          <img src="./assets/img/client/tnc_black.svg">
+                        </label>
+                      </div>
+
+                      <div class="col-sm-12" style="margin-top: -0.3rem;">
+                        Terms & Conditions
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-3 text-center">
+                    <div class="row">
+
+                      <div class="col-sm-12" *ngIf="book_order_details && book_order_details.attributes && book_order_details.attributes.ten_per_true">
+                        <input type="radio" name="stages" value="10_percent" id="10_percent_{{quote.attributes.id}}">
+                        <label class="stages stage-4 active" for="10_percent_{{quote.attributes.id}}">
+                          <img src="./assets/img/client/last_mile_red.svg">
+                        </label>
+                      </div>
+
+                      <div class="col-sm-12" *ngIf="book_order_details && book_order_details.attributes && !book_order_details.attributes.ten_per_true">
+                        <input type="radio" name="stages" value="10_percent" id="10_percent_{{quote.attributes.id}}">
+                        <label class="stages stage-4 disabled" for="10_percent_{{quote.attributes.id}}">
+                          <img src="./assets/img/client/last_mile_grey.svg">
+                        </label>
+                      </div>
+
+                      <div class="col-sm-12" style="margin-top: -0.3rem;">
+                        10% payment received
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-9" style="position: absolute;margin-top: 1.5rem;flex: 0 0 79%;max-width: 79%;">
+                    <div class="progress" style="position: absolute;width: 95%;height: 0.1rem;">
+                      <div class="progress-bar" *ngIf="book_order_details && book_order_details.attributes" [ngStyle]="{'width':assignSubProgress(book_order_details.attributes.is_approved,book_order_details.attributes.ten_per_true), 'position':'absolute'}"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row hide_div finalize_design_{{quote.attributes.id}}">
+          <div class="col-sm-12">
+            <div class="row justify-content-md-center" style="margin-top: 2rem;border-top: 1px solid #e5e5e5;padding-top: 2rem;padding-bottom: 2rem;">
+              <div class="col-sm-10">
+                <div class="row justify-content-md-center">
+                  <div class="col-sm-3 text-center">
+                    <div class="row">
+
+                      <div class="col-sm-12" *ngIf="finalize_design_details && finalize_design_details.attributes && finalize_design_details.attributes.site_measurment">
+                        <input type="radio" name="stages" value="site_measurement_received" id="site_measurement_{{quote.attributes.id}}">
+                        <label class="stages stage-1 active" for="site_measurement_{{quote.attributes.id}}" >
+                          <img src="./assets/img/client/site_measurement_black.svg">
+                        </label>
+                      </div>
+
+                      <div class="col-sm-12" *ngIf="finalize_design_details && finalize_design_details.attributes && !finalize_design_details.attributes.site_measurment">
+                        <input type="radio" name="stages" value="site_measurement_received" id="site_measurement_{{quote.attributes.id}}">
+                        <label class="stages stage-1 disabled" for="site_measurement_{{quote.attributes.id}}" >
+                          <img src="./assets/img/client/site_measurement_grey.svg">
+                        </label>
+                      </div>
+
+                      <div class="col-sm-12" style="margin-top: -0.3rem;">
+                        Site Measurement received
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-3 text-center">
+                    <div class="row">
+
+                      <div class="col-sm-12" *ngIf="finalize_design_details && finalize_design_details.attributes">
+                        <input type="radio" name="stages" value="final_estimate" id="final_estimate_{{quote.attributes.id}}" (click) = "openBoq(finalize_design_details.attributes.id)" data-toggle="modal" data-target=".InvoiceModal">
+                        <label class="stages stage-2 active" for="final_estimate_{{quote.attributes.id}}">
+                          <img src="./assets/img/client/final_estimate_black.svg">
+                        </label>
+                      </div>
+
+                      <div class="col-sm-12" style="margin-top: -0.3rem;">
+                        Final Estimate is ready
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-3 text-center">
+                    <div class="row">
+
+                      <div class="col-sm-12" *ngIf="finalize_design_details && finalize_design_details.attributes && (finalize_design_details.attributes.proposed_uploaded_ppts.length > 0 ||finalize_design_details.attributes.proposed_ppts.length > 0)">
+                        <input type="radio" name="stages" value="final_ppt" id="final_ppt_{{quote.attributes.id}}">
+                        <label class="stages stage-3 active" for="final_ppt_{{quote.attributes.id}}">
+                          <img src="./assets/img/client/ppt_black.svg" data-target=".pptModal" data-toggle="modal"  (click)="removeSet()">
+                        </label>
+                      </div>
+
+                      <div class="col-sm-12" *ngIf="(finalize_design_details && finalize_design_details.attributes && finalize_design_details.attributes.proposed_uploaded_ppts.length == 0 )&& (finalize_design_details && finalize_design_details.attributes && finalize_design_details.attributes.proposed_ppts.length == 0) ">
+                        <input type="radio" name="stages" value="final_ppt" id="final_ppt_{{quote.attributes.id}}">
+                        <label class="stages stage-3 disabled" for="final_ppt_{{quote.attributes.id}}">
+                          <img src="./assets/img/client/ppt_grey.svg">
+                        </label>
+                      </div>
+
+                      <div class="col-sm-12" style="margin-top: -0.3rem;">
+                        Final PPT is ready
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-3 text-center">
+                    <div class="row">
+
+                      <div class="col-sm-12" *ngIf="finalize_design_details && finalize_design_details.attributes && finalize_design_details.attributes.fifty_per_true">
+                        <input type="radio" name="stages" value="40_percent" id="40_percent_{{quote.attributes.id}}">
+                        <label class="stages stage-4 active" for="40_percent_{{quote.attributes.id}}">
+                          <img src="./assets/img/client/last_mile_red.svg">
+                        </label>
+                      </div>
+
+                      <div class="col-sm-12" *ngIf="finalize_design_details && finalize_design_details.attributes && !finalize_design_details.attributes.fifty_per_true">
+                        <input type="radio" name="stages" value="40_percent" id="40_percent_{{quote.attributes.id}}">
+                        <label class="stages stage-4 disabled" for="40_percent_{{quote.attributes.id}}">
+                          <img src="./assets/img/client/last_mile_grey.svg">
+                        </label>
+                      </div>
+
+                      <div class="col-sm-12" style="margin-top: -0.3rem;">
+                        40% payment received
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-9" style="position: absolute;margin-top: 1.5rem;flex: 0 0 79%;max-width: 79%;">
+                    <div class="progress" style="position: absolute;width: 95%;height: 0.1rem;">
+                      <div class="progress-bar" *ngIf="finalize_design_details && finalize_design_details.attributes" [ngStyle]="{'width':assignFinalProgress(finalize_design_details.attributes.proposed_ppts.length > 0,finalize_design_details.attributes.proposed_uploaded_ppts.length > 0,finalize_design_details.attributes.fifty_per_true), 'position':'absolute'}"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row hide_div prod_kickoff_{{quote.attributes.id}}">
+          <div class="col-sm-12">
+            <div class="row justify-content-md-center" style="margin-top: 2rem;border-top: 1px solid #e5e5e5;padding-top: 2rem;padding-bottom: 2rem;">
+              <div class="col-sm-10">
+                <div class="row justify-content-md-center">
+                  <div class="col-sm-3 text-center">
+                    <div class="row">
+                      <div class="col-sm-12">
+                        <input type="radio" name="stages" value="initial_estimate" id="initial_estimate_{{quote.attributes.id}}">
+                        <label class="stage-1" for="initial_estimate_{{quote.attributes.id}}" >
+                          <img src="./assets/img/client/initial_estimate_black.svg" data-toggle="modal" data-target=".InvoiceModal">
+                        </label>
+                      </div>
+                      <div class="col-sm-12" style="margin-top: -0.3rem;">
+                        Site Services completed
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-3 text-center">
+                    <div class="row">
+                      <div class="col-sm-12">
+                        <input type="radio" name="stages" value="initial_ppt" id="initial_ppt_{{quote.attributes.id}}">
+                        <label class="stage-2" for="initial_ppt_{{quote.attributes.id}}">
+                          <img src="./assets/img/client/ppt_black.svg" data-target=".pptModal" data-toggle="modal"  (click)="removeSet()">
+                        </label>
+                      </div>
+                      <div class="col-sm-12" style="margin-top: -0.3rem;">
+                        Production going on
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-3 text-center">
+                    <div class="row">
+                      <div class="col-sm-12">
+                        <input type="radio" name="stages" value="tnc" id="tnc_{{quote.attributes.id}}">
+                        <label class="stage-3" for="tnc_{{quote.attributes.id}}">
+                          <img src="./assets/img/client/tnc_black.svg" data-target="#approvalModal" data-toggle="modal">
+                        </label>
+                      </div>
+                      <div class="col-sm-12" style="margin-top: -0.3rem;">
+                        50% payment received
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-3 text-center">
+                    <div class="row">
+                      <div class="col-sm-12">
+                        <input type="radio" name="stages" value="10_percent" id="10_percent_{{quote.attributes.id}}">
+                        <label class="stage-4" for="10_percent_{{quote.attributes.id}}">
+                          <img src="./assets/img/client/last_mile_grey.svg">
+                        </label>
+                      </div>
+                      <div class="col-sm-12" style="margin-top: -0.3rem;">
+                        Site readiness checked
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-9" style="position: absolute;margin-top: 1.5rem;flex: 0 0 79%;max-width: 79%;">
+                    <div class="progress" style="position: absolute;width: 95%;height: 0.1rem;">
+                      <div class="progress-bar" style="width:30%;position: absolute;"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row hide_div last_mile_{{quote.attributes.id}}">
+          <div class="col-sm-12">
+            <div class="row justify-content-md-center" style="margin-top: 2rem;border-top: 1px solid #e5e5e5;padding-top: 2rem;padding-bottom: 2rem;">
+              <div class="col-sm-10">
+                <div class="row justify-content-md-center">
+                  <div class="col-sm-3 text-center">
+                    <div class="row">
+                      <div class="col-sm-12">
+                        <input type="radio" name="stages" value="initial_estimate" id="initial_estimate_{{quote.attributes.id}}">
+                        <label class="stage-1" for="initial_estimate_{{quote.attributes.id}}" >
+                          <img src="./assets/img/client/initial_estimate_black.svg" data-toggle="modal" data-target=".InvoiceModal">
+                        </label>
+                      </div>
+                      <div class="col-sm-12" style="margin-top: -0.3rem;">
+                        Expected Delivery: X.X.201X
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-3 text-center">
+                    <div class="row">
+                      <div class="col-sm-12">
+                        <input type="radio" name="stages" value="initial_ppt" id="initial_ppt_{{quote.attributes.id}}">
+                        <label class="stage-2" for="initial_ppt_{{quote.attributes.id}}">
+                          <img src="./assets/img/client/ppt_black.svg" data-target=".pptModal" data-toggle="modal">
+                        </label>
+                      </div>
+                      <div class="col-sm-12" style="margin-top: -0.3rem;">
+                        Installation completed
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-3 text-center">
+                    <div class="row">
+                      <div class="col-sm-12">
+                        <input type="radio" name="stages" value="tnc" id="tnc_{{quote.attributes.id}}">
+                        <label class="stage-3" for="tnc_{{quote.attributes.id}}">
+                          <img src="./assets/img/client/tnc_black.svg" data-target="#approvalModal" data-toggle="modal">
+                        </label>
+                      </div>
+                      <div class="col-sm-12" style="margin-top: -0.3rem;">
+                        Handover, NPS, Terms of Use
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-3 text-center">
+                    <div class="row">
+                      <div class="col-sm-12">
+                        <input type="radio" name="stages" value="10_percent" id="10_percent_{{quote.attributes.id}}">
+                        <label class="stage-4" for="10_percent_{{quote.attributes.id}}">
+                          <img src="./assets/img/client/last_mile_grey.svg">
+                        </label>
+                      </div>
+                      <div class="col-sm-12" style="margin-top: -0.3rem;">
+                        Quarterly Service:Next Call: X.X.201X
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-9" style="position: absolute;margin-top: 1.5rem;flex: 0 0 79%;max-width: 79%;">
+                    <div class="progress" style="position: absolute;width: 95%;height: 0.1rem;">
+                      <div class="progress-bar" style="width:30%;position: absolute;"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Custom code for stages -->
+      </div>
+    </div>
+  </div>
+  <div class="col-md-12 not-found text-center" *ngIf="client_quotation && client_quotation.length==0 ">
+    <div class="boq-img">
+      <img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+    </div>
+    <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing to show...</p>
+  </div>
+
+  <!-- <div class="col-sm-12">
+    <div class="row mb-1">
+      <div class="col-sm-3 boq-tag box-shadow">
+        Boq/2018/196
+        <span class="status-notifier">
+          <img src="./assets/img/client/red_check.svg">
+        </span>
+      </div>
+      <div class="col-sm-9 boq-status">fd</div>
+    </div>
+  </div>
+
+  <div class="col-sm-12">
+    <div class="row mb-1">
+      <div class="col-sm-3 boq-tag box-shadow">
+        Boq/2018/196
+        <span class="status-notifier">
+          <img src="./assets/img/client/red_alert.svg">
+        </span>
+      </div>
+      <div class="col-sm-9 boq-status">fd</div>
+    </div>
+  </div> -->
+</div>
+
+
+
+
+<!-- Modal For Invoce Boq -->
+<div class="modal fade InvoiceModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <button type="button" class="close custom-close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <div class="modal-body" *ngIf="selected_boq_details">
+        <div class="container-fluid px-4">
+          <div class="row borders border-bottom-0 border-dark">
+            <div class="col-md-8 border-right border-dark">
+              <div class="logo">
+                 <img src="../../../assets/img/mainLogo.svg" width="100%">
+              </div>   
+              
+            </div>
+            <div class="col-md-4">
+              <p class="quoteFont">Quotation</p>
+            </div>
+            
+          </div>
+          <div class="row borders border-dark">
+            <div class="col-md-8 border-right border-dark">
+              <div class="address">
+                AZB Services LLP
+            B501/502, Everest House, Suren Road, Gundavali
+            Andheri East, Mumbai - 400093
+                
+              </div>   
+              
+            </div>
+            <div class="col-md-4">
+              <div class="row">
+                <div class="col-md-6 border border-top-0 border-dark">
+                  Date
+                </div>
+                <div class="col-md-6 border border-top-0  border-dark">
+                  {{selected_boq_details.generation_date}}
+                </div>
+                
+              </div>
+              <div class="row  ">
+                <div class="col-md-6 border border-dark">
+                  Lead ID
+                </div>
+                <div class="col-md-6 border border-dark">
+                  {{selected_boq_details.lead_id}}
+                </div>
+                
+              </div>
+              <div class="row">
+                <div class="col-md-6 border  border-bottom-0 border-dark">
+                  BOQ Number
+                </div>
+                <div class="p-1 col-md-6 border border-bottom-0 border-dark">
+                  {{selected_boq_details.reference_number}}
+                </div>
+                
+              </div>
+            </div>
+            
+          </div>
+          
+          <div class="row mt-3">
+            <table class="table table-bordered">
+              <thead>
+              </thead>
+              <tbody>
+                  <tr>
+                      <td>Name</td>
+                      <td>{{selected_boq_details.lead_name}}</td>
+                      <td>Designer Name</td>
+                      <td>{{selected_boq_details.designer_name}}</td>
+                  </tr>
+                 <!--  <tr>
+                      <td>Contact</td>
+                      <td>{{selected_boq_details.lead_contact}}</td>
+                      <td>Designer Contact</td>
+                      <td>{{selected_boq_details.designer_contact}}</td>
+                  </tr> -->
+                  <tr>
+                      <td class="minTdWidth">Project Name and Address</td>
+                      <td class="minTdWidth">
+                        {{selected_boq_details.project_name}},
+                        <br>
+                        {{selected_boq_details.lead_location}}
+                      </td>
+                      <td>Designer Email ID</td>
+                      <td>{{selected_boq_details.designer_email}}</td>
+                  </tr>
+                  
+              </tbody>
+            </table>
+            
+          </div>
+          <div>
+            <span class="spanChange" *ngIf="selected_boq_details.quotation_body.summary_table_hash">Summary</span>
+            <div class="row mt-3" *ngIf="selected_boq_details.quotation_body.summary_table_hash">
+              <table class="table table-bordered">
+                <thead>
+                  <th scope="col">Sr. No.</th>
+                  <th scope="col">Space</th>
+                  <th scope="col">Item</th>
+                  <th scope="col">Amount</th>
+                  
+                  
+                </thead>
+                <tbody>
+                  <ng-container *ngFor="let space of selected_boq_details.all_spaces">
+                    <tr class="rowChng" *ngFor="let item of selected_boq_details.quotation_body.summary_table_hash[space];let i = index">
+                      
+                      <td>{{ test(i+1) }}{{ i+1 }}</td>
+                      <td>{{ space }}</td>
+                      <td>{{item.section_name}}</td>
+                      <td>{{item.section_price}}</td> 
+                    </tr>
+                    
+                  </ng-container> 
+                  <tr class="rowChng" *ngIf="selected_boq_details.countertop && selected_boq_details.countertop_cost">
+
+                    <td>{{ serial_num }}</td><td></td><td>CounterTop:<br><span>{{ selected_boq_details.countertop  | replaceChar }}</span></td><td>{{ selected_boq_details.countertop_cost }}</td>
+                  </tr>
+                  <tr class="rowChng"><td></td><td></td><td>Net Amount</td><td>{{selected_boq_details.net_amount}}</td></tr>
+                  <tr class="rowChng" *ngIf="selected_boq_details.discount_value">
+                    <td></td><td></td><td>Discount Applied</td><td *ngIf="selected_boq_details.discount_value">{{ selected_boq_details.discount_value }}%</td>
+                  </tr>
+                  <tr class="rowChng"><td></td><td></td><td>Total</td><td>{{ selected_boq_details.total_amount }}</td></tr> 
+                </tbody>
+                
+              </table>
+            </div>
+          </div>
+            <div class="row  borders border-dark mt-5" *ngIf="selected_boq_details.quotation_body.summary_table_hash">
+              <h6 class="pull-left ml-3 mt-2" >Terms and Conditions</h6>
+              <div class="col-md-12">
+                <div class="pull-left text-change">
+                  
+                  1) Prices are subject to the specifications mentioned above. Changes in specifications mentioned above shall be charged extra. Prices are inclusive of all taxes, landed at site. Any government levies, is payable extra at actual.<br>
+                  2) Mathadi charge as per actual<br>
+                  3) Payment Terms: 10% Booking, 40% on Final Design Submission and 50% PDC along with Final Design Submission<br>
+                  4) Payment Mode: NEFT / RTGS / Cheque<br>
+                  5) Bank Account Details:
+                     Account Name: SINGULARITY FURNITURE PRIVATE LIMITED
+                     Account Number: 02912000003169
+                     IFSC Code: HDFC0000291
+                     Bank and Branch: HDFC Bank, Nariman Point Branch<br>
+                     
+                  6) Offer Validity: 30 Days<br>
+                  7) Order once booked can not be taken back under any circumstances. Advance Amount will not be refunded<br>
+                  8) Safe Storage at Site is client's responsibility<br>
+                  9) Disputes subject to Mumbai Jurisdiction<br>
+                  10) Any extra work shall be charged extra<br>
+                  11) Force Majeure Clause Applies<br>
+                  12) The seller shall have general lien over on goods for payments due to seller from the buyer on account of this or any other PAN Number: AAECP3450G
+                      GST Number: 27AAECP3450G1ZJ
+                  
+                </div>
+                
+              </div>
+              
+            </div>
+            <div class="row borders border-dark mt-3" *ngIf="selected_boq_details.quotation_body.summary_table_hash">
+              <h6 class="pull-left ml-3 mt-2"> {{selected_boq_details.delivery_tnc}}</h6>
+            </div>
+          <span class="quoteChng" *ngIf="selected_boq_details.quotation_body.boq_hash">Quotation</span>
+          <div *ngIf="selected_boq_details.quotation_body.boq_hash">
+            <div *ngFor="let space of selected_boq_details.all_spaces">
+              <span class="spanChange">Space:-{{space}}</span>
+              <div class="row mt-3">
+                <table class="table table-bordered">
+                  <thead>
+                    <th scope="col">Sr. No.</th>
+                    <th scope="col">Product</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Qty.</th>
+                    
+                  </thead>
+                  <tbody>
+                    <tr class="rowChng" *ngFor="let item of selected_boq_details.quotation_body.boq_hash[space];let i = index">
+                      
+                      <td>{{ i+1}}</td>
+                      <td>{{item.product}}</td>
+                      <td>{{item.name}}</td>
+                      <td>
+                        <!-- {{ item.description | nextLine}} -->
+                        <div *ngIf="item.description" class="rowChng1" [innerHTML] = "item.description | nextLine" >
+                    </div>
+                      </td>
+                      <td>
+                        {{item.quantity}}
+                      </td>
+                          
+                    </tr>
+                  </tbody>
+                  
+                </table>
+              </div>
+            </div>
+          </div>  
+         
+          
+          <div class="row mt-3" *ngIf="selected_boq_details.quotation_body.boq_hash">
+            <div class="col-md-6">
+              
+            </div>
+            <div class="col-md-6">
+              <div class="row">
+                <div class="col-md-8 borders border-bottom-0 border-dark">
+                  <div class="text">
+                    Net Amount
+                  </div>
+                  
+                </div>
+                <div class="col-md-4 borders border-left-0 border-bottom-0 border-dark">
+                  <div class="text">
+                    {{selected_boq_details.net_amount}}
+                    
+                  </div>
+                  
+                </div>
+                <div class="col-md-8 borders border-bottom-0 border-dark" *ngIf="selected_boq_details && selected_boq_details.discount_value">
+                  <div class="text">
+                    Discount Applied
+                    
+                  </div>
+                  
+                </div>
+                <div class="col-md-4 borders border-left-0 border-bottom-0 border-dark" *ngIf="selected_boq_details && selected_boq_details.discount_value">
+                  <div class="text" *ngIf="selected_boq_details && selected_boq_details.discount_value">
+                    {{selected_boq_details.discount_value}}%
+                  </div>
+                  
+                  
+                  
+                </div>
+                <div *ngIf="selected_boq_details" class="col-md-8 borders border-bottom-0 border-dark">
+                  <div class="text">
+                    Project Management Fee ( 8% )
+                    
+                  </div>
+                  
+                </div>
+                <div *ngIf="selected_boq_details" class="col-md-4 borders border-left-0 border-bottom-0 border-dark">
+                  <div class="text">
+                    {{selected_boq_details.pm_fee}}
+                  </div> 
+                </div>
+                <div class="col-md-8 borders border-dark">
+                  <div class="text">
+                    Total
+                    
+                  </div>
+                  
+                </div>
+                <div class="col-md-4 borders border-left-0 border-dark">
+                  <div class="text">
+                    {{selected_boq_details.total_amount}}
+                    
+                  </div>
+                  
+                </div>
+                
+              </div>
+              
+            </div>
+            
+          </div>
+          <span class="quoteChng" *ngIf="selected_boq_details.quotation_body.annexure_table_hash">Annexure</span><br>
+          
+          <ng-container  *ngIf="selected_boq_details.quotation_body.annexure_table_hash && selected_boq_details.quotation_body.annexure_table_hash['annexure_kitchen_images'].length>0">
+              <span class="spanChange">Kitchen</span>
+              <div class="row" *ngFor="let space of selected_boq_details.quotation_body.annexure_table_hash['annexure_kitchen_images']">
+                <div class="col-md-4 borders border-dark border-bottom-0" style="text-align: center;">
+                  <span *ngIf="space.image_url == '/images/original/missing.png'">No Image Available</span>
+                  <img src={{space.image_url}}  *ngIf="space.image_url != '/images/original/missing.png'" class="productImage">
+                  
+                </div>
+                <div class="col-md-8 borders border-bottom-0 border-left-0 rowChng1" [innerHTML] = "space.image_description | nextLine" >
+                  </div>
+                
+              </div>
+          </ng-container> 
+          <div class="row bordrChng" *ngIf="selected_boq_details.quotation_body.annexure_table_hash && selected_boq_details.quotation_body.annexure_table_hash['annexure_kitchen_images'].length>0">
+            
+          </div>
+
+          <ng-container  *ngIf="selected_boq_details.quotation_body.annexure_table_hash && selected_boq_details.quotation_body.annexure_table_hash['annexure_loose_images'].length > 0">
+            <span class="spanChange mt-2">Furniture</span>
+            <div class="row" *ngFor="let space of selected_boq_details.quotation_body.annexure_table_hash['annexure_loose_images']">
+              <div class="col-md-4 borders border-dark border-bottom-0" style="text-align: center;">
+                <span *ngIf="space.image_url == '/images/original/missing.png'">No Image Available</span>
+                <img src={{space.image_url}}  *ngIf="space.image_url != '/images/original/missing.png'" class="productImage">
+                
+              </div>
+              <div class="col-md-8 borders border-bottom-0 border-left-0 rowChng1" [innerHTML] = "space.image_description | nextLine" >
+              </div>
+              
+            </div>
+          </ng-container>  
+          <div class="row bordrChng"  *ngIf="selected_boq_details.quotation_body.annexure_table_hash && selected_boq_details.quotation_body.annexure_table_hash['annexure_loose_images'].length > 0">
+            
+          </div>
+
+          <!-- For Wardrobe -->
+
+          <ng-container  *ngIf="selected_boq_details.quotation_body.annexure_table_hash && selected_boq_details.quotation_body.annexure_table_hash['annexure_wardrobe_images'].length > 0">
+            <span class="spanChange">Wardrobe</span>
+            <div class="row" *ngFor="let space of selected_boq_details.quotation_body.annexure_table_hash['annexure_wardrobe_images']">
+              <div class="col-md-4 borders border-dark border-bottom-0" style="text-align: center;">
+                <span *ngIf="space.image_url == '/images/original/missing.png'">No Image Available</span>
+                <img src={{space.image_url}}  *ngIf="space.image_url != '/images/original/missing.png'" class="productImage">
+                
+              </div>
+              <div class="col-md-8 borders border-bottom-0 border-left-0 rowChng1" [innerHTML] = "space.image_description | nextLine" >
+              </div>
+              
+            </div>
+          </ng-container> 
+          <div class="row bordrChng" *ngIf="selected_boq_details.quotation_body.annexure_table_hash && selected_boq_details.quotation_body.annexure_table_hash['annexure_wardrobe_images'].length > 0">
+            
+          </div>
+
+          <!-- ends here -->
+          
+         
+          <div class="row  borders border-dark mt-5" *ngIf="selected_boq_details.quotation_body.annexure_table_hash  && 
+           !selected_boq_details.quotation_body.summary_table_hash">
+            <h6 class="pull-left ml-3 mt-2" >Terms and Conditions</h6>
+            <div class="col-md-12">
+              <div class="pull-left text-change">
+                
+                1) Prices are subject to the specifications mentioned above. Changes in specifications mentioned above shall be charged extra. Prices are inclusive of all taxes, landed at site. Any government levies, is payable extra at actual.<br>
+                2) Mathadi charge as per actual<br>
+                3) Payment Terms: 10% Booking, 40% on Final Design Submission and 50% PDC along with Final Design Submission<br>
+                4) Payment Mode: NEFT / RTGS / Cheque<br>
+                5) Bank Account Details:
+                   Account Name: SINGULARITY FURNITURE PRIVATE LIMITED
+                   Account Number: 02912000003169
+                   IFSC Code: HDFC0000291
+                   Bank and Branch: HDFC Bank, Nariman Point Branch<br>
+                   
+                6) Offer Validity: 30 Days<br>
+                7) Order once booked can not be taken back under any circumstances. Advance Amount will not be refunded<br>
+                8) Safe Storage at Site is client's responsibility<br>
+                9) Disputes subject to Mumbai Jurisdiction<br>
+                10) Any extra work shall be charged extra<br>
+                11) Force Majeure Clause Applies<br>
+                12) The seller shall have general lien over on goods for payments due to seller from the buyer on account of this or any other PAN Number: AAECP3450G
+                    GST Number: 27AAECP3450G1ZJ
+                
+              </div>
+              
+            </div>
+            
+          </div>
+          <div class="row  borders border-dark mt-5" *ngIf=" selected_boq_details.quotation_body.boq_hash && 
+           !selected_boq_details.quotation_body.summary_table_hash">
+            <h6 class="pull-left ml-3 mt-2" >Terms and Conditions</h6>
+            <div class="col-md-12">
+              <div class="pull-left text-change">
+                
+                1) Prices are subject to the specifications mentioned above. Changes in specifications mentioned above shall be charged extra. Prices are inclusive of all taxes, landed at site. Any government levies, is payable extra at actual.<br>
+                2) Mathadi charge as per actual<br>
+                3) Payment Terms: 10% Booking, 40% on Final Design Submission and 50% PDC along with Final Design Submission<br>
+                4) Payment Mode: NEFT / RTGS / Cheque<br>
+                5) Bank Account Details:
+                   Account Name: SINGULARITY FURNITURE PRIVATE LIMITED
+                   Account Number: 02912000003169
+                   IFSC Code: HDFC0000291
+                   Bank and Branch: HDFC Bank, Nariman Point Branch<br>
+                   
+                6) Offer Validity: 30 Days<br>
+                7) Order once booked can not be taken back under any circumstances. Advance Amount will not be refunded<br>
+                8) Safe Storage at Site is client's responsibility<br>
+                9) Disputes subject to Mumbai Jurisdiction<br>
+                10) Any extra work shall be charged extra<br>
+                11) Force Majeure Clause Applies<br>
+                12) The seller shall have general lien over on goods for payments due to seller from the buyer on account of this or any other PAN Number: AAECP3450G
+                    GST Number: 27AAECP3450G1ZJ
+                
+              </div>
+              
+            </div>
+            
+          </div>
+          <div class="row borders border-dark mt-3" *ngIf="selected_boq_details.quotation_body.annexure_table_hash  && 
+           !selected_boq_details.quotation_body.summary_table_hash">
+            <h6 class="pull-left ml-3 mt-2"> {{selected_boq_details.delivery_tnc}}</h6>
+          </div>
+
+          <div class="row borders border-dark mt-3" *ngIf="selected_boq_details.quotation_body.boq_hash  && 
+           !selected_boq_details.quotation_body.summary_table_hash">
+            <h6 class="pull-left ml-3 mt-2">{{selected_boq_details.delivery_tnc}}</h6>
+          </div>
+          <div class="row mt-5">
+            <div class="col-md-6">
+              <button type="button" class="btn btn-secondary btn-lg btn-reject pull-right"  *ngIf="selected_boq_details && selected_boq_details.is_approved == null" data-toggle="modal" data-target="#rejectBOQModal">Reject</button>
+              
+            </div>
+            <div class="col-md-6">
+              <button type="button" class="btn btn-secondary btn-lg btn-red" data-target="#approvalModal" data-toggle="modal" *ngIf="boq_percent_type == '10_percent' && selected_boq_details && selected_boq_details.is_approved == null" >Approve</button>
+
+              <button type="button" class="btn btn-pink pull-left mb-3" *ngIf="boq_percent_type == '40_percent' && selected_boq_details && selected_boq_details.is_approved == null"  (click) = "approveBoq(selected_boq_details.proposal_doc_id)">Approve</button>
+              
+            </div>
+            
+          </div>
+
+
+          
+          
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--  -->
+
+<!--Modal for Reject BOQ-->
+<div id="rejectBOQModal" class="modal fade rejectBOQModal" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content modal-change" style="
+    width: max-content;">
+     <div class="modal-header modal-header-chng">
+        <h4 class="modal-title modal-title-change ">Remark</h4>
+        <div class="iconbox">
+          <button type="button" class="close close-icon" data-dismiss="modal" (click)="resetForm()">&times;</button>
+        </div>
+     </div> 
+
+      <div class="modal-body modal-body-change pb-0">
+       <div class="row">
+         <div class="col-12" style="padding: 0">
+          <div class="form">
+           <form [formGroup]="approvalForm">
+              <div class="pl-3 pr-3 row-change">
+                <div class="check">
+                  <div class="row">
+                   <div class="col-md-12">
+                      <textarea cols="50" name="comment" formControlName="remark" class="form-control" placeholder="" style="height: 40px;"></textarea>
+                   </div>   
+                  </div>
+                </div>  
+              </div>
+              <div class="footer-changes col-md-12 footer-changes ml-5 mt-2 text-lg-right">
+                <button class="btn mb-2 mr-5 rejectBOQModalbtn" (click) = "rejectBoq()">Submit</button>
+                <!-- (click) = "rejectBoq(selected_boq_details.proposal_doc_id)" -->
+              </div>
+            </form>
+          </div>
+        </div> 
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<!--Modal ends here-->
+
+<!-- Modal For ppt list -->
+<div class="modal fade pptModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="container-fluid px-4">
+          <div class="row justify-content-center my-2 border-change">
+            <ul class="nav nav-tabs ss-nav-tabs" id="myTab" role="tablist">
+              <li class="nav-item">
+                <a class="nav-link active addCursor text-center mr-3" (click)="getSet('created_ppt')" [ngClass]="{'active': selectedSet == 'created_ppt'}">Created PPT</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active addCursor text-center mr-3" (click)="getSet('uploaded_ppt')" [ngClass]="{'active': selectedSet == 'uploaded_ppt'}">Uploaded PPT</a>
+              </li>
+            </ul>
+            
+          </div>
+          
+          <div class="row" *ngIf="selectedSet == 'created_ppt'">
+            
+
+            <div class="col-md-3" *ngFor="let ppt of selected_ppt">
+              <div class="card myCard mb-4 text-center">
+                <!-- <a href="" class="text-center" target="_blank" > -->
+                <a href="" target="_blank" [routerLink]= "['/customer/projects/'+selected_project+'/presentation/'+ppt.id]">
+                  <span style="font-size: 3rem;color: #8d0620;">P</span>
+                </a>
+                <div class="card-body py-2">
+                  <div class="card-text mb-0">
+                    <div class="row">
+                      <!-- <div class="col-sm-2 p-0">
+                        <img src="../../../assets/img/customer/ppt.png" class="img-fluid ppt mr-3">
+                      </div> -->
+                      <div class="col-sm-12 p-0 pt-2 capitalize">
+                        {{ppt.title}}
+                      </div>
+                      <div class="col-sm-2">
+                        
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12 not-found text-center" *ngIf="selected_ppt && selected_ppt.length==0 ">
+              <div class="boq-img">
+                <img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+              </div>
+              <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing to show...</p>
+            </div>
+
+          </div>
+          <div class="row" *ngIf="selectedSet == 'uploaded_ppt'">
+            
+
+            <div class="col-md-3" *ngFor="let ppt of selected_uploaded_ppt">
+
+              <div class="card myCard mb-4 text-center">
+
+                <!-- <a href="" class="text-center" target="_blank" > -->
+                <a >
+                  <span style="font-size: 3rem;color: #8d0620;">P</span>
+                </a>
+                <div class="card-body py-2">
+                  <div class="card-text mb-0">
+                    <div class="row">
+                      <!-- <div class="col-sm-2 p-0">
+                        <img src="../../../assets/img/customer/ppt.png" class="img-fluid ppt mr-3">
+                      </div> -->
+                      <div class="col-sm-12 p-0 pt-2 capitalize">
+                        {{ppt.attributes.name}}
+                      </div>
+                      <div class="col-sm-12 my-2">
+                        <a class="btn btn-sm btn-pink" href="{{ppt.attributes.upload}}" download target="_blank">Download</a>
+
+                        
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12 not-found text-center" *ngIf="selected_uploaded_ppt && selected_uploaded_ppt.length == 0 ">
+              <div class="boq-img">
+                <img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+              </div>
+              <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing to show...</p>
+            </div>
+
+          </div>
+        </div>  
+          
+        
+      </div>
+    </div>
+  </div>
+</div>
+<!--  -->
+
+
+<!--  Modal FOr Terms and condition starts here -->
+<div class="modal fade" id="approvalModal" tabindex="-1" role="dialog" aria-labelledby="approvalModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content" *ngIf="selected_boq_details">
+      <div class="modal-header" style="border-bottom: 1px solid #460110;">
+        <h5 class="modal-title" id="approvalModalLabel">Terms of Use</h5>
+        <button type="button" class="close custom-close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row justify-content-center">
+          <div class="col-12 col-md-11 col-lg-10">
+            <div class="termsofuseDiv">
+              <p>These Terms and Conditions of Use (the “Terms of Use”) apply to the company – Singularity Furniture Private Limited (Arrivae)
+              web site located at www.Arrivae.com, and all associated sites linked to www.Arrivae.com by Arrivae, its subsidiaries and
+              affiliates, including Arrivae sites around the world (collectively, the “Site”). The Site is the property of Arrivae Inc.
+              (“Arrivae”) and its licensors. BY USING THE SITE, YOU AGREE TO THESE TERMS OF USE; IF YOU DO NOT AGREE, DO NOT USE THE SITE.</p>
+              <h6 class="pt-2">Arrivae reserves the right, at its sole discretion, to change, modify, add or remove portions of these Terms of Use, at any
+              time. It is your responsibility to check these Terms of Use periodically for changes. Your continued use of the Site following
+              the posting of changes will mean that you accept and agree to the changes. As long as you comply with these Terms of Use,
+              Arrivae grants you a personal, non-exclusive, non-transferable, limited privilege to enter and use the Site.</h6>
+              <h3 class="my-3 pt-4">Content</h3>
+              <p>All text, graphics, user interfaces, visual interfaces, photographs, trademarks, logos, sounds, music, artwork and computer
+              code (collectively, “Content”), including but not limited to the design, structure, selection, coordination, expression,
+              “look and feel” and arrangement of such Content, contained on the Site is owned, controlled or licensed by or to Arrivae,
+              and is protected by trade dress, copyright, patent and trademark laws, and various other intellectual property rights and
+              unfair competition laws.</p>
+              <p>Except as expressly provided in these Terms of Use, no part of the Site and no Content may be copied, reproduced, republished,
+              uploaded, posted, publicly displayed, encoded, translated, transmitted or distributed in any way (including “mirroring”)
+              to any other computer, server, Web site or other medium for publication or distribution or for any commercial enterprise,
+              without Arrivae’s express prior written consent.</p>
+              <p>You may use information on Arrivae products and services (such as data sheets, knowledge base articles, and similar materials)
+              purposely made available by Arrivae for downloading from the Site, provided that you (1) not remove any proprietary notice
+              language in all copies of such documents, (2) use such information only for your personal, non-commercial informational purpose
+              and do not copy or post such information on any networked computer or broadcast it in any media, (3) make no modifications
+              to any such information, and (4) not make any additional representations or warranties relating to such documents.</p>
+              <h3 class="my-3 pt-4">Your Use of the Site</h3>
+              <p>You may not attempt to gain unauthorized access to any portion or feature of the Site, or any other systems or networks connected
+              to the Site or to any Arrivae server, or to any of the services offered on or through the Site, by hacking, password “mining”
+              or any other illegitimate means.</p>
+              <p>You may not probe, scan or test the vulnerability of the Site or any network connected to the Site, nor breach the security
+              or authentication measures on the Site or any network connected to the Site. You may not reverse look-up, trace or seek to
+              trace any information on any other user of or visitor to the Site, or any other customer of Arrivae, including any Arrivae
+              account not owned by you, to its source, or exploit the Site or any service or information made available or offered by or
+              through the Site, in any way where the purpose is to reveal any information, including but not limited to personal identification
+              or information, other than your own information, as provided for by the Site.</p>
+              <p>You agree that you will not take any action that imposes an unreasonable or disproportionately large load on the infrastructure
+              of the Site or Arrivae’s systems or networks, or any systems or networks connected to the Site or to Arrivae.</p>
+              <p>You agree not to use any device, software or routine to interfere or attempt to interfere with the proper working of the
+              Site or any transaction being conducted on the Site, or with any other person’s use of the Site.</p>
+              <p>You may not use the Site or any Content for any purpose that is unlawful or prohibited by these Terms of Use, or to solicit
+              the performance of any illegal activity or other activity which infringes the rights of Arrivae or others.</p>
+              <h3 class="my-3 pt-4">Accounts, Passwords and Security</h3>
+              <p>Certain features or services offered on or through the Site may require you to open an account (including setting up an account
+              and password). You are entirely responsible for maintaining the confidentiality of the information you hold for your account,
+              including your password, and for any and all activity that occurs under your account as a result of your failing to keep
+              this information secure and confidential. You agree to notify Arrivae immediately of any unauthorized use of your account
+              or password, or any other breach of security. You may be held liable for losses incurred by Arrivae or any other user of
+              or visitor to the Site due to someone else using your username, password or account as a result of your failing to keep your
+              account information secure and confidential.</p>
+              <p>You may not use anyone else’s username, password or account at any time without the express permission and consent of the
+              holder of that username password or account. Arrivae cannot and will not be liable for any loss or damage arising from your
+              failure to comply with these obligations.</p>
+              <h3 class="my-3 pt-4">Violation of These Terms of Use</h3>
+              <p>You agree that Arrivae may, in its sole discretion and without prior notice, terminate your access to the Site and/or block
+              your future access to the Site if we determine that you have violated these Terms of Use or other agreements or guidelines
+              which may be associated with your use of the Site. You also agree that any violation by you of these Terms of Use will constitute
+              an unlawful and unfair business practice, and will cause irreparable harm to Arrivae, for which monetary damages would be
+              inadequate, and you consent to Arrivae obtaining any injunctive or equitable relief that Arrivae deems necessary or appropriate
+              in such circumstances. These remedies are in addition to any other remedies Arrivae may have at law or in equity.</p>
+              <p>If Arrivae does take any legal action against you as a result of your violation of these Terms of Use, Arrivae will be entitled
+              to recover from you, and you agree to pay, all reasonable attorneys’ fees and costs of such action, in addition to any other
+              relief granted to Arrivae. You agree that Arrivae will not be liable to you or to any third party for termination of your
+              access to the Site as a result of any violation of these Terms of Use.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+        <div class="row mt-3">
+          <div class="col-md-6">
+            <button type="button" class="btn btn-secondary pull-right mb-3" data-dismiss="modal" *ngIf="selected_boq_details && selected_boq_details.is_approved == null" (click) = "cancelBoq()" >Cancel</button>
+
+            
+          </div>
+          <div class="col-md-6">
+            <button type="button" class="btn btn-pink pull-left mb-3" *ngIf="selected_boq_details && selected_boq_details.is_approved == null"  (click) = "approveBoq(selected_boq_details.proposal_doc_id)">Approve</button>
+            
+          </div>
+          
+        </div>
+      
+    </div>
+  </div>
+</div>
+<!--  modal ends here -->

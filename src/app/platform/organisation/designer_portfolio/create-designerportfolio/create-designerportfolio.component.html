@@ -1,0 +1,79 @@
+<div class="row title">
+  <h3>Dashboard / <span [routerLink]="['/designer-portfolios/list']" routerLinkActive="active" class="addCursor">Designer Portfolio </span> / <span>Add Portfolio</span></h3>
+
+</div>
+
+<!-- <div class="row">
+    <div class="col-md-12">
+     <a [routerLink]="['/portfolio/list']" routerLinkActive='active' class="pull-right">View Portfolio Data</a>
+    </div>
+</div> -->
+<div class="row justify-content-center marginTop">
+    <div class="col-12" *ngIf="erroralert">
+      <div class="alert-box grid-100" *ngIf="errorMessage">
+        <div class="alert alert-danger mt-3 text-center">
+          <a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a>
+          {{errorMessage}}
+        </div>
+      </div>
+    </div>
+    <div class="col-12" *ngIf="successalert">
+      <div class="alert-box grid-100" *ngIf="successMessage">
+        <div class="alert alert-success mt-3 text-center">
+          <a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+          {{successMessage}}
+        </div>
+      </div>
+    </div>
+</div>
+<div class="row  body_height mt-5 justify-content-center internalPageBodyContent">
+    <div class="col-md-10 col-md-offset-2">
+        <button class="button button_emi" [routerLink]="['/designer-portfolios/list']" routerLinkActive='active'> BACK TO PORTFOLIOS</button>
+        <div class="card">
+            <div class="card-content my-2 mx-2">
+                <div class="tab-content">
+                    <div class="tab-pane active">
+                        <form [formGroup]="createPortfolioForm" (ngSubmit)="onSubmit(createPortfolioForm.value); createPortfolioForm.reset();" class="form-horizontal">
+                            <fieldset formArrayName="portfolio_work">
+                                <div class="row" *ngFor="let item of getJobAttributes(createPortfolioForm); let i=index" [formGroup]="item">
+                                    <div class="col-sm-12">
+                                        <i class="fa fa-minus-circle remove_button" (click)="createPortfolioForm.get('portfolio_work').removeAt(i)"></i>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group label-floating" >
+                                            <label class="control-label">Name*</label>
+                                            <input type="text" class="form-control" [attr.id]="'name'+i" formControlName="name" required>
+                                        </div>
+                                    </div>
+                                     <div class="col-md-6">
+                                        <div class="form-group label-floating" >
+                                            <label class="control-label">Details</label>
+                                            <!-- <input type="text" class="form-control" [attr.id]="'details'+i" formControlName="details"> -->
+                                            <textarea class="form-control" [attr.id]="'description'+i" formControlName="description" rows="1"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group label-floating" >
+                                            <label class="control-label">Reference URL</label>
+                                            <input type="text" class="form-control" [attr.id]="'url'+i" formControlName="url">                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group label-floating">
+                                            <label class="control-label">Upload Image</label>
+                                            <input type="file" class="form-control border-0" (change)="onChange($event,i)" name="attachment_file" [attr.id]="'attachment_file'+i" formControlName="attachment_file">
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <a (click)="pushJobAttributes(createPortfolioForm)" class="addIcon"><i class="fa fa-plus mr-1" aria-hidden="true"></i>Add Another Portfolio</a>
+                            <button type="submit" class="button pull-right" [disabled]="createPortfolioForm?.invalid">Submit</button>
+                        </form>
+                            <!-- <h6 class="mt-3">FormGroup Model (<code>createPortfolioForm.value</code>)</h6>
+                            <div><pre><code>{{ createPortfolioForm?.value | json }}</code></pre></div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

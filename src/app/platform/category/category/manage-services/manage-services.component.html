@@ -1,0 +1,285 @@
+<div class="row ss-top-menu">
+  <div class="col-xl-5 col-lg-5 col-md-5 col-sm-5 col-xs-5">
+    <span class="ss-text-light" style="vertical-align: -webkit-baseline-middle;">Dashboard <i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;">Manage Services</span>
+  </div>
+</div>
+
+<div class="rk-ui-notification" *ngIf="successalert">
+  <span id="notificationMessageText">{{successMessage}}</span>
+  <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+<div class="rk-ui-notification err" *ngIf="erroralert">
+  <span id="notificationMessageText">{{errorMessage}}</span>
+  <a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+
+<div class="row px-4">
+  	<div class="col-md-12 p-0 mt-4">
+	    <ul class="nav nav-tabs ss-nav-tabs mt-0 justify-content-center" id="myTab" role="tablist">
+	      <li class="nav-item ">
+	        <a class="nav-link ss-nav-link " id="master-data-tab" data-toggle="tab" href="#master_data" role="tab" aria-controls="master_data" aria-selected="true" routerLink="/manage_master_data">MASTER DATA</a>
+	      </li>
+	      <li class="nav-item">
+	        <a class="nav-link ss-nav-link" id="master-element-tab" data-toggle="tab" href="#master_element" role="tab" aria-controls="master_element" aria-selected="false" routerLink="/manage_master_element">MASTER ELEMENT</a>
+	      </li>
+	      <li class="nav-item">
+	        <a class="nav-link ss-nav-link" id="mapping-tab" data-toggle="tab" href="#mapping" role="tab" aria-controls="mapping" aria-selected="false" routerLink="/manage_mapping">MAPPING</a>
+	      </li>
+	      <li class="nav-item">
+	        <a class="nav-link ss-nav-link active" id="master-service-tab" data-toggle="tab" href="#master_service" role="tab" aria-controls="master_service" aria-selected="false" routerLink="/manage_services">MANAGE SERVICES</a>
+				</li>
+				<li class="nav-item">
+						<a class="nav-link ss-nav-link capitalize" id="master-service-tab" data-toggle="tab" href="#master_line_item" role="tab" aria-controls="master_line_item" aria-selected="false" routerLink="/master_line_item">MASTER LINE ITEM</a>
+					</li>
+	    </ul>
+  	</div>
+  	<div class="col-12 bg-white">
+	    <div class="row mb-5">
+	      	<div class="col-md-12">
+	        	<div class="row mt-4 pb-3" id="row1">
+	          		<div class="col-md-12 px-5 py-3">
+	            		<span class="mr-3"> Services : </span>
+			            <select class="form-control" (change)="setActiveForm($event.target.value)">
+			            	<option disabled value="">Select</option>
+			            	<option value="ser_category" [selected]="activeDropDownVal=='ser_category' ">Service Category</option>
+			            	<option value="ser_sub_category" [selected]="activeDropDownVal=='ser_sub_category' ">Service Sub Category</option>
+			            	<option value="ser_activity" [selected]="activeDropDownVal=='ser_activity' ">Service Activity</option>
+			            </select>
+	          		</div>
+	        	</div>
+	        	<div class="col-md-12 text-center p-5" *ngIf="initLoader">
+	            	<div class="ss-spinner ss-spinner--orange">
+		              <div class="ss-spinner__item1"></div>
+		              <div class="ss-spinner__item2"></div>
+		              <div class="ss-spinner__item3"></div>
+		              <div class="ss-spinner__item4"></div>
+	            	</div>
+          		</div>
+		        <div class="container-fluid container-set" id="servicecategoryrow">
+		          <div class="row" style="padding: 16px;">
+		            <div class="col-md-6">
+		              	<div class="tableDiv">
+		              		<h5 class="textHeadingColor mt-3">Added Service Categories : </h5><br/>
+			                <div class="table-responsive mt-3 col-10 p-0" *ngIf="ser_categories">
+			                	<button class="addButton addCursor" (click)="showaddServiceCategoryForm()"><i class="fa fa-plus"></i></button>
+			                  	<table class="table mb-0">
+				                    <thead class="">
+				                      <tr>
+				                        <th scope="col" class="pl-2 py-2">#</th>
+				                        <th scope="col" class="py-2">Name</th>
+				                        <th class="py-2"></th>
+				                      </tr>
+				                    </thead>
+				                    <tbody>
+				                      <tr  class="box-list" *ngFor="let ser_cat of ser_categories; let i = index" [attr.data-index]="i">
+				                        <td class="pl-2">{{ i+1 }}</td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ ser_cat.name}}</span>
+				                        	<input type="text" name="name" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editSerCategoryName">
+				                        </td>
+				                        <td>
+				                        	<button class="d-none editRowInput{{i}} rk-interalBtnColor mx-2 editRowButton" (click)="updateSerCategory(i,ser_cat.id)"><i class="fa fa-paper-plane"></i></button>
+	                								<button class="d-none editRowInput{{i}} rk-btnCancel addCursor" (click)="cancelEditSerCategoryRow(i)">Cancel</button>
+				                        	<i class="ion-android-more-vertical  ss-3-dot-drop editRowSpan{{i}}" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"></i>
+				                          	<div class="dropdown-menu pt-2 pb-2" style="font-size: 14px;">
+				                            	<a class="dropdown-item addCursor" (click)="deleteSerCategory(ser_cat.id)">Delete</a>
+				                            	<a class="dropdown-item addCursor" (click)="editSerCategoryRow(i,ser_cat)">Edit</a>
+				                          	</div>
+				                        </td>
+				                      </tr>
+				                    </tbody>
+			                  	</table>
+			                </div> 
+		              	</div>
+		            </div>
+		            <div class="col-md-1"></div>
+		            <div class="col-md-5 d-none" id="addServiceCategoryFormRow">
+		            	<h5 class="textHeadingColor mt-3">Add New Service Category : </h5>
+		            	<form [formGroup]="addServiceCategoryForm" (ngSubmit)="addServiceCategory(addServiceCategoryForm.value);" class="mt-5 col-9 p-0" id="addServiceCategoryForm">
+		            		<input type="text" class="form-control" name="" formControlName="name" placeholder="Enter Category Name...">
+		            		<div *ngIf="addServiceCategoryForm.controls['name'].errors && !addServiceCategoryForm.controls['name'].pristine" class="text-danger">
+		                  		<div [hidden]="!addServiceCategoryForm.controls['name'].errors.required">Name is required.</div>
+		                	</div>
+		            		<button type="submit" class="pull-right mt-3 submitButton" [disabled]="!addServiceCategoryForm.valid" >Submit</button>
+		            	</form>
+		            </div>
+		          </div>  
+		        </div>
+
+		        <div class="container-fluid container-set d-none" id="servicesubcategoryrow">
+		          <div class="row" style="padding: 16px;">
+		            <div class="col-md-6">
+		              	<div class="tableDiv">
+		              		<h5 class="textHeadingColor mt-3">Added Service Sub Categories : </h5><br/>
+			                <div class="table-responsive mt-3 col-10 p-0" *ngIf="ser_subcategories">
+			                	<button class="addButton addCursor" (click)="showaddServiceSubCategoryForm()"><i class="fa fa-plus"></i></button>
+			                  	<table class="table mb-0">
+				                    <thead class="">
+				                      <tr>
+				                        <th scope="col" class="pl-2 py-2">#</th>
+				                        <th scope="col" class="py-2">Name</th>
+				                        <th class="py-2">Category</th>
+				                        <th class="py-2"></th>
+				                      </tr>
+				                    </thead>
+				                    <tbody>
+				                      <tr  class="box-list" *ngFor="let ser_subcat of ser_subcategories; let i = index" [attr.data-index]="i">
+				                        <td class="pl-2">{{ i+1 }}</td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ ser_subcat.name}}</span>
+				                        	<input type="text" name="name" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editSerSubCategoryName">
+				                        </td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ ser_subcat.service_category}}</span>
+				                        	<select class="form-control d-none editRowInput{{i}} inputSize" [(ngModel)]="editSerSub_categoryId">
+									                	<option value="" disabled>Select Category</option>
+									                	<option *ngFor="let cat of ser_categories" value="{{cat.id}}">{{cat.name}}</option>
+									                </select>
+				                        </td>
+				                        <td>
+				                        	<button class="d-none editRowInput{{i}} rk-interalBtnColor mx-2 editRowButton" (click)="updateSerSubCategory(i,ser_subcat.id)"><i class="fa fa-paper-plane"></i></button>
+	                								<button class="d-none editRowInput{{i}} rk-btnCancel addCursor" (click)="cancelEditSerSubCategoryRow(i)">Cancel</button>
+				                        	<i class="ion-android-more-vertical  ss-3-dot-drop editRowSpan{{i}}" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"></i>
+				                          	<div class="dropdown-menu pt-2 pb-2" style="font-size: 14px;">
+				                            	<a class="dropdown-item addCursor" (click)="deleteSerSubCategory(ser_subcat.id)">Delete</a>
+				                            	<a class="dropdown-item addCursor" (click)="editSerSubCategoryRow(i,ser_subcat)">Edit</a>
+				                          	</div>
+				                        </td>
+				                      </tr>
+				                    </tbody>
+			                  	</table>
+			                </div> 
+		              	</div>
+		            </div>
+		            <div class="col-md-1"></div>
+		            <div class="col-md-5 d-none" id="addServiceSubCategoryFormRow">
+		            	<h5 class="textHeadingColor mt-3">Add New Service Sub Category : </h5>
+		            	<form [formGroup]="addServiceSubCategoryForm" (ngSubmit)="addServiceSubCategory(addServiceSubCategoryForm.value);" class="mt-5 col-9 p-0" id="addServiceSubCategoryForm">
+		            		<input type="text" class="form-control" name="" formControlName="name" placeholder="Enter Category Name...">
+		            		<div *ngIf="addServiceSubCategoryForm.controls['name'].errors && !addServiceSubCategoryForm.controls['name'].pristine" class="text-danger">
+		                  		<div [hidden]="!addServiceSubCategoryForm.controls['name'].errors.required">Name is required.</div>
+		                	</div><br>
+		                <select class="form-control" formControlName="service_category_id">
+		                	<option value="" disabled>Select Category</option>
+		                	<option *ngFor="let cat of ser_categories" value="{{cat.id}}">{{cat.name}}</option>
+		                </select>
+		            		<button type="submit" class="pull-right mt-3 submitButton" [disabled]="!addServiceSubCategoryForm.valid" >Submit</button>
+		            	</form>
+		            </div>
+		          </div>  
+		        </div>
+
+		        <div class="container-fluid container-set d-none" id="serviceactivityrow">
+						  <div class="row" style="padding: 16px;">
+						    <div class="col-md-6">
+						      	<div class="tableDiv">
+						      		<h5 class="textHeadingColor mt-3">Added Service Activities : </h5><br/>
+						      		<button class="addButton addCursor" (click)="showaddServiceActivityForm()" style="    margin-top: -25px;right: 106px;z-index: 10;"><i class="fa fa-plus"></i></button>
+						          <div class="table-responsive mt-3 col-10 p-0" *ngIf="ser_activities" style="overflow: auto;">
+						            	<table class="table mb-0">
+						                <thead class="">
+						                  <tr>
+						                    <th scope="col" class="pl-2 py-2">#</th>
+						                    <th scope="col" class="py-2">Name</th>
+						                    <th scope="col" class="py-2">Code</th>
+						                    <th scope="col" class="py-2">Unit</th>
+						                    <th scope="col" class="py-2">Default Base Price</th>
+						                    <th scope="col" class="py-2">Installation Price</th>
+						                    <th class="py-2">Category</th>
+						                    <th scope="col" class="py-2">Sub Category</th>
+						                    <th class="py-2"></th>
+						                  </tr>
+						                </thead>
+						                <tbody>
+						                  <tr  class="box-list" *ngFor="let ser_act of ser_activities; let i = index" [attr.data-index]="i">
+						                    <td class="pl-2">{{ i+1 }}</td>
+						                    <td class="capitalize">
+						                    	<span class="editRowSpan{{i}} capitalize">{{ ser_act.name}}</span>
+						                    	<input type="text" name="name" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editSerActivityName">
+						                    </td>
+						                    <td class="capitalize">
+						                    	<span class="editRowSpan{{i}} capitalize">{{ ser_act.code}}</span>
+						                    	<input type="text" name="code" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editSerActivityCode">
+						                    </td>
+						                    <td class="capitalize">
+						                    	<span class="editRowSpan{{i}} capitalize">{{ ser_act.unit}}</span>
+						                    	<input type="text" name="unit" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editSerActivityUnit">
+						                    </td>
+						                    <td class="capitalize">
+						                    	<span class="editRowSpan{{i}} capitalize">{{ ser_act.default_base_price}}</span>
+						                    	<input type="number" name="dbs" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editSerActivityDBS">
+						                    </td>
+						                    <td class="capitalize">
+						                    	<span class="editRowSpan{{i}} capitalize">{{ ser_act.installation_price}}</span>
+						                    	<input type="number" name="ip" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editSerActivityIP">
+						                    </td>
+						                    <td class="capitalize">
+						                    	<span class="editRowSpan{{i}} capitalize">{{ ser_act.service_category}}</span>
+						                    	<select class="form-control d-none editRowInput{{i}} inputSize" [(ngModel)]="editSerActivity_categoryid" (change)="getServiceSubCategories($event.target.value); onChangeofCategory();">
+									                	<option value="" disabled>Select Category</option>
+									                	<option *ngFor="let cat of ser_categories" value="{{cat.id}}">{{cat.name}}</option>
+									                </select>
+						                    </td>
+						                    <td class="capitalize">
+						                    	<span class="editRowSpan{{i}} capitalize">{{ ser_act.service_subcategory}}</span>
+						                    	<select class="form-control d-none editRowInput{{i}} inputSize" [(ngModel)]="editSerActivity_subcategoryid">
+									                	<option value="" disabled>Select Sub Category</option>
+									                	<option *ngFor="let subcat of ser_subcategories" value="{{subcat.id}}">{{subcat.name}}</option>
+									                </select>
+						                    </td>
+						                    <td>
+						                    	<button class="d-none editRowInput{{i}} rk-interalBtnColor mx-2 editRowButton" (click)="updateSerActivity(i,ser_act.id)"><i class="fa fa-paper-plane"></i></button>
+						      								<button class="d-none editRowInput{{i}} rk-btnCancel addCursor" (click)="cancelEditSerActivityRow(i)">Cancel</button>
+						                    	<i class="ion-android-more-vertical  ss-3-dot-drop editRowSpan{{i}}" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"></i>
+						                      	<div class="dropdown-menu pt-2 pb-2" style="font-size: 14px;">
+						                        	<a class="dropdown-item addCursor" (click)="deleteServiceActivity(ser_act.id)">Delete</a>
+						                        	<a class="dropdown-item addCursor" (click)="editSerActivityRow(i,ser_act)">Edit</a>
+						                      	</div>
+						                    </td>
+						                  </tr>
+						                </tbody>
+						            	</table>
+						          </div> 
+						      	</div>
+						    </div>
+						    <div class="col-md-1"></div>
+						    <div class="col-md-5 d-none" id="addServiceActivityFormRow">
+						    	<h5 class="textHeadingColor mt-3">Add New Service Activity : </h5>
+						    	<form [formGroup]="addServiceActivityForm" (ngSubmit)="addServiceActivity(addServiceActivityForm.value);" class="mt-5 col-9 p-0" id="">
+						    		<input type="text" class="form-control" name="" formControlName="name" placeholder="Enter Activity Name...">
+						    		<div *ngIf="addServiceActivityForm.controls['name'].errors && !addServiceActivityForm.controls['name'].pristine" class="text-danger">
+						          <div [hidden]="!addServiceActivityForm.controls['name'].errors.required">Name is required.</div>
+						        </div><br>
+						        <input type="text" class="form-control" name="" formControlName="code" placeholder="Enter Activity code...">
+						    		<div *ngIf="addServiceActivityForm.controls['code'].errors && !addServiceActivityForm.controls['code'].pristine" class="text-danger">
+						          <div [hidden]="!addServiceActivityForm.controls['code'].errors.required">Code is required.</div>
+						        </div><br>
+						        <input type="text" class="form-control" name="" formControlName="unit" placeholder="Enter Activity unit...">
+						    		<div *ngIf="addServiceActivityForm.controls['unit'].errors && !addServiceActivityForm.controls['unit'].pristine" class="text-danger">
+						          <div [hidden]="!addServiceActivityForm.controls['unit'].errors.required">Unit is required.</div>
+						        </div><br>
+						        <input type="number" class="form-control" name="" formControlName="default_base_price" placeholder="Enter Default Base Price..." min="0">
+						    		<br>
+						        <input type="number" class="form-control" name="" formControlName="installation_price" placeholder="Enter Installation Price..." min="0">
+						    		<div *ngIf="addServiceActivityForm.controls['installation_price'].errors && !addServiceActivityForm.controls['installation_price'].pristine" class="text-danger">
+						          <div [hidden]="!addServiceActivityForm.controls['installation_price'].errors.required">Installation Price is required.</div>
+						        </div><br>
+						        <select class="form-control" formControlName="service_category_id" (change)="getServiceSubCategories($event.target.value)">
+						        	<option value="" disabled>Select Category</option>
+						        	<option *ngFor="let cat of ser_categories" value="{{cat.id}}">{{cat.name}}</option>
+						        </select><br>
+						        <select class="form-control" formControlName="service_subcategory_id">
+						        	<option value="" disabled>Select Sub Category</option>
+						        	<option *ngFor="let subcat of ser_subcategories" value="{{subcat.id}}">{{subcat.name}}</option>
+						        </select>
+						    		<button type="submit" class="pull-right mt-3 submitButton" [disabled]="!addServiceActivityForm.valid" >Submit</button>
+						    	</form>
+						    </div>
+						  </div>  
+						</div>
+
+	     	</div>
+	    </div>
+  	</div>
+</div>

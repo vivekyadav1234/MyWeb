@@ -1,0 +1,256 @@
+<div class="row ss-top-menu">
+	<div class="col-xl-9 col-lg-9 col-md-9 col-sm-9 col-xs-9">
+		<span class="ss-text-dark">Metrics <i class="rightArrow fa fa-angle-right"></i></span>
+    <span class="ss-text-dark">Lead Metrics</span>
+  </div>
+</div>
+
+<div class="container-set mt-4 filterRow">
+	<div class="row mx-0">
+		<div class="col-sm-11">
+			<div class="row  mx-0" style="">
+				<ul class="nav tabs-chng ml-3 mt-1 mb-1">
+				  <li class="nav-item itm-chng mr-4">
+				  	<span class="rk-form-fontsize font-weight-bold">Select City</span>
+				  	<angular2-multiselect [data]="city_dropdownList" [(ngModel)]="selectedCityItems"
+				    [settings]="city_dropdownSettings"
+				    (onSelect)="onItemSelect($event,'city',0)"
+				    (onDeSelect)="OnItemDeSelect($event,'city',0)"
+				    (onSelectAll)="onSelectAll($event)"
+				    (onDeSelectAll)="onDeSelectAll($event)"></angular2-multiselect>
+
+				  </li>
+				  <li  class="nav-item itm-chng mr-4">
+				  	<span class="rk-form-fontsize font-weight-bold">Select CM</span>
+				  	<angular2-multiselect [data]="cm_dropdownList" [(ngModel)]="selectedCmItems"
+				    [settings]="cm_dropdownSettings"
+				    (onSelect)="onItemSelect($event,'cm',1)"
+				    (onDeSelect)="OnItemDeSelect($event,'cm',1)"
+				    (onSelectAll)="onSelectAll($event)"
+				    (onDeSelectAll)="onDeSelectAll($event)"></angular2-multiselect>
+
+				  </li>
+				  <li  class="nav-item itm-chng mr-4">
+				  	<span class="rk-form-fontsize font-weight-bold">Select Designers</span>
+				  	<angular2-multiselect [data]="designer_dropdownList" [(ngModel)]="selectedDesignerItems"
+				    [settings]="designer_dropdownSettings"
+				    (onSelect)="onItemSelect($event,'designer',2)"
+				    (onDeSelect)="OnItemDeSelect($event,'designer',2)"
+				    (onSelectAll)="onSelectAll($event)"
+				    (onDeSelectAll)="onDeSelectAll($event)"></angular2-multiselect>
+
+				  </li>
+				  <li  class="nav-item itm-chng mr-4">
+				  	<span class="rk-form-fontsize font-weight-bold">Select Source</span>
+				  	<angular2-multiselect [data]="source_dropdownList" [(ngModel)]="selectedSourceItems"
+				    [settings]="source_dropdownSettings"
+				    (onSelect)="onItemSelect($event,'source',3)"
+				    (onDeSelect)="OnItemDeSelect($event,'source',3)"
+				    (onSelectAll)="onSelectAll($event)"
+				    (onDeSelectAll)="onDeSelectAll($event)"></angular2-multiselect>
+				  </li>
+				  <li  class="nav-item itm-chng mr-4">
+				  	<span class="rk-form-fontsize font-weight-bold">Select Lead Type</span>
+				  	<angular2-multiselect [data]="leadrole_dropdownlist" [(ngModel)]="selectedLeadroleItems"
+				    [settings]="leadrole_dropdownlistSettings"
+				    (onSelect)="onItemSelect($event,'leadrole',4)"
+				    (onDeSelect)="OnItemDeSelect($event,'leadrole',4)"
+				    (onSelectAll)="onSelectAll($event)"
+				    (onDeSelectAll)="onDeSelectAll($event)"></angular2-multiselect>
+				  </li>
+				  <li  class="nav-item itm-chng mr-5">
+				  	<span class="rk-form-fontsize font-weight-bold">Select Campaign</span>
+						<angular2-multiselect [data]="campaign_dropdownList" [(ngModel)]="selectedCampaignItems"
+				    [settings]="campaign_dropdownSettings"
+				    (onSelect)="onItemSelect($event,'campaign',5)"
+				    (onDeSelect)="OnItemDeSelect($event,'campaign',5)"
+				    (onSelectAll)="onSelectAll($event)"
+				    (onDeSelectAll)="onDeSelectAll($event)"></angular2-multiselect>
+				 </li>
+					<li class="nav-item mr-4 mt-3">
+						<span class="rk-form-fontsize font-weight-bold">Select Lead Tag</span>
+					    <angular2-multiselect [data]="leadtype_dropdownList" [(ngModel)]="selectedLeadtypeItems"
+					    [settings]="leadtype_dropdownSettings"
+					    (onSelect)="onItemSelect($event,'leadtag',6)"
+					    (onDeSelect)="OnItemDeSelect($event,'leadtag',6)"
+					    (onSelectAll)="onSelectAll($event)"
+					    (onDeSelectAll)="onDeSelectAll($event)"></angular2-multiselect>
+					</li>
+					<li class="nav-item mr-4 mt-3">
+						<span class="rk-form-fontsize font-weight-bold">Select Date Type</span>
+					    <angular2-multiselect [data]="datetype_dropdownList" [(ngModel)]="selectedDatetypeItems"
+					    [settings]="datetype_dropdownSettings"
+					    (onSelect)="onItemSelect($event,'',7)"
+					    (onDeSelect)="OnItemDeSelect($event,'',7)"
+					    (onSelectAll)="onSelectAll($event)"
+					    (onDeSelectAll)="onDeSelectAll($event)"></angular2-multiselect>
+					</li>
+					<li  class="nav-item itm-chng mr-4 mt-3" id="fromDateLi">
+				  		<span class="fromDateSpan rk-form-fontsize  font-weight-bold">From Date </span>
+	        		<input [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1" placeholder="From Date"  class="px-2 rk-form-fontsize d-block rounded py-1 border" [(ngModel)]="from_date">
+              <owl-date-time #dt1 [pickerType]="'calendar'"></owl-date-time> 
+					</li>
+					<li class="nav-item itm-chng mt-3"  id="toDateLi">
+				  		<span class="toDateSpan  rk-form-fontsize font-weight-bold" >To Date </span>
+				  		<input [owlDateTime]="dt2" [owlDateTimeTrigger]="dt2" placeholder="To Date"  class=" rk-form-fontsize d-block px-2 rounded py-1 border" [(ngModel)]="to_date" [min]="from_date">
+              <owl-date-time #dt2 [pickerType]="'calendar'" ></owl-date-time>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="col-sm-1 text-center pt-4">
+			 <img src="assets/img/dashboard/submit.png" class="ml-1 sendIcon filterRowIcon mt-2 addCursor" (click)="filterData()">
+		</div>
+	</div>
+</div>
+
+<div class="row card-row1 mt-5" *ngIf="metricdata">
+	<div class="col-4">
+		<div class="card text-center  border-0 rounded-0 bg-white">
+    	<div class="mb-3 mt-4">
+    		<img src="assets/v3/img/leads.png" height="47px" width="40px">
+    	</div>
+	    <p class="count-heading">NO OF LEADS ACQUIRED</p>
+	    <p class="mt-1 count-text">{{metricdata.total_leads}}</p>
+		</div>
+	</div>
+	<div class="col-4">
+		<div class="card text-center  border-0 rounded-0 bg-white">
+    	<div class="mb-3 mt-4">
+    		<img src="assets/v3/img/fill-4.png" height="47px" width="47px">
+    	</div>
+	    <p class="count-heading">NO OF LEADS QUALIFIED</p>
+	    <p class="mt-1 count-text">{{metricdata.qualified}}</p>
+		</div>
+	</div>
+	<div class="col-4">
+		<div class="card text-center  border-0 rounded-0 bg-white">
+    	<div class="mb-3 mt-4">
+    		<img src="assets/v3/img/information-copy.png" height="47px" width="47px">
+    	</div>
+	    <p class="count-heading addCursor" (click)="toggleTable('lostreasonstable')">LOST</p>
+	    <p class="mt-1 count-text addCursor" (click)="toggleTable('lostreasonstable')">{{metricdata.lost.total}}</p>
+	    <table class="text-right col-12 mb-3 d-none" id="lostreasonstable">
+	    	<tr *ngFor="let reason of metricdata.lost.lost_data_array">
+	    		<td class="text-left py-2 pl-5 rk-form-fontsize">{{reason.name}}</td>
+	    		<td class="py-2 text-left pr-2 rk-form-fontsize align-baseline">{{reason.value}}%</td>
+	    	</tr>
+	    </table>
+		</div>
+	</div>
+</div>
+
+<div class="row card-row2 mt-5" *ngIf="metricdata">
+	<div class="col-3">
+		<div class="card text-center  border-0 rounded-0 bg-white">
+	    <p class="count-heading mt-3">{{metricdata.avg_qualification_time}} Days</p>
+	    <p class="mt-1 count-text mx-3 rk-form-fontsize">Average Qualification Time</p>
+		</div>
+	</div>
+	<div class="col-3">
+		<div class="card text-center  border-0 rounded-0 bg-white">
+	    <p class="count-heading mt-3">{{metricdata.avg_first_attempt_time}} Days</p>
+	    <p class="mt-1 count-text mx-3 rk-form-fontsize">Average first time attempt by CS Agent</p>
+		</div>
+	</div>
+	<div class="col-3">
+		<div class="card text-center  border-0 rounded-0 bg-white">
+    	<p class="count-heading mt-3">{{metricdata.percent_leads}}%</p>
+	    <p class="count-text mx-3 rk-form-fontsize">% leads qualified in 48 hours</p>
+		</div>
+	</div>
+	<div class="col-3">
+		<div class="card text-center  border-0 rounded-0 bg-white">
+    	<p class="count-heading mt-3">{{metricdata.percent_first_attempt_24h}}%</p>
+	    <p class="count-text mx-3 rk-form-fontsize">% of first attempt in 24 hours</p>
+		</div>
+	</div>
+</div>
+
+<div class="row card-row3 mt-5 mx-0" *ngIf="metricdata">
+	<div class="col-12 mb-3 mt-4 text-center">
+		<button class="button1 py-1 px-3 addCursor mr-5" [ngClass]="{'active-btn':is_lastweektrend_flag}" (click)="toggleWeekFlag(true); filterData()">Last Weeks Trends</button>
+		<button class="button1 py-1 px-3 addCursor" [ngClass]="{'active-btn':!is_lastweektrend_flag}" (click)="toggleWeekFlag(false)" data-toggle="modal" data-target="#showpastdatacalendarmodal">Show Data for Past Weeks</button>
+	</div>
+	<div class="col-12 mt-3 px-4">
+		<table width="100%">
+			<thead>
+				<tr>
+					<th>Lead Acquistion Date</th>
+					<th *ngFor="let acqdates of metricdata.lead_acquisition_date_array" class="text-center">{{acqdates.date}}</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>Total Leads</td>
+					<td *ngFor="let acqdates of metricdata.lead_acquisition_date_array" class="text-center">{{acqdates.total}}</td>
+				</tr>
+				<tr>
+					<td>Qualified</td>
+					<td *ngFor="let acqdates of metricdata.lead_acquisition_date_array" class="text-center">{{acqdates.qualified}}</td>
+				</tr>
+				<tr>
+					<td>Qualified %</td>
+					<td *ngFor="let acqdates of metricdata.lead_acquisition_date_array" class="text-center">{{acqdates.percent_qualified}}</td>
+				</tr>
+				<tr>
+					<td>Lost</td>
+					<td *ngFor="let acqdates of metricdata.lead_acquisition_date_array" class="text-center">{{acqdates.lost}}</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<div class="col-12 mt-4 mb-4 px-4">
+		<table width="100%">
+			<thead>
+				<tr>
+					<th>Lead Qualification Date</th>
+					<th *ngFor="let acqdates1 of metricdata.lead_qualification_date_array" class="text-center">{{acqdates1.date}}</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- <tr>
+					<td>Total Leads</td>
+					<td *ngFor="let acqdates1 of metricdata.lead_qualification_date_array" class="text-center">{{acqdates1.total}}</td>
+				</tr> -->
+				<tr>
+					<td>Qualified</td>
+					<td *ngFor="let acqdates1 of metricdata.lead_qualification_date_array" class="text-center">{{acqdates1.qualified}}</td>
+				</tr>
+				<!-- <tr>
+					<td>Qualified %</td>
+					<td *ngFor="let acqdates1 of metricdata.lead_qualification_date_array" class="text-center">{{acqdates1.percent_qualified}}</td>
+				</tr>
+				<tr>
+					<td>Lost</td>
+					<td *ngFor="let acqdates1 of metricdata.lead_qualification_date_array" class="text-center">{{acqdates1.lost}}</td>
+				</tr> -->
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<div class="modal" id="showpastdatacalendarmodal" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="text-right">
+        <button type="button" class="close mx-3 my-2" data-dismiss="modal" (click)="week_from_date=null; is_lastweektrend_flag=true;">&times;</button>
+      </div>
+      <!-- Modal body -->
+      <div class="modal-body">
+      	<div class="row">
+          <div class="col-4 pr-0">
+          	<span class=" rk-form-fontsize " style="font-weight: 500">Choose From Date </span>
+          </div>
+          <div class="col-6 px-0">
+          	<input [owlDateTime]="dt3" [owlDateTimeTrigger]="dt3" placeholder="From Date"  class=" rk-form-fontsize  form-control" [(ngModel)]="week_from_date">
+          	<owl-date-time #dt3 [pickerType]="'calendar'" ></owl-date-time>
+          </div>
+          <div class="mt-3 text-right col-12">
+          	<button (click)="filterData()" class="rk-interalBtnColor addCursor" data-dismiss="modal">Submit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

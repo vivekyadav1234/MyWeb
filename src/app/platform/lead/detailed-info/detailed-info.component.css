@@ -1,0 +1,450 @@
+.body_height{
+    background-color: #ECF0F1
+}
+a{
+    color: #000;
+}
+.table th {
+    font-size: 12px;
+    color: #fff;
+    background-color: #5A5A5A;
+}
+.table td {
+  font-size: 14px;
+}
+.title{
+    padding: 1.4rem 0rem;
+    background-color: #f7f7f7;
+    position: fixed;
+    width: 83.4%;
+    z-index: 4;
+    border-bottom: 1px solid #ccc;
+}
+.title h3{
+    margin-bottom: 0;
+    margin-left: 10px;
+    font-size: 20px;
+    color: rgba(0, 0, 0, 0.55);
+    display: inline-block;
+}
+.title h3 span{
+    color: #000;
+}
+.quotationStatusNavBar .nav-link.active{
+    background-color: #8C031F;
+    border:1px solid #8C031F;
+    color: #fff;
+}
+.quotationStatusNavBar .nav-item{
+    width: 130px;
+}
+.quotationStatusNavBar .nav-link{
+    padding: 12px 25px;
+    border-radius: 24px;
+    background-color: #fff;
+    border: 1px solid #515151;
+    color: #515151;
+}
+.divCenter{
+    display: table;
+}
+.interalBtnColor {
+    background: #8C031F;
+    color: #fff;
+    border-radius: 5px;
+}
+
+.textColor{
+    color: #515151
+}
+#createquotationModal .modal-header{
+    border-bottom: 1px solid #e9ecef;
+}
+#createquotationModal .modal-footer{
+    justify-content: flex-start;
+}
+#createquotationModal .btnCancel{
+    border: 1px solid darkgray;
+    color: #abaaaa;
+    border-radius: 5px; 
+    font-size: 13px; 
+}
+#createquotationModal .spanFontSize {
+    font-size: 14px;
+    color:#c3c3c3;
+}
+.custom-hr::before{
+    content: "OR";
+    position: absolute;
+    margin-top: -10px;
+    margin-left: 45%;
+    color: gray;
+    background: #fff;
+    padding: 0px 6px;
+    font-size: 14px;
+}
+
+
+
+/* -------------------- Select Box Styles: bavotasan.com Method (with special adaptations by ericrasch.com) */
+/* -------------------- Source: http://bavotasan.com/2011/style-select-box-using-only-css/ */
+.styled-select {
+   background: url(http://i62.tinypic.com/15xvbd5.png) no-repeat 96% 0;
+   height: 29px;
+   overflow: hidden;
+   width: 240px;
+}
+
+.styled-select select {
+   background: transparent;
+   border: none;
+   font-size: 14px;
+   height: 29px;
+   padding: 5px; /* If you add too much padding here, the options won't show in IE */
+   width: 268px;
+}
+
+.styled-select.slate {
+   background: url(http://i62.tinypic.com/2e3ybe1.jpg) no-repeat right center;
+   height: 34px;
+   width: 240px;
+}
+
+.styled-select.slate select {
+   border: 1px solid #ccc;
+   border-radius: 5px;
+   font-size: 16px;
+   height: 34px;
+   width: 268px;
+}
+.semi-square {
+   -webkit-border-radius: 5px;
+   -moz-border-radius: 5px;
+   border-radius: 5px;
+}
+.blue select    { color: #fff; }
+.blue    { background-color: #8C031F; }
+
+
+
+
+
+
+/* #################  Radio Button ###################### */
+
+
+[type="radio"]:checked + label,
+[type="radio"]:not(:checked) + label
+{
+    position: relative;
+    padding-left: 28px;
+    cursor: pointer;
+    line-height: 20px;
+    display: inline-block;
+    color: #adadad;
+}
+[type="radio"]:checked + label:before,
+[type="radio"]:not(:checked) + label:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 18px;
+    height: 18px;
+    border: 1px solid #ddd;
+    border-radius: 100%;
+    background: #fff;
+}
+[type="radio"]:checked + label:after,
+[type="radio"]:not(:checked) + label:after {
+    content: '';
+    width: 10px;
+    height: 10px;
+    background: #8c031f;
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    border-radius: 100%;
+    -webkit-transition: all 0.2s ease;
+    transition: all 0.2s ease;
+}
+[type="radio"]:not(:checked) + label:after {
+    opacity: 0;
+    -webkit-transform: scale(0);
+    transform: scale(0);
+}
+[type="radio"]:checked + label:after {
+    opacity: 1;
+    -webkit-transform: scale(1);
+    transform: scale(1);
+}
+
+/* ################## Radio Button Close ##################### */
+
+
+
+/* ####################################### */
+label.textColor{
+  color: #989494;
+}
+.importType-class{
+  width: 11rem;
+  display: inline-block;
+  vertical-align: bottom; 
+}
+.form-control:disabled, .form-control[readonly]{
+  background-color: #fff;
+}
+select.form-control:not([size]):not([multiple]){
+  height: calc(1.9rem + 2px);
+  font-size: 14px;
+}
+select.form-control {
+  padding: .2rem .5rem;
+  font-size: 13px;
+  color: #9a9a9a;
+}
+.downArrow {
+    position: relative;
+    font-size: 1.3rem !important;
+    color: #fff;
+    top: 4px;
+    left: -7px;
+    padding: 6px 10px;
+    background-color: #8C031F;
+    border-radius: 0 6px 6px 0;
+}
+.hrTag{
+  margin: 2rem 0;
+}
+.modalBtn{
+  font-size: 12px;
+  padding: 3px 35px;
+}
+/* ####################################### */
+
+.bt-boq{
+  border-color: #93001E;
+  color: #93001E;
+  font-size: 15px;
+  cursor: pointer;
+  width: 160px;
+}
+.bt-boq:hover{
+  
+  background-color: #fff;
+ 
+}
+.container-set{
+  background-color: white;
+
+
+}
+
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+table th:first-child{
+  border-radius:10px 0 0 0px;
+}
+
+table th:last-child{
+  border-radius:0 10px 0px 0;
+}
+
+.table-res{
+  width: 100%;
+}
+table tr{
+  border: 1px solid #e9ecef;
+}
+
+ul{
+  margin-top: 40px;
+}
+
+.nav-items{
+  width: 180px;
+}
+
+.nav-items .nav-link{
+  font-size: 14px !important;
+  font-weight: 600 !important;
+}
+
+.addCursor.active{
+  color: #980029;
+  border-color: #fff #fff #fff;
+}
+
+.addCursor{
+  font-size: 16px;
+  /* font-family: bold; */
+  font-weight: bold;
+  /* width: 100px; */
+  height: 40px;
+
+}
+.tabs-chng{
+  border-bottom: none;
+}
+
+.bt-boqs{
+  display: block;
+  margin: 0px auto;
+  border-color: #93001E;
+  color: #93001E;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.table thead th {
+  vertical-align: bottom;
+  border-bottom: 2px solid #e9ecef;
+  border-top: 1px solid white;
+}
+
+.box-list{
+  -webkit-box-shadow: 0 10px 6px -6px #dedbdb;
+  -moz-box-shadow: 0 10px 6px -6px #dedbdb;
+  box-shadow: 0 10px 6px -6px #dedbdb;
+}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
+.interalBtnColor{
+    margin-left: auto;
+    display: block;
+    margin-right: 0px;
+    padding: 5px 16px;
+    font-size: 16px;
+    border-color: #8C031F;
+
+}
+.btnchng{
+  border: none! important;
+  background-color: white;
+  cursor: pointer;
+}
+.ss-text-light
+{
+  vertical-align: -webkit-baseline-middle;
+  color: #6da8e8;
+  cursor: pointer;
+}
+.not-found{
+  background-color: white;
+}
+.modal-change{
+  top: 42px;
+  width: 500px;
+  left: 165px;
+  height: 450px;
+  border: none;
+  border-radius: 0.2rem;
+  /* right: 894px; */
+}
+input[type=radio]:checked+label , .activeselectColor{
+    /* Or `#a1:checked+label` if you only want it for that input */
+    color: #515151;
+}
+
+select{
+  -webkit-appearance:none;
+    appearance:none;
+      -moz-appearance:none;
+}
+.sorting{
+  padding:5px 10px;
+  clear:both;
+  background:#FFF;
+  height:40px;
+  color: lightgray;
+  
+}
+.sorting h4{
+  padding:4px 0 0;
+  margin:0;
+}
+.sort{
+  position:relative;  
+  padding-left:10px;
+  float:left;
+  margin-left: -14px;
+}
+.sort>label{
+  font-weight:normal !important
+}
+.sort span.pointer{
+  height:32px;
+  width:30px;
+  border-left:1px solid #ddd;
+  position:absolute;
+  right:0;
+  top:0;
+  text-align:center;
+  color:white;
+  font-size:20px;
+  z-index:1;
+  border-top-right-radius: 5px;
+    /* cursor: pointer; */
+  border-bottom-right-radius: 5px;
+}
+.sort span.pointer i{
+  margin-top:6px;
+}
+.sorting select{
+  padding:5px 40px 5px 10px !important;
+  margin-left:10px;
+  border:1px solid #eee;
+  background:none;
+  height:30px;
+  position:relative;
+  z-index:2;
+}
+.pointer{
+  background-color: #93001E;
+  
+}
+
+.rk-activeLink{
+  vertical-align: -webkit-baseline-middle;
+  color: #6da8e8;
+}
+
+.rk-activeLink:focus{
+  outline: none;
+}
+
+.boq-img {
+  text-align: center;
+}
+
+.importType-class1{
+  font-size: 14px;
+}
+
+.a_hrefLink{
+  color:#007bff;
+}
+
+.a_hrefLink:hover{
+  text-decoration: none;
+}
+
+.rk-fontsize12 {
+  font-size: 12px!important;
+}
+
+
+
+
+
+
+@media (max-width: 767px) {
+  .addCursor{
+    text-align: left !important;
+  }
+}

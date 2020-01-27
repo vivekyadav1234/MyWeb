@@ -1,0 +1,568 @@
+<div class="row pl-1 w-100">
+  <div class="component-parent col-xs-12 col-sm-12 col-md-12 col-lg-12">
+  	<div class="row">
+  		<div class="col-12" *ngIf="project_list && project_list.length>0">
+  		  <div class="tableDiv project-table">
+  		    <collapsible-table [type]="'accordion'" bordered class="table" style = "outline: 0!important;">
+  		      <thead class="ss-thead">
+  		        <tr>
+  		          <th class="firstTh">LEAD ID</th>
+  		          <th>CLIENT NAME</th>
+  		          <th> DESIGNER & CM </th>
+  		          <th> BOQ </th>
+  		          <th> COUNT OF CAD FILES </th>
+  		          <th> TAT </th>
+  		          <th> NEW TASK? </th>
+  		          <th class="lastTh">TIME OF ADDING FILES</th>
+  		          <!-- <th class="lastTh">CAD APPROVALS</th> -->
+  		        </tr>
+  		      </thead>
+  		      <tbody class="ss-tbody">
+  		        <ng-container *ngFor="let obj of project_list | paginate: { itemsPerPage: per_page, currentPage: current_page, totalItems: total_page}; let i = index"
+  		          [attr.data-index]="i">
+  		          <collapsible-table-row [detail]="detail1" (click)="getProjectDetails(obj.id,obj.cad_uploads[0].project_id,obj.cad_uploads)">
+  		            <td>{{obj.lead_id}}</td>
+  		            <td class="capitalize">{{ obj.client_name }}</td>
+  		            <td class="capitalize">
+  		            	{{obj.assigned_designer}},
+  		              <br>
+  		             	{{obj.assigned_cm }}
+  		            </td>
+  		            <td class="capitalize">{{obj.reference_number}}</td>
+  		            <td class="capitalize">{{ obj.cad_uploads.length }}</td>
+  		            <td class="capitalize" *ngIf="obj.tat != '-'">{{obj.tat<0 ? convertToAbs(obj.tat)+' hours over' : obj.tat+' hours left'}}</td>
+  		            <td class="capitalize" *ngIf="obj.tat == '-'">-</td>
+  		            <td class="capitalize new-{{obj.id}}" style="color: #89081c;font-weight: 600;">{{ obj.new ? "New!" : "" }}</td>
+  		            <td class="capitalize">{{ obj.latest_cad_file_upload_date }}</td>
+  		            <!-- <td>
+  		              <button class="category-btn btn rounded" (click)="getProjectDetails(obj.id)" [ngClass]="{'active': selectedProjectIndex == i}">Approve</button>
+  		            </td> -->
+  		          </collapsible-table-row>
+  		          <collapsible-table-row-detail class="box-shadow-none" #detail1>
+  		          	<div class="row">
+	                  <div class="col-xs-11 col-sm-11 col-md-11 col-lg-11 pl-5 pr-4 d-inline-block pb-0">
+	                    <div class="row">
+	                    	<!-- <div class="col-sm-2">
+	                    		<table class="table" >
+	                    		  <thead class="ss-thead">
+	                    		    <tr>
+	                    		      <th style="padding: 0;min-width: auto;border-top-left-radius: 5px;border-top-right-radius: 5px;">BOQ</th>
+	                    		    </tr>
+	                    		  </thead>
+	                    		  <tbody class="ss-tbody">
+	                    		  	<tr class="cursor-pointer" style="-webkit-box-shadow: 0px 2px 10px 0px #c2c2c2;-moz-box-shadow: 0px 2px 10px 0px #c2c2c2;box-shadow: 0px 2px 10px 0px #c2c2c2;" *ngFor="let boq of boq_list" (click) = "getCADFiles(boq.id)">
+		                    		  	<td class = "boq_div boq_div_{{boq.id}}" >
+			                    		  	{{boq.reference_number}}
+			                    			</td>
+	                    		  	</tr>
+	                    		  </tbody>
+	                    		</table>
+	                    	</div> -->
+	                    	<div class="col-sm-12">
+		            		        <table class="table ">
+		            		            <thead class="thead-dark">
+		            		              <tr>
+		            		                <th scope="col">FILE NAME</th>
+		            		                <th scope="col">FILE UPLOADED ON</th>
+		            		                <th scope="col">FILES</th>
+		            		                <th scope="col">APPROVE/REJECT</th>
+		            		                <th scope="col">STATUS</th>
+		            		                <th scope="col">DATE OF APPROVAL</th>
+		            		                <th class="lastTh" style="min-width: 12rem !important;">TAT</th>
+		            		              </tr>
+		            		            </thead>
+		            		            <tbody lass="ss-tbody">
+		            		            	<tr *ngIf="cad_files_list.length <= 0">
+		            		            		<td colspan="6">No Files available</td>
+		            		            	</tr>
+		            		          	  <tr *ngFor="let file of cad_files_list">
+		            		          	    <td  class="capitalize" (click) = "viewTaggedItems(file)">
+				        					            {{file.upload_name | replaceChar}}
+				        					          </td>
+				        					          <td>{{file.created_at | date:"dd MMMM, y @ h:mma"}}</td>
+				        					          
+				        					          <td>
+				        					          	<a href="{{ file.url }}" class="download-change" target="_blank">{{file.upload_file_name }}</a>
+				        					          </td>
+				        					          <td class="capitalize btn-{{file.id}}">
+				        					          	<input type="button" class="btn btn-pink mb-2" name="" value="Approve" (click) = "initApproval(obj.id,file.project_id, file.id, 'approved')" *ngIf="file.status == 'pending'" >
+				        					          	<input type="button" class="btn btn-pink mb-2" name="" value="Reject" (click) = "initApproval(obj.id,file.project_id,file.id, 'rejected')" *ngIf="file.status == 'pending'" >
+				        					          </td>
+				        					          <td class="capitalize status-{{file.id}}">
+				        					          	{{file.status}}
+				        					          </td>
+				        					          <td class="capitalize">
+				        					          	{{file.status_changed_at | date:"dd MMMM, y @ h:mma"}}
+				        					          </td>
+				        					          <td *ngIf="obj.tat != '-'">
+				        					          	{{file.tat<0 ? convertToAbs(file.tat)+' hours over' : file.tat+' hours left'}}
+				        					          </td>
+				        					          <td class="capitalize" *ngIf="obj.tat == '-'">-</td>
+				        		         			</tr>
+		            		           
+		            		            </tbody>
+		            		        </table>
+	                    	</div>
+	                    </div>
+	                  </div>
+  		          	</div>
+  		            
+  		            <!-- <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 pt-0 d-inline-block pull-right pt-2 pr-4">
+  		              <button type="button" class="close close-project-row" aria-label="Close" (click)="toggleRow(obj)">
+  		                <span aria-hidden="true">&times;</span>
+  		              </button>
+  		            </div> -->
+  		          </collapsible-table-row-detail>
+  		        </ng-container>
+  		      </tbody>
+  		    </collapsible-table>
+  		    <div class="text-center" *ngIf="project_list && project_list.length >0">
+  		      <pagination-controls autoHide="true" (pageChange)="current_page = getProjectList($event)"></pagination-controls>
+  		    </div>
+  		  </div>
+  		</div>
+  	</div>
+    
+  </div>
+</div>
+
+<!-- Modal tag items -->
+<div id="taggedModal" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg" style="max-width: 900px;">
+    <div class="modal-content modal-change">
+	    <div class="modal-header modal-header-chng">
+	        <h4 class="modal-title modal-title-change">Tag Items</h4>
+	        <div class="iconbox">
+	          <button type="button" class="close close-icon" data-dismiss="modal" (click)="resetForm()">&times;</button>
+	        </div>
+	    </div>
+
+      <div class="modal-body modal-body-change">
+		    <div class="row" >
+		    	<div class="col-12">
+		      	<ul class="nav nav-tabs tabs-chng mt-4"  id="myTab" role="tablist">
+		      	  <li class="nav-item nav-items">
+		      	    <a class="nav-link active addCursor text-center mr-3" (click)="getSet('loose')" [ngClass]="{'active': selectedSet == 'loose'}">Loose Furniture</a>
+		      	  </li>
+		      	  <li class="nav-item nav-items">
+		      	    <a class="nav-link active addCursor text-center mr-3" (click)="getSet('modular_kitchen')" [ngClass]="{'active': selectedSet == 'modular_kitchen'}">Modular Kitchen</a>
+		      	  </li>
+		      	  <li class="nav-item nav-items">
+		      	    <a class="nav-link active addCursor text-center mr-3" (click)="getSet('modular_wardrobe')" [ngClass]="{'active': selectedSet == 'modular_wardrobe'}">Modular Wardrobe</a>
+		      	  </li>
+		      	  <li class="nav-item nav-items">
+		      	    <a class="nav-link active addCursor text-center mr-3" (click)="getSet('service')" [ngClass]="{'active': selectedSet == 'service'}">Service</a>
+		      	  </li>
+		      	  <li class="nav-item nav-items">
+		      	    <a class="nav-link active addCursor text-center mr-3" (click)="getSet('appliance')" [ngClass]="{'active': selectedSet == 'appliance'}">Appliance</a>
+		      	  </li>
+		      	  <li class="nav-item nav-items">
+		      	    <a class="nav-link active addCursor text-center mr-3" (click)="getSet('custom')" [ngClass]="{'active': selectedSet == 'custom'}">Custom</a>
+		      	  </li>
+		      	  <li class="nav-item nav-items">
+		      	    <a class="nav-link active addCursor text-center mr-3" (click)="getSet('extra')" [ngClass]="{'active': selectedSet == 'extra'}">Extra</a>
+		      	  </li>
+
+		      	</ul>
+
+		      	<div class="row" *ngIf="selectedSet == 'loose'">
+		      		<div class="col-md-12" *ngIf="loose_jobs_array && loose_jobs_array.length > 0">
+	      			    <div class="tableDiv" style="width: 100%;" >
+	      			      <div class="table-responsive">
+	      			        <table class="table " *ngIf="loose_jobs_array.length > 0">
+	      			            <thead class="thead-dark">
+	    			                <tr>
+	      			                <th scope="col" class="firstTh">#</th>
+	      			                <th scope="col">NAME</th>
+	      			                <th scope="col">PRICE</th>
+	      			                <th scope="col">QTY</th>
+	      			                <th scope="col">TOTAL AMT</th>
+	      			                <th scope="col">IMAGE</th>
+	      			                <th>SPACE</th>
+	      			                <th class="lastTh"></th>
+	    			                </tr>
+	      			            </thead>
+	      			            <tbody lass="ss-tbody">
+	      			          	  <tr *ngFor="let job of loose_jobs_array; let i = index" [attr.data-index]="i">
+	      			          	    <td style="min-width: 1rem;">{{i+1}}</td>
+	      			          	    <td  class="capitalize">
+	      						            {{job.name}}
+	      						          </td>
+	      						          <td style="min-width: 1rem;">{{job.rate}}</td>
+	      						          <td style="min-width: 1rem;">{{job.quantity}}</td>
+	      						          <td style="min-width: 1rem;">{{job.amount}}</td>
+	      						          <td style="min-width: 1rem;">
+	      						          	<img src="{{job.image_urls}}" onError="this.src='../../../assets/img/no_image.svg'" style = "max-width: 100px;">
+	      						          </td>
+	      						          <td style="min-width: 1rem;">{{job.space}}</td>
+	      						          <td>
+	      						          </td>
+	      			         			</tr>
+	      			           
+	      			            </tbody>
+	      			        </table>
+	      			      </div>
+	      			    </div>
+		      		</div>
+		      		<div class="col-md-12 not-found" *ngIf="loose_jobs_array.length == 0">
+  			        	
+		        	  <div class="boq-img text-center">
+		        	    <img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+		        	  </div>
+		        	  <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing to show...</p>
+  			        	
+  			        </div>
+		      	</div>
+		      	<div class="row" *ngIf="selectedSet == 'modular_kitchen'">
+		      		<div class="col-md-12" *ngIf="modular_jobs_kitchen_array && modular_jobs_kitchen_array.length > 0">
+	      			    <div class="tableDiv" style="width: 100%;" >
+	      			      <div class="table-responsive">
+	      			        <table class="table ">
+	      			            <thead class="thead-dark">
+	      			              <tr>
+	      			                <th scope="col" class="firstTh">#</th>
+	      			                <th scope="col">TYPE</th>
+	      			                <th scope="col">MODULE</th>
+	      			                <th scope="col">QTY</th>
+	      			                <th scope="col">PRICE</th>
+	      			                <th scope="col">WIDTH</th>
+	      			                <th scope="col">IMAGE</th>
+	      			                <th>SPACE</th>
+	      			                <th class="lastTh"></th>
+	      			              </tr>
+	      			            </thead>
+	      			            <tbody lass="ss-tbody">
+	      			          	  <tr *ngFor="let job of modular_jobs_kitchen_array; let i = index" [attr.data-index]="i">
+	      			          	    <td style="min-width: 1rem;">{{i+1}}</td>
+      						          <td style="min-width: 1rem;">{{job.module_type | replaceChar}}</td>
+      						          <td style="min-width: 1rem;">{{job.code}}({{job.dimensions}})</td>
+      						          <td style="min-width: 1rem;">{{job.quantity}}</td>
+      						          <td style="min-width: 1rem;">{{job.rate}}</td>
+      						          <td style="min-width: 1rem;">N/A</td>
+      						          <td style="min-width: 1rem;">
+      						          	<img src="{{job.module_image_url}}" onError="this.src='../../../assets/img/no_image.svg'" style = "max-width: 100px;">
+      						          </td>
+      						          <td style="min-width: 1rem;">{{job.space}}</td>
+      						          <td>
+      						          </td>
+	      			         			</tr>
+	      			           
+	      			            </tbody>
+	      			        </table>
+	      			        
+	      			      </div>
+	      			    </div>
+		      		</div>
+		      		<div class="col-md-12 not-found" *ngIf="modular_jobs_kitchen_array.length == 0">
+  			        	
+		        	  <div class="boq-img text-center">
+		        	    <img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+		        	  </div>
+		        	  <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing to show...</p>
+  			        	
+  			        </div>
+		      	</div>
+		      	<div class="row" *ngIf="selectedSet == 'modular_wardrobe'">
+		      		<div class="col-md-12" *ngIf="modular_jobs_wardrobe_array.length > 0">
+		      			    <div class="tableDiv" style="width: 100%;" >
+		      			      <div class="table-responsive">
+		      			        <table class="table" *ngIf="modular_jobs_wardrobe_array.length > 0">
+		      			            <thead class="thead-dark">
+		      			                <tr>
+			      			                <th scope="col" class="firstTh">#</th>
+			      			                <th scope="col">TYPE</th>
+			      			                <th scope="col">MODULE</th>
+			      			                <th scope="col">QTY</th>
+			      			                <th scope="col">PRICE</th>
+			      			                <th scope="col">WIDTH</th>
+			      			                <th scope="col">IMAGE</th>
+			      			                <th>SPACE</th>
+			      			                <th class="lastTh"></th>
+		      			                </tr>
+		      			            </thead>
+		      			            <tbody lass="ss-tbody">
+		      			          	  <tr *ngFor="let job of modular_jobs_wardrobe_array; let i = index" [attr.data-index]="i">
+		      			          	    <td style="min-width: 1rem;">{{i+1}}</td>
+          						          <td style="min-width: 1rem;">{{job.module_type | replaceChar}}</td>
+          						          <td style="min-width: 1rem;">{{job.code}}({{job.dimensions}})</td>
+          						          <td style="min-width: 1rem;">{{job.quantity}}</td>
+          						          <td style="min-width: 1rem;">{{job.rate}}</td>
+          						          <td style="min-width: 1rem;">N/A</td>
+          						          <td style="min-width: 1rem;">
+          						          	<img src="{{job.module_image_url}}" onError="this.src='../../../assets/img/no_image.svg'" style = "max-width: 100px;">
+          						          </td>
+          						          <td style="min-width: 1rem;">{{job.space}}</td>
+          						          <td>
+          						          </td>
+		      			         			</tr>
+		      			           
+		      			            </tbody>
+		      			        </table>
+		      			      </div>
+		      			    </div>
+		      		</div>
+		      		<div class="col-md-12 not-found" *ngIf="modular_jobs_wardrobe_array.length == 0">
+  			        	
+		        	  <div class="boq-img text-center">
+		        	    <img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+		        	  </div>
+		        	  <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing to show...</p>
+  			        	
+  			        </div>
+		      	</div>
+		      	<div class="row" *ngIf="selectedSet == 'service'">
+		      		<div class="col-md-12" *ngIf="service_jobs_array.length > 0">
+	      			    <div class="tableDiv" style="width: 100%;" >
+	      			      <div class="table-responsive">
+	      			        <table class="table " >
+	      			            <thead class="thead-dark">
+	      			              <tr>
+		      			                <th scope="col" class="firstTh">#</th>
+		      			                <th scope="col">ACTIVITY</th>
+		      			                <th scope="col">BASE RATE</th>
+		      			                <th scope="col">QTY</th>
+		      			                <th scope="col">UNIT</th>
+		      			                <th scope="col">AMOUNT</th>
+		      			                <th>SPACE</th>
+		      			                <th class="lastTh"></th>
+	      			                </tr>
+	      			            </thead>
+	      			            <tbody lass="ss-tbody">
+	      			          	  <tr *ngFor="let job of service_jobs_array; let i = index" [attr.data-index]="i">
+	      			          	    <td style="min-width: 1rem;">{{i+1}}</td>
+	      						          <td style="min-width: 1rem;">{{job.name | replaceChar}}</td>
+	      						          <td style="min-width: 1rem;">{{job.base_rate}}</td>
+	      						          <td style="min-width: 1rem;">{{job.quantity}}</td>
+	      						          <td style="min-width: 1rem;">{{job.unit}}</td>
+	      						          <td style="min-width: 1rem;">{{job.amount}}</td>
+	      						          <td style="min-width: 1rem;">{{job.space}}</td>
+	      						          <td>
+	      						          </td>
+	      			         			</tr>
+	      			           
+	      			            </tbody>
+	      			        </table>
+	      			      </div>
+	      			    </div>
+		      		</div>
+		      		<div class="col-md-12 not-found" *ngIf="service_jobs_array.length == 0">
+  			        	
+		        	  <div class="boq-img text-center">
+		        	    <img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+		        	  </div>
+		        	  <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing to show...</p>
+  			        	
+  			        </div>
+		      	</div>
+		      	<div class="row" *ngIf="selectedSet == 'appliance'">
+		      		<div class="col-md-12"  *ngIf="appliance_jobs_array.length > 0">
+	      			    <div class="tableDiv" style="width: 100%;" >
+	      			      <div class="table-responsive">
+	      			        <table class="table ">
+	      			            <thead class="thead-dark">
+	      			              <tr>
+		      			                <th scope="col" class="firstTh">#</th>
+		      			                <th scope="col">TYPE</th>
+		      			                <th scope="col">APPLIANCE</th>
+		      			                <th scope="col">MAKE</th>
+		      			                <th scope="col">SKU</th>
+		      			                <th scope="col">QTY</th>
+		      			                <th scope="col">PRICE</th>
+		      			                <th scope="col">IMAGE</th>
+		      			                <th>SPACE</th>
+		      			                <th class="lastTh"></th>
+	      			                </tr>
+	      			            </thead>
+	      			            <tbody lass="ss-tbody">
+	      			          	  <tr *ngFor="let job of appliance_jobs_array; let i = index" [attr.data-index]="i">
+	      			          	    <td style="min-width: 1rem;">{{i+1}}</td>
+	      						          <td style="min-width: 1rem;">{{job.subcategory | replaceChar}}</td>
+	      						          <td style="min-width: 1rem;">{{job.name | replaceChar}}</td>
+	      						          <td style="min-width: 1rem;">{{job.make | replaceChar}}</td>
+	      						          <td style="min-width: 1rem;">{{job.vendor_sku}}</td>
+	      						          <td style="min-width: 1rem;">{{job.quantity}}</td>
+	      						          <td style="min-width: 1rem;">{{job.rate}}</td>
+	      						          <td style="min-width: 1rem;">
+	      						          	<img src="{{job.image_url}}" onError="this.src='../../../assets/img/no_image.svg'" style = "max-width: 100px;">
+	      						          </td>
+	      						          <td style="min-width: 1rem;">{{job.space}}</td>
+	      						          <td>
+	      						          </td>
+	      			         			</tr>
+	      			           
+	      			            </tbody>
+	      			        </table>
+	      			        
+	      			      </div>
+	      			    </div>
+		      		</div>
+		      		<div class="col-md-12 not-found" *ngIf="appliance_jobs_array.length == 0">
+  			        	
+		        	  <div class="boq-img text-center">
+		        	    <img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+		        	  </div>
+		        	  <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing to show...</p>
+  			        	
+  			        </div>
+		      	</div>
+		      	<div class="row" *ngIf="selectedSet == 'custom'">
+		      		<div class="col-md-12" *ngIf="custom_jobs_array.length > 0">
+	      			    <div class="tableDiv" style="width: 100%;" >
+	      			      <div class="table-responsive">
+	      			        <table class="table " >
+	      			            <thead class="thead-dark">
+	      			              <tr>
+		      			                <th scope="col" class="firstTh">#</th>
+		      			                <th scope="col">NAME</th>
+		      			                <th scope="col">DIMENSION</th>
+		      			                <th scope="col">CORE MATERIAL</th>
+		      			                <th scope="col">SHUTTER FINISH</th>
+		      			                <th scope="col">QUANTITY</th>
+		      			                <th scope="col">PRICE</th>
+		      			                <th scope="col">IMAGE</th>
+		      			                <th>SPACE</th>
+		      			                <th class="lastTh"></th>
+	      			                </tr>
+	      			            </thead>
+	      			            <tbody lass="ss-tbody">
+	      			          	  <tr *ngFor="let job of custom_jobs_array; let i = index" [attr.data-index]="i">
+	      			          	    <td style="min-width: 1rem;">{{i+1}}</td>
+	      						          <td style="min-width: 1rem;">{{job.name | replaceChar}}</td>
+	      						          <td style="min-width: 1rem;">{{job.dimension}}</td>
+	      						          <td style="min-width: 1rem;">{{job.core_material | replaceChar}}</td>
+	      						          <td style="min-width: 1rem;">{{job.shutter_finish | replaceChar}}</td>
+	      						          <td style="min-width: 1rem;">{{job.quantity}}</td>
+	      						          <td style="min-width: 1rem;">{{job.rate}}</td>
+	      						          <td style="min-width: 1rem;">
+	      						          	<img src="{{job.photo}}" onError="this.src='../../../assets/img/no_image.svg'" style = "max-width: 100px;">
+	      						          </td>
+	      						          <td style="min-width: 1rem;">{{job.space}}</td>
+	      						          <td>
+	      						          </td>
+	      			         			</tr>
+	      			           
+	      			            </tbody>
+	      			        </table>
+	      			        <div *ngIf="custom_jobs_array.length <= 0">
+	      			        	<div class="col-md-12 not-found text-center" *ngIf="files && files.length<=0 ">
+	      			        	  <div class="boq-img text-center">
+	      			        	    <img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+	      			        	  </div>
+	      			        	  <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing to show...</p>
+	      			        	</div>
+	      			        </div>
+	      			      </div>
+	      			    </div>
+		      		</div>
+		      		<div class="col-md-12 not-found" *ngIf="custom_jobs_array.length == 0">
+  			        	
+		        	  <div class="boq-img text-center">
+		        	    <img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+		        	  </div>
+		        	  <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing to show...</p>
+  			        	
+  			        </div>
+		      	</div>
+		      	<div class="row" *ngIf="selectedSet == 'extra'">
+		      		<div class="col-md-12" *ngIf="extra_jobs_array.length > 0">
+	      			    <div class="tableDiv" style="width: 100%;" >
+	      			      <div class="table-responsive">
+	      			        <table class="table " >
+	      			            <thead class="thead-dark">
+	      			              <tr>
+		      			                <th scope="col" class="firstTh">#</th>
+		      			                <th scope="col">NAME</th>
+		      			                <th scope="col">SKU</th>
+		      			                <th scope="col">MAKE</th>
+		      			                <th scope="col">SPECIFICATION</th>
+		      			                <th scope="col">QUANTITY</th>
+		      			                <th scope="col">PRICE</th>
+		      			                <th scope="col">IMAGE</th>
+		      			                <th>SPACE</th>
+		      			                <th class="lastTh"></th>
+	      			                </tr>
+	      			            </thead>
+	      			            <tbody lass="ss-tbody">
+	      			          	  <tr *ngFor="let job of extra_jobs_array; let i = index" [attr.data-index]="i">
+	      			          	    <td style="min-width: 1rem;">{{i+1}}</td>
+	      						          <td style="min-width: 1rem;">{{job.name | replaceChar}}</td>
+	      						          <td style="min-width: 1rem;">{{job.vendor_sku}}</td>
+	      						          <td style="min-width: 1rem;">{{job.make | replaceChar}}</td>
+	      						          <td style="min-width: 1rem;">{{job.specifications}}</td>
+	      						          <td style="min-width: 1rem;">{{job.quantity}}</td>
+	      						          <td style="min-width: 1rem;">{{job.rate}}</td>
+	      						          <td style="min-width: 1rem;">
+	      						          	<img src="{{job.image_url}}" onError="this.src='../../../assets/img/no_image.svg'" style = "max-width: 100px;">
+	      						          </td>
+	      						          <td style="min-width: 1rem;">{{job.space}}</td>
+	      						          <td>
+	      						          </td>
+	      			         			</tr>
+	      			           
+	      			            </tbody>
+	      			        </table>
+	      			      </div>
+	      			    </div>
+		      		</div>
+		      		<div class="col-md-12 not-found" *ngIf="extra_jobs_array.length == 0">
+  			        	
+		        	  <div class="boq-img text-center">
+		        	    <img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+		        	  </div>
+		        	  <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing to show...</p>
+  			        	
+  			        </div>
+
+		      	</div>
+
+            
+		      </div>
+		    </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- MOdal ends here -->
+
+<!-- Modal remark for drawings -->
+<div id="approvalModal" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content modal-change">
+	    <div class="modal-header modal-header-chng">
+	        <h4 class="modal-title modal-title-change">Reject</h4>
+	        <div class="iconbox">
+	          <button type="button" class="close close-icon" data-dismiss="modal" (click)="resetForm()">&times;</button>
+	        </div>
+	    </div>
+
+      <div class="modal-body modal-body-change">
+		    <div class="row" >
+		    	<div class="col-12" style="padding: 0">
+		      	    <div class="form">
+				        	<form [formGroup]="approvalForm">
+				        	    <div class="row-change p-4">
+				        	    	<div class="check">
+				        	  	  		<div class="row">
+					              			<div class="col-md-12 mt-3">
+							              		<label class="name">Remark <span class="text-danger">*</span></label>
+							              		<input type="text" formControlName="approval_comment" class="form-control" placeholder="Enter Remark">
+							              	</div>          	
+							           		 </div>
+				        	    	</div> 	
+				            	</div>
+				            	<div class="footer-changes">
+			                		<div class="row">
+					                	<div class="col-md-12">
+					                		<button class="nav-link  text-center" (click)="approvalSubmit()" style="    margin: auto;background-color: transparent;border: 0;color: #ffffff;font-weight: 100;" [disabled]="!approvalForm.valid">Submit</button>
+					                	</div>
+			                		</div>
+				            	</div>
+				        	</form>
+		            </div>
+		        </div>    
+		    </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- MOdal ends here -->

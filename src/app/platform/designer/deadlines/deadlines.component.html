@@ -1,0 +1,116 @@
+<div class="row ss-top-menu">
+  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6">
+    <span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;">Dashboard</span>
+    <span style="vertical-align: -webkit-baseline-middle;"><i class="rightArrow fa fa-angle-right"></i></span>
+    <span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;">Deadlines</span>
+  </div>
+  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6">
+  </div>
+</div>
+<div class="row">
+  <div class="col-12" *ngIf="erroralert">
+    <div class="alert-box grid-100" *ngIf="errorMessage">
+      <div class="alert alert-danger mt-3 text-center">
+        <a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a>
+        {{errorMessage}}
+      </div>
+    </div>
+  </div>
+  <div class="col-12" *ngIf="successalert">
+    <div class="alert-box grid-100" *ngIf="successMessage">
+      <div class="alert alert-success mt-3 text-center">
+        <a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+        {{successMessage}}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row p-3">
+  <div class="col-md-12 pt-3 pb-3 bg-white">
+    <div class="row">
+      <div class="col-md-8">
+        <span class="theme-font">Deadlines by Count</span>
+      </div>
+      <div class="col-md-4">
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-4 mb-3">
+    <div class="ss-card p-4 cursor-pointer" [routerLink]="['/designer/deadlines/list']" routerLinkActive="active" [queryParams]="{project_status: 'no_action'}">
+      <div class="ss-card-head pb-4">
+        <span class="dashboard-icon">
+          <i class="fa fa-user-times"></i>
+        </span>
+        <span class="theme-font ml-4">
+          NO ACTION
+        </span>
+      </div>
+      <div class="ss-card-body text-center pt-5 pb-5">
+        <span class="h1">{{statusCountArr.qualified}}</span>
+      </div>
+      <div class="ss-card-footer pt-4 pb-2">
+        <span> All leads which are qualified but no action is taken on it.(more than 1 day)</span>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 mb-3">
+    <div class="ss-card p-4 cursor-pointer" [routerLink]="['/designer/deadlines/list']" routerLinkActive="active" [queryParams]="{project_status: 'follow_up'}">
+      <div class="ss-card-head pb-4">
+        <span class="dashboard-icon">
+          <i class="fa fa-phone-square"></i>
+        </span>
+        <span class="theme-font ml-4">
+          FOLLOW UP
+        </span>
+      </div>
+      <div class="ss-card-body text-center pt-5 pb-5">
+        <span class="h1">{{statusCountArr.follow_up}}</span>
+      </div>
+      <div class="ss-card-footer pt-4 pb-2">
+        <span> All follow up leads.(more than 1 day)</span>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 mb-3">
+    <div class="ss-card p-4 cursor-pointer" [routerLink]="['/designer/deadlines/list']" routerLinkActive="active" [queryParams]="{project_status: 'not_contactable'}">
+      <div class="ss-card-head pb-4">
+        <span class="dashboard-icon">
+          <i class="fa fa-phone-square"></i>
+        </span>
+        <span class="theme-font ml-4">
+          NOT CONTACTABLE
+        </span>
+      </div>
+      <div class="ss-card-body text-center pt-5 pb-5">
+        <span class="h1">{{statusCountArr.not_contactable}}</span>
+      </div>
+      <div class="ss-card-footer pt-4 pb-2">
+        <span> All not contactable leads.(more than 1 day)</span>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 mb-3">
+    <div class="ss-card p-4 cursor-pointer" [routerLink]="['/designer/deadlines/list']" routerLinkActive="active" [queryParams]="{project_status: 'escalated_calls'}">
+      <div class="ss-card-head pb-4">
+        <span class="dashboard-icon">
+          <i class="fa fa-times"></i>
+        </span>
+        <span class="theme-font ml-4">
+          NO DESIGNS UPDATED
+        </span>
+      </div>
+      <div class="ss-card-body text-center pt-5 pb-5">
+        <span class="h1">0</span>
+      </div>
+      <div class="ss-card-footer pt-4 pb-2">
+        <span> All leads whose designs are not submitted.(more than 4 days)</span>
+      </div>
+    </div>
+  </div>
+
+</div>

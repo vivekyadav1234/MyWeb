@@ -1,0 +1,241 @@
+<div class="rk-ui-notification err" *ngIf="erroralert"  style="z-index: 10000;">
+	<span id="notificationMessageText">{{errorMessage}}</span>
+	<a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+<div class="rk-ui-notification" *ngIf="successalert"  style="z-index: 10000;">
+	<span id="notificationMessageText">{{successMessage}}</span>
+	<a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+<div class="row  pr-3 mt-2 justify-content-center">
+	<div class="col-md-12">
+		<div class="row mt-2">
+			<div class="col-md-12">
+				<label class="select select-label">
+					<select class="bg-white pl-4 cursor-pointer" (change)="selectBoq($event)">
+                        <option value="" selected>Select Quotation</option>
+				        <option  *ngFor="let boq of boq_list"  value="{{ boq.id }}" >
+							<div *ngIf ="boq.reference_number != split_line_item_list">
+							  {{ boq.reference_number }}</div>
+						</option>
+					</select>
+				</label>
+				<div class="dropdown">
+					<button class="btn btn-upload dropdown-toggle ml-3  text-capitalize" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					    Upload List
+					</button>
+				    <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+					  	<ng-container *ngFor="let item of uploaded_list">
+					      <button class="dropdown-item text-capitalize" type="button"  (click)="slectFileType(item)">{{ changeFileFormat(item)}}</button>
+					    </ng-container><hr>
+					    <button class="dropdown-item text-capitalize pl-3" type="button"(click)="assignToLineItem('no_bom','bom')">No BOM Needed</button>
+					     
+			        </div>
+				</div>
+				<!-- <div class="dropdown" style="display: none;">
+					<button class="btn btn-clear dropdown-toggle ml-3  text-capitalize" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					    Clear
+					</button>
+					<div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+					    <button class="dropdown-item text-capitalize pl-3" type="button"  (click) = "clearBom();">BOM</button>
+				        <button class="dropdown-item text-capitalize pl-3" type="button" (click) = "clearCuttingList();">Cutting List</button>	
+				        <button class="dropdown-item text-capitalize pl-3" type="button" (click) = "clearHardwareList();">Hardware List</button>
+				        <button class="dropdown-item text-capitalize pl-3" type="button" (click) = "clearimosList();">IMOS</button>
+				         
+                    </div>
+				</div> -->
+				<button *ngIf="selected_boq" class="btn  cursor-pointer pull-right factorybtn mt-1 pl-3" (click)="sendToFactory()">Send To Factory</button>
+			</div>
+			 
+		</div>
+		<div class="row mt-2">
+			<div class="col-md-12">
+				<div class="table-responsive">
+                    <table class="table parent-table">
+			            <thead class="thead-dark">
+			                <tr>
+				                <!-- <th class="firstTh"></th> -->
+				                <th class="firstTh text-center">Section</th>
+				                <th style="width: 20%" class="text-center pr-5">Line Item</th>
+				                <th class="pl-0 pr-4 text-center">BOQ Label</th>
+				                <th class="text-center" style="padding-left: 3rem;">Manual Sheet</th>
+				                <th class="pl-5">IMOS Manual Sheet</th>
+				                <th class="lastTh p-0 pr-2">MOS Parts List</th>
+				               <!--  <th class="lastTh pr-5">IMOS</th> -->
+			                </tr>
+			            </thead>
+	                    <tbody *ngIf="line_item_Arr.length > 0">
+	                        <ng-container>
+	              	            <tr class="addCursor "  *ngFor="let obj of line_item_Arr;let i = index">
+		              	            <!-- <td class="md-empty"></td> -->
+			              	        <td class="md-cell">
+					              		<div class="form-group form-check d-flex">
+											<input type="checkbox" class="form-check-input" id="parent-{{ obj }}" name="selectAll"  (change)="toggleAll(obj,$event)">
+											<label class="form-check-label d-flex" for="exampleCheck1">{{ obj | replaceChar  }} 
+											</label>
+										</div>
+										<i class="fa  fa-angle-up angle-chng ml-4 mt-1" style="font-size:24px" (click)="toggleRow(obj)" *ngIf="rowSelected ==  obj"></i>
+													  
+										<i class="fa  fa-angle-down angle-chng ml-4 mt-1" style="font-size:24px" (click)="toggleRow(obj)" *ngIf="rowSelected !=  obj"></i>
+			              	        </td>
+			              	        <td colspan="7" class="p-0" *ngIf="rowSelected ==  obj">
+			              		        <table class="table small-table mb-0">
+										    <tbody>
+										        <tr *ngFor="let item of split_line_item_list[obj];let k = index">
+												    <td style="width: 23%">
+												      	<div class="form-group form-check d-flex" >
+															<input type="checkbox" class="form-check-input-chng" id="exampleCheck1"  [checked]="item.checked" (change)="toggleItem(item,$event,obj)">
+															<label class="form-check-label-child pop cursor-pointer" for="exampleCheck1" (mouseenter)="openpopup($event)" style="color: black;" title="{{ item.name }}">{{ item.name }}
+
+															</label>
+															
+														</div>
+														<p><b>Qty:{{item.quantity}}</b></p>
+												    </td>
+												    <td style="min-width: 99px !important;">
+												    	<ng-container *ngFor="let labels of  item.boq_labels;let j = index">
+						                                   <div class="p-0 m-0 text-center">
+												      			 <span style="font-size:13px;">{{labels}}</span>
+												      		</div>
+												      	</ng-container>	
+												    </td>
+											        <td class="p-0 pt-2" style="min-width:99px !important;">
+												      	<div *ngIf="item.no_bom==true" class="text-center"><p class="ml-3" id="clear" style="font-size: 13px; display: block;">No Bom Needed</p>
+												      	</div>
+
+												      	<ng-container *ngFor="let bom of item.bom_sli_manual_sheet;let j = index">
+						                                    
+						                                    <div class="text-center" *ngIf="item.no_bom==false">
+
+												      			<span class="text-muted text-tiny"><i class="fa fa-times text-danger mx-1" (click)="removelineItem(bom.id)"></i></span>
+																<span  class="pop cursor-pointer" (mouseenter)="openpopup($event)" title="{{bom.attributes.document_file_name}}" style="font-size: 13px;font-weight: 600">
+												      			  
+												      			<a href="{{bom.attributes.document}}" download target="_blank">{{bom.attributes.document_file_name | slice:0:18}}</a>
+												      			</span>
+												      		</div>
+												      		 
+												      		<div class="p-0 m-0 text-center" *ngIf="item.no_bom==false">
+												      			 <span style="font-size:12px;font-weight: 500">{{bom.attributes.created_at | date:'dd/MM/yyyy - h:mm a'}}</span>
+												      		</div>
+												      	</ng-container>	
+					                                </td>
+											        <td class="p-0 pt-2 text-center" style="min-width:99px !important;">
+											      	    <ng-container *ngIf="item.no_bom == true"><p class="fontsize12 ml-3" style="font-size: 13px">No Bom Needed</p></ng-container>
+											      	    <ng-container *ngFor="let cuttinglist of item.imos_manual_sheet;let j = index">
+											      		    <div class="text-center" *ngIf="item.no_bom== false">
+
+												      			<span class="text-muted text-tiny"><i class="fa fa-times text-danger mx-1" (click)="removelineItem(cuttinglist.id)"></i></span>
+												      			<span class="pop cursor-pointer" (mouseenter)="openpopup($event)" title="{{cuttinglist.attributes.document_file_name}}" style="font-size: 13px; font-weight: 600">
+												      				 
+												      				<a href="{{cuttinglist.attributes.document}}" download target="_blank">{{cuttinglist.attributes.document_file_name | slice:0:18}}</a>
+												      			</span>
+												      		</div>
+											      			<div class="p-0 m-0 text-center" *ngIf="item.no_bom== false">
+											      			 <span style="font-size:12px;font-weight: 500">{{cuttinglist.attributes.created_at | date:'dd/MM/yyyy - h:mm a'}}</span>
+											      		    </div>
+											      	    </ng-container>	
+											      	</td>
+											        <td class="p-0 pt-2 text-center" style="min-width:99px !important;">
+											      	    <ng-container *ngIf="item.no_bom==true"><p class="fontsize12 ml-3" style="font-size: 13px">No Bom Needed</p></ng-container>
+											      	    <ng-container *ngFor="let hardwarelist of item.imos;let j = index">
+											      		 
+												      		<div class="text-center" *ngIf="item.no_bom==false">
+
+												      			<span class="text-muted text-tiny"><i class="fa fa-times text-danger mx-1" (click)="removelineItem(hardwarelist.id)"></i></span>
+												      			<span class="pop cursor-pointer" (mouseenter)="openpopup($event)" title="{{hardwarelist.attributes.document_file_name}}" style="font-size: 12px;font-weight: 600">
+												      				 
+												      				<a href="{{hardwarelist.attributes.document}}" download target="_blank">{{hardwarelist.attributes.document_file_name | slice:0:18}}</a>
+												      			</span>
+												      		</div>
+												      		<div class="p-0 m-0 text-center" *ngIf="item.no_bom==false">
+												      			<span style="font-size:12px;font-weight: 500">{{hardwarelist.attributes.created_at | date:'dd/MM/yyyy - h:mm a'}}</span>
+												      			 
+												      		</div>
+											      	    </ng-container>	
+											      	</td>
+												 </tr>  
+										    </tbody>
+								        </table>
+			              	        </td>
+			              	        <td colspan="7" class="md-cell p-0" *ngIf="!obj.expanded">
+			              		
+			              	        </td>     
+		                        </tr>
+	                        </ng-container>	  
+	                    </tbody>
+	                </table>
+                </div>
+			</div>
+			<div class=" col-12 pb-3 px-5 bg-white" *ngIf="line_item_Arr && line_item_Arr.length == 0" style="border: 9px solid #ECF0F1;">
+                <div class="boq-img text-center">
+                    <img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+                </div>
+                <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">No BOQ Selected...</p>
+            </div>
+		</div>
+	</div>
+ 
+</div>
+<!-- CREATE Update MODAL -->
+<div class="modal fade" id="UploadModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+	    <div class="modal-content">
+		    <div class="modal-header modal-header-chng px-5">
+				<h6 class="modal-title text-capitalize mt-3" id="exampleModalLabel" style="font-size: 25px">{{ ConvertToUpper() | replaceChar}}</h6>
+		        <span class="text-up pt-2" style="padding-left: 3px">Upload all files to submit</span>
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		          <span aria-hidden="true"><img src="./assets/img/handover/cross-btn.svg" (click)="removeItems()"></span>
+		        </button>
+		    </div>
+	        <div class="modal-body pl-5 mt-4">
+			  	<div class="row">
+				    <div class="col-sm-12 col-md-6 mb-2">
+			            <div class="form-group">
+				            <div class="inner"  (click)="file.click()">
+				              	<input type="file"  #file class="custom-checkbox-input clearField" (change)="onChange($event,file_t)" style="display: none;" (click)="file.value = null">
+				                <label for="toggle1" class="parent-{{file_t}}"><span *ngIf="!file_name">Upload File</span><span *ngIf="file_name" class="text-info font-weight-bold capitalize fileName">{{ file_name }}</span><img  class="mr-2 pull-right mt-1 " src="./assets/img/download-new.svg"></label>
+				            </div>
+			            </div>
+			        </div>
+		        </div>
+		        <div class="row mt-4">
+		        	<div class="col-sm-12 text-center">
+		        		<button class="btn btn-change rounded" [disabled]="!this.file_name" (click)="submitFile()">Submit</button>
+		        	</div>
+		        </div>
+			</div>
+	    </div>
+    </div>
+</div>
+<!-- ////////Error Imported Excel Sheet////////// -->
+<div class="modal fade" id="manualImportModal" tabindex="-1" role="dialog" style="overflow:scroll!important" aria-hidden="true">
+	<div class="modal-dialog modal-lg" style="max-width:1000px !important;" role="document">
+	    <div class="modal-content">
+	        <div class="modal-header modal-header-chng px-5">
+		        <h6 class="modal-title text-capitalize mt-3" id="exampleModalLabel" style="font-size: 25px;margin:auto">Errors Ecountered In The Imported Excel Sheet : </h6>
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		          <span aria-hidden="true"><img src="./assets/img/handover/cross-btn.svg" (click)="removeErrorList()"></span>
+		        </button>
+	        </div>
+	        <div class="modal-body">
+				<table class="table" style="overflow:scroll">
+					<thead>
+						<tr>
+							<th style="text-align:center;color:#8E1E28">#</th>
+							<th style="text-align:center;color:#8E1E28">Sheet Name</th>
+							<th style="text-align:center;color:#8E1E28">Details</th>
+							<th style="text-align:center;color:#8E1E28">Message</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr  *ngFor="let error of manualImportErrorList;let rowNum = index">
+							<td style="text-align:center">{{rowNum + 1}}</td>
+							<td style="text-align:center">{{error.sheet_name}}</td>
+							<td style="text-align:center">{{error.details}}</td>
+							<td style="text-align:center">{{error.message}}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>

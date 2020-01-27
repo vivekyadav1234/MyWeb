@@ -1,0 +1,20 @@
+.line-items-list{
+  margin-top: 10px;
+}
+
+.bg-white{
+  background: #fff;
+}
+
+.pt-10{
+  padding-top: 10px;
+}
+
+.vendor-items{
+  padding-bottom: 10px;
+}
+
+.vendor-items-span{
+  color: #80808096;
+  font-weight: bold;
+}

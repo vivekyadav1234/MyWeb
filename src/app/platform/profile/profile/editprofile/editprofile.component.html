@@ -1,0 +1,193 @@
+<div class="row title">
+  <div class="col-md-6">
+    <h3>Dashboard / Profile / <span>Edit</span></h3>
+  </div>
+</div>
+<div class="marginTop row">
+	<div class="col-12" *ngIf="erroralert">
+		<div class="alert-box grid-100" *ngIf="errorMessage">
+			<div class="alert alert-danger mt-3 text-center">
+				<a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a>
+				{{errorMessage}}
+			</div>
+		</div>
+	</div>
+	<div class="col-12" *ngIf="successalert">
+		<div class="alert-box grid-100" *ngIf="successMessage">
+			<div class="alert alert-success mt-3 text-center">
+				<a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+				{{successMessage}}
+			</div>
+		</div>
+	</div>
+
+</div>
+<div class="row bg_dashboard justify-content-center" *ngIf="profile">
+    <div class="col-9 px-2">
+        <div class="card text-center" >
+            <div class="card-body card_main">
+               <form (ngSubmit)="onSubmit(editProfileForm.value); editProfileForm.reset()" #editProfileForm="ngForm" *ngIf="profile" class="viewProfileForm">
+                    <div class="row px-5">
+                        <div class="col-md-4">
+                            <div class="fileinput fileinput-new text-center" data-provides="fileinput">
+                                <div class="fileinput-new thumbnail">
+                                    <img src={{profile.avatar}}  class="profileImg" height="170px" width="170px" *ngIf="profile.avatar != '/images/original/missing.png'">
+                                    <img src="assets/v3/img/profile.jpeg" class="profileImg" height="170px" width="170px" *ngIf="profile.avatar == '/images/original/missing.png'" >
+                                </div>
+                                <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                                <div class="fileNameChange">
+                                    <span class="">
+                                        <!-- <span class="fileinput-new">Select image</span>
+                                        <span class="fileinput-exists">Change</span> -->
+                                        <input type="file" (change)="fileChange($event)" name="avatar" #avatar="ngModel" accept=".pdf,.doc,.docx,.jpg,.png" ngModel class="form-control profileImgInput">
+                                    </span>
+                                    <!-- <a href="#" class="btn btn-danger btn-round fileinput-exists" data-dismiss="fileinput"><i class="fa fa-times"></i> Remove</a> -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="row border border-dark rounded">
+                                <div class="col-md-12">
+                                    <div class="row mt-4 justify-content-center">
+                                        <div class="col-md-8">
+                                            <div class="form-group label-floating">
+                                                <label class="control-label float-left formTitle">Name*</label>
+                                                <input type="text" class="form-control" name="name" [(ngModel)]="name" required>
+                                                
+                                            </div>
+                                             <p *ngIf="name==''" class="text-danger pull-left">Name is required</p>
+                                           
+                                        </div>
+                                        <div class="col-md-8">
+                                            <div class="form-group label-floating">
+                                                <label class="control-label float-left formTitle">Email address</label>
+                                                <input type="text" class="form-control"  [value]="profile.email" readonly>
+                                            </div>
+                                            
+                                        </div>
+                                        <div class="col-md-8" *ngIf="role == 'designer'">
+                                            <div class="form-group label-floating">
+                                                <label class="control-label float-left formTitle">Instagram Handle</label>
+                                                <input type="text" class="form-control" name="instagram_handle"  [(ngModel)]="instagram_handle">
+                                        
+                                            </div>
+                                            
+                                        </div>
+                                        <div class="col-md-8">
+                                            <div class="form-group label-floating">
+                                                <label class="control-label float-left formTitle">Contact</label>
+                                                <input type="text" class="form-control" name="contact"  [(ngModel)]="contact">
+                                            </div>
+
+                                            
+                                        </div>
+                                        <div class="col-md-8">
+                                            <div class="form-group label-floating">
+                                                <label class="control-label float-left formTitle">Pin Code</label>
+                                                <input type="text" class="form-control" name="pincode"  [(ngModel)]="pincode">
+                                                
+                                            </div>
+                                            
+                                        </div>
+                                        <div class="col-md-8">
+                                            <div class="form-group label-floating">
+                                                <label class="control-label float-left formTitle">GST Number</label>
+                                                <input type="text" class="form-control"  name="gst_number" [(ngModel)]="gst_number" #gst="ngModel" pattern="\d{2}[A-Z]{5}\d{4}[A-Z]{1}\d[Z]{1}[A-Z\d]{1}" >
+                                                             
+                                                
+                                            </div>
+                                            <div [hidden]="gst.valid || gst.pristine"
+                                                class="alert alert-danger">
+                                                <!-- <div [hidden]="!gst.hasError('required')">GST is Required</div> -->
+                                                <div [hidden]="!gst.hasError('pattern')">Please enter a valid GST Number.
+                                                </div>
+                                            </div>
+                                                    
+                                        </div>
+                                        <div class="col-md-8">
+                                            <div class="form-group label-floating">
+                                                <label class="control-label float-left formTitle">PAN</label>
+
+                                                <input type="text" class="form-control"  name="pan" [(ngModel)]="pan" #pancard="ngModel" pattern="^([a-zA-Z]){5}([0-9]){4}([a-zA-Z]){1}?$" >
+
+                                                
+                                            </div>
+
+                                            <div [hidden]="pancard.valid || pancard.pristine"
+                                            class="alert alert-danger">
+                                            <!-- <div [hidden]="!pancard.hasError('required')">PAN is Required</div> -->
+                                                <div [hidden]="!pancard.hasError('pattern')">Please enter a valid PAN Number.
+                                                </div>
+                                            </div>
+                                            
+                                        </div>
+                                        <div class="col-md-8">
+                                                <div class="form-group label-floating">
+                                                    <label class="control-label float-left formTitle">Exophone</label>
+                                                    <input type="text" class="form-control" name="exophone"  [(ngModel)]="exophone" disabled>
+                                                    
+                                                </div>
+                                                <div class="form-group label-floating">
+                                                        <label class="control-label float-left formTitle">Extension</label>
+                                                        <input type="text" class="form-control" name="extension"  [(ngModel)]="extension" disabled>
+                                                        
+                                                </div>
+                                                
+                                        </div>
+                                        <div class="col-md-8">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                   <p class="text-dark"> Address Proof </p><br>
+                                                   <div class="upload_cv">
+                                                        Upload 
+                                                        <input type="file" class="hide_file" (change)="addressProofChange($event)" name="address_proof" ngModel #address_proof="ngModel" id="file-upload">
+                                                        <label id="file-name"></label>
+                                                       
+                                                   </div>
+                                                </div>
+                                                <div class="col-md-6" *ngIf="role == 'designer'">
+                                                    <p class="text-dark">Designer CV</p><br>
+                                                    <!-- <span><input type="file" class="mb-3 mt-3" (change)="addressProofChange($event)" name="address_proof" ngModel #address_proof="ngModel"></span> -->
+                                                    <div class="upload_cv">
+                                                         Upload CV
+                                                        <input type="file" class="mb-3 mt-3" (change)="uploadCV($event)" name="designer_cv" ngModel #designer_cv="ngModel" class="hide_file">
+                                                        <label id="file-name"></label>
+
+                                                         
+                                                        
+                                                    </div> 
+                                                    
+                                                    
+                                                    
+                                                </div>
+                                                
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            
+                        </div>
+                        <div class="col-md-6">
+                            <button type="submit" class="btn btn-lg btn-secondary  btn_emi pull-left" [disabled]="!editProfileForm.valid">Save Changes</button>
+                    
+                        </div>
+                        
+                        
+                    </div>
+
+                   
+                    <div class="clearfix"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

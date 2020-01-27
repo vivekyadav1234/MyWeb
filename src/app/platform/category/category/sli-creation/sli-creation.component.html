@@ -1,0 +1,1456 @@
+<div class="col-sm-12 col-lg-12 col-md-12 pr-0">
+  <nav aria-label="breadcrumb" class="w-100">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+      <button class="btn btn-outline-secondary cursor-pointer active" (click)="slectBtn('sli-create')" [ngClass]="{'active': selectedSec == 'sli-create'}">SLI Creation</button></li>
+
+      <li class="breadcrumb-item"> <i class="rightArrow fa fa-angle-right"></i></li>
+      <li class="breadcrumb-item"> <button class="btn btn-outline-secondary cursor-pointer" (click)="slectBtn('po-release')" [ngClass]="{'active': selectedSec == 'po-release'}">PO Release</button></li>
+
+      <li class="breadcrumb-item"> <i class="rightArrow fa fa-angle-right"></i></li>
+      <li class="breadcrumb-item addCursor" ><button class="btn btn-outline-secondary  cursor-pointer" (click)="slectBtn('payment')" [ngClass]="{'active': selectedSec == 'payment'}">Payment Release</button>
+      </li>
+      <li class="breadcrumb-item"> <i class="rightArrow fa fa-angle-right"></i></li>
+      <li class="breadcrumb-item addCursor" (click)="slectBtn('material-tracking')"><button class="btn btn-outline-secondary addCursor" [ngClass]="{'active': selectedSec == 'material-tracking'}" (click)="slectBtn('material-tracking')">Material Tracking</button></li>
+    </ol>
+  </nav>
+</div>
+<div  class="rk-ui-notification show-on-top" style="z-index:10000"  *ngIf="successalert">
+  <span id="notificationMessageText">{{successMessage}}</span>
+  <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+<div  class="rk-ui-notification err show-on-top" style="z-index:10000" *ngIf="erroralert">
+  <span id="notificationMessageText">{{errorMessage}}</span>
+  <a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+
+
+<div class="col-sm-12 col-lg-12 col-md-12 pr-0 mt-2">
+  <div class="row mt-4 mb-1" *ngIf="selectedSec == 'sli-create'">
+    <div class="col-md-12 text-left">
+ 
+        <a class="select text-center">
+         <span class=" ">{{ linet_item_sli.reference_number }} </span>
+        </a>
+        <span class="ml-4 mr-3 mt-2 slcol cursor-pointer" (click)="confirmAndDeleteSli()">Clear SLI</span>
+           <!--  <label  class="label2">
+                <select class="form-control easy-drop-down btn4" id="modal-game-options">
+                    <option id="xyz">Auto-populate SLIs</option>
+                    <option>Uploaded BOM</option>
+                    <option>Lakhs Modular</option>
+                    <option>Indoline</option>
+                    <option>Loose Furniture</option>
+                </select>
+            </label> -->
+        <a type=" " class="btn Kit-btn4 ml-3 mr-3 addCursor"  (click)="openClubbedSliModal()">Add Clubbed SLIs</a>
+        <a type=" " class="btn Kit-btn4 mr-3 addCursor" (click)="openAdditionalSliModal()">Add Additional SLIs</a>
+        <a type=" " class="btn Kit-btn4 addCursor" (click)="openClubbedViewModal()">Clubbed View</a>
+     </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12" *ngIf="selectedSec == 'sli-create'">
+      <div class="table-responsive">
+        <table class="table parent-table">
+          <thead class="thead-dark">
+            <tr>
+              <th class="firstTh text-center" style="width: 14%">Section</th>
+              <th class="text-center" style="width: 13%">Line Item</th>
+              <th class="text-center" style="width: 6.6%">BOQ Label</th>
+              <th style="width: 9.5%">SLIs</th>
+              <th style="width: 7%" class="text-center">Qty</th>
+              <th style="width: 5.7%">UOM</th>
+              <th class="text-center" style="width: 7.2%">Vendor</th>
+              <th style="width: 7.2%">Rate</th>
+              <th style="width: 7.2%">Amt</th>
+              <th style="width: 4.4rem">Tax%</th>
+              <th style="width: 3%" class="pl-5"></th>
+              <th class="lastTh" style="width: 3%"></th>
+            </tr>
+          </thead>
+
+          <tbody>
+          <!-- from here -->
+          <ng-container *ngFor="let obj of line_item_Arr;let sItem = index">
+            <tr class="addCursor" *ngIf="obj != 'clubbed_jobs' && line_items_list[obj].length > 0">
+              <td style="width: 14%" class="pt-2">
+                <div class="form-group form-check mb-0">
+                  <span class="d-flex">
+                    <div>
+                      <input type="checkbox" class="form-check-input" id="parent-{{ obj }}" name="selectAll"  (change)="toggleAll(obj,$event)">
+                    </div>
+                    <label for="exampleCheck1" >                  
+                      <a id="popoverOption" class="btn pop cursor-pointer capitalize p-0" data-trigger="hover" [attr.data-content] ="replaceString(obj)" (mouseenter)="openpopup($event)" >{{obj | replaceChar }}</a>
+                    </label>
+                  </span>
+                  <i class="angle-chng ml-4 mt-1" style="font-size:24px" (click)="toggleRow(obj,i)">
+                  </i>
+                </div>
+               <!--  <i class="fa  fa-angle-up angle-chng ml-4 mt-1" style="font-size:24px" (click)="toggleRow(obj);hideblock(obj)" *ngIf="rowSelected !=  obj"></i>
+                <i class="fa  fa-angle-down angle-chng ml-4 mt-1" style="font-size:24px" (click)="toggleRow(obj);showBlock(obj)" *ngIf="rowSelected ==  obj"></i> -->
+              </td>
+              
+              <td colspan="11" class="p-0" >
+                <table class="table small-table mb-0 fixedTableLayout expand-col-{{obj}}">
+                  <tbody>
+                    <tr  *ngFor="let item of line_items_list[obj];let j= index">
+                      <td class="border-check pt-2" style="width: 15%; max-width: 15%; word-break: break-all">
+                        <div class="form-group form-check">
+                          <span class="d-flex">
+                            <div>
+                              <input type="checkbox" class="form-check-input-chng pt-1" [checked]="item.checked" (change)="toggleItem(item,$event,obj)" >
+                            </div>
+                            <label class="form-check-label-child" for="exampleCheck1"> <a id="popoverOption" class="btn pop cursor-pointer capitalize p-1" data-trigger="hover" [attr.data-content] ="item.name" (mouseenter)="openpopup($event)" >{{ item.name}} </a>
+                            </label>
+                          </span>
+                          <p><b>Qty:{{item.quantity}}</b></p>
+                        </div>
+                      </td>
+                      <td class="p-0 text-center" style="width: 7.9%; min-width: 7.9%">
+                        <ng-container  *ngFor="let label of item.boq_labels;let j= index">
+                            <div class="p-0 m-0 mt-2">
+                              <span style="font-size:11px;font-weight: 500">{{label}}</span>
+                            </div>
+
+                        </ng-container> 
+                      </td>
+                      <td colspan="10" class="p-0">
+                        <table class="grand-child w-100">
+                          <tbody [ngClass]="{'grand-class': item.subline_items.length > 8 }">
+                            <ng-container *ngIf="item.subline_items.length > 0">
+                              <tr class="myRowClass"  *ngFor="let sub of item.subline_items;let k=index">
+                              <td class="pt-2" style="width: 14.6%; height: 3rem">
+                                <div class="form-group form-check">
+                                  <span class="d-flex">
+                                    <ng-container *ngIf="checkDisplayCondition(sub.po_created, sub.modifying_po)">
+                                      <div>    
+                                        <input type="checkbox" class="form-check-input-chng pt-1" [checked]="sub.checked" (change)="toggleItemSubline(sub,$event,j,obj)">
+                                      </div>
+                                    </ng-container> 
+                                    <label class="form-check-label-child" for="exampleCheck1">
+                                      <a id="popoverOption" class="btn cursor-pointer pop p-0" data-trigger="hover" [attr.data-content] ="sub.element_name" (mouseenter)="openpopup($event)" >{{sub.element_name}}</a>
+                                    </label>  
+                                  </span>
+                                </div>
+                              </td>
+                              <td class="pt-2" style="width: 4.8rem; max-width: 4.8rem">{{sub.quantity}}</td>
+                              <td class="capitalize pt-2" style="width: 3.8rem; max-width: 3.8rem">{{sub.unit | replaceChar}}</td>
+                              <td class="pt-2 px-0 text-center" style="width: 5.5rem;"> 
+                                <ng-container *ngIf="sub.job_element_vendor_details[0]">
+                                  {{sub.job_element_vendor_details[0].vendor_name}}
+                                </ng-container>  
+                                <ng-container *ngIf="checkDisplayCondition(sub.po_created, sub.modifying_po)">
+                                  <img src="./assets/img/edit.png"  data-toggle="modal" data-target="#editModal" (click)="editSliModal(sub,sub.unit,sub.from_bom)">
+                                </ng-container>  
+                              </td>
+                              <td class="pt-2" style="width: 5rem; max-width: 5rem">{{sub.rate |  number : '1.2-2'}}</td>
+                              <td class="pt-2" style="width: 5rem; max-width: 5rem">{{sub.amount |  number : '1.2-2'}}</td>
+                              <td class="pt-2" style="width: 4.4rem; max-width: 4.4rem">{{sub.tax}}%</td>
+                              <td class="pt-2 d-flex justify-content-around">
+                                <button class="btn btn-outline-secondary btn-alt mt-1 p-1" style="border-radius: 8px; line-height: 1; font-size: 10px"   data-toggle="modal" data-target="#viewOptionsModal" (click)="getSLIOptions(sub)" *ngIf="sub.vendor_product_id"> view <br> alternative</button>
+                                <!-- <button class="btn btn-outline-secondary btn-alt mt-1" style="height: 20px;line-height: 0;font-size: 10px"   data-toggle="modal" data-target="#viewOptionsModal"> view alternative</button> -->
+                                <!-- <img src="./assets/img/finance/close.png" class="cross-img mx-1" (click)="confirmAndDelete(sub.id)"> -->
+                                <ng-container *ngIf="checkDisplayCondition(sub.po_created, sub.modifying_po)">
+                                  <!-- <pre>{{ display }}</pre> -->
+                                  <img src="./assets/img/finance/close.png" class="cross-img mx-1 mt-2" (click)="confirmAndDelete(sub.id)">
+                                </ng-container>
+
+                                <button class="  btn-success btn-add pull-right my-1" data-toggle="modal" data-target="#addSli" (click)="openAddSliModal(item,obj)" *ngIf="k == 0 "><i class="fa fa-plus cursor-pointer"></i> Add SLI</button>
+                              </td>
+                             <!--  <td>
+                                <ng-container *ngIf="display">
+                                  <img src="./assets/img/finance/close.png" class="cross-img mx-1 mt-2" (click)="confirmAndDelete(sub.id)">
+                                </ng-container>
+
+                              </td> -->
+                              <!-- <td class="p-0">
+                                <button class="  btn-success btn-add pull-right" data-toggle="modal" data-target="#addSli" (click)="openAddSliModal(item,obj)" *ngIf="k == 0 "><i class="fa fa-plus cursor-pointer"></i> Add SLI</button>
+                              </td> -->
+                            </tr>
+                            </ng-container>
+                            <ng-container *ngIf="item.subline_items.length == 0">
+                              <tr>
+                                <td colspan="11" style="text-align: left;">
+                                  <button class="  btn-success btn-add pull-right my-2" data-toggle="modal" data-target="#addSli" (click)="openAddSliModal(item,obj)" ><i class="fa fa-plus cursor-pointer"></i> Add SLI</button>
+                                </td>
+                              </tr>
+                            </ng-container>  
+                          </tbody>
+                        </table>
+                      </td>
+                    </tr> 
+                  </tbody>
+                </table>
+              </td> 
+            </tr>
+          </ng-container>  
+          <ng-container *ngIf="clubbed_arr && clubbed_arr.length > 0">
+            <tr class="addCursor" *ngFor="let obj of line_items_list.clubbed_jobs;let i=index">
+              <td style="width: 14%" class="pt-2">
+                <div class="form-group form-check mb-0">
+                  <span class="d-flex">
+                    <div>
+                      <input type="checkbox" class="form-check-input" id="parent-{{i}}" name="selectAll"  (change)="toggleAllForClubbedItem(obj.label,$event,i)">
+                    </div>
+                    <label class="form-check-label capitalize" for="exampleCheck1" >                  
+                      <a data-toggle="modal" data-target="#clubbedLineItemModal"  class="text-primary cursor-pointer" (click)="showClubbedLineItem(obj)">{{ obj.label }}</a>
+                    </label>
+                  </span>
+                  <i class="angle-chng ml-4 mt-1" style="font-size:24px" (click)="toggleRow(obj,i)">
+                  </i>
+                </div>
+              </td>
+              <td colspan="11" class="p-0" >
+                <table class="table small-table mb-0 fixedTableLayout expand-col-{{obj}}" style="min-height: 5rem">
+                  <tbody >
+                    <tr>
+                      <td class="border-check" style="width: 15%; max-width: 15%; word-break: break-all">
+                      </td>
+                      <td class="p-0 text-center" style="width: 7.9%; min-width: 7.9%">
+                        <ng-container *ngFor="let label of line_items_list.boq_labels;let j= index">
+                          <div class="p-0 m-0 mt-2">
+                            <span style="font-size:11px;font-weight: 500">{{label}}</span>
+                          </div>
+                        </ng-container> 
+                      </td>
+                      <td colspan="10" class="p-0">
+                        <table class="grand-child w-100">
+                          <tbody >
+                            <ng-container *ngIf="obj.subline_items.length > 0">
+                              <tr  *ngFor="let sub of obj.subline_items;let j=index">
+                              <td class="pt-2" style="width: 14.6%; height: 3rem">
+                                <div class="form-group form-check">
+                                  <span class="d-flex">
+                                    <ng-container *ngIf="checkDisplayCondition(sub.po_created, sub.modifying_po)">
+                                      <div>
+                                        <input type="checkbox" class="form-check-input-chng pt-1" [checked]="sub.checked" (change)="toggleItemSublineForClubbedItem(sub,$event,i)">
+                                      </div>
+                                    </ng-container>  
+                                    <label class="form-check-label-child" for="exampleCheck1">
+                                      <a id="popoverOption" class="btn cursor-pointer pop p-0" data-trigger="hover" [attr.data-content] ="sub.element_name" (mouseenter)="openpopup($event)" >{{sub.element_name}}</a>
+                                    </label> 
+                                  </span>
+                                </div>
+                              </td>
+                              <td class="pt-2" style="width: 4.8rem; max-width: 4.8rem">{{sub.quantity}}</td>
+                              <td class="capitalize pt-2 px-0" style="width: 3.8rem; max-width: 3.8rem">{{sub.unit | replaceChar}}</td>
+                              <td class="pt-2" style="width: 5.5rem;"> 
+                                <ng-container *ngIf="sub.job_element_vendor_details[0]">
+                                  {{sub.job_element_vendor_details[0].vendor_name}}
+                                </ng-container>  
+                                <ng-container *ngIf="checkDisplayCondition(sub.po_created, sub.modifying_po)">
+                                  <img src="./assets/img/edit.png"  data-toggle="modal" data-target="#editModal" (click)="editSliModal(sub,sub.unit,sub.from_bom)">
+                                </ng-container>  
+                              </td>
+                              <td class="pt-2" style="width: 5rem; max-width: 5rem">{{sub.rate |  number : '1.2-2'}}</td>
+                              <td class="pt-2" style="width: 5rem; max-width: 5rem">{{sub.amount |  number : '1.2-2'}}</td>
+                              <td class="pt-2" style="width: 4.4rem; max-width: 4.4rem">{{sub.tax}}%</td>
+                              <td class="pt-2 d-flex justify-content-around">
+                                <button class="btn btn-outline-secondary btn-alt mt-1 p-1" style="border-radius: 8px; line-height: 1; font-size: 10px"   data-toggle="modal" data-target="#viewOptionsModal" (click)="getSLIOptions(sub)" *ngIf="sub.vendor_product_id"> view <br> alternative</button>
+                                <ng-container *ngIf="checkDisplayCondition(sub.po_created, sub.modifying_po)">
+                                  <img src="./assets/img/finance/close.png" class="cross-img mx-1 mt-2" (click)="confirmAndDelete(sub.id)">
+                                </ng-container> 
+                                <button class=" btn-success btn-add my-2" data-toggle="modal" data-target="#addSli" (click)="openAddSliModal(obj,'clubbed_jobs')" *ngIf="j == 0 "><i class="fa fa-plus cursor-pointer"></i> Add SLI</button>
+                              </td>
+                              <!-- <td>
+                                <img src="./assets/img/finance/close.png" class="cross-img mx-1" (click)="confirmAndDelete(sub.id)">
+                              </td> -->
+                              <!-- <td class="p-0">
+                                <button class=" btn-success btn-add" data-toggle="modal" data-target="#addSli" (click)="openAddSliModal(obj,'clubbed_jobs')" *ngIf="j == 0 "><i class="fa fa-plus cursor-pointer"></i> Add SLI</button>
+
+                              </td> -->
+                            </tr>
+                            </ng-container>
+                            <ng-container *ngIf="obj.subline_items.length == 0">
+                              <tr>
+                                <td colspan="10" style="text-align: left;">
+                                  <button class="  btn-success btn-add pull-right my-2" data-toggle="modal" data-target="#addSli" (click)="openAddSliModal(obj,'clubbed_jobs')" ><i class="fa fa-plus cursor-pointer pull-right"></i> Add SLI</button>
+                                </td>
+                              </tr>
+                            </ng-container>  
+                          </tbody>
+                        </table>
+                      </td>
+                    </tr> 
+                  </tbody>
+                </table>
+              </td> 
+              
+              
+            </tr>
+          </ng-container>  
+          <!-- For extra jobs -->
+          <tr class="addCursor" *ngIf="other_item_list && other_item_list.length > 0">
+            <td style="width: 14%" class="pt-2">
+              <div class="form-group form-check mb-0">
+                  <span class="d-flex">
+                    <label class="form-check-label capitalize" for="exampleCheck1" >                  
+                      <a id="popoverOption" class="btn pop cursor-pointer" data-trigger="hover" [attr.data-content] ="extra_val" (mouseenter)="openpopup($event)" >{{  extra_val   }}</a>
+                    </label>
+                </span>
+                <i class="angle-chng ml-4 mt-1" style="font-size:24px" (click)="toggleRow(obj,i)">
+                </i>
+              </div>
+              <!-- <i class="fa  fa-angle-up angle-chng ml-4 mt-1" style="font-size:24px" (click)="toggleRow(obj)" *ngIf="rowSelected ==  obj"></i>
+              <i class="fa  fa-angle-down angle-chng ml-4 mt-1" style="font-size:24px" (click)="toggleRow(obj)" *ngIf="rowSelected !=  obj"></i> -->
+            </td>
+            
+            <td colspan="11" class="p-0" >
+              <table class="table small-table mb-0 fixedTableLayout expand-col-{{obj}}" style="min-height: 5rem">
+                <tbody>
+                  <tr>
+                    <td class="border-check pt-2" style="width: 15%">
+                    </td>
+
+                    <td colspan="10" class="p-0">
+                      <table class="grand-child w-100">
+                        <tbody >
+                          <ng-container *ngIf="other_item_list.length > 0">
+                            <tr  *ngFor="let sub of other_item_list;let j=index">
+                            <td class="p-0 text-center" style="width: 7.9%; min-width: 7.9%"></td>
+                            <td class="pt-2" style="width: 14.6%; height: 3rem">
+                              <div class="form-group form-check">
+                                <span class="d-flex">
+                                  <label class="form-check-label-child" for="exampleCheck1">
+                                    <a id="popoverOption" class="btn cursor-pointer pop pl-0" data-trigger="hover" [attr.data-content] ="sub.element_name" (mouseenter)="openpopup($event)" >{{sub.element_name}}</a>
+                                  </label>
+                                </span>                                  
+                              </div>
+                            </td>
+                            <td class="pt-2" style="width: 4.8rem; max-width: 4.8rem">{{sub.quantity}}</td>
+                            <td class="capitalize pt-2 px-0" style="width: 3.8rem; max-width: 3.8rem">{{sub.unit | replaceChar}}</td>
+                            <td class="pt-2" style="width: 5.5rem;"> 
+                              <ng-container *ngIf="sub.job_element_vendor_details[0]">
+                                {{sub.job_element_vendor_details[0].vendor_name}}
+                              </ng-container>  
+                              <ng-container *ngIf="checkDisplayCondition(sub.po_created, sub.modifying_po)">
+                                <img src="./assets/img/edit.png"  data-toggle="modal" data-target="#editModal" (click)="editSliModal(sub,sub.unit,sub.from_bom)">
+                              </ng-container>  
+                            </td>
+                            <td class="pt-2" style="width: 5rem; max-width: 5rem">{{sub.rate |  number : '1.2-2'}}</td>
+                            <td class="pt-2" style="width: 5rem; max-width: 5rem">{{sub.amount |  number : '1.2-2'}}</td>
+                            <td class="pt-2" style="width: 4.4rem; max-width: 4.4rem">{{sub.tax}}%</td>
+                            <td class="pt-2 d-flex justify-content-around">
+                              <button class="btn btn-outline-secondary btn-alt mt-1 p-1" style="border-radius: 8px; line-height: 1"   data-toggle="modal" data-target="#viewOptionsModal" (click)="getSLIOptions(sub)" *ngIf="sub.vendor_product_id"> view <br> alternative</button>
+                              <ng-container *ngIf="checkDisplayCondition(sub.po_created, sub.modifying_po)">
+                                <img src="./assets/img/finance/close.png" class="cross-img mx-1 ml-3 mt-2" (click)="confirmAndDelete(sub.id)">
+                              </ng-container>  
+                              
+                              <button class="  btn-success btn-add pl-1 my-2" data-toggle="modal" data-target="#addSli" (click)="openAddSliModal(item,obj)" *ngIf="j == 0 "><i class="fa fa-plus cursor-pointer"></i> Add SLI</button>
+                            </td>
+                            <!-- <td>
+                              <img src="./assets/img/finance/close.png" class="cross-img mx-1" (click)="confirmAndDelete(sub.id)">
+                            </td> -->
+                            <!-- <td class="p-0">
+                              <button class="  btn-success btn-add pl-1" data-toggle="modal" data-target="#addSli" (click)="openAddSliModal(item,obj)" *ngIf="j == 0 "><i class="fa fa-plus cursor-pointer"></i> Add SLI</button>
+                            </td> -->
+                          </tr>
+                          </ng-container>
+                          <ng-container *ngIf="other_item_list.length == 0">
+                            <tr>
+                              <td colspan="11" style="text-align: left;">
+                                <button class="  btn-success btn-add pull-right my-2" data-toggle="modal" data-target="#addSli" (click)="openAddSliModal(item,obj)" ><i class="fa fa-plus cursor-pointer pull-right"></i> Add SLI</button>
+                              </td>
+                            </tr>
+                          </ng-container>  
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr> 
+                </tbody>
+              </table>
+            </td> 
+            <!-- <td colspan="9" class="p-0">
+              
+            </td> -->
+            
+          </tr>
+        </tbody>
+      </table>
+     </div>
+    </div>
+     
+    <div class="col-sm-12" *ngIf="selectedSec == 'po-release'">
+      <po-release [line_item_po]="linet_item_sli"></po-release>
+      
+    </div>
+  </div>
+</div>
+ 
+
+<div class="w-100" *ngIf="selectedSec == 'payment'">
+  <payments-release [line_item_po]="linet_item_sli"></payments-release>
+</div>
+<div class="w-100" *ngIf="selectedSec == 'material-tracking'">
+  <app-material-tracking [line_item_check]='this.linet_item_sli'></app-material-tracking>
+</div>
+
+
+<!---MODALS START---->
+
+<!--viewOptionsModal-->
+<div class="modal fade m-auto" id="viewOptionsModal" role="dialog">
+  <div class="modal-dialog modal-lg mt-5 pt-4">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="">
+        <div class="pull-right m-2">
+          <button type="button" class="close pull-right" data-dismiss="modal" (click)="selected_view_option=undefined;">&times;</button>
+        </div>
+      </div>
+      <div class="modal-body">
+        <div class="row filterRow py-2 mx-1">
+          <div class="tableDiv project-table">
+            <table class="table" *ngIf="sli_options_list && sli_options_list.length > 0">
+              <thead class="ss-thead">
+                <tr class="viewOptions">
+                  <th class="firstTh">SLI Name</th>
+                  <th>Price</th>
+                  <th>Unit</th>
+                  <th>Vendor Name</th>
+                  <th class="lastTh"> </th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngIf="sli_options_list && sli_options_list.length > 0">
+                  <tr *ngFor="let option of sli_options_list">
+                    <td class="capitalize">{{option.sli_name}}</td>
+                    <td>{{option.rate}}</td>
+                    <td>{{option.unit}}</td>
+                    <td class="capitalize">{{option.vendor_name}}</td>
+                    <td>
+                      <button *ngIf="selectedProduct.id != option.id" (click)="changeViewOption(option.id)" class="btn category-btn d-block m-auto mt-5 p-2 rounded">Select</button>
+                      <span *ngIf="selectedProduct.id == option.id">
+                        <i class="fa fa-check-circle" style="font-size: 37px;color: #53a019;"></i>
+                      </span>
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+          </div>
+          <ng-container class="mx-auto" *ngIf="sli_options_list && sli_options_list.length === 0">
+            <div class="bg-white boq-img col-12 d-inline-block text-center">
+              <img src="../../../assets/img/desktop.png">
+            </div>
+            <p class="col-12 nothing-to-show">Nothing to show...</p>
+          </ng-container>
+        </div>
+        <div *ngIf="selected_view_option">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--viewOptionsModal-->
+<div class="modal fade m-auto" id="viewClubbedOptionsModal" role="dialog">
+    <div class="modal-dialog modal-lg mt-5 pt-4">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="">
+          <div class="pull-right m-2">
+            <button type="button" class="close pull-right" (click)="selected_view_option=undefined;retainModalState('viewClubbedOptionsModal','clubbedView');">&times;</button>
+          </div>
+        </div>
+        <div class="modal-body">
+          <div class="row filterRow py-2 mx-1">
+            <div class="tableDiv project-table" style="width:100%">
+              <table class="table" *ngIf="sli_options_list && sli_options_list.length > 0">
+                <thead class="ss-thead">
+                  <tr class="viewOptions">
+                    <th class="firstTh">SLI Name</th>
+                    <th>Price</th>
+                    <th>Unit</th>
+                    <th>Vendor Name</th>
+                    <th class="lastTh"> </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <ng-container *ngIf="sli_options_list && sli_options_list.length > 0">
+                    <tr *ngFor="let option of sli_options_list">
+                      <td class="capitalize">{{option.sli_name}}</td>
+                      <td>{{option.rate}}</td>
+                      <td>{{option.unit}}</td>
+                      <td class="capitalize">{{option.vendor_name}}</td>
+                      <td>
+                        <button *ngIf="selectedProduct.id != option.id" (click)="changeViewOption(option.id,true)" class="btn category-btn d-block m-auto mt-5 p-2 rounded">Select</button>
+                        <span *ngIf="selectedProduct.id == option.id">
+                          <i class="fa fa-check-circle" style="font-size: 37px;color: #53a019;"></i>
+                        </span>
+                      </td>
+                    </tr>
+                  </ng-container>
+                </tbody>
+              </table>
+            </div>
+            <ng-container class="mx-auto" *ngIf="sli_options_list && sli_options_list.length === 0">
+              <div class="bg-white boq-img col-12 d-inline-block text-center">
+                <img src="../../../assets/img/desktop.png">
+              </div>
+              <p class="col-12 nothing-to-show">Nothing to show...</p>
+            </ng-container>
+          </div>
+          <div *ngIf="selected_view_option">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+<!--Edit SLI modal-->
+<div class="modal modWidth" id="editModal"  data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog " [ngClass]="disable_field ? 'modal-lg':'modalg-width'">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header ">
+        <h4 class="modal-title pl-2 pt-3">Edit SLI</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+        <p *ngIf="this.from_bom==true" style="color: #8d0528;">This SLI cannot be edited individually as it is BOM imported. Please edit from clubbed view.</p>
+      <!-- Modal body -->
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="row filterRow py-2 mx-1" *ngIf="disable_field">
+              <!-- <div class="col-4 mb-0 pt-2 pb-2">
+                <span class="filterHeading mr-1">MLI Type </span>
+                <ng-select class="d-lg-block capitalize" (change)="getMasterLineItems($event)" placeholder="MLI Type" >
+                  <ng-option *ngFor="let type of mli_type_list" value="{{type.value}}">{{type.name}}</ng-option>
+                </ng-select>
+              </div>
+              <div class="col-4 pt-2 pb-2 mb-0">
+                <span class="filterHeading mr-1">MLI </span>
+                <ng-select class="d-lg-block capitalize" (change)="getVendorProductsList($event)" placeholder="MLI">
+                  <ng-option *ngFor="let mli of mli_list" value="{{mli.id }}">{{mli.mli_name}}</ng-option>
+                </ng-select>
+              </div> -->
+              <div class="col-4 pt-2 pb-2 mb-0">
+                <span class="filterHeading mr-1" >SLI </span>
+                <ng-select class="d-lg-block capitalize" (change)="getDetailsOfVendorProduct($event,'single',sli)" placeholder="SLI" >
+                  <!-- <option value="">Select SLI</option> -->
+                  <ng-option *ngFor="let sli of vendor_products_list" value="{{sli.id}}">{{sli.sli_name}}</ng-option>
+                </ng-select>
+              </div>
+            </div>
+            <form [formGroup]="update_Sli_Form" > 
+              <table class="w-100">
+                <tr>
+                  <th class="border-0 warm-grey pl-4">Name</th>
+                  <th class="border-0 warm-grey pl-4">Quantity</th>
+                  <th class="border-0 warm-grey pl-4">Unit</th>
+                  <th class="border-0 warm-grey pl-4">Rate</th>
+                  <th class="border-0 warm-grey pl-4">Tax Type</th>
+                  <th class="border-0 warm-grey pl-4">Tax %</th>
+                  <th class="border-0 warm-grey" *ngIf="!disable_field">Select a Vendor</th>
+                </tr>
+
+                <tr>
+                  <td class="width2rem border-0 pt-0">
+                    <input *ngIf="this.from_bom==false" class="editQuantityInput pl-2" type="text" name="name" formControlName="name" [readonly]="disable_field"/>
+                    <input *ngIf="this.from_bom==true" class="editInputBack pl-2" type="text" name="name" formControlName="name" readonly/>
+                  </td>
+                  <td class="width2rem border-0 pt-0">
+                    <input *ngIf="this.from_bom==false" class="editQuantityInput pl-2" type="number" name="quantity" formControlName="quantity" />
+                    <input *ngIf="this.from_bom==true" class="editInputBack pl-2" type="number" name="quantity" formControlName="quantity" readonly/>
+                  </td>
+
+                  <td class="width2rem border-0 pt-0">
+                    <label  class="label3" *ngIf="!disable_field">
+                      <select *ngIf="this.from_bom==false" class="form-control easy-drop-down btn6 capitalize" placeholder="Select Unit" formControlName="unit"  [disabled]="disable_field">
+                        <option value="" disabled selected> Select Unit <div>({{this.unit_n| replaceChar}})</div></option>
+                        <option *ngFor="let uom of uom_list" value="{{uom}}">{{ uom | replaceChar }}</option>
+                      </select>
+                      <select *ngIf="this.from_bom==true" class="form-control easy-drop-down btn6 capitalize editInputBack" placeholder="Select Unit" formControlName="unit"  disabled>
+                        <option value="" disabled selected> Select Unit <div>({{this.unit_n| replaceChar}})</div></option>
+                        <option *ngFor="let uom of uom_list" value="{{uom}}">{{ uom | replaceChar }}</option>
+                      </select>
+                    </label>
+                    <!-- <ng-container *ngFor="let sub of other_item_list;let j=index"> -->
+                     <!-- </ng-container> -->
+                     <input class="editQuantityInput pl-2" type="text" name="unit" formControlName="unit" [readonly]="disable_field" *ngIf="disable_field && this.from_bom==false"/>
+                     <input class="editInputBack pl-2" type="text" name="unit" formControlName="unit" readonly *ngIf="disable_field && this.from_bom==true"/>
+                  </td>
+
+                  <td class="width2rem border-0 pt-0">
+                    <input *ngIf="this.from_bom==false" class="editUnitInput rateInput pull-left pl-2" type="number" name="rate" formControlName="rate" [readonly]="disable_field"/>
+                    <input *ngIf="this.from_bom==true" class="editInputBack rateInput pull-left pl-2" type="number" name="rate" formControlName="rate" readonly />
+                  </td>
+                  <td class="width2rem border-0 pt-0">
+                    <!-- <input class="editUnitInput  pull-left pl-2" type="text" name="tax_type" formControlName="tax_type"/> -->
+                    <label  class="label3">
+                      <select *ngIf="this.from_bom==false"  class="form-control  easy-drop-down btn6" formControlName="tax_type">
+                        <option value="cgst_sgst">SGST & CGST</option>
+                        <option value="igst">IGST</option>
+                      </select>
+                      <select *ngIf="this.from_bom==true"  class="form-control  easy-drop-down btn6 editInputBack" formControlName="tax_type" disabled>
+                        <option value="cgst_sgst">SGST & CGST</option>
+                        <option value="igst">IGST</option>
+                      </select>
+                    </label>
+
+                  </td>
+
+                  <td class="width2rem border-0 pt-0">
+                    <input *ngIf="this.from_bom==false"  class="editUnitInput  pull-left pl-3" type="number" name="tax_percent" formControlName="tax_percent"/>
+                    <input *ngIf="this.from_bom==true"  class="editInputBack  pull-left pl-3" type="number" name="tax_percent" formControlName="tax_percent" readonly/>
+                  </td>
+
+                  <td class="width2rem border-0 pt-0" *ngIf="!disable_field">
+                    <ng-select *ngIf="this.from_bom==false"  class="d-flex pull-left" style="min-width: 150px" formControlName="vendor_name" placeholder="Select Vendor" (change)="selectVendor($event)">
+                      <ng-option *ngFor="let item of vendor_list" value="{{item.id}}">{{item.name}}</ng-option>
+                    </ng-select>
+                    <input *ngIf="this.from_bom==true" class="InputBack pl-2" type="text" name="vendor_name" formControlName="vendor_name" readonly/>
+                  </td>
+                </tr>
+              </table>
+              <div class="col-12 mb-4 mt-5 pt-3 text-center">
+                <button class="btn updateBtn cursor-pointer" type="submit" [disabled]="!
+                update_Sli_Form.valid" (click) = "UpdateSli();">Update</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<!--Add SLI modal-->
+<div class="modal" id="addSli"  data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog modal-width-change">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header pl-5">
+        <h4 class="modal-title pl-2 pt-3">Add  SLI</h4>
+        <button type="button" class="close mr-4" data-dismiss="modal" (click)="resetAddSli()">&times;</button>
+      </div>
+      <div class="row">
+        <div class="col-md-12 p-0 pl-5">
+          <div class="col-5 text-center btn btn-light active cursor-pointer" [ngClass]="{'tabActive':automated_sli == false}" (click)="automated_sli=false">Custom SLI</div>
+          <div class="col-5 text-center btn btn-light cursor-pointer" [ngClass]="{'tabActive':automated_sli == true}" (click)="getProcurementList();">From Master SLI</div>
+        </div>
+        
+      </div>
+
+
+      <!-- Modal body -->
+      <div class="modal-body" *ngIf="!automated_sli">
+
+        <form [formGroup]="add_Sli"  (ngSubmit)="addSliForm(add_Sli.value)">
+          <!-- <pre>{{ add_Sli.value | json }}</pre> -->
+          <fieldset formArrayName="sub_line_items">
+            <table class="mt-4">
+              <tr>
+                <th class="border-0 warm-grey pl-4">Sli Name</th>
+                <th class="border-0 warm-grey pl-4">Quantity</th>
+                <th class="border-0 warm-grey pl-4">Unit</th>
+                <th class="border-0 warm-grey pl-4">Rate</th>
+                <th class="border-0 warm-grey pl-4">Tax Type</th>
+                <th class="border-0 warm-grey pl-4">Tax %</th>
+                <th class="border-0 warm-grey">Select a vendor</th>
+                <th class="border-0 warm-grey"></th>
+              </tr>
+
+              <tr *ngFor="let item of getAttributes(add_Sli); let i=index" [formGroup]="item">
+                <td class="width2rem border-0 pt-0">
+                  <input class="editQuantityInput pl-2" type="text" name="sli name" formControlName="name" style="width: 190px"/>
+                </td>
+
+                <td class="width2rem border-0 pt-0">
+                  <input class="editUnitInput  pull-left pl-2" type="number" name="quantity" formControlName="quantity" style="width: 90px"/>
+                </td>
+
+                <td class="width2rem border-0 pt-0">
+                  <label  class="label3">
+                    <select class="form-control easy-drop-down btn6 capitalize" formControlName="unit">
+                      <option value="null" disabled="true" [selected]="true">Unit</option>
+                      <option *ngFor="let uom of uom_list" value="{{uom}}">{{ uom | replaceChar }}</option>
+                      
+                      
+                    </select>
+                  </label>
+
+
+
+                </td>
+
+                <td class="width2rem border-0 pt-0">
+                  <input class="editUnitInput  rateInput pull-left pl-3" type="number" name="rate" formControlName="rate"/>
+                </td>
+                <td class="width2rem border-0 pt-0">
+                  <label  class="label3">
+                    <select class="form-control  easy-drop-down btn6" formControlName="tax_type">
+                      <option value="null" disabled="true" [selected]="true">Choose</option>
+                      <option value="cgst_sgst">SGST & CGST</option>
+                      <option value="igst">IGST</option>
+                    </select>
+                  </label>
+                </td>
+                <td class="width2rem border-0 pt-0">
+                  <input class="editUnitInput  pull-left pl-3" type="number" name="tax_percent" formControlName="tax_percent"/>
+                </td>
+
+                <td class="width2rem border-0 pt-0">
+                  <label >
+                  <!--   <select class="form-control easy-drop-down btn5" formControlName="vendor_id">
+                      <option value="null" disabled="true" [selected]="true">Select Vendor</option>
+                      <option *ngFor="let item of vendor_list" value="{{item.id}}" >{{ item.name}}</option>
+                      
+                      
+                    </select> -->
+                    <ng-select  class="d-flex" formControlName="vendor_id" placeholder="Select Vendor" style="width: 9rem">
+                      <ng-option *ngFor="let item of vendor_list" value="{{item.id}}">{{item.name}}</ng-option>
+                    </ng-select>
+                  </label>
+                </td>
+                <td class="border-0">
+                  <!-- <i class="fa fa-trash  iconBox pull-right cursor-pointer" (click)="add_Sli.get('sub_line_items').removeAt(i)" *ngIf="add_Sli.get('sub_line_items').length > 1"></i> -->
+                  <img src="./assets/img/finance/close.png" class="cross-img mb-4 cursor-pointer" (click)="add_Sli.get('sub_line_items').removeAt(i)" *ngIf="add_Sli.get('sub_line_items').length > 1" >
+                </td>
+              </tr>
+            </table>
+            <div class="row line-chng">
+              <div class="col-md-12 mt-2"> 
+                <div class="change-div pl-2 text-left">
+                 <a (click)="pushAttributes(add_Sli)" class="addIcon cursor-pointer text-primary">+ Add Another</a>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 mb-4 mt-5 pt-3 text-center">
+              <button class="btn updateBtn cursor-pointer" type="submit" [disabled]="!
+              add_Sli.valid">Add</button>
+            </div>
+          </fieldset>
+        </form>
+      </div>
+      <!-- For Master SLI -->
+      <div class="modal-body"  *ngIf="automated_sli">
+        <div class="p-2 mt-3" id="automatedSliForm" >
+          <div class="d-flex justify-content-center pb-3">
+            <!-- <div class="col-4 mb-0 pt-2 pb-2">
+              <span class="filterHeading mr-1">MLI Type </span>
+              <ng-select class="d-lg-block capitalize" (change)="getMasterLineItems($event)" placeholder="MLI Type" >
+                <ng-option *ngFor="let type of mli_type_list" value="{{type.value}}">{{type.name}}</ng-option>
+              </ng-select>
+            </div>
+            <div class="col-4 pt-2 pb-2 mb-0">
+              <span class="filterHeading mr-1">MLI </span>
+              <ng-select class="d-lg-block capitalize" (change)="getVendorProductsList($event)" placeholder="MLI">
+                <ng-option *ngFor="let mli of mli_list" value="{{mli.id }}">{{mli.mli_name}}</ng-option>
+              </ng-select>
+            </div>
+            <div class="col-4 pt-2 pb-2 mb-0">
+              <span class="filterHeading mr-1" >SLI </span>
+              <ng-select class="d-lg-block capitalize" (change)="getDetailsOfVendorProduct($event,'single',sli)" placeholder="SLI" >
+            </div> -->
+            <div class="col-4 pt-2 pb-2 mb-0 text-left">
+              <span class="filterHeading mr-1">SLI </span>
+              <ng-select class="d-lg-block capitalize" (change)="getDetailsOfVendorProduct($event,'single',sli)" placeholder="SLI" (input)="getMliName($event)">
+                <!-- <option value="">Select SLI</option> -->
+                <ng-option *ngFor="let sli of vendor_products_list" value="{{sli.id}}">{{sli.sli_name}}</ng-option>
+              </ng-select>
+            </div>
+          </div>
+          <form [formGroup]="sublineItemForm">
+            <!-- <pre>{{ sublineItemForm.value | json }}</pre> -->
+            <div class="form-control-group">
+              <div class="row justify-content-center">
+                <div class="d-inline-block col-5 text-left">
+                  <label class="filterHeading1">Name </label>
+                  <input name="sublineItem" disabled placeholder="Enter Name" class="form-control col-sm-12 d-inline-block mb-4" formControlName="name" />
+                </div>
+                <div class="d-inline-block col-5 text-left">
+                  <label class="filterHeading1">Rate </label>
+                  <input name="sublineItem" disabled type="number" placeholder="Enter Rate" class="form-control col-sm-12 d-inline-block mb-4 " formControlName="rate" />
+                </div>
+                <div class="d-inline-block col-5 text-left">
+                  <label class="filterHeading1">Unit </label>
+                  <input name="sublineItem" disabled placeholder="Enter Name" class="form-control col-sm-12 d-inline-block mb-4" formControlName="unit" />
+                </div>
+                <div class="d-inline-block col-5 text-left">
+                  <label class="filterHeading1">Quantity </label>
+                  <input name="sublineItem" type="number" placeholder="Enter Quantity" class="form-control col-sm-12 d-inline-block mb-4" formControlName="quantity" />
+                </div>
+                <div class="d-inline-block col-5 text-left">
+                  <label class="filterHeading1">Tax Type </label>
+                  <select class="form-control  tax-type-down btn6 btn9" formControlName="tax_type">
+                    <option value="null" disabled="true" [selected]="true">Choose</option>
+                    <option value="cgst_sgst">SGST & CGST</option>
+                    <option value="igst">IGST</option>
+                  </select>
+                </div>
+                <div class="d-inline-block col-5 text-left">
+                  <label class="filterHeading1">Tax Percent </label>
+                  <input name="tax_percent" type="number" placeholder="Enter Percent" class="form-control col-sm-12 d-inline-block mb-4" formControlName="tax_percent" />
+                </div>
+              </div>
+
+              <button (click)="addSublineItem()" class="btn category-btn d-block m-auto mt-5 p-2 rounded" [disabled]="!
+              sublineItemForm.valid">Add</button>
+            </div>
+          </form>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+<!-- modal Clubbed  Items -->
+<div class="modal" id="clubbedLineItemModal">
+    <div class="modal-sm modal-dialog">
+        <div class="modal-content">
+           <div class="modal-header pl-5 mt-2" style="border-bottom: 1px solid">
+                  <h6 class="modal-title   pt-3 ">Clubbed Line Item List</h6>
+                <button class="close mr-4 pull-right addCursor" data-dismiss="modal" style="height: 30px;font-size: 40px;font-weight: 300; color: #8c031f" type="button" >×</button>
+            </div>
+            <div class="modal-body">
+              <div class="row" *ngIf="showLine">
+                <div class="col-md-12  border-bottom-change" *ngFor="let item of showLine.custom_jobs">
+                  <span>{{ item.name }}</span>
+                  <p><b>Qty:{{item.quantity}}</b></p>
+                </div>
+                <div class="col-md-12  border-bottom-change" *ngFor="let item of showLine.modular_kitchen">
+                  <span>{{ item.name }}</span>
+                  <p><b>Qty:{{item.quantity}}</b></p>
+                  
+                </div>
+                <div class="col-md-12  border-bottom-change" *ngFor="let item of showLine.modular_wardrobe">
+                  <span>{{ item.name }}</span>
+                  <p><b>Qty:{{item.quantity}}</b></p>
+                  
+                </div>
+                <div class="col-md-12  border-bottom-change" *ngFor="let item of showLine.loose_furniture">
+                  <span>{{ item.name }}</span>
+                  <p><b>Qty:{{item.quantity}}</b></p>
+                  
+                </div>
+                <div class="col-md-12  border-bottom-change" *ngFor="let item of showLine.shangpin_job">
+                  <span>{{ item.name }}</span>
+                  <p><b>Qty:{{item.quantity}}</b></p>
+                  
+                </div>
+                <div class="col-md-12  border-bottom-change" *ngFor="let item of showLine.services">
+                  <span>{{ item.name }}</span>
+                  <p><b>Qty:{{item.quantity}}</b></p>
+                  
+                </div>
+                <div class="col-md-12  border-bottom-change" *ngFor="let item of showLine.extra">
+                  <span>{{ item.name }}</span>
+                  <p><b>Qty:{{item.quantity}}</b></p>
+                  
+                </div>
+                <div class="col-md-12  border-bottom-change" *ngFor="let item of showLine.appliance">
+                  <span>{{ item.name }}</span>
+                  <p><b>Qty:{{item.quantity}}</b></p>
+                  
+                </div>
+                
+              </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Add clubbed Sli -->
+<div class="modal" id="addSliClubbed"  data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog modal-width">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header pl-5">
+        <h4 class="modal-title pl-2 pt-3">Add Clubbed SLI</h4>
+        <button type="button" class="close" data-dismiss="modal" (click)="resetAddSli()">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body pl-5">
+        <form [formGroup]="add_Sli_clubbed" (ngSubmit)="addSliClubbedForm(add_Sli_clubbed.value)">
+          <!-- <pre>{{ add_Sli_clubbed.value | json }}</pre> -->
+          <div class="text-left">
+            <label class="pl-2">Add lable</label><input type="text" name="label" class="editQuantityInput pl-2 ml-2" formControlName="label" style="width: 190px">
+          </div>
+          <fieldset formArrayName="sub_line_items">
+            <table class="mt-4">
+              <tr>
+                <th class="border-0 warm-grey pl-4">Sli Name</th>
+                <th class="border-0 warm-grey pl-4">Quantity</th>
+                <th class="border-0 warm-grey pl-4">Unit</th>
+                <th class="border-0 warm-grey pl-4">Rate</th>
+                <th class="border-0 warm-grey pl-4">Tax Type</th>
+                <th class="border-0 warm-grey pl-4">Tax %</th>
+                <th class="border-0 warm-grey">Select a vendor</th>
+                <th class="border-0 warm-grey"></th>
+              </tr>
+
+              <tr *ngFor="let item of getAttributes(add_Sli_clubbed); let i=index" [formGroup]="item">
+                <td class="width2rem border-0 pt-0">
+                  <input  class="editQuantityInput pl-2" type="text" name="name" formControlName="name" style="width: 190px"/>
+                </td>
+
+                <td class="width2rem border-0 pt-0">
+                  <input class="editUnitInput  pull-left pl-2" type="number" name="quantity" formControlName="quantity" style="width: 90px"/>
+                </td>
+
+                <td class="width2rem border-0 pt-0">
+                  <label  class="label3">
+                    <select class="form-control easy-drop-down btn6 capitalize" formControlName="unit">
+                      <option value="null" disabled="true" [selected]="true">Unit</option>
+                      <option *ngFor="let uom of uom_list" value="{{ uom }}" >{{ uom |replaceChar }}</option>
+                      
+                      
+                    </select>
+                  </label>
+                </td>
+
+                <td class="width2rem border-0 pt-0">
+                  <input class="editUnitInput rateInput pull-left pl-3" type="number" name="rate" formControlName="rate"/>
+                </td>
+                <td class="width2rem border-0 pt-0">
+                  <label  class="label3">
+                    <select class="form-control  easy-drop-down btn6" formControlName="tax_type">
+                      <option value="null" disabled="true" [selected]="true">Choose</option>
+                      <option value="cgst_sgst">SGST & CGST</option>
+                      <option value="igst">IGST</option>
+                    </select>
+                  </label>
+                </td>
+                <td class="width2rem border-0 pt-0">
+                  <input class="editUnitInput  pull-left pl-3" type="number" name="tax_percent" formControlName="tax_percent"/>
+                </td>
+
+
+                <td class="width2rem border-0 pt-0">
+                  <label>
+                   <!--  <select class="form-control easy-drop-down btn5" formControlName="vendor_id">
+                      <option value="null" disabled="true" [selected]="true">Select Vendor</option>
+                      <option *ngFor="let item of vendor_list" value="{{item.id}}" >{{ item.name}}</option>
+                      
+                      
+                    </select> -->
+                    <ng-select  class="d-flex" formControlName="vendor_id" placeholder="Select Vendor" style="width: 9rem">
+                      <ng-option *ngFor="let item of vendor_list" value="{{item.id}}">{{item.name}}</ng-option>
+                    </ng-select>
+                  </label>
+                </td>
+                <td class="border-0">
+                  <!-- <i class="fa fa-trash  iconBox pull-right cursor-pointer" (click)="add_Sli.get('sub_line_items').removeAt(i)" *ngIf="add_Sli.get('sub_line_items').length > 1"></i> -->
+                  <img src="./assets/img/finance/close.png" class="cross-img mb-4 cursor-pointer" (click)="add_Sli_clubbed.get('sub_line_items').removeAt(i)" *ngIf="add_Sli_clubbed.get('sub_line_items').length > 1" >
+                </td>
+              </tr>
+            </table>
+            <div class="row line-chng">
+              <div class="col-md-12 mt-2"> 
+                <div class="change-div pl-2 text-left">
+                 <a (click)="pushAttributes(add_Sli_clubbed)" class="addIcon cursor-pointer text-primary">+ Add Another</a>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 mb-4 mt-5 pt-3 text-center">
+              <button class="btn updateBtn cursor-pointer" type="submit" [disabled]="!
+              add_Sli_clubbed.valid">Add</button>
+            </div>
+          </fieldset>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- modal Clubbed View SLI -->
+<div class="modal" id="clubbedView">
+  <div class="modal-lg modal-dialog" style="max-width:1250px;margin:auto;margin-top:6rem">
+      <div class="modal-content">
+         <div class="modal-header mt-2" style="border-bottom: 1px solid">
+                <h6 style="font-size:1.5rem" class="modal-title   pt-3 ">Clubbed View</h6>
+                 <button class="btn ml-auto mr-5 addCursor" style="outline: auto;" data-toggle="modal" data-target="#editclubbedSli" (click)="openEditClubbedSliModal()"><i class="fa fa-pencil"></i> Edit Clubbed Slis</button>
+              <button class="close mr-4 mb-3 pull-right addCursor" data-dismiss="modal" style="height: 30px;font-size: 40px;font-weight: 300; color: #8c031f" type="button" >×</button>
+          </div>
+          <div class="modal-body">
+            <ng-container *ngIf="this.clubbedView">
+            <div  class="accordion" id="sliAccordion">
+              <div *ngFor="let obj of this.clubbedView;let clubbedItem = index" class="card"  >
+                <div style="padding-left:3rem" class="card-header" id="headingOne">
+                  <h5 class="mb-0">
+
+                    <div data-toggle="collapse" [attr.data-target]="'#collapseClubbedOne' + clubbedItem" aria-expanded="true" [attr.aria-controls]="'collapseClubbedOne' + clubbedItem" class="clubbed-parent collapsed">
+                      <div style="width:10%" class="clubbed-container">
+                        <div class="clubbed-parameter">Name:<span data-toggle="tooltip" data-placement="bottom" title="{{obj.element_name}}" class="clubbed-value">{{obj.element_name}}</span></div>
+                      </div>
+                      <div style="width:10%" class="clubbed-container">
+                        <div class="clubbed-parameter">Qty:<span class="clubbed-value">{{obj.quantity}}</span></div>
+                      </div>
+                      <div style="width:10%" class="clubbed-container">
+                        <div class="clubbed-parameter">UOM:<span class="clubbed-value">{{obj.unit}}</span></div>
+                      </div>
+                      <div style="width:15%" class="clubbed-container">
+                        <div class="clubbed-parameter">Vendor:<span *ngIf="obj.job_element_vendor_details[0]" data-toggle="tooltip" data-placement="bottom" title="{{obj.job_element_vendor_details[0].vendor_name || '-' }}"  class="clubbed-value">{{obj.job_element_vendor_details[0].vendor_name || '-' }}</span></div>
+                      </div>
+                      <div style="width:10%" class="clubbed-container">
+                        <div class="clubbed-parameter">Rate:<span class="clubbed-value">{{obj.rate | currency: 'INR':'symbol'}}</span></div>
+                      </div>
+                      <div style="width:8%" class="clubbed-container">
+                        <div class="clubbed-parameter">Tax(%):<span *ngIf="obj.job_element_vendor_details[0]" class="clubbed-value">{{obj.job_element_vendor_details[0].tax_percent}}</span></div>
+                      </div>
+                      <div style="width:15%" class="clubbed-container">
+                        <div class="clubbed-parameter">Tax Type:<span *ngIf="obj.job_element_vendor_details[0]" data-toggle="tooltip" data-placement="bottom" title="{{(obj.job_element_vendor_details[0].tax_type | taxType) || '-' }}" class="clubbed-value">{{obj.job_element_vendor_details[0].tax_type | taxType}}</span></div>
+                      </div>
+                      <div style="width:12%;" class="clubbed-container">
+                        <div data-toggle="tooltip" data-placement="bottom" title="{{obj.amount | currency: 'INR':'symbol'}}" class="clubbed-parameter">Amount:<span class="clubbed-value">{{obj.amount | currency: 'INR':'symbol'}}</span></div>
+                      </div>
+                      <div style="width:10%;" class="clubbed-container">
+                          <div *ngIf="checkDisplayCondition(obj.po_created, obj.modifying_po)" class="clubbed-parameter">
+                            <i class="fas fa-star"  data-toggle="tooltip" title="you can't edit individually" aria-hidden="true"></i>
+                            <button class="btn btn-outline-secondary btn-alt mt-1 view-alternate"  data-toggle="modal" data-target="#viewClubbedOptionsModal" (click)="getSLIOptions(obj.subline_items[0],obj)" *ngIf="obj.vendor_product_id"> view alternative</button>
+                          </div>
+                          
+                      </div>
+                    </div>
+                  </h5>
+                </div>
+            
+                <div id="{{'collapseClubbedOne' + clubbedItem}}" class="collapse" aria-labelledby="headingOne" data-parent="#sliAccordion">
+                  <div  class="card-body">
+                          <div>
+                              <table class="table table-striped">
+                                  <thead>
+                                    <tr class="align-tr">
+                                        <th>Line Item</th>
+                                        <th>Attribution Ratio</th>
+                                        <th>Name</th>
+                                        <th>Quantity</th>
+                                        <th>Amount</th>
+                                        <th>UOM</th>
+                                        <th>Rate</th>
+                                        <th>Tax(%)</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody class="subline-parameter">
+                                    <tr *ngFor="let subline of obj.subline_items;let sublineItem = index">
+                                      <td><i data-toggle="modal" data-target="#lineItemDetails" (click)="getSliDetails(subline.id)" style="color:#8c0420;font-size:1rem;cursor:pointer" class="fa fa-info-circle"></i></td>
+                                      <td>{{subline.attribution_ratio}}</td>
+                                      <td>{{subline.element_name}}</td>
+                                      <td>{{subline.quantity}}</td>
+                                      <td>{{subline.amount | currency: 'INR':'symbol'}}</td>
+                                      <td>{{subline.unit }}</td>
+                                      <td>{{subline.rate | currency: 'INR':'symbol'}}</td>
+                                      <td>{{subline.tax}}</td>
+                                    </tr>
+                                  </tbody>
+                              </table>
+                          </div>
+                  </div>
+              </div>
+            </div>
+            </div>
+          </ng-container>
+          </div>
+      </div>
+  </div>
+</div>
+
+<div class="modal" id="lineItemDetails">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Line Item Details</h5>
+        <button type="button" class="close" data-dismiss="modal" (click)="retainModalState('lineItemDetails','clubbedView');" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div *ngIf="sliDetail" class="modal-body">
+        <div>
+          <table class="table table-striped">
+              <thead>
+                <tr class="align-tr">
+                    <th style="width:50%">Name</th>
+                    <th>Label</th>
+                </tr>
+              </thead>
+              <tbody class="line-item-info-align">
+                  <td>{{sliDetail.name}}</td>
+                  <td><ng-container *ngFor="let label of sliDetail.label">label &nbsp;&nbsp;</ng-container></td>
+              </tbody>
+          </table>
+      </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Clubbed edit modal -->
+  <div class="modal" id="editClubModal"  data-keyboard="false" data-backdrop="static">
+      <div class="modal-dialog " [ngClass]="disable_field ? 'modal-lg':'modal-width'">
+        <div class="modal-content">
+    
+          <!-- Modal Header -->
+          <div class="modal-header ">
+            <h4 class="modal-title pl-2 pt-3">Edit SLI</h4>
+            <button type="button" class="close" (click)="retainModalState('editClubModal','clubbedView');" >&times;</button>
+          </div>
+    
+          <!-- Modal body -->
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="row filterRow py-2 mx-1" *ngIf="disable_field">
+                  <div class="col-4 mb-0 pt-2 pb-2">
+                    <span class="filterHeading mr-1">MLI Type </span>
+                    <ng-select class="d-lg-block capitalize" (change)="getMasterLineItems($event)" placeholder="MLI Type" >
+                      <!-- <option value="">Select MLI Type</option> -->
+                      <ng-option *ngFor="let type of mli_type_list" value="{{type.value}}">{{type.name}}</ng-option>
+                    </ng-select>
+                  </div>
+                  <div class="col-4 pt-2 pb-2 mb-0">
+                    <span class="filterHeading mr-1">MLI </span>
+                    <ng-select class="d-lg-block capitalize" (change)="getVendorProductsList($event)" placeholder="MLI">
+                      <!-- <option value="">Select MLI</option> -->
+                      <ng-option *ngFor="let mli of mli_list" value="{{mli.id }}">{{mli.mli_name}}</ng-option>
+                    </ng-select>
+                  </div>
+                  <div class="col-4 pt-2 pb-2 mb-0">
+                    <span class="filterHeading mr-1" >SLI </span>
+                    <ng-select class="d-lg-block capitalize" (change)="getDetailsOfVendorProduct($event,'clubbed',sli)" placeholder="SLI" >
+                      <!-- <option value="">Select SLI</option> -->
+                      <ng-option *ngFor="let sli of vendor_products_list" value="{{sli.id}}">{{sli.sli_name}}</ng-option>
+                    </ng-select>
+                  </div>
+                </div>
+                <form [formGroup]="update_Club_Sli_Form">
+                  <table>
+                    <tr>
+                      <th class="border-0 warm-grey pl-4">Name</th>
+                      <th class="border-0 warm-grey pl-4">Quantity</th>
+                      <th class="border-0 warm-grey pl-4">Unit</th>
+                      <th class="border-0 warm-grey pl-4" >Rate</th>
+                      <th class="border-0 warm-grey pl-4">Tax Type</th>
+                      <th class="border-0 warm-grey pl-4">Tax %</th>
+                      <th class="border-0 warm-grey" *ngIf="!disable_field">Select a Vendor</th>
+                    </tr>
+    
+                    <tr>
+                      <td class="width2rem border-0 pt-0">
+                        <input class="editQuantityInput pl-2" type="text" name="name" formControlName="name" [readonly]="disable_field"/>
+                      </td>
+                      <td class="width2rem border-0 pt-0">
+                        <input class="editQuantityInput pl-2" type="number" name="quantity" readonly formControlName="quantity" />
+                      </td>
+    
+                      <td class="width2rem border-0 pt-0">
+                        <label  class="label3" *ngIf="!disable_field">
+                          <select class="form-control easy-drop-down btn6 capitalize" formControlName="unit" [disabled]="disable_field">
+                            <option value="" disabled selected> Select Unit</option>
+                            <option *ngFor="let uom of uom_list" value="{{ uom }}" >{{ uom | replaceChar }}</option>
+                            
+                            
+                          </select>
+                        </label>
+                         <input class="editQuantityInput pl-2" type="text" name="unit" formControlName="unit" [readonly]="disable_field" *ngIf="disable_field"/>
+                      </td>
+    
+                      <td class="width2rem border-0 pt-0">
+                        <input class="editUnitInput rateInput pull-left pl-2" type="number" name="rate" formControlName="rate" [readonly]="disable_field"/>
+                      </td>
+                      <td class="width2rem border-0 pt-0">
+                        <!-- <input class="editUnitInput  pull-left pl-2" type="text" name="tax_type" formControlName="tax_type"/> -->
+                        <label  class="label3">
+                          <select class="form-control  easy-drop-down btn6" formControlName="tax_type">
+                            <option value="cgst_sgst">SGST & CGST</option>
+                            <option value="igst">IGST</option>
+                          </select>
+                        </label>
+    
+                      </td>
+    
+                      <td class="width2rem border-0 pt-0">
+                        <input class="editUnitInput  pull-left pl-3" type="number" name="tax_percent" formControlName="tax_percent"/>
+                      </td>
+    
+                      <td class="width2rem border-0 pt-0" *ngIf="!disable_field">
+                        <ng-select  class="d-flex pull-left" formControlName="vendor_name" placeholder="Select Vendor" (change)="selectVendor($event)">
+                          <ng-option value="" disabled selected> Select Vendor</ng-option>
+                          <ng-option *ngFor="let item of vendor_list" value="{{item.id}}">{{item.name}}</ng-option>
+                        </ng-select>
+    
+                      </td>
+                    </tr>
+                  </table>
+                  <div class="col-12 mb-4 mt-5 pt-3 text-center">
+                    <button class="btn updateBtn cursor-pointer" type="submit" [disabled]="!
+                    update_Club_Sli_Form.valid" (click) = "UpdateClubSli();">Update</button>
+                  </div>
+                </form>
+                
+              </div>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+ 
+
+
+
+
+
+ <!--Edit clubbed SLIs modal-->
+<div class="modal" id="editclubbedSli"  data-keyboard="false" data-backdrop="static">
+  <div id="uomBackground" class="modal-dialog modal-width-change">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header pl-5">
+        <h4 class="modal-title pl-2 pt-3">Edit Clubbed Slis</h4>
+        <button type="button" class="close mr-4" data-dismiss="modal" (click)="resetAddSli()">&times;</button>
+      </div>
+      <div class="row">
+        <div class="col-md-12 p-0">
+          <div class="col-5 text-center btn btn-light active cursor-pointer" [ngClass]="{'tabActive':automated_sli == false}" (click)="openCustomSli()">Custom SLI</div>
+          <div class="col-5 text-center btn btn-light cursor-pointer" [ngClass]="{'tabActive':automated_sli == true}" (click)="getEditClubbedSlisList()">From Master SLI</div>
+        </div>
+        
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body" *ngIf="!automated_sli">
+        <span *ngIf="this.error" class="mt-5 bm-4">
+          <span *ngIf="this.error==true" style="color: red"> Cannot leave any column empty.Please fill them before Updation. Please hover on highlighted fields to view respective errors </span>
+        </span>
+        <form [formGroup]="clubbedUpdate">
+       
+          <!-- <pre>{{ add_Sli.value | json }}</pre> -->
+          <fieldset formArrayName="clubbed">
+            <table  class="mt-4 w-100">
+              <tr>
+                <th class="border-0 warm-grey1">Sli Name</th>
+                <th class="border-0 warm-grey1">Quantity</th>
+                <th class="border-0 warm-grey1">Unit</th>
+                <th class="border-0 warm-grey1">Rate</th>
+                <th class="border-0 warm-grey1">Tax Type</th>
+                <th class="border-0 warm-grey1">Tax %</th>
+                <th class="border-0 warm-grey1">Select a vendor</th>
+              </tr>
+              <tr *ngFor="let item of clubbed.controls; let i=index" formGroupName="{{i}}">
+                <td class="width2rem border-0 pt-0">
+                  <input formControlName="name" class="editQuantityInput pl-2" type="text" name="sli name"   style="width: 190px" [ngStyle]="{'border':(this.validityCheckArray[i] && this.validityCheckArray[i].name) == 'INVALID' ? '1px solid red' : '1px solid black' }" data-toggle="tooltip" title="Enter Name" />
+                  <!-- <span *ngIf="this.validityCheckArray[i]">
+                    <span *ngIf="this.validityCheckArray[i].name== 'INVALID'"><hr class='dotted' /></span>
+                  </span> -->
+                </td>
+                <td class="width2rem border-0 pt-0">
+                  <input formControlName="quantity" class="editUnitInput  pull-left pl-2" type="number" name="quantity" style="width: 90px" readonly [ngStyle]="{'border':(this.validityCheckArray[i] && this.validityCheckArray[i].quantity) == 'INVALID' ? '1px solid red' : '1px solid black' }" />
+                  <!-- <span *ngIf="this.validityCheckArray[i]">
+                    <span *ngIf="this.validityCheckArray[i].quantity== 'INVALID'"><hr class='dotted' /></span>
+                  </span> -->
+                </td>
+                <td class="width2rem border-0 pt-0">
+                  <label  class="label4">
+                    <select placeholder="Select Unit" formControlName="unit" class="form-control easy-drop-down btn6 capitalize" [ngStyle]="{'border':(this.validityCheckArray[i] && this.validityCheckArray[i].unit) == 'INVALID' ? '1px solid red' : '1px solid black' }" data-toggle="tooltip" title="Select Unit">
+                      <option value="null" disabled="true">Unit</option>
+                      <option *ngFor="let uom of uom_list" value="{{uom}}">{{ uom | replaceChar }}</option>
+                    </select>
+                  </label>
+                  <span data-toggle="modal" data-keyboard="false" data-backdrop="static" data-target="#uomConversionModal" style="cursor:pointer;color:#8c0420" (click)="convertRate(clubbedUpdate.get('clubbed').controls[i]['controls'])">UOM Conversion</span>
+                  <!-- <span *ngIf="this.validityCheckArray[i]">
+                    <span *ngIf="this.validityCheckArray[i].unit == 'INVALID'"><hr class='dotted' /></span>
+                  </span> -->
+                </td>
+                <td class="width2rem border-0 pt-0">
+                  <input formControlName="rate" class="editUnitInput  rateInput pull-left pl-3" type="number" min="1" name="rate" value="1" [ngStyle]="{'border':(this.validityCheckArray[i] && this.validityCheckArray[i].rate) == 'INVALID' ? '1px solid red' : '1px solid black' }" data-toggle="tooltip" title="Rate must be greater than 0"/>
+                    <!-- <span *ngIf="this.validityCheckArray[i]">
+                    <span *ngIf="this.validityCheckArray[i].rate== 'INVALID'">Rate must be greater than 0</span>
+                  </span> -->
+                </td>
+                <td class="width2rem border-0 pt-0">
+                  <label  class="label4">
+                    <select class="form-control easy-drop-down btn6" formControlName="tax_type" [ngStyle]="{'border':(this.validityCheckArray[i] && this.validityCheckArray[i].tax_type) == 'INVALID' ? '1px solid red' : '1px solid black' }" data-toggle="tooltip" title="Select Tax Type">
+                      <option value="null" disabled="true">Choose</option>
+                      <option value="cgst_sgst">SGST & CGST</option>
+                      <option value="igst">IGST</option>
+                    </select>
+                  </label>
+                   <!-- <span *ngIf="this.validityCheckArray[i]">
+                    <span *ngIf="this.validityCheckArray[i].tax_type == 'INVALID'"><hr class='dotted' /></span>
+                  </span> -->
+                </td>
+                <td class="width2rem border-0 pt-0">
+                  <input formControlName="tax_percent" class="editUnitInput  pull-left pl-3" type="number" name="tax_percent" [ngStyle]="{'border':(this.validityCheckArray[i] && this.validityCheckArray[i].tax_percent) == 'INVALID' ? '1px solid red' : '1px solid black' }" data-toggle="tooltip" title="Enter Tax Percent"/>
+                  <!-- <span *ngIf="this.validityCheckArray[i]">
+                    <span *ngIf="this.validityCheckArray[i].tax_percent == 'INVALID'"><hr class='dotteded mt-5' /> </span>
+                  </span> -->
+                </td>
+                <td class="width2rem border-0 pt-0">
+                  <label >
+                    <select formControlName="vendor_id"  class="form-control easy-drop-down btn6"   placeholder="Select Vendor" style="width: 9rem"  [ngStyle]="{'border':(this.validityCheckArray[i] && this.validityCheckArray[i].vendor_id) == 'INVALID' ? '1px solid red' : '1px solid black' }" data-toggle="tooltip" title="Select Vendor"><option  value="" disabled="true">Select Vendor</option>
+                      <option *ngFor="let item of vendor_list" [selected]="item.id == vendor_id" value="{{item.id}}">{{item.name}}</option>
+                    </select>
+                  </label>
+                  <!-- <span *ngIf="this.validityCheckArray[i]">
+                    <span *ngIf="this.validityCheckArray[i].vendor_id == 'INVALID'"><hr class='dotted' /></span>
+                  </span> -->
+                </td>
+                <td class="border-0">
+                </td>
+              </tr>
+            </table>
+            <div class="col-12 mb-4 mt-5 pt-3 text-center">
+              <button class="btn updateBtn cursor-pointer" (click)="UpdateMassClubbedSlis(clubbedUpdate)">Update</button>
+            </div>
+          </fieldset>
+        </form>
+       <!--  <div class=" col-12 pb-3 px-5" *ngIf="this.clubbedView_editable && this.clubbedView_editable.length == 0">
+        <div class="boq-img text-center">
+          <img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+          </div>
+          <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing to show...</p>
+
+      </div> -->
+      </div>
+      <!-- For Master SLI -->
+      <div class="modal-body"  *ngIf="automated_sli">
+        <div class="p-2 mt-3" id="automatedSliForm" >
+          <ng-container *ngIf="this.masterClubbedView">
+            <div  class="accordion" id="slisAccordion">
+              <div *ngFor="let obj of this.masterClubbedView;let clubbedItem = index" class="card"  >
+                <div style="padding-left:3rem" class="card-header" id="headingOne">
+                  <h5 class="mb-0">
+
+                    <div data-toggle="collapse" [attr.data-target]="'#collapseClubbedTwo' + clubbedItem" aria-expanded="true" [attr.aria-controls]="'collapseClubbedTwo' + clubbedItem" class="clubbed-parent collapsed">
+                      <div style="width:10%" class="clubbed-container">
+                        <div class="clubbed-parameter">Name:<span data-toggle="tooltip" data-placement="bottom" title="{{obj.element_name}}" class="clubbed-value">{{obj.element_name}}</span></div>
+                      </div>
+                      <div style="width:10%" class="clubbed-container">
+                        <div class="clubbed-parameter">Qty:<span class="clubbed-value">{{obj.quantity}}</span></div>
+                      </div>
+                      <div style="width:10%" class="clubbed-container">
+                        <div class="clubbed-parameter">UOM:<span class="clubbed-value">{{obj.unit}}</span></div>
+                      </div>
+                      <div style="width:15%" class="clubbed-container">
+                        <div class="clubbed-parameter">Vendor:<span *ngIf="obj.job_element_vendor_details[0]" data-toggle="tooltip" data-placement="bottom" title="{{obj.job_element_vendor_details[0].vendor_name || '-' }}"  class="clubbed-value">{{obj.job_element_vendor_details[0].vendor_name || '-' }}</span></div>
+                      </div>
+                      <div style="width:10%" class="clubbed-container">
+                        <div class="clubbed-parameter">Rate:<span class="clubbed-value">{{obj.rate | currency: 'INR':'symbol'}}</span></div>
+                      </div>
+                      <div style="width:8%" class="clubbed-container">
+                        <div class="clubbed-parameter">Tax(%):<span *ngIf="obj.job_element_vendor_details[0]" class="clubbed-value">{{obj.job_element_vendor_details[0].tax_percent}}</span></div>
+                      </div>
+                      <div style="width:15%" class="clubbed-container">
+                        <div class="clubbed-parameter">Tax Type:<span *ngIf="obj.job_element_vendor_details[0]" data-toggle="tooltip" data-placement="bottom" title="{{(obj.job_element_vendor_details[0].tax_type | taxType) || '-' }}" class="clubbed-value">{{obj.job_element_vendor_details[0].tax_type | taxType}}</span></div>
+                      </div>
+                      <div style="width:12%;" class="clubbed-container">
+                        <div data-toggle="tooltip" data-placement="bottom" title="{{obj.amount | currency: 'INR':'symbol'}}" class="clubbed-parameter">Amount:<span class="clubbed-value">{{obj.amount | currency: 'INR':'symbol'}}</span></div>
+                      </div>
+                      <div style="width:10%;" class="clubbed-container">
+                          <div *ngIf="checkDisplayCondition(obj.po_created, obj.modifying_po)" class="clubbed-parameter">
+                            <i class="fa fa-pencil"  data-toggle="modal" data-target="#editClubModal" aria-hidden="true" (click)="editClubSli(obj)"></i>
+                            <!-- <button class="btn btn-outline-secondary btn-alt mt-1 view-alternate"  data-toggle="modal" data-target="#viewClubbedOptionsModal" (click)="getSLIOptions(obj.subline_items[0],obj)" *ngIf="obj.vendor_product_id"> view alternative</button> -->
+                          </div>
+                          
+                      </div>
+                    </div>
+                  </h5>
+                </div>
+            
+                <div id="{{'collapseClubbedTwo' + clubbedItem}}" class="collapse" aria-labelledby="headingOne" data-parent="#slisAccordion">
+                  <div  class="card-body">
+                    <div>
+                      <table class="table table-striped">
+                        <thead>
+                          <tr class="align-tr">
+                              <th>Line Item</th>
+                              <th>Attribution Ratio</th>
+                              <th>Name</th>
+                              <th>Quantity</th>
+                              <th>Amount</th>
+                              <th>UOM</th>
+                              <th>Rate</th>
+                              <th>Tax(%)</th>
+                          </tr>
+                        </thead>
+                        <tbody class="subline-parameter">
+                          <tr *ngFor="let subline of obj.subline_items;let sublineItem = index">
+                            <td><i data-toggle="modal" data-target="#lineItemDetails" (click)="getSliDetails(subline.id)" style="color:#8c0420;font-size:1rem;cursor:pointer" class="fa fa-info-circle"></i></td>
+                            <td>{{subline.attribution_ratio}}</td>
+                            <td>{{subline.element_name}}</td>
+                            <td>{{subline.quantity}}</td>
+                            <td>{{subline.amount | currency: 'INR':'symbol'}}</td>
+                            <td>{{subline.unit }}</td>
+                            <td>{{subline.rate | currency: 'INR':'symbol'}}</td>
+                            <td>{{subline.tax}}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+              </div>
+            </div>
+            </div>
+          </ng-container>
+         </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--UOM Conversion modal-->
+<!-- <div id="uomContainerElem"> -->
+<div class="modal" id="uomConversionModal">
+  <div class="modal-dialog uom-modal">
+    <div class="modal-content align-uom-border">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+       <span class="uom-modal-heading">UOM Conversion</span>
+       <button (click)="removeUomModal()" type="button" class="close" (click)="removeUomModal()" style="float:right">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <form [formGroup]="updateUOM">
+          
+          <h6 class="uom-heading">Current Unit</h6>
+          <div class="uom-margin">
+              <select disabled placeholder="Select Unit" formControlName="currentUnit" class="form-control easy-drop-down capitalize" title="Select Unit">
+                  <option value="">Please Select Current Unit First</option>
+                  <option *ngFor="let uom of uom_list" value="{{uom}}">{{ uom | replaceChar }}</option>
+              </select>
+          </div>
+          
+          <h6 class="uom-heading">Original Quantity</h6>
+          <input readonly formControlName="original" class="uom-margin easy-drop-down form-control pull-left pl-2" type="number" name="original"/>
+          
+          <h6 class="uom-heading">Select New Unit</h6>
+          <div class="uom-margin">
+            <select (change)="updateUomQuantity()" placeholder="Select Unit" formControlName="unit" class="form-control easy-drop-down capitalize" title="Select Unit">
+                <option value="">Update Unit</option>
+                <option *ngFor="let uom of uom_convert_list" value="{{uom}}">{{ uom | replaceChar }}</option>
+            </select>
+          </div>
+          <h6 class="uom-heading">Updated Quantity</h6>
+          <input formControlName="updated" readonly class="uom-margin easy-drop-down form-control pull-left pl-2" type="number" name="updated"/>
+        </form>
+        <div class="text-center">
+          <button [disabled]="disableUomConversion" (click)="changeUOM($event)" class="btn cursor-pointer uom-submit" >Submit</button>
+        </div>
+      </div>
+    
+    </div>
+  </div>
+</div>
+<!-- </div> -->
+ 
+ 
+ 

@@ -1,0 +1,1403 @@
+<div class="row ss-top-menu">
+  <div class="col-xl-5 col-lg-5 col-md-5 col-sm-5 col-xs-5">
+    <span class="ss-text-light" style="vertical-align: -webkit-baseline-middle;">Dashboard <i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;">Manage Element</span>
+  </div>
+</div>
+
+<div class="rk-ui-notification" *ngIf="successalert">
+  <span id="notificationMessageText">{{successMessage}}</span>
+  <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+<div class="rk-ui-notification err" *ngIf="erroralert">
+  <span id="notificationMessageText">{{errorMessage}}</span>
+  <a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+
+<div class="row px-4">
+  	<div class="col-md-12 p-0 mt-4">
+	    <ul class="nav nav-tabs ss-nav-tabs mt-0 justify-content-center" id="myTab" role="tablist">
+	      <li class="nav-item ">
+	        <a class="nav-link ss-nav-link " id="master-data-tab" data-toggle="tab" href="#master_data" role="tab" aria-controls="master_data" aria-selected="true" routerLink="/manage_master_data">MASTER DATA</a>
+	      </li>
+	      <li class="nav-item">
+	        <a class="nav-link ss-nav-link active" id="master-element-tab" data-toggle="tab" href="#master_element" role="tab" aria-controls="master_element" aria-selected="false" routerLink="/manage_master_element">MASTER ELEMENT</a>
+	      </li>
+	      <li class="nav-item">
+	        <a class="nav-link ss-nav-link" id="mapping-tab" data-toggle="tab" href="#mapping" role="tab" aria-controls="mapping" aria-selected="false" routerLink="/manage_mapping">MAPPING</a>
+	      </li>
+	      <li class="nav-item">
+	        <a class="nav-link ss-nav-link" id="master-service-tab" data-toggle="tab" href="#master_service" role="tab" aria-controls="master_service" aria-selected="false" routerLink="/manage_services">MANAGE SERVICES</a>
+				</li>
+				<li class="nav-item">
+						<a class="nav-link ss-nav-link capitalize" id="master-service-tab" data-toggle="tab" href="#master_line_item" role="tab" aria-controls="master_line_item" aria-selected="false" routerLink="/master_line_item">MASTER LINE ITEM</a>
+					</li>
+	    </ul>
+  	</div>
+  	<div class="col-12 bg-white">
+	    <div class="row mb-5">
+	      	<div class="col-md-12">
+	        	<div class="row mt-4 pb-3" id="row1">
+	          		<div class="col-md-12 px-5 py-3">
+	            		<span class="mr-3">Master Element : </span>
+			            <select class="form-control" (change)="setActiveForm($event.target.value)">
+			            	<option disabled value="">Select</option>
+			            	<option value="module_types" [selected]="activeDropDownVal=='module_types' "> Module Types</option>
+			            	<option value="handles" [selected]="activeDropDownVal=='handles' ">Handles</option>
+			            	<option value="hardware_type" [selected]="activeDropDownVal=='hardware_type' ">Hardware Type</option>
+			            	<option value="addons" [selected]="activeDropDownVal=='addons' ">Addons</option>
+			            	<option value="hardware_element" [selected]="activeDropDownVal=='hardware_element' ">Hardware Element</option>
+			            	<option value="carcass_element" [selected]="activeDropDownVal=='carcass_element' ">Carcass Element</option>
+			            	<option value="hardware_element_types" [selected]="activeDropDownVal=='hardware_element_types' ">Hardware Element Types</option>
+			            	<option value="carcass_element_types" [selected]="activeDropDownVal=='carcass_element_types' ">Carcass Element Types</option>
+			            	<!-- <option value="custom_element" [selected]="activeDropDownVal=='custom_element' ">Custom Element</option> -->
+			            	<option value="modules" [selected]="activeDropDownVal=='modules' ">Modules</option>
+			            	<option value="combined_door" [selected]="activeDropDownVal=='combined_door' ">Combined Door</option>
+			            	<option value="addontags" [selected]="activeDropDownVal=='addontags' ">Addon Tags</option>
+			            </select>
+	          		</div>
+	        	</div>
+	        	<div class="col-md-12 text-center p-5" *ngIf="initLoader">
+	            	<div class="ss-spinner ss-spinner--orange">
+		              <div class="ss-spinner__item1"></div>
+		              <div class="ss-spinner__item2"></div>
+		              <div class="ss-spinner__item3"></div>
+		              <div class="ss-spinner__item4"></div>
+	            	</div>
+          		</div>
+		        <div class="container-fluid container-set" id="moduletyperow">
+		          <div class="row" style="padding: 16px;">
+		            <div class="col-md-7">
+		              	<div class="tableDiv">
+		              		<h5 class="textHeadingColor mt-3">Added Module Types : </h5><br/>
+			                <div class="table-responsive mt-3 col-7 p-0" *ngIf="module_types">
+			                	<button class="addButton addCursor" (click)="showaddModuleTypeForm()"><i class="fa fa-plus"></i></button>
+			                  	<table class="table mb-0">
+				                    <thead class="">
+				                      <tr>
+				                        <th scope="col" class="pl-2 py-2">#</th>
+				                        <th scope="col" class="py-2">Name</th>
+				                        <th scope="col" class="py-2">Category</th>
+				                        <th class="py-2"></th>
+				                      </tr>
+				                    </thead>
+				                    <tbody>
+				                      <tr  *ngFor="let mt of module_types; let i = index" [attr.data-index]="i" class="box-list">
+				                        <td class="pl-2">{{ i+1 }}</td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ mt.name}}</span>
+				                        	<input type="text" name="name" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editModuleTypeName">
+				                        </td>
+				                        <td>
+				                        	<span class="editRowSpan{{i}} capitalize">{{ mt.category}}</span>
+				                        	<select name="category" class="d-none form-control" [(ngModel)]="editModuleTypeCategory" class="d-none editRowInput{{i}} inputSize">
+				                        		<option>Select Category</option>
+				                        		<option value="kitchen" [selected]="activeDropDownVal=='kitchen' ">Kitchen</option>
+				                        		<option value="wardrobe" [selected]="activeDropDownVal=='wardrobe' ">Wardrobe</option>
+				                        	</select>
+				                        </td>
+				                        <td>
+				                        	<button class="d-none editRowInput{{i}} rk-interalBtnColor mx-2 editRowButton" (click)="updateModuletype(i,mt.id)"><i class="fa fa-paper-plane"></i></button>
+	                								<button class="d-none editRowInput{{i}} rk-btnCancel addCursor" (click)="cancelEditModuletypeRow(i)">Cancel</button>
+				                        	<i class="ion-android-more-vertical  ss-3-dot-drop editRowSpan{{i}}" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"></i>
+				                          	<div class="dropdown-menu pt-2 pb-2" style="font-size: 14px;">
+				                            	<a class="dropdown-item addCursor" (click)="deleteModuleType(mt.id)">Delete</a>
+				                            	<a class="dropdown-item addCursor" (click)="editModuleTypeRow(i,mt)">Edit</a>
+				                          	</div>
+				                        </td>
+				                      </tr>
+				                    </tbody>
+			                  	</table>
+			                </div> 
+		              	</div>
+		            </div>
+		            <div class="col-md-1"></div>
+		            <div class="col-md-4 d-none" id="addModuleTypeFormRow">
+		            	<h5 class="textHeadingColor mt-3">Add New Module Type : </h5>
+		            	<form [formGroup]="addModuleTypeForm" (ngSubmit)="addModuletype(addModuleTypeForm.value);" class="mt-5 col-9 p-0" id="addModuleTypeForm">
+		            		<input type="text" class="form-control" name="" formControlName="name" placeholder="Enter module type name...">
+		            		<div *ngIf="addModuleTypeForm.controls['name'].errors && !addModuleTypeForm.controls['name'].pristine" class="text-danger">
+		                  		<div [hidden]="!addModuleTypeForm.controls['name'].errors.required">Name is required.</div>
+		                	</div><br>
+		                	<select formControlName="category" class="form-control">
+		                		<option>Select Category</option>
+		                		<option value="kitchen">Kitchen</option>
+		                		<option value="wardrobe">Wardrobe</option>
+		                	</select>
+		            		<button type="submit" class="pull-right mt-3 submitButton" [disabled]="!addModuleTypeForm.valid" >Submit</button>
+		            	</form>
+		            	<!-- {{addModuleTypeForm.value | json}} -->
+		            </div>
+		          </div>  
+		        </div>
+
+		        <!-- Hardware Elements -->
+		        <div class="container-fluid container-set d-none" id="hardwareelementrow">
+		          <div class="row" style="padding: 16px;">
+		            <div class="col-md-7">
+		              	<div class="tableDiv">
+		              		<h5 class="textHeadingColor mt-3">Added Hardware Elements : </h5><br/>
+			                <div class="table-responsive mt-3 col-12 p-0" *ngIf="hardware_elements" style="overflow-y: auto;">
+			                	<button class="addButton addCursor mt-1" (click)="showaddHardwareElementForm()"><i class="fa fa-plus"></i></button>
+			                  	<table class="table mb-0 mt-5">
+				                    <thead class="">
+				                      <tr>
+				                        <th scope="col" class="pl-2 py-2">#</th>
+				                        <th scope="col" class="py-2">Code</th>
+				                        <th scope="col" class="py-2">Category</th>
+				                        <th scope="col" class="py-2">Unit</th>
+				                        <th scope="col" class="py-2">Price (INR)</th>
+				                        <th scope="col" class="py-2">Brand</th>
+				                        <th scope="col" class="py-2">Hardware Type</th>
+				                        <th scope="col" class="py-2">Hardware Element Type</th>
+				                        <th class="py-2"></th>
+				                      </tr>
+				                    </thead>
+				                    <tbody>
+				                      <tr  *ngFor="let ht of hardware_elements; let i = index" [attr.data-index]="i" class="box-list">
+				                        <td class="pl-2">{{ i+1 }}</td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ ht.code}}</span>
+				                        	<input type="text" name="code" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editHardwareElementCode">
+				                        </td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ ht.category}}</span>
+				                        	<select name="category" class="d-none form-control" [(ngModel)]="editHardwareElementCategory" class="d-none editRowInput{{i}} inputSize" (change) = "onCategoryChangeFromHardwareElement($event.target.value)">
+				                        		<option>Select Category</option>
+				                        		<option value="kitchen" [selected]="activeDropDownVal=='kitchen' ">Kitchen</option>
+				                        		<option value="wardrobe" [selected]="activeDropDownVal=='wardrobe' ">Wardrobe</option>
+				                        	</select>
+				                        </td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ ht.unit}}</span>
+				                        	<select name="unit" [(ngModel)]="editHardwareElementUnit" class="d-none editRowInput{{i}} inputSize">
+				                        		<option>Select Unit</option>
+				                        		<option value="set" [selected]="activeDropDownVal=='set' ">Set</option>
+				                        		<option value="nos" [selected]="activeDropDownVal=='nos' ">Nos</option>
+				                        	</select>
+
+				                        	<!-- <input type="text" name="unit" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editHardwareElementUnit"> -->
+				                        </td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ ht.price}}</span>
+				                        	<input type="text" name="price" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editHardwareElementPrice">
+				                        </td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ ht.brand_type}}</span>
+
+				                        	<select name="brand_id" [(ngModel)]="editHardwareElementBrandId" class="d-none editRowInput{{i}} inputSize" >
+				                        		<option>Select Brands</option>
+				                        		<option value="{{brand.id}}" *ngFor="let brand of barnds">{{brand.name}}</option>
+				                        	</select>
+				                        </td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ ht.hardware_type}}</span>
+
+				                        	<select name="hardware_type_id" [(ngModel)]="editHardwareElementHardwareTypeId" class="d-none editRowInput{{i}} inputSize">
+				                        		<option>Select Hardware Type</option>
+				                        		<option value="{{het.id}}" [selected]="activeDropDownVal=='het.id' " *ngFor="let het of hardware_types">{{het.name}}</option>
+				                        	</select>
+
+
+				                        	<!-- <input type="text" name="hardware_type_id" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editHardwareElementHardwareTypeId"> -->
+				                        </td>
+				                        <td class="capitalize">
+				                        	
+				                        	<span class="editRowSpan{{i}} capitalize">{{ ht.hardware_element_type}}</span>
+
+				                        	<select name="hardware_element_type_id" [(ngModel)]="editHardwareElementHardwareElementTypeId" class="d-none editRowInput{{i}} inputSize">
+				                        		<option>Select Hardware Element Type</option>
+				                        		<option value="{{het.id}}" [selected]="activeDropDownVal=='het.id' " *ngFor="let het of hardware_element_types">{{het.name}}</option>
+				                        	</select>
+
+				                        	<!-- <input type="text" name="hardware_element_type_id" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editHardwareElementHardwareElementTypeId"> -->
+				                        </td>
+				                        <td style="min-width: 20px;">
+				                        	<button class="d-none editRowInput{{i}} rk-interalBtnColor mx-2 editRowButton" (click)="updateHardwareelement(i,ht.id)"><i class="fa fa-paper-plane"></i></button>
+	                						<button class="d-none editRowInput{{i}} rk-btnCancel addCursor" (click)="cancelEditHardwareelementRow(i)">Cancel</button>
+				                        	<i class="ion-android-more-vertical  ss-3-dot-drop editRowSpan{{i}}" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"></i>
+				                          	<div class="dropdown-menu pt-2 pb-2" style="font-size: 14px;">
+				                            	<a class="dropdown-item addCursor" (click)="deleteHardwareElement(ht.id)">Delete</a>
+				                            	<a class="dropdown-item addCursor" (click)="editHardwareElementRow(i,ht)">Edit</a>
+				                          	</div>
+				                        </td>
+				                      </tr>
+				                    </tbody>
+			                  	</table>
+			                </div> 
+		              	</div>
+		            </div>
+		            <div class="col-md-1"></div>
+		            <div class="col-md-4 d-none" id="addHardwareElementFormRow">
+		            	<h5 class="textHeadingColor mt-3">Add New Hardware Element : </h5>
+		            	<form [formGroup]="addHardwareElementForm" (ngSubmit)="addHardwareelement(addHardwareElementForm.value);" class="mt-5 col-12 p-0">
+		            		<input type="text" class="form-control" name="" formControlName="code" placeholder="Enter hardware element code...">
+		            		<div *ngIf="addHardwareElementForm.controls['code'].errors && !addHardwareElementForm.controls['code'].pristine" class="text-danger">
+		                  		<div [hidden]="!addHardwareElementForm.controls['code'].errors.required">Code is required.</div>
+		                	</div>
+		                	<!-- <input type="text" class="form-control" name="" formControlName="code" placeholder="Enter hardware element code..."> -->
+
+		                	<select name="category" class="form-control" formControlName="category" (change) = "onCategoryChangeFromHardwareElement($event.target.value)">
+		                		<option>Select Category</option>
+		                		<option value="kitchen">Kitchen</option>
+		                		<option value="wardrobe">Wardrobe</option>
+		                	</select>
+
+		                	<select name="unit" class="form-control" formControlName="unit">
+		                		<option selected="">Select Unit</option>
+		                		<option value="set">Set</option>
+		                		<option value="nos">Nos</option>
+		                	</select>
+
+		                	<input type="text" class="form-control" name="" formControlName="price" placeholder="Enter hardware element price...">
+
+		                	<select name="brand_id" class="form-control" formControlName="brand_id" >
+		                		<option>Select Brands</option>
+		                		<option value="{{brand.id}}" *ngFor="let brand of barnds">{{brand.name}}</option>
+		                	</select>
+
+		                	<select name="hardware_type_id" class="form-control" formControlName="hardware_type_id" >
+		                		<option>Select Hardware Type</option>
+		                		<option value="{{het.id}}" *ngFor="let het of hardware_types">{{het.name}}</option>
+		                	</select>
+
+		                	<select name="hardware_element_type_id" class="form-control" formControlName="hardware_element_type_id">
+		                		<option>Select Hardware Element Type</option>
+		                		<option value="{{het.id}}" [selected]="activeDropDownVal=='het.id' " *ngFor="let het of hardware_element_types">{{het.name}}</option>
+		                	</select>
+
+		            		<button type="submit" class="pull-right mt-3 submitButton" [disabled]="!addHardwareElementForm.valid" >Submit</button>
+		            	</form>
+		            </div>
+		          </div>  
+		        </div>
+
+		        <!-- Carcass Elements -->
+		        <div class="container-fluid container-set d-none" id="carcasselementrow">
+		          <div class="row" style="padding: 16px;">
+		            <div class="col-md-7">
+		              	<div class="tableDiv">
+		              		<h5 class="textHeadingColor mt-3">Added Carcass Elements : </h5><br/>
+			                <div class="table-responsive mt-3 col-12 p-0" *ngIf="carcass_elements" style="overflow-y: auto;">
+			                	<button class="addButton addCursor mt-1" (click)="showaddCarcassElementForm()"><i class="fa fa-plus"></i></button>
+			                  	<table class="table mb-0 mt-5">
+				                    <thead class="">
+				                      <tr>
+				                        <th scope="col" class="pl-2 py-2">#</th>
+				                        <th scope="col" class="py-2">Code</th>
+				                        <th scope="col" class="py-2">Category</th>
+				                        <th scope="col" class="py-2">Width</th>
+				                        <th scope="col" class="py-2">Depth</th>
+				                        <th scope="col" class="py-2">Height</th>
+				                        <th scope="col" class="py-2">Length</th>
+				                        <th scope="col" class="py-2">Breadth</th>
+				                        <th scope="col" class="py-2">Thickness</th>
+				                        <th scope="col" class="py-2">Area Sqft</th>
+				                        <th scope="col" class="py-2">Edge Band Thickness</th>
+				                        <th scope="col" class="py-2">Carcass element type</th>
+				                        <th class="py-2"></th>
+				                      </tr>
+				                    </thead>
+				                    <tbody>
+				                      <tr  *ngFor="let ce of carcass_elements; let i = index" [attr.data-index]="i" class="box-list">
+				                        <td class="pl-2">{{ i+1 }}</td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ ce.code}}</span>
+				                        	<input type="text" name="code" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editCarcassElementCode">
+				                        </td>
+				                        <td>
+				                        	<span class="editRowSpan{{i}} capitalize">{{ ce.category}}</span> 
+				                        	<select name="category" class="d-none form-control" [(ngModel)]="editCarcassElementCategory" class="d-none editRowInput{{i}} inputSize">
+				                        		<option>Select Category</option>
+				                        		<option value="kitchen" [selected]="activeDropDownVal=='kitchen' ">Kitchen</option>
+				                        		<option value="wardrobe" [selected]="activeDropDownVal=='wardrobe' ">Wardrobe</option>
+				                        	</select>
+				                        </td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ ce.width}}</span>
+				                        	<input type="text" name="width" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editCarcassElementWidth">
+				                        </td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ ce.depth}}</span>
+				                        	<input type="text" name="depth" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editCarcassElementDepth">
+				                        </td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ ce.height}}</span>
+				                        	<input type="text" name="height" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editCarcassElementHeight">
+				                        </td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ ce.length}}</span>
+				                        	<input type="text" name="length" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editCarcassElementLength">
+				                        </td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ ce.breadth}}</span>
+				                        	<input type="text" name="breadth" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editCarcassElementBreadth">
+				                        </td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ ce.thickness}}</span>
+				                        	<input type="text" name="thickness" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editCarcassElementThickness">
+				                        </td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ ce.area_sqft}}</span>
+				                        	<input type="text" name="area_sqft" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editCarcassElementAreaSqft">
+				                        </td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ ce.edge_band_thickness}}</span> 
+				                        	<input type="text" name="edge_band_thickness" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editCarcassElementEdgeBandThickness">
+				                        </td>
+				                        <td>
+				                        	<span class="editRowSpan{{i}} capitalize">{{ ce.carcass_element_type}}</span> 
+				                        	<select name="carcass_element_type_id" [(ngModel)]="editCarcassElementCarcassElementTypeId" class="d-none editRowInput{{i}} inputSize" *ngIf="carcass_element_types.length > 0">
+				                        		<option>Select Carcass Element Type</option>
+				                        		<option value="{{cet.id}}" [selected]="activeDropDownVal=='cet.id' " *ngFor="let cet of carcass_element_types">{{cet.name}}</option>
+				                        	</select>
+				                        </td>
+				                        <td style="min-width: 20px;">
+				                        	<button class="d-none editRowInput{{i}} rk-interalBtnColor mx-2 editRowButton" (click)="updateCarcasselement(i,ce.id)"><i class="fa fa-paper-plane"></i></button>
+	                						<button class="d-none editRowInput{{i}} rk-btnCancel addCursor" (click)="cancelEditCarcasselementRow(i)">Cancel</button>
+				                        	<i class="ion-android-more-vertical  ss-3-dot-drop editRowSpan{{i}}" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"></i>
+				                          	<div class="dropdown-menu pt-2 pb-2" style="font-size: 14px;">
+				                            	<a class="dropdown-item addCursor" (click)="deleteCarcassElement(ce.id)">Delete</a>
+				                            	<a class="dropdown-item addCursor" (click)="editCarcassElementRow(i,ce)">Edit</a>
+				                          	</div>
+				                        </td>
+				                      </tr>
+				                    </tbody>
+			                  	</table>
+			                </div> 
+		              	</div>
+		            </div>
+		            <div class="col-md-1"></div>
+		            <div class="col-md-4 d-none" id="addCarcassElementFormRow">
+		            	<h5 class="textHeadingColor mt-3">Add New Carcass Element : </h5>
+		            	<form [formGroup]="addCarcassElementForm" (ngSubmit)="addCarcasselement(addCarcassElementForm.value);" class="mt-5 col-12 p-0">
+		            		<div class="form-group">
+		            					<input type="text" class="form-control" name="" formControlName="code" placeholder="Enter carcass element code...">
+		            					<div *ngIf="addCarcassElementForm.controls['code'].errors && !addCarcassElementForm.controls['code'].pristine" class="text-danger">
+		            			      		<div [hidden]="!addCarcassElementForm.controls['code'].errors.required">Code is required.</div>
+		            			    	</div>
+		            		</div>
+
+		            		<div class="form-group">
+          						<select name="category" class="form-control" formControlName="category">
+          			    		<option>Select Category</option>
+          			    		<option value="kitchen">Kitchen</option>
+          			    		<option value="wardrobe">Wardrobe</option>
+          			    	</select>
+		            		</div>
+		            		<div class="form-group">
+		            			<input type="text" class="form-control" name="" formControlName="width" placeholder="Enter carcass element width...">
+		            		</div>
+		            		<div class="form-group">
+		            			<input type="text" class="form-control" name="" formControlName="depth" placeholder="Enter carcass element depth...">
+		            		</div>
+		            		<div class="form-group">
+		            			<input type="text" class="form-control" name="" formControlName="height" placeholder="Enter carcass element height...">
+		            		</div>
+		            		<div class="form-group">
+		            			<input type="text" class="form-control" name="" formControlName="length" placeholder="Enter carcass element length...">
+		            		</div>
+		            		<div class="form-group">
+		            			<input type="text" class="form-control" name="" formControlName="breadth" placeholder="Enter carcass element breadth...">
+		            		</div>
+		            		<div class="form-group">
+		            			<input type="text" class="form-control" name="" formControlName="thickness" placeholder="Enter carcass element thickness...">
+		            		</div>
+		            		<div class="form-group">
+		            			<input type="text" class="form-control" name="" formControlName="area_sqft" placeholder="Enter carcass element area_sqft...">
+		            		</div>
+		            		<div class="form-group">
+		            			<input type="text" class="form-control" name="" formControlName="edge_band_thickness" placeholder="Enter carcass element edge_band_thickness...">
+		            		</div>
+		            		<div class="form-group">
+
+		            			<select name="carcass_element_type_id" class="form-control" formControlName="carcass_element_type_id">
+		                		<option>Select Carcass Element Type</option>
+		                		<ng-container *ngFor="let cet of carcass_element_types">
+		                			<option value="{{cet.id}}" *ngIf="addCarcassElementForm.controls['category'].value==cet.category">{{cet.name}}</option>
+		                		</ng-container>
+		                	</select>
+		            		</div>
+		            		
+		            		<button type="submit" class="pull-right mt-3 submitButton" [disabled]="!addCarcassElementForm.valid" >Submit</button>
+		            	</form>
+		            </div>
+		          </div>  
+		        </div>
+
+
+		        <!-- Hardware Types -->
+		        <div class="container-fluid container-set d-none" id="hardwaretyperow">
+		          <div class="row" style="padding: 16px;">
+		            <div class="col-md-5">
+		              	<div class="tableDiv">
+		              		<h5 class="textHeadingColor mt-3">Added Hardware Types : </h5><br/>
+			                <div class="table-responsive mt-3 col-9 p-0" *ngIf="hardware_types">
+			                	<button class="addButton addCursor" (click)="showaddHardwareTypeForm()"><i class="fa fa-plus"></i></button>
+			                  	<table class="table mb-0">
+				                    <thead class="">
+				                      <tr>
+				                        <th scope="col" class="pl-2 py-2">#</th>
+				                        <th scope="col" class="py-2">Name</th>
+				                        <th class="py-2"></th>
+				                      </tr>
+				                    </thead>
+				                    <tbody>
+				                      <tr  *ngFor="let ht of hardware_types; let i = index" [attr.data-index]="i" class="box-list">
+				                        <td class="pl-2">{{ i+1 }}</td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ ht.name}}</span>
+				                        	<input type="text" name="name" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editHardwareTypeName">
+				                        </td>
+				                        <td style="min-width: 20px;">
+				                        	<button class="d-none editRowInput{{i}} rk-interalBtnColor mx-2 editRowButton" (click)="updateHardwaretype(i,ht.id)"><i class="fa fa-paper-plane"></i></button>
+	                						<button class="d-none editRowInput{{i}} rk-btnCancel addCursor" (click)="cancelEditHardwaretypeRow(i)">Cancel</button>
+				                        	<i class="ion-android-more-vertical  ss-3-dot-drop editRowSpan{{i}}" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"></i>
+				                          	<div class="dropdown-menu pt-2 pb-2" style="font-size: 14px;">
+				                            	<a class="dropdown-item addCursor" (click)="deleteHardwareType(ht.id)">Delete</a>
+				                            	<a class="dropdown-item addCursor" (click)="editHardwareTypeRow(i,ht)">Edit</a>
+				                          	</div>
+				                        </td>
+				                      </tr>
+				                    </tbody>
+			                  	</table>
+			                </div> 
+		              	</div>
+		            </div>
+		            <div class="col-md-1"></div>
+		            <div class="col-md-6 d-none" id="addHardwareTypeFormRow">
+		            	<h5 class="textHeadingColor mt-3">Add New Hardware Type : </h5>
+		            	<form [formGroup]="addHardwareTypeForm" (ngSubmit)="addHardwaretype(addHardwareTypeForm.value);" class="mt-5 col-9 p-0">
+		            		<input type="text" class="form-control" name="" formControlName="name" placeholder="Enter hardware type name...">
+		            		<div *ngIf="addHardwareTypeForm.controls['name'].errors && !addHardwareTypeForm.controls['name'].pristine" class="text-danger">
+		                  		<div [hidden]="!addHardwareTypeForm.controls['name'].errors.required">Name is required.</div>
+		                	</div>
+		            		<button type="submit" class="pull-right mt-3 submitButton" [disabled]="!addHardwareTypeForm.valid" >Submit</button>
+		            	</form>
+		            </div>
+		          </div>  
+		        </div>
+
+		        <!--Handles-->
+		        <div class="container-fluid container-set d-none" id="handlerow">
+		           <div class="row" style="padding: 16px;">
+		            <div class="col-md-7">
+		              	<div class="tableDiv">
+		              		<h5 class="textHeadingColor mt-3 mb-3">Added Handles : </h5>
+		              		<button class="addButton handleaddBtn addCursor" (click)="showaddHandleForm()" style="right: 50px;"><i class="fa fa-plus"></i></button>
+			                <div class="tableHandle mt-3 col-11 p-0" *ngIf="handles">
+			                  	<table class="table mb-0">
+				                    <thead class="">
+				                      <tr>
+				                        <th scope="col" class="pl-2 py-2">#</th>
+				                        <th scope="col" class="py-2">Category</th>
+				                        <th scope="col" class="py-2">Code</th>
+				                        <th scope="col" class="py-2">Type</th>
+				                        <th scope="col" class="py-2">Price (INR)</th>
+				                        <th scope="col" class="py-2">Image</th>
+				                        <th class="py-2"></th>
+				                      </tr>
+				                    </thead>
+				                    <tbody>
+				                      <tr  *ngFor="let handle of handles; let i = index" [attr.data-index]="i" class="box-list">
+				                        <td class="pl-2">{{ i+1 }}</td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ handle.category}}</span>
+				                        	<select class="form-control editRowInput{{i}} inputSize d-none" [(ngModel)]="editHandle_category">
+				                        		<option value="kitchen" [selected]="handle.category=='kitchen'">Kitchen</option>
+				                        		<option value="wardrobe" [selected]="handle.category=='wardrobe'">Wardrobe</option>
+				                        	</select>
+				                        	<!-- <input type="text" name="name" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editHandle_code"> -->
+				                        </td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ handle.code}}</span>
+				                        	<input type="text" name="name" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editHandle_code">
+				                        </td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ handle.handle_type}}</span>
+				                        	<select class="form-control" [(ngModel)]="editHandle_type" class="d-none editRowInput{{i}} inputSize">
+							                			<option disabled value="">Select Handle Type</option>
+							                			<option value="drawer" [selected]="handle.handle_type=='drawer' ">Drawer Handle</option>
+							                			<option value="shutter" [selected]="handle.handle_type=='shutter' ">Shutter Handle</option>
+							                			<option value="both" [selected]="handle.handle_type=='both' ">Both</option>
+							                		</select>
+				                        	<!-- <input type="text" name="name" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editHandle_type"> -->
+				                        </td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ handle.price}}</span>
+				                        	<input type="text" name="name" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editHandle_price">
+				                        </td>
+				                        <td class="capitalize">
+				                        	<img class="editRowSpan{{i}}" src="{{handle.handle_image}}" height="40px" width="70px" onerror="this.src='./assets/img/no_image.svg';" alt="Missing Image">
+				                        	<input type="file" name="name" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editHandle_img" (change)="addAttachment($event)">
+				                        </td>
+				                        <td style="min-width: 20px;">
+				                        	<button class="d-none editRowInput{{i}} rk-interalBtnColor mx-2 editRowButton" (click)="updateHandle(i,handle.id)"><i class="fa fa-paper-plane"></i></button>
+	                						<button class="d-none editRowInput{{i}} rk-btnCancel addCursor" (click)="cancelEditHandleRow(i)">Cancel</button>
+				                        	<i class="ion-android-more-vertical  ss-3-dot-drop editRowSpan{{i}}" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"></i>
+				                          	<div class="dropdown-menu pt-2 pb-2" style="font-size: 14px;">
+				                            	<a class="dropdown-item addCursor" (click)="deleteHandle(handle.id)">Delete</a>
+				                            	<a class="dropdown-item addCursor" (click)="editHandleRow(i,handle)">Edit</a>
+				                          	</div>
+				                        </td>
+				                      </tr>
+				                    </tbody>
+			                  	</table>
+			                </div> 
+		              	</div>
+		            </div>
+		           <div class="col-md-1"></div>
+		            <div class="col-md-4 d-none" id="addHandleFormRow">
+		            	<h5 class="textHeadingColor mt-3">Add New Handle : </h5>
+		            	<form [formGroup]="addHandleForm" (ngSubmit)="addHandle(addHandleForm.value);" class="mt-5 col-9 p-0">
+		            		<select class="form-control" formControlName="category">
+		            			<option [selected] = "true" >Select category</option>
+                  		<option value="kitchen">Kitchen</option>
+                  		<option value="wardrobe">Wardrobe</option>
+                  	</select>
+                  	<br>
+		            		<input type="text" class="form-control" name="" formControlName="code" placeholder="Enter Handle type code...">
+		            		<div *ngIf="addHandleForm.controls['code'].errors && !addHandleForm.controls['code'].pristine" class="text-danger">
+		                  		<div [hidden]="!addHandleForm.controls['code'].errors.required">Code is required.</div>
+		                	</div><br/>
+		                	<select class="form-control" formControlName="handle_type">
+	                			<option disabled value="">Select Handle Type</option>
+	                			<option value="drawer">Drawer Handle</option>
+	                			<option value="shutter">Shutter Handle</option>
+	                			<option value="both">Both</option>
+	                		</select>
+		                	<!-- <input type="text" class="form-control" name="" formControlName="handle_type" placeholder="Enter Handle Type..."> -->
+		            		<div *ngIf="addHandleForm.controls['handle_type'].errors && !addHandleForm.controls['handle_type'].pristine" class="text-danger">
+		                  		<div [hidden]="!addHandleForm.controls['handle_type'].errors.required">Handle Type is required.</div>
+		                	</div><br/>
+		                	<input type="number" class="form-control" name="" formControlName="price" placeholder="Enter handle price..." min="0">
+		            		<div *ngIf="addHandleForm.controls['price'].errors && !addHandleForm.controls['price'].pristine" class="text-danger">
+		                  		<div [hidden]="!addHandleForm.controls['price'].errors.required">Price is required.</div>
+		                	</div><br/>
+		                	<input type="file" class="form-control" (change)="addAttachment($event)" name="attachment_file" ngModel #attachment_file="ngModel" [ngModelOptions]="{standalone: true}" id="fileimg">
+		            		<button type="submit" class="pull-right mt-3 submitButton" [disabled]="!addHandleForm.valid" >Submit</button>
+		            	</form>
+		            </div>
+		          </div>  
+		        </div>
+
+		        <!--Addons-->
+		        <div class="container-fluid container-set d-none" id="addonrow">
+		            <div class="row" style="padding: 16px;">
+		            	<div class="col-md-7">
+		              	<div class="tableDiv">
+		              		<h5 class="textHeadingColor mt-3 mb-3">Added Add-ons : </h5>
+		              		<button class="addButton handleaddBtn addCursor" (click)="showaddAddonForm()" style="right: 50px;"><i class="fa fa-plus"></i></button>
+			                <div class="tableHandle mt-3 col-12 p-0" *ngIf="addons">
+			                  	<table class="table mb-0">
+				                    <thead class="">
+				                      <tr>
+				                        <th scope="col" class="pl-2 py-2">#</th>
+				                        <th scope="col" class="py-2">Image</th>
+				                        <th scope="col" class="py-2">Category</th>
+				                        <th scope="col" class="py-2">Code</th>
+				                        <th scope="col" class="py-2">Name</th>
+				                        <th scope="col" class="py-2">Price (INR)</th>
+				                        <th scope="col" class="py-2">Specifications (mm)</th>
+				                        <th scope="col" class="py-2">Vendor SKU</th>
+				                        <th scope="col" class="py-2">Brand</th>
+				                        <th scope="col" class="py-2">Marked As Extra</th>
+				                        <th scope="col" class="py-2">Addon Tags</th>
+				                        <th class="py-2"></th>
+				                      </tr>
+				                    </thead>
+				                    <tbody>
+				                      <tr  *ngFor="let ad of addons; let i = index" [attr.data-index]="i" class="box-list">
+				                        <td class="pl-2">{{ i+1 }}</td>
+				                        <td>
+				                        	<img src="{{ad.addon_image}}" *ngIf="ad.addon_image" style="width: 100px;" onerror="this.src='./assets/img/no_image.svg';" alt="Missing Image" >
+				                        	<input type="file" name="addon_image" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editAddon_img" (change) = "addAttachment($event)" >
+				                        </td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ ad.category}}</span>
+				                        	<select class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editAddon_category">
+				                        		<option disabled value="">Select Category</option>
+				                        		<option value="kitchen" [selected]="ad.category=='kitchen'">Kitchen</option>
+				                        		<option value="wardrobe" [selected]="ad.category=='wardrobe'">Wardrobe</option>
+				                        	</select>
+				                        </td>
+
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ ad.code}}</span>
+				                        	<input type="text" name="name" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editAddon_code">
+				                        </td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ ad.name}}</span>
+				                        	<input type="text" name="name" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editAddon_name">
+				                        </td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ ad.price}}</span>
+				                        	<input type="text" name="name" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editAddon_price">
+				                        </td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ ad.specifications}}</span>
+				                        	<input type="text" name="name" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editAddon_spec">
+				                        </td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ ad.vendor_sku}}</span>
+				                        	<input type="text" name="name" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editAddon_vendor_sku">
+				                        </td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ ad.brand_name}}</span>
+				                        	<!-- <input type="text" name="name" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editAddon_brand"> -->
+				                        	<select class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editAddon_brand">
+				                        		<option disabled value="">Select Brand</option>
+				                        		<ng-container *ngFor="let bd of barnds"><option value="{{bd.id}}" *ngIf="bd.addon == true" [selected]="bd.id==editAddon_brand">{{bd.name}}</option></ng-container>
+				                        	</select>
+				                        </td>
+				                        <td>
+				                        	<span class="editRowSpan{{i}} capitalize">
+				                        		<ng-container *ngIf="ad.extra">Yes</ng-container>
+				                        		<ng-container *ngIf="!ad.extra">No</ng-container>
+				                        	</span>
+				                        	<label class="d-none editRowInput{{i}} inputSize"><input type="checkbox" name="extra"  [(ngModel)]="editAddon_extra"> Extra</label> 
+				                        </td>
+				                        <td class="">
+				                        	<a data-toggle="modal" data-target="#addontagModal" class="linkColor" (click)="setUpdatedAddontagsArr(ad.addon_tags,ad.id)" *ngIf="ad.category=='kitchen'">View Addon Tags</a>
+				                        </td>
+				                        <td style="min-width: 20px;">
+				                        	<button class="d-none editRowInput{{i}} rk-interalBtnColor mx-2 editRowButton" (click)="updateAddon(i,ad.id)"><i class="fa fa-paper-plane"></i></button>
+	                						<button class="d-none editRowInput{{i}} rk-btnCancel addCursor" (click)="cancelEditAddonRow(i)">Cancel</button>
+				                        	<i class="ion-android-more-vertical  ss-3-dot-drop editRowSpan{{i}}" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"></i>
+				                          	<div class="dropdown-menu pt-2 pb-2" style="font-size: 14px;">
+				                            	<a class="dropdown-item addCursor" (click)="deleteAddon(ad.id)">Delete</a>
+				                            	<a class="dropdown-item addCursor" (click)="editAddonRow(i,ad)">Edit</a>
+				                          	</div>
+				                        </td>
+				                      </tr>
+				                    </tbody>
+			                  	</table>
+			                </div> 
+		              	</div>
+		            	</div>
+		            <div class="col-md-1"></div>
+		            <div class="col-md-4 d-none" id="addAddonFormRow">
+		            	<h5 class="textHeadingColor mt-3">Add New Add-on : </h5>
+		            	<form [formGroup]="addAddonsForm" (ngSubmit)="addAddon(addAddonsForm.value);" class="mt-5 col-9 p-0">
+		            		<select class="form-control" formControlName="category">
+                  		<option disabled value="">Select Category</option>
+                  		<option value="kitchen">Kitchen</option>
+                  		<option value="wardrobe">Wardrobe</option>
+                  	</select><br/>
+
+		            		<input type="text" class="form-control" name="" formControlName="code" placeholder="Enter code...">
+		            		<div *ngIf="addAddonsForm.controls['code'].errors && !addAddonsForm.controls['code'].pristine" class="text-danger">
+		                  		<div [hidden]="!addAddonsForm.controls['code'].errors.required">Code is required.</div>
+			                </div><br/>
+			                <input type="text" class="form-control" name="" formControlName="name" placeholder="Enter name...">
+			            		<div *ngIf="addAddonsForm.controls['name'].errors && !addAddonsForm.controls['name'].pristine" class="text-danger">
+			                  		<div [hidden]="!addAddonsForm.controls['name'].errors.required">Name is required.</div>
+			                </div>
+			                <br/>
+			                <input type="text" class="form-control" name="" formControlName="specifications" placeholder="Enter Specifications...">
+		            		<br/>
+			              <input type="text" class="form-control" name="" formControlName="vendor_sku" placeholder="Enter Vendor SKU..."><br/>
+		                <input type="number" class="form-control" name="" formControlName="price" placeholder="Enter price..." min="0">
+		                <br/>
+		                <select class="form-control" formControlName="brand_id">
+		                		<option disabled value="">Select Brand</option>
+		                		<ng-container *ngFor="let bd of barnds"><option value="{{bd.id}}" *ngIf="bd.addon == true">{{bd.name}}</option></ng-container>
+		                </select>
+			            	<br>
+			            	<!-- {{(addAddonsForm.controls['category'].value=='kitchen')}} -->
+			            	<ng-container>
+			            		<label style="font-size: 14px">Select Addon Tags</label>
+			            		<!-- <angular2-multiselect [data]="addontags" 
+								    	[settings]="dropdownSettings" [(ngModel)]="addon_tags_attributes"></angular2-multiselect> -->
+								    	<angular2-multiselect [data]="addontags" [(ngModel)]="selectedItems2"
+									    [settings]="dropdownSettings2"
+									    (onSelect)="onItemSelect($event)"
+									    (onDeSelect)="OnItemDeSelect($event)"
+									    (onSelectAll)="onSelectAll($event)"
+									    (onDeSelectAll)="onDeSelectAll($event)" [ngModelOptions]="{standalone: true}"></angular2-multiselect>
+								  	</ng-container>
+								  	{{selectedItems2}}
+			            	<br>
+			            	<label style="font-size: 14px">Upload Addon Image</label>
+			            	<input type="file" class="form-control" formControlName="addon_image" (change) = "addAttachment($event)" ><br>
+			            	<label>
+			            		<input type="checkbox" name="" formControlName="extra" class="mr-1"> Marked as Extra
+			            	</label>
+		            		<button type="submit" class="pull-right mt-3 submitButton" [disabled]="!addAddonsForm.valid" >Submit</button>
+		            		<!-- <pre>{{this.addAddonsForm.value | json}}</pre> -->
+		            	</form>
+		            </div>
+		        	</div>  
+		        </div>
+
+		        <!--Hardware-->
+		        <div class="container-fluid container-set d-none" id="hardware_element_typerow">
+		          <div class="row" style="padding: 16px;">
+		            <div class="col-md-6">
+		              	<div class="tableDiv">
+		              		<h5 class="textHeadingColor mt-3">Added Hardware Element Types : </h5><br/>
+			                <div class="table-responsive mt-3 col-11 p-0" *ngIf="hardware_element_types">
+			                	<button class="addButton addCursor" (click)="showaddHardwareElementTypeForm()"><i class="fa fa-plus"></i></button>
+			                  	<table class="table mb-0">
+				                    <thead class="">
+				                      <tr>
+				                        <th scope="col" class="pl-2 py-2">#</th>
+				                        <th scope="col" class="py-2">Name</th>
+				                        <th scope="col" class="py-2">Category</th>
+				                        <th class="py-2"></th>
+				                      </tr>
+				                    </thead>
+				                    <tbody>
+				                      <tr  *ngFor="let het of hardware_element_types; let i = index" [attr.data-index]="i" class="box-list">
+				                        <td class="pl-2">{{ i+1 }}</td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ het.name}}</span>
+				                        	<input type="text" name="name" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editHardwareElemTypeName">
+				                        </td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ het.category}}</span>
+				                        	<!-- <input type="text" name="name" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editHardwareElemTypeCategory"> -->
+				                        	<select class=" d-none editRowInput{{i}} inputSize" [(ngModel)]="editHardwareElemTypeCategory">
+				                        		<option disabled value="">Select Category</option>
+				                        		<option value="kitchen" [selected]="editHardwareElemTypeCategory=='kitchen'">Kitchen</option>
+				                        		<option value="wardrobe" [selected]="editHardwareElemTypeCategory=='wardrobe'">Wardrobe</option>
+				                        	</select>
+				                        </td>
+				                        
+				                        <td style="min-width: 27px;" class="text-center">
+				                        	<button class="d-none editRowInput{{i}} rk-interalBtnColor mx-2 editRowButton" (click)="updateHardwareElemType(i,het.id)"><i class="fa fa-paper-plane"></i></button>
+	                								<button class="d-none editRowInput{{i}} rk-btnCancel addCursor" (click)="cancelEditHardwareElemTypeRow(i)">Cancel</button>
+				                        	<i class="ion-android-more-vertical  ss-3-dot-drop editRowSpan{{i}}" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"></i>
+				                          	<div class="dropdown-menu pt-2 pb-2" style="font-size: 14px;">
+				                            	<a class="dropdown-item addCursor" (click)="deleteHardwareElemType(het.id)">Delete</a>
+				                            	<a class="dropdown-item addCursor" (click)="editHardwareElemTypeRow(i,het)">Edit</a>
+				                          	</div>
+				                        </td>
+				                      </tr>
+				                    </tbody>
+			                  	</table>
+			                </div> 
+		              	</div>
+		            </div>
+		            <div class="col-md-1"></div>
+		            <div class="col-md-5 d-none" id="addHardwareElemFormRow">
+		            	<h5 class="textHeadingColor mt-3">Add New Hardware Element Type : </h5>
+		            	<form [formGroup]="addHardwareElemTypeForm" (ngSubmit)="addHardwareElemType(addHardwareElemTypeForm.value);" class="mt-5 col-9 p-0" id="">
+		            		<input type="text" class="form-control" name="" formControlName="name" placeholder="Enter Name...">
+		            		<div *ngIf="addHardwareElemTypeForm.controls['name'].errors && !addHardwareElemTypeForm.controls['name'].pristine" class="text-danger">
+		                  <div [hidden]="!addHardwareElemTypeForm.controls['name'].errors.required">Name is required.</div>
+		                </div><br/>
+		                <select class="form-control"  formControlName="category">
+                  		<option disabled value="">Select Category</option>
+                  		<option value="kitchen">Kitchen</option>
+                  		<option value="wardrobe">Wardrobe</option>
+                  	</select>
+		                <!-- <input type="text" class="form-control" name="" formControlName="category" placeholder="Enter Category..."> -->
+		            		<button type="submit" class="pull-right mt-3 submitButton" [disabled]="!addHardwareElemTypeForm.valid" >Submit</button>
+		            	</form>
+		            </div>
+		          </div>  
+		        </div>
+
+		        <!--carcass_element-->
+		        <div class="container-fluid container-set d-none" id="carcass_element_typesrow">
+		          <div class="row" style="padding: 16px;">
+		            <div class="col-md-8">
+		              	<div class="tableDiv">
+		              		<h5 class="textHeadingColor mt-3">Added Carcass Element Types : </h5><br/>
+			                <div class="table-responsive mt-3 col-12 p-0" *ngIf="carcass_element_types">
+			                	<button class="addButton addCursor" (click)="showaddCarcassElementTypeForm()"><i class="fa fa-plus"></i></button>
+			                  	<table class="table mb-0">
+				                    <thead class="">
+				                      <tr>
+				                        <th scope="col" class="pl-2 py-2">#</th>
+				                        <th scope="col" class="py-2">Name</th>
+				                        <th scope="col" class="py-2">Category</th>
+				                        <th scope="col" class="py-2">Alluminium</th>
+				                        <th scope="col" class="py-2">Glass</th>
+				                        <th class="py-2"></th>
+				                      </tr>
+				                    </thead>
+				                    <tbody>
+				                      <tr  *ngFor="let carcas of carcass_element_types; let i = index" [attr.data-index]="i" class="box-list">
+				                        <td class="pl-2">{{ i+1 }}</td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ carcas.name}}</span>
+				                        	<input type="text" name="name" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editCarcassElemTypeName">
+				                        </td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ carcas.category}}</span>
+				                        	<!-- <input type="text" name="name" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editHardwareElemTypeCategory"> -->
+				                        	<select class=" d-none editRowInput{{i}} inputSize" [(ngModel)]="editCarcassElemTypeCategory">
+				                        		<option disabled value="">Select Category</option>
+				                        		<option value="kitchen" [selected]="editCarcassElemTypeCategory=='kitchen'">Kitchen</option>
+				                        		<option value="wardrobe" [selected]="editCarcassElemTypeCategory=='wardrobe'">Wardrobe</option>
+				                        	</select>
+				                        </td>
+				                        <td>
+				                        	<span class="editRowSpan{{i}} capitalize">{{ carcas.aluminium}}</span>
+				                        	<!-- <input class="d-none editRowInput{{i}} inputSize" type="radio" name="aluminium" [value]="true" (click) = "radioClick($event, 'aluminium')">
+				                        	<label class="d-none editRowInput{{i}} inputSize">Yes</label>
+				                        	<input class="d-none editRowInput{{i}} inputSize" type="radio" name="aluminium" [value]="false" (click) = "radioClick($event, 'aluminium')">
+				                        	<label class="d-none editRowInput{{i}} inputSize">No</label> -->
+				                        	<input class="d-none editRowInput{{i}} inputSize" type="radio" name="alum_glasstype" [value]="aluminium"   (click) = "radioClick($event, 'aluminium')">
+				                        	<label class="d-none editRowInput{{i}} inputSize">Aluminium</label>
+				                        </td>
+				                        <td>
+				                        	<span class="editRowSpan{{i}} capitalize">{{ carcas.glass}}</span>
+
+				                        	<input class="d-none editRowInput{{i}} inputSize" type="radio" name="alum_glasstype" [value]="glass" (click) = "radioClick($event, 'glass')">
+				                        	<label class="d-none editRowInput{{i}} inputSize" >Glass</label>
+				                        	<!-- <input class="d-none editRowInput{{i}} inputSize" type="radio" name="glass" [value]="true" (click) = "radioClick($event, 'glass')">
+				                        	<label class="d-none editRowInput{{i}} inputSize">Yes</label>
+				                        	<input class="d-none editRowInput{{i}} inputSize" type="radio" name="glass" [value]="false" (click) = "radioClick($event, 'glass')">
+				                        	<label class="d-none editRowInput{{i}} inputSize">No</label> -->
+				                        </td>
+				                        <td style="min-width: 27px;" class="text-center">
+				                        	<button class="d-none editRowInput{{i}} rk-interalBtnColor mx-2 editRowButton" (click)="updateCarcassElemType(i,carcas.id)"><i class="fa fa-paper-plane"></i></button>
+	                								<button class="d-none editRowInput{{i}} rk-btnCancel addCursor" (click)="cancelEditCarcassElemTypeRow(i)">Cancel</button>
+				                        	<i class="ion-android-more-vertical  ss-3-dot-drop editRowSpan{{i}}" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"></i>
+				                          	<div class="dropdown-menu pt-2 pb-2" style="font-size: 14px;">
+				                            	<a class="dropdown-item addCursor" (click)="deleteCarcassElemType(carcas.id)">Delete</a>
+				                            	<a class="dropdown-item addCursor" (click)="editCarcassElemTypeRow(i,carcas)">Edit</a>
+				                          	</div>
+				                        </td>
+				                      </tr>
+				                    </tbody>
+			                  	</table>
+			                </div> 
+		              	</div>
+		            </div>
+		            <div class="col-md-1"></div>
+		            <div class="col-md-3 d-none" id="addCarcassElemFormRow">
+		            	<h5 class="textHeadingColor mt-3">Add New Carcass Element Type : </h5>
+		            	<form [formGroup]="addCarcassElemTypeForm" (ngSubmit)="addCarcassElemType(addCarcassElemTypeForm.value);" class="mt-5 col-12 p-0" id="">
+		            		<input type="text" class="form-control" name="" formControlName="name" placeholder="Enter Name...">
+		            		<div *ngIf="addCarcassElemTypeForm.controls['name'].errors && !addCarcassElemTypeForm.controls['name'].pristine" class="text-danger">
+		                  	<div [hidden]="!addCarcassElemTypeForm.controls['name'].errors.required">Name is required.</div>
+			                </div><br/>
+			                <select class="form-control"  formControlName="category">
+		                  		<option disabled value="">Select Category</option>
+		                  		<option value="kitchen">Kitchen</option>
+		                  		<option value="wardrobe">Wardrobe</option>
+		                  	</select><br>
+		                  	
+		                  	<input class="form-control"  formControlName="alum_glass_type" type="radio" name="alum_glass_type" value="aluminium" style="display: inline-block; width: 14%"> <label class="mr-3">Aluminium</label>
+		                  	
+		                  	<input class="form-control"  formControlName="alum_glass_type" type="radio" name="alum_glass_type" value="glass" style="display: inline-block; width: 14%"> <label class="">Glass</label>
+		                  	<!-- <label>Aluminium?</label>
+		                  	<input class="form-control"  formControlName="aluminium" type="radio" name="aluminium" value="true">
+		                  	<label>Yes</label>
+		                  	<input class="form-control"  formControlName="aluminium" type="radio" name="aluminium" value="false">
+		                  	<label>No</label><br>
+		                  	<label>Glass?</label>
+		                  	<input class="form-control"  formControlName="glass" type="radio" name="glass" value="true">
+		                  	<label>Yes</label>
+		                  	<input class="form-control"  formControlName="glass" type="radio" name="glass" value="false">
+		                  	<label>No</label> -->
+			                <!-- <input type="text" class="form-control" name="" formControlName="category" placeholder="Enter Category..."> -->
+		            		<button type="submit" class="pull-right mt-3 submitButton" [disabled]="!addCarcassElemTypeForm.valid" >Submit</button>
+		            	</form>
+		            </div>
+		          </div>  
+		        </div>
+
+		        <!--customelement-->
+		        <div class="container-fluid container-set d-none" id="customelementrow">
+		          <div class="row" style="padding: 16px;">
+		            <div class="col-md-5">
+		              	<div class="tableDiv">
+		              		<h5 class="textHeadingColor mt-3">Added Elements : </h5><br/>
+			                <div class="table-responsive mt-3 col-7 p-0" *ngIf="custom_elements">
+			                	<button class="addButton addCursor" (click)="showaddCustomElementForm()"><i class="fa fa-plus"></i></button>
+			                  	<table class="table mb-0">
+				                    <thead class="">
+				                      <tr>
+				                        <th scope="col" class="pl-2 py-2">#</th>
+				                        <th scope="col" class="py-2">Name</th>
+				                        <th scope="col" class="py-2">Measurement</th>
+				                        <th scope="col" class="py-2">Price</th>
+				                        <th scope="col" class="py-2">Global</th>
+				                        <th class="py-2"></th>
+				                      </tr>
+				                    </thead>
+				                    <tbody>
+				                      <tr  *ngFor="let element of custom_elements; let i = index" [attr.data-index]="i" class="box-list">
+				                        <td class="pl-2">{{ i+1 }}</td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ element.name}}</span>
+				                        	<input type="text" name="name" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editCustomElementName">
+				                        </td>
+				                        <td>
+				                        	<button class="d-none editRowInput{{i}} rk-interalBtnColor mx-2 editRowButton" (click)="updateCustomElement(i,element.id)"><i class="fa fa-paper-plane"></i></button>
+	                						<button class="d-none editRowInput{{i}} rk-btnCancel addCursor" (click)="cancelEditCustomElementRow(i)">Cancel</button>
+				                        	<i class="ion-android-more-vertical  ss-3-dot-drop editRowSpan{{i}}" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"></i>
+				                          	<div class="dropdown-menu pt-2 pb-2" style="font-size: 14px;">
+				                            	<a class="dropdown-item addCursor" (click)="deleteCustomElement(element.id)">Delete</a>
+				                            	<a class="dropdown-item addCursor" (click)="editCustomElementRow(i,element)">Edit</a>
+				                          	</div>
+				                        </td>
+				                      </tr>
+				                    </tbody>
+			                  	</table>
+			                </div> 
+		              	</div>
+		            </div>
+		            <div class="col-md-1"></div>
+		            <div class="col-md-6 d-none" id="addCustomElementFormRow">
+		            	<h5 class="textHeadingColor mt-3">Add New CustomElement : </h5>
+		            	<form [formGroup]="addCustomElementForm" (ngSubmit)="addCustomElement(addCustomElementForm.value);" class="mt-5 col-9 p-0">
+		            		<input type="text" class="form-control" name="" formControlName="name" placeholder="Enter customelement name...">
+		            		<div *ngIf="addCustomElementForm.controls['name'].errors && !addCustomElementForm.controls['name'].pristine" class="text-danger">
+		                  <div [hidden]="!addCustomElementForm.controls['name'].errors.required">Name is required.</div>
+		                </div>
+		            		<button type="submit" class="pull-right mt-3 submitButton" [disabled]="!addCustomElementForm.valid" >Submit</button>
+		            	</form>
+		            </div>
+		          </div>  
+		        </div>
+
+		        <!-- Module -->
+		        <div class="container-fluid container-set d-none" id="modulesrow">
+		          <div class="row" style="padding: 16px;">
+		            <div class="col-md-12">
+		              	<div class="tableDiv">
+		              		<h5 class="textHeadingColor mt-3">Added Modules : </h5><br/>
+			                <div class="table-responsive mt-3 col-12 p-0" *ngIf="modules">
+			                	<button class="addButton addCursor" (click)="showaddModuleForm()"><i class="fa fa-plus"></i></button>
+			                  	<table class="table mb-0">
+				                    <thead class="">
+				                      <tr>
+				                        <th scope="col" class="pl-2 py-2">#</th>
+				                        <th scope="col" class="py-2">Image</th>
+				                        <th scope="col" class="py-2">Category</th>
+				                        <th scope="col" class="py-2">Name</th>
+				                        <th scope="col" class="py-2">Code</th>
+				                        <th scope="col" class="py-2">Width</th>
+				                        <th scope="col" class="py-2">Depth</th>
+				                        <th scope="col" class="py-2">Height</th>
+				                        <th scope="col" class="py-2">No. of Shutter handles</th>
+				                        <th scope="col" class="py-2">No. of door handles</th>
+				                        <th scope="col" class="py-2">G Section Handle</th>
+				                        <th class="py-2"></th>
+				                      </tr>
+				                    </thead>
+				                    <tbody>
+				                      <tr  *ngFor="let module of modules; let i = index" [attr.data-index]="i" class="box-list">
+				                        <td class="pl-2">{{ i+1 }}</td>
+				                        <td>
+				                        	<img src="{{module.module_image}}" style="width: 60px;" onerror="this.src='./assets/img/no_image.svg';" alt="Missing Image">
+				                        </td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ module.category}}</span>
+
+				                        	<select name="category" class="d-none form-control" [(ngModel)]="editModuleCategory" class="d-none editRowInput{{i}} inputSize">
+				                        		<option>Select Category</option>
+				                        		<option value="kitchen" [selected]="activeDropDownVal=='kitchen' ">Kitchen</option>
+				                        		<option value="wardrobe" [selected]="activeDropDownVal=='wardrobe' ">Wardrobe</option>
+				                        	</select>
+				                        </td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ module.description}}</span>
+				                        	<input type="text" name="name" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editModuleName">
+				                        </td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ module.code}}</span>
+				                        	<input type="text" name="name" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editModuleCode">
+				                        </td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ module.width}}</span>
+				                        	<input type="text" name="name" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editModuleWidth">
+				                        </td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ module.depth}}</span>
+				                        	<input type="text" name="name" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editModuleDepth">
+				                        </td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ module.height}}</span>
+				                        	<input type="text" name="name" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editModuleHeight">
+				                        </td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ module.number_shutter_handles}}</span>
+				                        	<input type="text" name="name" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editModuleShutterHandleCount">
+				                        </td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ module.number_door_handles}}</span>
+				                        	<input type="text" name="name" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editModuleDoorHandleCount">
+				                        </td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">
+				                        		<ng-container *ngIf="module.special_handles_only">Yes</ng-container>
+				                        		<ng-container *ngIf="!module.special_handles_only">No</ng-container></span>
+				                        </td>
+				                        <td>
+				                        	<button class="d-none editRowInput{{i}} rk-interalBtnColor mx-2 editRowButton" (click)="updateModule(i,module.id)"><i class="fa fa-paper-plane"></i></button>
+	                						<button class="d-none editRowInput{{i}} rk-btnCancel addCursor" (click)="cancelEditModuleRow(i)">Cancel</button>
+				                        	<i class="ion-android-more-vertical  ss-3-dot-drop editRowSpan{{i}}" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"></i>
+				                          	<div class="dropdown-menu pt-2 pb-2" style="font-size: 14px;">
+				                            	<a class="dropdown-item addCursor" (click)="deleteModule(module.id)">Delete</a>
+				                            	<!-- <a class="dropdown-item addCursor" (click)="editModuleRow(i,module)">Edit</a> -->
+				                          	</div>
+				                        </td>
+				                      </tr>
+				                    </tbody>
+			                  	</table>
+			                </div> 
+		              	</div>
+		            </div>
+		            <!-- <div class="col-md-1"></div>
+		            <div class="col-md-6 d-none" id="addModuleFormRow">
+		            	<h5 class="textHeadingColor mt-3">Add New Module : </h5>
+		            	<form [formGroup]="addModuleForm" (ngSubmit)="addModule(addModuleForm.value);" class="mt-5 col-9 p-0">
+		            		<input type="text" class="form-control" name="" formControlName="name" placeholder="Enter modules name...">
+		            		<div *ngIf="addModuleForm.controls['name'].errors && !addModuleForm.controls['name'].pristine" class="text-danger">
+		                  <div [hidden]="!addModuleForm.controls['name'].errors.required">Name is required.</div>
+		                </div>
+		            		<button type="submit" class="pull-right mt-3 submitButton" [disabled]="!addModuleForm.valid" >Submit</button>
+		            	</form>
+		            </div> -->
+		          </div>  
+		        </div>
+
+		        <!--Combined door-->
+		        <div class="container-fluid container-set d-none" id="combined_door_row">
+					    <div class="row" style="padding: 16px;">
+					    	<div class="col-md-7">
+					      	<div class="tableDiv">
+					      		<h5 class="textHeadingColor mt-3 mb-3">Added Combined Doors: </h5>
+					      		<button class="addButton handleaddBtn addCursor" (click)="showaddCombinedDoorForm()" style="right: 50px;"><i class="fa fa-plus"></i></button>
+					          <div class="tableHandle mt-3 col-12 p-0" *ngIf="combined_doors">
+					            	<table class="table mb-0">
+					                <thead class="">
+					                  <tr>
+					                    <th scope="col" class="pl-2 py-2">#</th>
+					                    <th scope="col" class="py-2">Code</th>
+					                    <th scope="col" class="py-2">Name</th>
+					                    <th scope="col" class="py-2">Price</th>
+					                    <th scope="col" class="py-2">Brand</th>
+					                    <th class="py-2"></th>
+					                  </tr>
+					                </thead>
+					                <tbody>
+					                  <tr  *ngFor="let combdoor of combined_doors; let i = index" [attr.data-index]="i" class="box-list">
+					                    <td class="pl-2">{{ i+1 }}</td>
+					                    <td class="capitalize">
+					                    	<span class="editRowSpan{{i}} capitalize">{{ combdoor.code}}</span>
+					                    	<input type="text" name="name" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editCombineDoor_code">
+					                    </td>
+					                    <td class="capitalize">
+					                    	<span class="editRowSpan{{i}} capitalize">{{ combdoor.name}}</span>
+					                    	<input type="text" name="name" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editCombineDoor_name">
+					                    </td>
+					                    <td class="capitalize">
+					                    	<span class="editRowSpan{{i}} capitalize">{{ combdoor.price}}</span>
+					                    	<input type="text" name="name" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editCombineDoor_price">
+					                    </td>
+					                    <td class="capitalize">
+					                    	<span class="editRowSpan{{i}} capitalize">{{ combdoor.brand_name}}</span>
+					                    	<select class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editCombineDoor_brand">
+					                    		<option disabled value="">Select Brand</option>
+					                    		<ng-container *ngFor="let bd of barnds"><option value="{{bd.id}}" *ngIf="bd.addon == true" [selected]="bd.id==editCombineDoor_brand">{{bd.name}}</option></ng-container>
+					                    	</select>
+					                    </td>
+					                    <td style="min-width: 20px;">
+					                    	<button class="d-none editRowInput{{i}} rk-interalBtnColor mx-2 editRowButton" (click)="updateCombineDoor(i,combdoor.id)"><i class="fa fa-paper-plane"></i></button>
+					      								<button class="d-none editRowInput{{i}} rk-btnCancel addCursor" (click)="cancelEditCombineDoorRow(i)">Cancel</button>
+					                    	<i class="ion-android-more-vertical  ss-3-dot-drop editRowSpan{{i}}" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"></i>
+					                      	<div class="dropdown-menu pt-2 pb-2" style="font-size: 14px;">
+					                        	<a class="dropdown-item addCursor" (click)="deleteCombineDoor(combdoor.id)">Delete</a>
+					                        	<a class="dropdown-item addCursor" (click)="editCombineDoorRow(i,combdoor)">Edit</a>
+					                      	</div>
+					                    </td>
+					                  </tr>
+					                </tbody>
+					            	</table>
+					          </div> 
+					      	</div>
+					    	</div>
+					    	<div class="col-md-1"></div>
+						    <div class="col-md-4 d-none" id="addCombineDoorFormRow">
+						    	<h5 class="textHeadingColor mt-3">Add New Combined Door: </h5>
+						    	<form [formGroup]="addCombinedDoorForm" (ngSubmit)="addCombineddoor(addCombinedDoorForm.value);" class="mt-5 col-9 p-0">
+
+						    		<input type="text" class="form-control" name="" formControlName="code" placeholder="Enter code...">
+						    		<br/>
+					          <input type="text" class="form-control" name="" formControlName="name" placeholder="Enter name...">
+					      		<div *ngIf="addCombinedDoorForm.controls['name'].errors && !addCombinedDoorForm.controls['name'].pristine" class="text-danger">
+					            		<div [hidden]="!addCombinedDoorForm.controls['name'].errors.required">Name is required.</div>
+					          </div>
+					          <br/>
+					        	<input type="number" class="form-control" name="" formControlName="price" placeholder="Enter price..." min="0"><br/>
+					        	<div *ngIf="addCombinedDoorForm.controls['price'].errors && !addCombinedDoorForm.controls['price'].pristine" class="text-danger">
+					          	<div [hidden]="!addCombinedDoorForm.controls['price'].errors.required">Price is required.</div>
+					          </div>
+					        	<select class="form-control" formControlName="brand_id">
+					        		<option disabled value="">Select Brand</option>
+					        		<ng-container *ngFor="let bd of barnds"><option value="{{bd.id}}" *ngIf="bd.addon == true">{{bd.name}}</option></ng-container>
+					        	</select>
+					      		<br>
+					    			<button type="submit" class="pull-right mt-3 submitButton" [disabled]="!addCombinedDoorForm.valid" >Submit</button>
+						    	</form>
+						    </div>
+					  	</div>
+						</div>
+
+						<!--Addon tags start-->
+						<div class="container-fluid container-set d-none" id="addontags_row">
+		          <div class="row" style="padding: 16px;">
+		            <div class="col-md-6">
+		              	<div class="tableDiv">
+		              		<h5 class="textHeadingColor mt-3">Added Addon Tags : </h5><br/>
+			                <div class="table-responsive mt-3 col-7 p-0" *ngIf="addontags">
+			                	<button class="addButton addCursor" (click)="showaddAddontagsForm()"><i class="fa fa-plus"></i></button>
+			                  	<table class="table mb-0">
+				                    <thead class="">
+				                      <tr>
+				                        <th scope="col" class="pl-2 py-2">#</th>
+				                        <th scope="col" class="py-2">Name</th>
+				                        <th class="py-2"></th>
+				                      </tr>
+				                    </thead>
+				                    <tbody>
+				                      <tr  *ngFor="let addontag of addontags; let i = index" [attr.data-index]="i" class="box-list">
+				                        <td class="pl-2">{{ i+1 }}</td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ addontag.name}}</span>
+				                        	<input type="text" name="name" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editAddontagName">
+				                        </td>
+				                        <td>
+				                        	<button class="d-none editRowInput{{i}} rk-interalBtnColor mx-2 editRowButton" (click)="updateAddontag(i,addontag.id)"><i class="fa fa-paper-plane"></i></button>
+	                								<button class="d-none editRowInput{{i}} rk-btnCancel addCursor" (click)="cancelEditAddontagRow(i)">Cancel</button>
+				                        	<i class="ion-android-more-vertical  ss-3-dot-drop editRowSpan{{i}}" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"></i>
+				                          	<div class="dropdown-menu pt-2 pb-2" style="font-size: 14px;">
+				                            	<a class="dropdown-item addCursor" (click)="deleteAddontag(addontag.id)">Delete</a>
+				                            	<a class="dropdown-item addCursor" (click)="editAddontagRow(i,addontag)">Edit</a>
+				                          	</div>
+				                        </td>
+				                      </tr>
+				                    </tbody>
+			                  	</table>
+			                </div> 
+		              	</div>
+		            </div>
+		            <div class="col-md-1"></div>
+		            <div class="col-md-5 d-none" id="addAddontagFormRow">
+		            	<h5 class="textHeadingColor mt-3">Add New Addon Tag : </h5>
+		            	<form [formGroup]="addAddonTagForm" (ngSubmit)="addAddonTag(addAddonTagForm.value);" class="mt-5 col-9 p-0" id="addAddonTagForm">
+		            		<input type="text" class="form-control" name="" formControlName="name" placeholder="Enter addon tag name...">
+		            		<div *ngIf="addAddonTagForm.controls['name'].errors && !addAddonTagForm.controls['name'].pristine" class="text-danger">
+		                  		<div [hidden]="!addAddonTagForm.controls['name'].errors.required">Name is required.</div>
+		                	</div><br>
+		            		<button type="submit" class="pull-right mt-3 submitButton" [disabled]="!addAddonTagForm.valid" >Submit</button>
+		            	</form>
+		            </div>
+		          </div>  
+		        </div>
+		        <!--Addon tags end-->
+
+	     	</div>
+	    </div>
+  	</div>
+</div>
+
+<!-- Modules Modal -->
+<div class="modal fade" id="modules" tabindex="-1" role="dialog" aria-labelledby="modulesLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <!-- <h5 class="modal-title" id="modulesLabel">Modal title</h5> -->
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="addModulesForm.reset()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active" id="add-module" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Add a Module</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="carcass-element" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Carcass Elements</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="hardware-element" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Hardware Elements</a>
+          </li>
+        </ul>
+        <form [formGroup]="addModulesForm" class="mt-5 col-12 p-0">
+	        <div class="tab-content" id="myTabContent">
+	          <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="add-module">
+	          	<div class="row">
+		          	<div class="form-group col-sm-6">
+	          	    <label for="category-field">Category:</label>
+	          	    <select class="form-control" formControlName="category" id="category-field" (change) = "categorySelect($event.srcElement.value)">
+	          	    	<option>Select</option>
+	          	    	<option value="kitchen">Kitchen</option>
+	          	    	<option value="wardrobe">Wardrobe</option>
+	          	    </select>
+	          	  </div>
+	          	  <div class="form-group col-sm-6">
+	          	    <label for="module-name-field">Module Name:</label>
+	          	    <input type="text" name="" class="form-control" formControlName="description" id="module-name-field">
+	          	  </div>
+	          	  <div class="form-group col-sm-6">
+	          	    <label for="module-code-field">Module Code:</label>
+	          	    <input type="text" name="" class="form-control" formControlName="code" id="module-code-field">
+	          	  </div>
+	          	  <div class="form-group col-sm-6">
+	          	    <label for="module-type-field">Module Type:</label>
+	          	    <select class="form-control" formControlName="module_type_id" id="module-type-field">
+	          	    	<option>Select</option>
+	          	    	<option value="{{module_type.id}}" *ngFor="let module_type of module_type_list">{{module_type.name}}</option>
+	          	    </select>
+	          	  </div>
+	          	  <div class="form-group col-sm-6">
+	          	    <label for="width-field">Width:</label>
+	          	    <input type="text" name="" class="form-control" formControlName="width" id="width-field">
+	          	  </div>
+	          	  <div class="form-group col-sm-6">
+	          	    <label for="height-field">Height:</label>
+	          	    <input type="text" name="" class="form-control" formControlName="height" id="height-field">
+	          	  </div>
+	          	  <div class="form-group col-sm-6">
+	          	    <label for="depth-field">Depth:</label>
+	          	    <input type="text" name="" class="form-control" formControlName="depth" id="depth-field">
+	          	  </div>
+	          	  <div class="form-group col-sm-6" *ngIf="addModulesForm.value.category == 'kitchen'">
+	          	    <label for="addon-count-field">No. of kitchen addons:</label>
+	          	    <input type="text" name="" class="form-control" formControlName="number_kitchen_addons" id="addon-count-field">
+	          	  </div>
+	          	  <div class="form-group col-sm-6" *ngIf="addModulesForm.controls['category'].value=='wardrobe'">
+	          	    <label for="addon-count-field">No. of Shutter handles:</label>
+	          	    <input type="text" name="" class="form-control" formControlName="number_shutter_handles">
+	          	  </div>
+	          	  <div class="form-group col-sm-6" *ngIf="addModulesForm.controls['category'].value=='wardrobe'">
+	          	    <label for="addon-count-field">No. of door handles:</label>
+	          	    <input type="text" name="" class="form-control" formControlName="number_door_handles">
+	          	  </div>
+	          	  <div class="form-group col-sm-6" *ngIf="addModulesForm.controls['category'].value=='kitchen'">
+	          	    <label for="addon-count-field">No. of handles:</label>
+	          	    <input type="text" name="" class="form-control" formControlName="number_door_handles">
+	          	  </div>
+	          	  <div class="form-group col-sm-6" *ngIf="addModulesForm.controls['category'].value=='kitchen'">
+	          	    <label for="special_handles_only-field">G Section Handle :</label>
+	          	    <select class="form-control" formControlName="special_handles_only" id="special_handles_only-field">
+	          	    	<option value="" disabled>Select</option>
+	          	    	<option value="true">Yes</option>
+	          	    	<option value="false">No</option>
+	          	    </select>
+	          	  </div>
+	          	  <div class="form-group col-sm-6">
+	          	    <label for="addon-count-field">Module image:</label>
+	          	    <input type="file" class="form-control" formControlName="module_image" (change) = "addAttachment($event)" >
+	          	  </div>
+	          	  <div class="form-group col-sm-12 text-right">
+	          	  	<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="addModulesForm.reset()">Close</button>
+	          	  	<button type="button" class="btn btn-primary" (click) = "activateModuleTab('carcass-element')">Next</button>
+	          	  </div>
+	          	</div>
+
+	          </div>
+	          <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="carcass-element">
+	          	<fieldset formArrayName="carcass_elements">
+	          		<div class="form-group row"
+        		         *ngFor = "let item of addModulesForm.get('carcass_elements')['controls']; let i=index "
+        		         [formGroup]="item">
+        		      <div class="col-sm-6">
+        		        <label [attr.for]="'carcass'+i">Carcass Element</label>
+        		        <select class="form-control" [attr.id]="'carcass'+i" formControlName="id">
+        		        	<option>Select</option>
+        		        	<option value="kitchen" *ngFor="let item of carcass_list" value="{{item.id}}">{{item.code}}</option>
+        		        </select>
+        		      </div>
+        		      <div class="col-sm-5">
+        		        <label [attr.for]="'carcass-quantity'+i">Quantity</label>
+        		        <input type="number" class="form-control"
+        		               [attr.id]="'carcass-quantity'+i" formControlName="quantity">
+        		      </div>
+        		      <div class="col-sm-1 py-1">
+        		        <button type="button" class="btn"
+        		                (click)="addModulesForm.get('carcass_elements').removeAt(i)">-</button>
+        		      </div>
+        		    </div>
+	          	</fieldset>
+	          	<div class="form-group row">
+          	    <div class="col-sm-2 col-sm-offset-10">
+          	      <button type="button" class="btn btn-link"
+          	              (click)="addNestedCarcass()">Add another item</button>
+          	    </div>
+          	  </div>
+          	  <div class="form-group col-sm-12 text-right">
+          	  	<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="addModulesForm.reset()">Close</button>
+          	  	<button type="button" class="btn btn-primary" (click) = "activateModuleTab('hardware-element')">Next</button>
+          	  </div>
+	          </div>
+	          <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="hardware-element">
+	          	<fieldset formArrayName="hardware_elements">
+	          		<div class="form-group row"
+        		         *ngFor="let item of addModulesForm.get('hardware_elements')['controls']; let i=index"
+        		         [formGroup]="item">
+        		      <div class="col-sm-6">
+        		        <label [attr.for]="'hardware'+i">Hardware Element</label>
+        		        <select class="form-control" [attr.id]="'hardware'+i" formControlName="id">
+        		        	<option>Select</option>
+        		        	<option value="kitchen" *ngFor="let item of hardware_list" value="{{item.id}}">{{item.code}}</option>
+        		        </select>
+        		      </div>
+        		      <div class="col-sm-5">
+        		        <label [attr.for]="'hardware-quantity'+i">Quantity</label>
+        		        <input type="number" class="form-control"
+        		               [attr.id]="'hardware-quantity'+i" formControlName="quantity">
+        		      </div>
+        		      <div class="col-sm-1 py-1">
+        		        <button type="button" class="btn"
+        		                (click)="addModulesForm.get('hardware_elements').removeAt(i)">-</button>
+        		      </div>
+        		    </div>
+	          	</fieldset>
+	          	<div class="form-group row">
+          	    <div class="col-sm-2 col-sm-offset-10">
+          	      <button type="button" class="btn btn-link"
+          	              (click)="addNestedHardware()">Add another item</button>
+          	    </div>
+          	  </div>
+          	  <div class="form-group col-sm-12  text-right">
+          	  	<button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="addModulesForm.reset()">Close</button>
+          	  	<button type="button" class="btn btn-primary" [disabled]="!addModulesForm.valid" (click) = "createModule(addModulesForm.value)">Create</button>
+          	  </div>
+	          </div>
+	        </div>
+	      </form>
+	      <pre>
+	      	<!-- {{addModulesForm.value | json}} -->
+	      </pre>
+      </div>
+      <!-- <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" [disabled]="!addModulesForm.valid" (click) = "createModule(addModulesForm.value)">Create</button>
+      </div> -->
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="addontagModal" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+      	<h4 class="modal-title">Addon Tags</h4>
+        <button type="button" class="close" data-dismiss="modal" (click)="updatedAddontagsArr=[]; updatedAddonId = undefined;">&times;</button>
+        
+      </div>
+      <div class="modal-body">
+      	<form>
+      		<!-- <p>{{updatedAddontagsArr | json}}</p> -->
+			    <div class="checkbox" *ngFor="let tags of addontags">
+			      <label class="capitalize"><input type="checkbox" [attr.value] = "tags | json" class="mr-3" [checked]="updatedAddontagsArr.includes(tags.id)" (click)="onCheckboxChange($event)">{{tags.name}}</label>
+			    </div>
+			  </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="rk-interalBtnColor addCursor" (click)="updateAddonTagofAddon()">Update Addon Tags</button>
+      </div>
+    </div>
+  </div>
+</div>

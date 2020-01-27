@@ -1,0 +1,80 @@
+#slidecontainer {
+   width: 100%;
+}
+
+.title {
+  padding: 1.4rem 0rem;
+  background-color: #f7f7f7;
+  position: fixed;
+  width: 83.4%;
+  z-index: 4;
+  border-bottom: 1px solid #ccc;
+}
+
+.title h3 {
+  margin-bottom: 0;
+  margin-left: 10px;
+  font-size: 20px;
+  color: rgba(0, 0, 0, 0.55);
+}
+
+.title h3 span {
+  color: #000;
+}
+.marginTop{
+    margin-top: 4.2rem;
+}
+.slider {
+    -webkit-appearance: none;
+    width: 35.6rem;
+    height: 10px;
+    border-radius: 5px;
+    background: #e0f7fa;
+    outline: none;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+    border: 1px solid #0097a7;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 17px;
+    height: 17px;
+    border-radius: 20px;
+    background: #4CAF50;
+    cursor: pointer;
+    margin-top: -1px;
+    color: #0097a7 !important;
+}
+
+.slider::-moz-range-thumb {
+    width: 17px;
+    height: 17px;
+    border-radius: 20px;
+    background: #4CAF50;
+    cursor: pointer;
+    margin-top: -1px;
+    color: #0097a7 !important;
+}
+#slidecontainer input{
+    margin-bottom: 1.5rem;
+}
+.emi{
+    border-left: 4px solid #ccc;
+}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.rate{
+    max-width: 10rem;
+    padding: 0 0 0 1rem;
+}
+.form-control:disabled, .form-control[readonly]{
+    background-color: #fff;
+}
+.input-group-addon{
+    min-width: 2.5rem;
+}

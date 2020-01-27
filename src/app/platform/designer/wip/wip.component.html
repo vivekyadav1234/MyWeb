@@ -1,0 +1,1035 @@
+<div class="row ss-top-menu"> 
+    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-xs-4">
+        <span class="ss-link ss-text-light" style="vertical-align: -webkit-baseline-middle;" [routerLink]="['/designer/designer-wip-dashboard']">Wip Dashboard</span>
+        <span style="vertical-align: -webkit-baseline-middle;"> <i class="rightArrow fa fa-angle-right"></i> </span>
+        <span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;">Leads </span>
+    </div>
+    <div class="col-xl-5 col-lg-5 col-md-5 col-sm-5 col-xs-5">
+        <div class="ss-searchbox">
+          <i class="fa fa-search"></i>
+          <input class="form-control" type="text" placeholder="Type in name, contact, status, role, date, designer to search..." #search (keyup.enter)="onKey($event)">
+        </div>
+    </div> 
+    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-xs-3">
+        <a class="addCursor float-right downloadBtn" (click)="downloadExcel()">Download Lead</a> 
+    </div>
+  
+</div>
+
+<div class="row">
+    <div class="col-12" *ngIf="successalert">
+        <div class="alert-box grid-100" *ngIf="successMessage">
+            <div class="alert alert-success mt-3 text-center">
+                <a class="close link" data-dismiss="alert" (click)="successalert=false">×</a> {{successMessage}}
+            </div>
+        </div>
+    </div>
+    <div class="col-12" *ngIf="erroralert">
+        <div class="alert-box grid-100" *ngIf="errorMessage">
+            <div class="alert alert-danger mt-3 text-center">
+                <a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a> {{errorMessage}} 
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row justify-content-end">
+  <div class="col-12 my-2">
+    <div class="filterDiv pull-right">
+      <p class="d-inline-block m-0">Filter By - </p>
+      <select class="filterSelect" (change)="filterColumDropdownChange($event.target.value)" [(ngModel)]="filtercol1Val" id="filter1dropdown">
+        <!-- <option value="" disabled>Select Column</option> -->
+        <option value="all" selected><span class="capitalize" >All</span></option>
+        <option value="lead_created_at"><span class="capitalize">Lead Acquisition Date</span></option>
+        <option value="assigned_to_cm"><span class="capitalize">CM Assignment Date</span></option>
+        <option value="assigned_to_designer"><span class="capitalize">Designer Assignment Date</span></option>
+      </select>
+      <div style="display: none;" id="fromDateFilter"><label class="ml-2 mr-2">From Date</label><input type="date" name="" [(ngModel)]="fromDateFilter">
+      </div>
+      <div style="display: none;" id="toDateFilter"><label class="ml-2 mr-2">To Date</label><input type="date" name="" [(ngModel)]="toDateFilter" [min]="fromDateFilter"></div>
+      <button class="filterBtn" (click)="filterSubmit()">GO</button>
+    </div>
+
+
+  </div>
+</div>
+
+<div class="row mt-4 lappyView">
+
+    <div class="col-md-12">
+        <div class="tableDiv table-responsive">
+            <p class="text-center" *ngIf="usersList &&  usersList.length==0 ">No Leads</p>
+            <table class="table" *ngIf="usersList &&  usersList.length>0">
+                <thead>
+                    <tr>
+                        <th class="text-center firstTh">#</th>
+                         <th>
+                          NAME
+                          <i class="fa ml-2 fa-sort" *ngIf="column != 'name'" (click)="sortFunc(usersList,{property: 'name', direction: '1'})"></i><i class="fa ml-2 fa-sort-asc" *ngIf="column == 'name' && direction=='1' " (click)="sortFunc(usersList,{property: 'name', direction: '-1'})"></i><i class="fa ml-2 fa-sort-desc" *ngIf="column == 'name' && direction=='-1' " (click)="sortFunc(usersList,{property: 'name', direction: '1'})"></i>
+                        </th>
+                        <th>CURRENT STATUS</th>
+                        <th>SCHEDULE EVENT</th>
+                        <th>CHANGE STATUS</th>
+                        <!-- <th>CHANGE SUBSTATUS</th> -->
+                        <th class="lastTh"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let data of usersList | paginate: { itemsPerPage: per_page, currentPage: current_page, totalItems: total_page  }; let i = index; " [attr.data-index]="i" id="filteredLeadRow{{i}}">
+                        <td class="text-center">{{((current_page-1) * per_page) + (i+1)}}</td>
+                        <td>
+                            <span class="ss-link cursor-pointer" routerLink="/lead/{{data.id}}/activity-logs">{{data.name}}</span>
+                        </td>
+                        <td class="capitalize">
+                            <span *ngIf="data.project_details && data.project_details.status; else status_div">
+                            <ng-container *ngIf="(data.project_details.status!='on_hold' &&         data.project_details.status!='inactive' )">   {{data.project_details.status | replaceChar}} 
+                            <span><button  title="Upadte Remark" class="btn-change" data-toggle="modal"data-target="#statusModal0" (click)="getWip(data.project_details.remarks,data.project_details.id,data.project_details.user_id,data.project_details.status,data.email,data.event_scheduled_at.follow_up_call_time)"><i class="fa fa-plus-circle" aria-hidden="true"></i></button></span>
+                            <br>
+                            <span *ngIf="data.project_details.sub_status" style="font-weight: bold">({{data.project_details.sub_status | replaceChar}})</span><br>
+                            <span *ngIf="data.project_details.remarks">(Remark-{{ data.project_details.remarks }})</span><br>
+                            <span *ngIf="data.event_scheduled_at.follow_up_call_time">(FollowUp Time-{{ data.event_scheduled_at.follow_up_call_time | date:'dd/MM/yyyy - h:mm a'}})</span>
+                            
+                            </ng-container>
+                            <ng-container *ngIf="(data.project_details.status=='on_hold')">
+                                <a data-trigger="hover" title="Remarks" [attr.data-content]="data.project_details.remarks" class="pop" (mouseenter)="openpopup($event)">{{data.project_details.status | replaceChar}}</a>
+                                <span><button  title="Upadte Remark" class="btn-change" data-toggle="modal"data-target="#statusModal1" (click)="getCallBackTime(data.project_details.remarks,data.event_scheduled_at.on_hold_time,data.project_details.id,data.project_details.user_id,'on_hold')"><i class="fa fa-plus-circle" aria-hidden="true"></i></button></span>
+                                <p class="time-chng col-12" *ngIf="data.event_scheduled_at">{{data.event_scheduled_at.on_hold_time | date:'dd/MM/yyyy - h:mm a'}}</p>
+
+                            </ng-container>
+                            <ng-container *ngIf="(data.project_details.status=='inactive')">
+                                <a data-trigger="hover" title="Remarks" [attr.data-content]="data.project_details.remarks" class="pop" (mouseenter)="openpopup($event)">{{data.project_details.status | replaceChar}}</a>
+                                <span><button title="Upadte Remark" class="btn-change" data-toggle="modal"data-target="#statusModal2" (click)="getInactiveRemark(data.project_details.remarks,data.project_details.id,data.project_details.user_id,'inactive')"><i class="fa fa-plus-circle" aria-hidden="true"></i></button></span><br>
+                                <span *ngIf="data.project_details.reason_for_lost != null">Reason : {{data.project_details.reason_for_lost | replaceChar}}</span>
+                            </ng-container>
+                            </span>
+
+                            <ng-template #status_div>
+                                {{data.lead_status | replaceChar}}
+                            </ng-template>
+
+
+                        </td>
+
+                        <td>
+                          <button type="button" class="btn btn-pink" data-toggle="modal" data-target="#eventModal" *ngIf="role != 'sitesupervisor'" (click)="showEventModalFormDetails(data)" style="margin-top: -6px; height: 32px;">
+                            CREATE EVENT
+                          </button>
+                          <p *ngIf = "data.next_scheduled_event != null" style="margin-top: 6px;"><b>
+                            Next Event </b><br>
+                           Agenda: {{data.next_scheduled_event.agenda}} <br> Date & Time: {{data.next_scheduled_event.scheduled_at | date:'dd/MM/yyyy - h:mm a'}}
+                          </p>
+
+                        </td>
+                        
+                        <td class="ss-link">
+                            <select (change)="onStatusChange(data.project_details.user_id,data.project_details.id,$event.target.value)" class="custom-select">
+                  <option>Change Status</option>
+                 <!--  <option value="lost" [selected]="data.project_details.status === 'lost'">Lost</option>
+                  <option value="not_contactable" [selected]="data.project_details.status === 'not_contactable'">Not Contactable</option>
+                  <option value="follow_up" [selected]="data.project_details.status === 'follow_up'">Follow Up</option> -->
+                  <option value="wip" [selected]="data.project_details.status === 'wip'" *ngIf="!['on_hold', 'inactive'].includes(data.project_details.status)">WIP</option>
+                 <!--  <option value="pre_10_percent" [selected]="data.project_details.status === 'pre_10_percent'">Pre 10 Percent</option> -->
+                  <!-- <option value="10_50_percent" [selected]="data.project_details.status === '10_50_percent'">10-50 Percent</option>
+                  <option value="50_percent" [selected]="data.project_details.status === '50_percent'">50 Percent</option>
+                  <option value="installation" [selected]="data.project_details.status === 'installation'">Installation</option>
+                  <option value="handover" [selected]="data.project_details.status === 'handover'">Handover</option> -->
+                  <option value="on_hold" [selected]="data.project_details.status === 'on_hold'" *ngIf="!['on_hold', 'inactive'].includes(data.project_details.status)">On Hold</option>
+                  <option value="inactive" [selected]="data.project_details.status === 'inactive'"*ngIf="!['on_hold', 'inactive'].includes(data.project_details.status)">Inactive</option>
+                  <option value="active" [selected]="data.project_details.status === 'active'" *ngIf="['on_hold', 'inactive'].includes(data.project_details.status)">Active</option>
+                </select>
+                        </td>
+                        <!-- <td>
+                <select (change) = "onSubStatusChange(data.project_details.id,data.project_details.user_id, $event.target.value)" class="custom-select" *ngIf="data.project_details && isProjectInWipAndActive(data.project_details.status)">
+                  <option>Change sub status</option>
+                  <option value="meeting_fixed" [selected]="data.project_details.sub_status === 'meeting_fixed'">Meeting Fixed</option>
+                  <option value="floorplan_uploaded" [selected]="data.project_details.sub_status === 'floorplan_uploaded'">Req Sheet and Floor Plan Uploaded</option>
+                  <option value="initial_proposal_submitted" [selected]="data.project_details.sub_status === 'initial_proposal_submitted'">Initial Design and BOQ Submitted</option>
+                  <option value="initial_proposal_accepted" [selected]="data.project_details.sub_status === 'initial_proposal_accepted'">Initial Design and BOQ Accepted</option>
+                  <option value="initial_proposal_rejected" [selected]="data.project_details.sub_status === 'initial_proposal_rejected'">Initial Design and BOQ Rejected</option>
+                </select>
+              </td> -->
+                        <td>
+                            <!-- <img src="assets/img/dashboard/doc.png"> -->
+                            <i class="fa fa-phone cursor-pointer" (click)="callToLead(data.lead_details.contact)" style="    font-size: 1.5rem; color: #8F0020;"></i>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="text-center" *ngIf="usersList && usersList.length >0">
+                <pagination-controls autoHide="true" (pageChange)="current_page = getWipList($event)"></pagination-controls>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row my-4 mobView">
+    <div class="col-12">
+        <div *ngFor="let data of usersList; let i = index; " [attr.data-index]="i" id="filteredLeadRow{{i}}">
+            <div class="card card-body mobCard mb-2">
+                <a data-toggle="collapse" href="#tableDiv{{i}}">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                <h4 class="ss-link cursor-pointer" routerLink="/lead/{{data.id}}/activity-logs">Name: {{data.name}}</h4>
+                <div class="row">
+                    <p class="col-5 mb-0" *ngIf="data.lead_details!=null">S.N : {{i+1}}</p>
+                    <h6 class="col-7 mb-0" *ngIf="data.project_details && data.project_details.status; else status_div">
+                        <ng-container *ngIf="(data.project_details.status!='follow_up' && data.project_details.status!='lost')">Status: {{data.project_details.status | replaceChar}}
+                        </ng-container>
+                        <ng-container *ngIf="(data.project_details.status=='follow_up')">
+                            <a data-trigger="hover" title="Remarks" [attr.data-content]="data.project_details.remarks" class="pop" (mouseenter)="openpopup($event)">{{data.project_details.status | replaceChar}}</a>
+                            <p class="time-chng">Status: {{data.event_scheduled_at.follow_up_time | date:'dd/MM/yyyy - h:mm a'}}</p>
+                        </ng-container>
+                        <ng-container *ngIf="(data.project_details.status=='lost')">
+                            <a data-trigger="hover" title="Remarks" [attr.data-content]="data.project_details.reason_for_lost | replaceChar " class="pop" (mouseenter)="openpopup($event)">Status: {{data.project_details.status | replaceChar}}</a>
+                        </ng-container>
+                    </h6>
+                </div>
+            </div>
+            <div class="collapse" id="tableDiv{{i}}">
+                <div class="card card-body py-0 mb-3">
+                    <div class="row">
+                        <div class="col-6 py-3 borderRight">
+                            <p class="tableInner">CHANGE STATUS</p>
+                            <select (change)="onStatusChange(data.project_details.user_id, $event.target.value)" class="custom-select">
+                <option>Change Status</option>
+                <!--  <option value="lost" [selected]="data.project_details.status === 'lost'">Lost</option>
+                                <option value="not_contactable" [selected]="data.project_details.status === 'not_contactable'">Not Contactable</option>
+                                <option value="follow_up" [selected]="data.project_details.status === 'follow_up'">Follow Up</option> -->
+                <option value="wip" [selected]="data.project_details.status === 'wip'" *ngIf="!['on_hold', 'inactive'].includes(data.project_details.status)">WIP</option>
+                <!--  <option value="pre_10_percent" [selected]="data.project_details.status === 'pre_10_percent'">Pre 10 Percent</option> -->
+                <!-- <option value="10_50_percent" [selected]="data.project_details.status === '10_50_percent'">10-50 Percent</option>
+                                <option value="50_percent" [selected]="data.project_details.status === '50_percent'">50 Percent</option>
+                                <option value="installation" [selected]="data.project_details.status === 'installation'">Installation</option>
+                                <option value="handover" [selected]="data.project_details.status === 'handover'">Handover</option> -->
+                <option value="on_hold" [selected]="data.project_details.status === 'on_hold'" *ngIf="!['on_hold', 'inactive'].includes(data.project_details.status)">On Hold</option>
+                <option value="inactive" [selected]="data.project_details.status === 'inactive'" *ngIf="!['on_hold', 'inactive'].includes(data.project_details.status)">Inactive</option>
+                <option value="active" [selected]="data.project_details.status === 'active'" *ngIf="['on_hold', 'inactive'].includes(data.project_details.status)">Active</option>
+              </select>
+                        </div>
+                        <div class="col-6 py-3">
+                            <p class="tableInner">CHANGE SUBSTATUS</p>
+                            <select (change)="onSubStatusChange(data.project_details.id,data.project_details.user_id, $event.target.value)" class="custom-select" *ngIf="data.project_details && isProjectInWipAndActive(data.project_details.status)">
+                <option>Change sub status</option>
+                <option value="meeting_fixed" [selected]="data.project_details.sub_status === 'meeting_fixed'">Meeting Fixed</option>
+                <option value="floorplan_uploaded" [selected]="data.project_details.sub_status === 'floorplan_uploaded'">Req Sheet and Floor Plan Uploaded</option>
+                <option value="initial_proposal_submitted" [selected]="data.project_details.sub_status === 'initial_proposal_submitted'">Initial Design and BOQ Submitted</option>
+                <option value="initial_proposal_accepted" [selected]="data.project_details.sub_status === 'initial_proposal_accepted'">Initial Design and BOQ Accepted</option>
+                <option value="initial_proposal_rejected" [selected]="data.project_details.sub_status === 'initial_proposal_rejected'">Initial Design and BOQ Rejected</option>
+              </select>
+                        </div>
+                        <div class="col-12 callBtn" (click)="callToLead(data.lead_details.id)">
+                            <span>CALL</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Status modal -->
+<div class="modal fade" id="statusModal" tabindex="-1" role="dialog" aria-labelledby="SmsModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document" style="width: 55rem;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5>Follow-up Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <img class="close" data-dismiss="modal" src="https://www.homepolish.com/assets/close-ee1bfd7a4473933b6dd934b2c284dc856361b63581c8f43b8cdc1abe07c91765.svg">
+    </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="form-group row">
+                    <label for="example-text-input" class="col-2 col-form-label">Callback Date</label>
+                    <div class="col-10">
+                        <input type="datetime-local" name="followup-details" id="followup-details" class="form-control">
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <input type="button" id="followup-button" value="Update" class="btn btn-pink" (click)="onCallbackChange()">
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Status modal end -->
+
+<!-- details modal start-->
+<div class="modal fade" id="leadDetailsModal" tabindex="-1" role="dialog" aria-labelledby="leadDetailsModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="btnGroup">
+                    <button class="upload0 actBtn" (click)="basicDetails()">Basic Details</button>
+                    <button class="upload1" (click)="projectDetails()">Project Details</button>
+                    <button class="upload3" (click)="userStatus()">Change Status</button>
+                    <button class="upload2" (click)="questionnaire(); getUserQuestionnaireDetails(leadIdForModal)">CS Questionnaire</button>
+                    <button class="upload4" (click)="designerquestionnaire1(); getDesignerBookingForm(projectDetailsForModal.id)">Booking Form 1</button>
+                    <button class="upload5" (click)="designerquestionnaire2(); getDesignerBookingForm(projectDetailsForModal.id)">Booking Form 2</button>
+                </div>
+                <h5 class="modal-title mt-5 addClass" id="exampleModalLabel">Basic Details</h5>
+                <h5 class="modal-title mt-5 addClass1 hideClass" id="exampleModalLabel">Project Details</h5>
+                <h5 class="modal-title mt-5 addClass3 hideClass" id="exampleModalLabel">Change Status</h5>
+                <h5 class="modal-title mt-5 addClass2 hideClass" id="exampleModalLabel">CS Questionnaire</h5>
+                <h5 class="modal-title mt-5 addClass4 hideClass" id="exampleModalLabel">Booking Form 1</h5>
+                <h5 class="modal-title mt-5 addClass5 hideClass" id="exampleModalLabel">Booking Form 2</h5>
+                <button type="button" class="close close1" data-dismiss="modal" aria-label="Close">
+                <img class="close" (click)="closeModal()" data-dismiss="modal" src="https://www.homepolish.com/assets/close-ee1bfd7a4473933b6dd934b2c284dc856361b63581c8f43b8cdc1abe07c91765.svg">
+            </button>
+            </div>
+            <div class="modal-body leadView">
+                <div class="col-12" *ngIf="successalert">
+                    <div class="alert-box grid-100" *ngIf="successMessage">
+                        <div class="alert alert-success mt-3 text-center">
+                            <a class="close link" data-dismiss="alert" (click)="successalert=false">×</a> {{successMessage}}
+                        </div>
+                    </div>
+                </div>
+                <div class="row addClass" *ngIf="customerDetails">
+                    <div class="col-sm-12 col-md-11">
+                        <div class="row">
+                            <div class="col-lg-9">
+                                <div class="topSpace">
+                                    <form class="viewProfileForm">
+                                        <div class="row">
+                                            <div class="col-2 mb-4">
+                                                <label class="productLabel"><strong>Name:</strong></label>
+                                            </div>
+                                            <div class="col-10 mb-4">
+                                                <input type="text" class="form-control productInput" placeholder=" {{customerDetails.name | ucwords}}" readonly/>
+                                            </div>
+                                            <div class="col-2 mb-4">
+                                                <label class="productLabel"><strong>Email:</strong></label>
+                                            </div>
+                                            <div class="col-10 mb-4">
+                                                <input type="text" class="form-control productInput" placeholder="{{customerDetails.email}}" readonly/>
+                                            </div>
+                                            <!-- <div class="col-2 mb-4">
+                              <label class="productLabel"><strong>Contact:</strong></label>
+                            </div> -->
+                                            <!-- <div class="col-10 mb-4">
+                                <input type="text" class="form-control productInput"
+                                     placeholder="{{customerDetails.contact != '' && customerDetails.contact != null && customerDetails.contact || 'NA'}}" readonly/>
+                            </div> -->
+                                            <div class="col-2 mb-4">
+                                                <label class="productLabel"><strong>Pin code:</strong></label>
+                                            </div>
+                                            <div class="col-10 mb-4">
+                                                <input type="text" class="form-control productInput" placeholder="{{customerDetails.pincode != '' && customerDetails.pincode != null && customerDetails.pincode || 'NA'}}" readonly/>
+                                            </div>
+                                            <div class="col-2 mb-4">
+                                                <label class="productLabel"><strong>Created Date:</strong></label>
+                                            </div>
+                                            <div class="col-10 mb-4">
+                                                <input type="text" class="form-control productInput" placeholder="{{customerDetails.created_at | date:'dd/MM/yyyy @ h:mma'}}" readonly/>
+                                            </div>
+                                            <div class="col-2 mb-4">
+                                                <label class="productLabel"><strong>GST Number:</strong></label>
+                                            </div>
+                                            <div class="col-10 mb-4">
+                                                <input type="text" class="form-control productInput" placeholder="{{customerDetails.gst_number != '' && customerDetails.gst_number != null && customerDetails.gst_number || 'NA'}}" readonly/>
+                                            </div>
+                                            <div class="col-2 mb-4">
+                                                <label class="productLabel"><strong>PAN:</strong></label>
+                                            </div>
+                                            <div class="col-10 mb-4">
+                                                <input type="text" class="form-control productInput" placeholder="{{customerDetails.pan != '' && customerDetails.pan != null && customerDetails.pan || 'NA'}}" readonly/>
+                                            </div>
+                                            <div class="col-2 mb-4">
+                                                <label class="productLabel"><strong>Address Proof:</strong></label>
+                                            </div>
+                                            <div class="col-10 mb-4">
+                                                <a href="{{customerDetails.address_proof}}" *ngIf="!(customerDetails.address_proof_content_type == 'image/png' || customerDetails.address_proof_content_type == 'image/jpg' || customerDetails.address_proof_content_type == 'image/jpeg' || customerDetails.address_proof_content_type == 'image/svg' || customerDetails.address_proof_content_type == null) && (customerDetails.address_proof != '/images/original/missing.png')">Download Address Proof</a>
+                                                <a href="{{customerDetails.address_proof}}" *ngIf="(customerDetails.address_proof_content_type == 'image/png' || customerDetails.address_proof_content_type == 'image/jpg' || customerDetails.address_proof_content_type == 'image/jpeg' || customerDetails.address_proof_content_type == 'image/svg' || customerDetails.address_proof_content_type == null) && (customerDetails.address_proof != '/images/original/missing.png') ">Download Address Proof</a>
+                                                <input type="text" class="form-control productInput" placeholder="NA" *ngIf="customerDetails.address_proof == '/images/original/missing.png'" readonly/>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 text-center mt-5 topSpace">
+                                <img src="{{customerDetails.avatar}}" height="170px" width="170px" class="profileImg" *ngIf="customerDetails.avatar != '/images/original/missing.png'">
+                                <img *ngIf="customerDetails.avatar == '/images/original/missing.png'" height="170px" width="170px" class="profileImg" src="assets/v3/img/profile.jpeg">
+                                <p *ngIf="profile">{{customerDetails.roles[0] | replaceChar | ucwords }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row addClass1 hideClass" *ngIf="customerDetails">
+                    <div class="col-sm-12 col-md-11">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="topSpace">
+                                    <form class="viewProfileForm">
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="col-2 mb-4">
+                                                    <label class="productLabel"><strong>Name:</strong></label>
+                                                </div>
+                                                <div class="col-10 mb-4">
+                                                    <input type="text" class="form-control productInput" placeholder="{{projectDetailsForModal.name != '' && projectDetailsForModal.name != null && projectDetailsForModal.name || 'NA'}}" readonly/>
+                                                </div>
+                                                <div class="col-2 mb-4">
+                                                    <label class="productLabel"><strong>Details:</strong></label>
+                                                </div>
+                                                <div class="col-10 mb-4">
+                                                    <textarea class="form-control productInput" placeholder="{{projectDetailsForModal.details != '' && projectDetailsForModal.details != null && projectDetailsForModal.details || 'NA'}}" readonly rows="2"></textarea>
+                                                    <!--  <input type="text" class="form-control productInput"
+                                     placeholder="{{projectDetailsForModal.details != '' && projectDetailsForModal.details != null && projectDetailsForModal.details || 'NA'}}" readonly/> -->
+                                                </div>
+                                                <div class="col-2 mb-4">
+                                                    <label class="productLabel"><strong>Created Date:</strong></label>
+                                                </div>
+                                                <div class="col-10 mb-4">
+                                                    <input type="text" class="form-control productInput" placeholder="{{projectDetailsForModal.created_at |date:'dd/MM/yyyy @ h:mma'}}" readonly/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row addClass2 hideClass" *ngIf="customerDetails">
+                    <div class="col-sm-12 col-md-12">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="topSpace">
+                                    <p class="text-center my-5" style="font-size: 18px;" *ngIf="customerDetails.lead_questionnaire == null">No Questionnaire filled for this user</p>
+                                    <form [formGroup]="leadquestionnaire" *ngIf="customerDetails.lead_questionnaire!= null">
+                                        <div class="row question">
+                                            <div class="col-md-6 mt-3">
+                                                <label class="customLabel"><strong>Customer Name:</strong></label>
+                                                <input type="text" class="form-control" placeholder="{{customerDetails.lead_questionnaire.customer_name}}" formControlName="customer_name" readonly>
+                                            </div>
+
+                                            <div class="col-md-6 mt-3">
+                                                <label class="customLabel"><strong>Customer Phone No:</strong></label>
+                                                <input type="number" class="form-control" placeholder="{{customerDetails.lead_questionnaire.phone}}" formControlName="phone" readonly>
+                                            </div>
+                                            <div class="col-md-6 mt-4">
+                                                <label class="customLabel"><strong>Project Name:</strong></label>
+                                                <input type="text" class="form-control" placeholder="{{customerDetails.lead_questionnaire.project_name}}" formControlName="project_name" readonly>
+                                            </div>
+
+                                            <div class="col-md-6 mt-4">
+                                                <label class="customLabel"><strong>City:</strong></label>
+                                                <input type="text" class="form-control" placeholder="{{customerDetails.lead_questionnaire.city}}" formControlName="city" readonly>
+                                            </div>
+                                            <div class="col-md-6 mt-4">
+                                                <label class="customLabel"><strong>Location:</strong></label>
+                                                <input type="text" class="form-control" placeholder="{{customerDetails.lead_questionnaire.location}}" formControlName="location" readonly>
+                                            </div>
+
+                                            <div class="col-md-6 mt-4">
+                                                <label class="customLabel"><strong>Project Type:</strong></label>
+                                                <input type="text" class="form-control" placeholder="{{customerDetails.lead_questionnaire.project_type}}" formControlName="project_type" readonly>
+                                            </div>
+                                            <div class="col-md-6 mt-4">
+                                                <label class="customLabel"><strong>Type of Accommodation:</strong> </label>
+                                                <input type="text" class="form-control" placeholder="{{customerDetails.lead_questionnaire.accomodation_type}}" formControlName="accomodation_type" readonly>
+                                            </div>
+
+                                            <div class="col-md-6 mt-4">
+                                                <label class="customLabel"><strong>Scope of work</strong></label>
+                                                <input type="text" class="form-control" placeholder="{{customerDetails.lead_questionnaire.scope_of_work}}" formControlName="scope_of_work" readonly>
+                                            </div>
+                                            <div class="col-md-6 mt-4" *ngIf="customerDetails.lead_questionnaire.remarks_of_sow">
+                                                <label class="customLabel"><strong>Remarks (Scope of work)</strong></label>
+                                                <input type="text" class="form-control" placeholder="{{customerDetails.lead_questionnaire.remarks_of_sow}}" formControlName="scope_of_work" readonly>
+                                            </div>
+                                            <div class="col-md-6 mt-4">
+                                                <label class="customLabel"><strong>Possession status:</strong> </label>
+                                                <input type="text" class="form-control" placeholder="{{customerDetails.lead_questionnaire.possession_status}}" formControlName="possession_status" readonly>
+                                            </div>
+                                            <div class="col-md-6 mt-4" *ngIf="customerDetails.lead_questionnaire.possession_status_date && customerDetails.lead_questionnaire.possession_status!='Possession Taken' ">
+                                                <label class="customLabel"><strong>Select Possession Month and Year </strong></label>
+                                                <input class="form-control" type="text" formControlName="possession_status_date" readonly placeholder="{{customerDetails.lead_questionnaire.possession_status_date}}">
+                                            </div>
+
+                                            <div class="col-md-6 mt-4">
+                                                <label class="customLabel"><strong>Do you have a home loan against the property?</strong> </label>
+                                                <input type="text" class="form-control" placeholder="{{customerDetails.lead_questionnaire.have_homeloan}}" formControlName="have_homeloan" readonly>
+                                            </div>
+                                            <div class="col-md-6 mt-4">
+                                                <label class="customLabel"><strong>Home Value(In Rs. Lacs)</strong></label>
+                                                <input type="text" class="form-control" placeholder="{{customerDetails.lead_questionnaire.home_value}}" formControlName="home_value" readonly>
+                                            </div>
+
+                                            <div class="col-md-6 mt-4">
+                                                <label class="customLabel"><strong>Budget Value(In Rs. Lacs)</strong> </label>
+                                                <input type="text" class="form-control" placeholder="{{customerDetails.lead_questionnaire.budget_value}}" formControlName="budget_value" readonly>
+                                            </div>
+                                            <div class="col-md-6 mt-4">
+                                                <label class="customLabel"><strong>Call Back Day:</strong> </label>
+                                                <input type="text" class="form-control" placeholder="{{customerDetails.lead_questionnaire.call_back_day}}" formControlName="call_back_day" readonly>
+                                            </div>
+
+                                            <div class="col-md-6 mt-4">
+                                                <label class="customLabel"><strong>Call Back Time:</strong> </label>
+                                                <input type="text" class="form-control" placeholder="{{customerDetails.lead_questionnaire.call_back_time}}" formControlName="call_back_time" readonly>
+                                            </div>
+                                            <div class="col-md-6 mt-4">
+                                                <label class="customLabel"><strong>Do you have a floor plan?</strong> </label>
+                                                <input type="text" class="form-control" placeholder="{{customerDetails.lead_questionnaire.have_floorplan}}" formControlName="have_floorplan" readonly>
+                                            </div>
+                                            <div class="col-md-6 mt-4" *ngIf="customerDetails.lead_questionnaire.lead_floorplan_url != '/images/original/missing.png' && customerDetails.lead_questionnaire.have_floorplan=='Yes'">
+                                                <label class="customLabel"><strong>Uploaded Floorplan</strong> </label><br>
+                                                <a href="{{customerDetails.lead_questionnaire.lead_floorplan_url}}" target="_blank" style="color: #007bff">View Floorplan </a>
+                                            </div>
+                                            <div class="col-md-6 mt-4" *ngIf="customerDetails.lead_questionnaire.lead_floorplan_url == '/images/original/missing.png' && customerDetails.lead_questionnaire.have_floorplan=='Yes'">
+                                                <label class="customLabel"><strong>Uploaded Floorplan</strong> </label><br>
+                                                <span class="text-danger">Floorplan not available </span>
+                                            </div>
+                                            <div class="col-md-6 mt-4">
+                                                <label class="customLabel"><strong>Additional Comments:</strong> </label>
+                                                <input type="text" class="form-control" placeholder="{{customerDetails.lead_questionnaire.additional_comments}}" formControlName="additional_comments" readonly>
+                                            </div>
+                                            <!-- <div class="col-md-12 mt-4 ml-0">
+                                                    <div class="form-group col-md-12">
+                                                        <button type="button" class="btn btn-pink addCursor" (click)="addAlternateNumberForm()">Add Alternate Number Wip</button>
+                                                    </div>
+                                                    <div *ngIf="showAlternateForm">
+                                                    <div *ngFor="let field of fields" class="col-6 d-inline-block mb-3">
+                                                        <app-dynamic-form [field]="field" [form]="alternateNumberForm"></app-dynamic-form>
+                                                    </div>
+                                                  </div>
+                                            </div> -->
+
+                                            <!--  <div class="col">
+                            <label class="customLabel"><strong>Lead Generator:</strong> </label>
+                            <input type="text" class="form-control" placeholder="{{customerDetails.lead_questionnaire.lead_generator}}" formControlName="lead_generator" readonly>
+                        </div> -->
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row addClass3 hideClass" *ngIf="customerDetails">
+                    <div class="col-sm-12 col-md-12">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="topSpace">
+                                    <form class="" [formGroup]="customerStatusUpdateForm">
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <label><strong>Select Status</strong></label>
+                                                    <select class="form-control" (change)="setUserStatus($event.target.value)" formControlName="customer_status">
+                                <option value="" disabled>Select Status</option>
+                                <option value="meeting_fixed">Meeting Fixed</option>
+                                <option value="follow_up">Follow Up</option>
+                                <option value="lost">Lost</option>
+                                <option value="not_contactable">Not Contactable</option>
+                              </select>
+                                                </div>
+                                                <div class="col-6" id="followupdatetime" style="display: none;">
+                                                    <div class="form-group">
+                                                        <label><strong>Follow up time:</strong></label>
+                                                        <!-- <input class="form-control" type="datetime-local" formControlName="customer_meeting_time"> -->
+                                                        <input [owlDateTime]="dt2" [owlDateTimeTrigger]="dt2" placeholder="Enter Date & Time" formControlName="customer_meeting_time" class="form-control">
+                                                        <owl-date-time #dt2></owl-date-time>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6" style="display: none;" id="lostremark">
+                                                    <div class="form-group">
+                                                        <label><strong>Remarks:</strong></label>
+                                                        <textarea class="form-control" rows="2" formControlName="customer_remarks"></textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6" id="meetingdatetime" style="display: none;">
+                                                    <div class="form-group">
+                                                        <label><strong>Meeting time</strong> </label>
+                                                        <!--  <input class="form-control" type="datetime-local" formControlName="customer_meeting_time"> -->
+
+                                                        <input [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1" placeholder="Enter Date & Time" formControlName="customer_meeting_time" class="form-control">
+                                                        <owl-date-time #dt1></owl-date-time>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div align="right" style="margin-top: 10px;">
+                                                <button class="btn btn-dark addCursor" type="submit" (click)="updateStatus(customerStatusUpdateForm.value)" [disabled]="!customerStatusUpdateForm.valid">Update</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row addClass4 hideClass" *ngIf="customerDetails">
+                    <div class="col-sm-12 col-md-12">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="topSpace">
+                                    <form [formGroup]="designerBookingForm1" (ngSubmit)="designerBookingForm1Submit(designerBookingForm1.value,'bookingForm1')">
+                                        <div class="row question" *ngIf="bookingFormDetails">
+                                            <div class="col-md-6 mt-3">
+                                                <label class="customLabel"><strong>Customer Name </strong></label>
+                                                <input type="text" class="form-control" placeholder="{{customerDetails.name}}" formControlName="customer_name" readonly>
+                                            </div>
+                                            <div class="col-md-6 mt-3">
+                                                <label class="customLabel"><strong>Customer Age </strong></label>
+                                                <input type="text" class="form-control" placeholder="" formControlName="customer_age">
+                                            </div>
+                                            <div class="col-md-12 mt-4">
+                                                <label class="customLabel"><strong>Profession / Background of the Client </strong></label>
+                                                <input type="text" class="form-control" placeholder="" formControlName="profession">
+                                            </div>
+                                            <div class="col-md-12 mt-4">
+                                                <label class="customLabel"><strong>Family Background of members staying in the house </strong></label>
+                                                <input type="text" class="form-control" formControlName="family_profession" placeholder="">
+                                            </div>
+                                            <div class="col-md-12 mt-4">
+                                                <label class="customLabel"><strong>Age of the house or structure of the house/area which needs to be remodelled or refurbish</strong></label>
+                                                <input type="text" class="form-control" formControlName="age_house" placeholder="">
+                                            </div>
+
+                                            <div class="col-md-12 mt-4">
+                                                <label class="customLabel"><strong>Lifestyle of the members staying in the house</strong></label>
+                                                <input type="text" class="form-control" formControlName="lifestyle" placeholder="">
+                                            </div>
+                                            <div class="col-md-12 mt-4">
+                                                <label class="customLabel"><strong>What do they love about the house or a particular area in the house. (e.g. Warm corners, Cozy corner, Family space, Activity space)</strong> </label>
+                                                <input type="text" class="form-control" formControlName="house_positive_features" placeholder="">
+                                            </div>
+                                            <div class="col-md-12 mt-4">
+                                                <label class="customLabel"><strong>Something which they don’t like in the house or a particular area. (Negative space, Passage areas, No ventilation)</strong></label>
+                                                <input type="text" formControlName="house_negative_features" class="form-control">
+                                            </div>
+                                            <div class="col-md-12 mt-4">
+                                                <label class="customLabel"><strong>Any inspirational references they have in their mind which they want to duplicate </strong></label>
+                                                <input type="text" formControlName="inspiration" class="form-control col-md-7" style="display: inline;">
+                                                <input class="form-control col-md-4" type="file" (change)="onChange($event)" name="attachment_file" ngModel #attachment_file="ngModel" [ngModelOptions]="{standalone: true}" style="display: inline;"><br>
+                                                <a href="{{bookingFormDetails.designer_booking_form.general.inspiration_image}}" *ngIf="bookingFormDetails && bookingFormDetails.designer_booking_form.general.inspiration_image!='/images/original/missing.png'" target="_blank">View Reference</a>
+                                            </div>
+                                            <div class="col-md-12 mt-4">
+                                                <label class="customLabel"><strong>Any preferred colour tones/hues/shades or antiques, or decor</strong> </label>
+                                                <input type="text" formControlName="color_tones" class="form-control">
+                                            </div>
+                                            <div class="col-md-12 mt-4">
+                                                <label class="customLabel"><strong>Is there any particular theme which interests you for the look of the place? </strong></label>
+                                                <input class="form-control" formControlName="theme" type="text">
+                                            </div>
+                                            <div class="col-md-12 mt-4">
+                                                <label class="customLabel"><strong>How do they use this house/room (Functionality of the house, Will they lease it out Or Occupy it themselves)?</strong> </label>
+                                                <input type="text" formControlName="functionality" class="form-control">
+                                            </div>
+                                            <div class="col-md-12 mt-4">
+                                                <label class="customLabel"><strong> Do you need  a false ceiling for the space?</strong></label>
+                                                <input type="text" formControlName="false_ceiling" class="form-control">
+                                            </div>
+                                            <div class="col-md-12 mt-4">
+                                                <label class="customLabel"><strong>Will there be changes in electrical points, adding new ones like changing the TV point?</strong> </label>
+                                                <input type="text" formControlName="electrical_points" class="form-control">
+                                            </div>
+                                            <div class="col-md-12 mt-4">
+                                                <label class="customLabel"><strong>Are there any special needs/wants that I as a designer should take into consideration?</strong> </label>
+                                                <input type="text" formControlName="special_needs" class="form-control">
+                                            </div>
+                                            <div class="col-md-12 mt-4">
+                                                <label class="customLabel"><strong>Do you want to consider Vastu Shastra  in your design, and what are the things that you want to consider into it?</strong> </label>
+                                                <input type="text" formControlName="vastu_shastra" class="form-control">
+                                            </div>
+                                            <div class="col-md-12 mt-4">
+                                                <label class="customLabel"><strong>Do they want to accomplish this all at once or in phases(May be first just the living area / Only kitchen / Only furniture works etc)</strong> </label>
+                                                <input type="text" formControlName="all_at_once" class="form-control">
+                                            </div>
+                                            <div class="col-md-12 mt-4">
+                                                <label class="customLabel"><strong>Any budget range they have set in their mind (Approximate ball park figure and range)</strong> </label>
+                                                <input type="text" formControlName="budget_range" class="form-control">
+                                            </div>
+                                            <div class="col-md-12 mt-4">
+                                                <label class="customLabel"><strong>Any particular design style in accordance to their tastes(Contemporary,  Modern,  Elegant, Royal, Traditional Or Ethnic styles)</strong> </label>
+                                                <input type="text" formControlName="design_style_tastes" class="form-control">
+                                            </div>
+                                            <div class="col-md-12 mt-4">
+                                                <label class="customLabel"><strong>Do they want more of storage space in the house, where, and what do they want to store?</strong> </label>
+                                                <input type="text" formControlName="storage_space" class="form-control">
+                                            </div>
+                                            <div class="col-md-12 mt-4">
+                                                <label class="customLabel"><strong>How do they want the mood of the house to be created. (Formal, Relaxed, Warm, Cool, Lively, Spacious etc)?</strong> </label>
+                                                <input type="text" formControlName="mood" class="form-control">
+                                            </div>
+                                            <div class="col-md-12 mt-4">
+                                                <label class="customLabel"><strong>What are the enhancements which needs to be considered like furniture, flooring, re-upholstery, remodelling, space planning, wall & floor coverings, lighting etc?</strong> </label>
+                                                <input type="text" formControlName="enhancements" class="form-control">
+                                            </div>
+                                            <div class="col-md-12 mt-4">
+                                                <label class="customLabel"><strong>Will they like to come to our experience centre, to discuss the details in person?</strong> </label>
+                                                <input type="text" formControlName="discuss_in_person" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12 mt-4">
+                                                <button class="button_emi button" id="designerBookingForm1Button">SUBMIT</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row addClass5 hideClass" *ngIf="customerDetails">
+                    <div class="col-sm-12 col-md-12">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="topSpace">
+                                    <form [formGroup]="designerBookingForm1" (ngSubmit)="designerBookingForm1Submit(designerBookingForm1.value,'bookingForm2')">
+                                        <div class="row question" *ngIf="bookingFormDetails">
+                                            <div class="col-md-6 mt-3">
+                                                <label class="customLabel"><strong>Customer Name </strong></label>
+                                                <input type="text" class="form-control" placeholder="{{customerDetails.name}}" readonly formControlName="customer_name">
+                                            </div>
+                                            <div class="col-md-6 mt-3">
+                                                <label class="customLabel"><strong>Customer Age </strong></label>
+                                                <input type="text" class="form-control" placeholder="" formControlName="customer_age">
+                                            </div>
+                                            <div class="col-md-12 mt-4">
+                                                <label class="customLabel"><strong>Profession / Background of the Client </strong></label>
+                                                <input type="text" class="form-control" placeholder="" formControlName="profession">
+                                            </div>
+
+                                            <div class="col-md-12 mt-4">
+                                                <label class="customLabel"><strong>Family Background of members staying in the house </strong></label>
+                                                <input type="text" class="form-control" placeholder="" formControlName="family_profession">
+                                            </div>
+                                            <div class="col-md-12 mt-4">
+                                                <label class="customLabel"><strong>How old is the kitchen</strong></label>
+                                                <input type="text" class="form-control" placeholder="" formControlName="mk_age">
+                                            </div>
+
+                                            <div class="col-md-12 mt-4">
+                                                <label class="customLabel"><strong>Lifestyle of the members staying in the house</strong></label>
+                                                <input type="text" class="form-control" placeholder="" formControlName="mk_lifestyle">
+                                            </div>
+                                            <div class="col-md-12 mt-4">
+                                                <label class="customLabel"><strong>Are they planning to gut the kitchen area</strong> </label>
+                                                <input type="text" class="form-control" placeholder="" formControlName="mk_gut_kitchen">
+                                            </div>
+                                            <div class="col-md-12 mt-4">
+                                                <label class="customLabel"><strong>Are they planning to keep the same layout & simply make cosmetic changes</strong></label>
+                                                <input type="text" class="form-control" formControlName="mk_same_layout">
+                                            </div>
+                                            <div class="col-md-12 mt-4">
+                                                <label class="customLabel"><strong>What kind of improvements are they looking for in a new kitchen (Upgraded electrical service, Better lighting, Additional storage space. ) </strong></label>
+                                                <input type="text" class="form-control" formControlName="mk_improvements">
+                                            </div>
+                                            <div class="col-md-12 mt-4">
+                                                <label class="customLabel"><strong>Some special requirements in a new kitchen?</strong> </label>
+                                                <input type="text" class="form-control" formControlName="mk_special_requirements">
+                                            </div>
+                                            <div class="col-md-12 mt-4">
+                                                <label class="customLabel"><strong>Who is the primary cook? And what kind of cooking they have on a regular basis (Veg / Non Veg) </strong></label>
+                                                <input class="form-control" type="text" formControlName="mk_cooking_details">
+                                            </div>
+                                            <div class="col-md-12 mt-4">
+                                                <label class="customLabel"><strong>List of appliances/white goods/smaller electrical appliances(Microwave / Oven / Mixie)</strong> </label>
+                                                <input type="text" class="form-control" formControlName="mk_appliances">
+                                            </div>
+                                            <div class="col-md-12 mt-4">
+                                                <label class="customLabel"><strong> What is the family eating area as in  like kitchen area, dining table, counter space?</strong></label>
+                                                <input type="text" class="form-control" formControlName="mk_family_eating_area">
+                                            </div>
+                                            <div class="col-md-12 mt-4">
+                                                <label class="customLabel"><strong>How often do they entertain guests?</strong> </label>
+                                                <input type="text" class="form-control" formControlName="mk_guest_frequence">
+                                            </div>
+                                            <div class="col-md-12 mt-4">
+                                                <label class="customLabel"><strong>Storage patterns like monthly, yearly, as required basis?</strong> </label>
+                                                <input type="text" class="form-control" formControlName="mk_storage_patterns">
+                                            </div>
+                                            <div class="col-md-12 mt-4">
+                                                <label class="customLabel"><strong>What kind of cabinets facing they are looking at (Glossy / Matt)</strong> </label>
+                                                <input type="text" class="form-control" formControlName="mk_cabinet_finishing">
+                                            </div>
+                                            <div class="col-md-12 mt-4">
+                                                <label class="customLabel"><strong>Counter top material/backsplash materials to be discussed</strong> </label>
+                                                <input type="text" class="form-control" formControlName="mk_countertop_materials">
+                                            </div>
+                                            <div class="col-md-12 mt-4">
+                                                <label class="customLabel"><strong>Any colour/mood for the look preferred?</strong> </label>
+                                                <input type="text" class="form-control" formControlName="mk_mood">
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12 mt-4">
+                                                <button class="button_emi button" id="designerBookingForm2Button">SUBMIT</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- details modal end-->
+
+
+<!-- Status modal -->
+<div class="modal fade" id="statusModal1" tabindex="-1" role="dialog" aria-labelledby="SmsModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document" style="width: 55rem;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5>On Hold Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+
+                <div class="form-group row" >
+                    <label for="example-text-input" class="col-2 col-form-label">Reopening Date</label>
+                    <div class="col-10" [ngClass]="(call_back=='no')?'d-block':'d-none'">
+                        <input type="datetime-local" name="onhold-details" id="onhold-details" class="form-control" (change) = "disableDate1($event)" readonly>
+                    </div>
+                    <div class="col-10" [ngClass]="(call_back=='yes')?'d-block':'d-none'" >
+                        <input type="datetime-local" name="onhold-details" id="onhold-details" class="form-control" (change) = "disableDate1($event)">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="example-text-input" class="col-2 col-form-label">Remarks </label>
+                    <div class="col-10">
+                        <textarea rows="1" name="followup_remarks" id="followup_remarks" class="form-control"></textarea>
+                        <!-- <input type="da" name="followup-details" id="followup-details" class="form-control"> -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <input type="button" id="followup-button" value="Update" class="btn btn-pink" (click)="onCallbackChange1()">
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Status modal end -->
+<!-- For Inaactive Remark -->
+<div class="modal fade" id="statusModal2" tabindex="-1" role="dialog" aria-labelledby="SmsModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document" style="width: 55rem;">
+        <div class="modal-content">
+            <div class="modal-header">
+              <h5>Inactive Reamrks Deatils</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span> </button>
+            </div>
+            <div class="modal-body">
+              <div class="form-group row">
+                <input class="form-control" id="inactive_reason" type="hidden" value="{{this.dropdownDropType}}" required>
+                <!-- /////tree view dropdown//// -->
+                <div class="container">
+                  <div class="row mb-3">
+                     <label for="example-text-input" class="col-3 col-form-label">Reason for Lost <span class="text-danger">*</span></label>
+                    <div class="dropdown">
+                      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span *ngIf="!this.dropdownDropType">Select Reason</span>{{this.dropdownDropType | replaceChar}}</button>
+                      <ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
+                        <li class="dropdown-item"><a (click)="submitDropLeadType('out_of_scope')">Out of Scope</a></li>
+                        <li class="dropdown-item"><a (click)="submitDropLeadType('low_budget')">Low Budget</a></li>
+                        <li class="dropdown-item"><a (click)="submitDropLeadType('non_serviceable_area')">Non Serviceable Area</a></li>
+                        <li class="dropdown-item"><a (click)="submitDropLeadType('not_interested')">Not Interested</a></li>
+                        <li class="dropdown-item"><a (click)="submitDropLeadType('language_barrier')">Language Barrier</a></li>
+                        <li class="dropdown-item"><a (click)="submitDropLeadType('did_not_like_delivery_timelines')">Did not like Delivery Timelines</a></li>
+                        <li class="dropdown-item"><a (click)="submitDropLeadType('did_not_like_our_prices')">Did not like Our Prices</a></li>
+                        <li class="dropdown-item"><a (click)="submitDropLeadType('not_reachable_despite_multiple_attempts')">Not Reachable Despite Multiple Attempts</a></li>
+                        <li class="dropdown-item"><a (click)="submitDropLeadType('did_not_like_designs')">Did not like Designs</a></li>
+                        <li class="dropdown-item"><a (click)="submitDropLeadType('others')">Others</a></li>
+                        <li class="dropdown-divider"></li>
+                        <li class="dropdown-submenu">
+                          <a  class="dropdown-item" tabindex="-1">Already done with Other Vendor</a>
+                          <ul class="dropdown-menu">
+                            <li class="dropdown-submenu">
+                              <a class="dropdown-item" >Organized</a>
+                              <ul class="dropdown-menu">
+                                  <li class="dropdown-item"><a (click)="submitDropLeadType('already_done_with_other_vendor--livspace')">Livspace</a></li>
+                                  <li class="dropdown-item" (click)="submitDropLeadType('already_done_with_other_vendor--homelane')"><a>Homelane</a></li>
+                                  <li class="dropdown-item" (click)="submitDropLeadType('already_done_with_other_vendor--design_cafe')"><a>Design Cafe</a></li>
+                              </ul>
+                            </li>
+                            <li class="dropdown-submenu">
+                              <a class="dropdown-item">Unorganized</a>
+                              <ul class="dropdown-menu">
+                                  <li class="dropdown-item"><a (click)="submitDropLeadType('already_done_with_other_vendor--local_contractor')">Local Contractor</a></li>
+                                  <li class="dropdown-item"><a (click)="submitDropLeadType('already_done_with_other_vendor--carpenter')">Carpenter</a></li>
+                              </ul>
+                            </li>
+                             
+                          </ul>
+                        </li>
+                        </ul>
+                    </div>
+                  </div>
+                </div>
+                <label for="example-text-input" class="col-3 col-form-label">Remarks </label>
+                <div class="col-9 pl-0">
+                    <textarea rows="1" name="followup_remarks" id="inactive_remarks" class="form-control"></textarea>
+                    <!-- <input type="da" name="followup-details" id="followup-details" class="form-control"> -->
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <input type="button" id="followup-button" value="Update" class="btn btn-pink" (click)="onCallbackChange2()" required>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end modal -->
+
+
+
+<!-- For WIP Remark -->
+<div class="modal fade" id="statusModal0" tabindex="-1" role="dialog" aria-labelledby="SmsModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document" style="width: 55rem;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5> Remark Deatils</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group row">
+                  <label for="example-text-input" class="col-2 col-form-label">FollowUp Date</label>
+                  <div class="col-10">
+                    <input type="datetime-local" name="followup-date" id="followup-date" class="form-control" (change) = "disableDate()">
+                  </div>
+                </div>
+                <div class="form-group row">
+                    <label for="example-text-input" class="col-2 col-form-label">Remarks </label>
+                    <div class="col-10">
+                        <textarea rows="1" name="wip_remarks" id="wip_remarks" class="form-control"></textarea>
+                        <!-- <input type="da" name="followup-details" id="followup-details" class="form-control"> -->
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="modal-footer">
+                <input type="button" id="followup-button" value="Update" class="btn btn-pink" (click)="onCallbackChange3()">
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end modal -->
+
+
+<!--CREATE EVENT MODAL-->
+<div class="modal fade" id="eventModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" *ngIf="role != 'sitesupervisor'">
+    <div class="modal-dialog modal-lg" role="document" style="margin-top: 5rem;">
+        <div class="modal-content">
+            <div class="modal-header" style="border-bottom: 1px solid #e4e4e4;">
+                <h6 class="modal-title" id="exampleModalLabel">Schedule a meeting </h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">&times;</span> </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <form [formGroup]="meetingform" (ngSubmit)="createEventCalender()">
+                            <div class="form-group row">
+                                <label class="col-3 col-lg-2 col-form-label">Project *</label>
+                                <div class="col-9 col-lg-10">
+                                  <select disabled class="form-control" formControlName="project" required="true" (change)="onProjectChange($event.target.value)">
+                                    <option value=null>Choose your project</option>
+                                    <option *ngFor="let lead of leads" [value]="lead.ownerable_id">{{lead.ownerable_id}} - {{lead.name}} - {{lead.project_name}}</option>
+                                  </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-3 col-lg-2 col-form-label">Agenda *</label>
+                                <div class="col-9 col-lg-10">
+                                    <select class="form-control" formControlName="agenda" required="true" (change)="firstMeeting()" id="agendaType">
+                                      <option value=null>Choose an agenda</option>
+                                      <option value="first_meeting">First Meeting</option>
+                                      <option value="follow_up_call">Follow Up Call</option>
+                                      <option value="follow_up_meeting">Follow Up Meeting</option>
+                                      <option value="design_and_boq_presentation">Design and BOQ Presentation</option>
+                                      <!-- <option *ngFor="let lang of langs" [value]="lang">{{lang}}</option> -->
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-3 col-lg-2 col-form-label">Type *</label>
+                                <div class="col-9 col-lg-10">
+                                    <select disabled class="form-control" formControlName="contact_type" required="true" id="typeSel" type='select'>
+                  <option value=null>Choose type of interaction</option>
+
+                  <ng-container *ngIf="loc == 'follow_up_call'">
+                    <option value="phone_call"id="phone_call">Phone Call</option>
+                    <option value="video_call">Video Call</option>
+                  </ng-container>
+
+                  <ng-container *ngIf="loc == 'first_meeting'">
+                    <option value="experience_center">EC Visit</option>
+                    <option value="site_visit">Site Visit</option>
+                  </ng-container>
+
+                  <ng-container *ngIf="loc == 'follow_up_meeting'">
+                    <option value="experience_center">EC Visit</option>
+                    <option value="site_visit">Site Visit</option>            
+                  </ng-container>
+
+                  <ng-container *ngIf="loc == 'design_and_boq_presentation'">
+                    <option value="experience_center">EC Visit</option>
+                    <option value="site_visit">Site Visit</option>
+                    <option value="video_call">Video Call</option>
+                  </ng-container>
+                  
+                  <!-- <option *ngFor="let lang of langs" [value]="lang">{{lang}}</option> -->
+                </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-3 col-lg-2 col-form-label">Description</label>
+                                <div class="col-9 col-lg-10">
+                                    <input type="text" class="form-control" formControlName="description" placeholder="What is this meeting about?">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-2 col-form-label">Date *</label>
+                                <div class="col-10">
+                                    <input type="datetime-local" formControlName="scheduled_at" class="form-control" required="true" min="{{todayDate}}">
+                                </div>
+                            </div>
+
+                            <div class="form-group row ">
+                                <label class="col-3 col-lg-2 col-form-label">Location</label>
+                                <div class="col-9 col-lg-10">
+                                    <input type="text" class="form-control" formControlName="location" placeholder="Enter the location">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-3 col-lg-2 col-form-label">Notify To *</label>
+                                <div class="col-9 col-lg-10">
+                                    <div class="form-check pull-left" *ngFor="let user of projectUsers" style="margin-left: 1.3rem;margin-right: 2rem;">
+                                        <input type="checkbox" class="form-check-input" name="users" value="{{user.email}}" id="{{user.email}}" (change)="onMeetingUserChange($event,'meeting')">
+                                        <label class="form-check-label" for="{{user.email}}" style="padding-left: 0.25rem;">{{user.name}}</label>
+                                    </div>
+                                </div>
+                                <div class="col-3 col-lg-2"></div>
+                                <div class="col-9 col-lg-10 pull-right">
+                                    <input type="text" class="form-control meeting-control" formControlName="email" placeholder="Add semi-colon for multiple emails">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col-12 text-right">
+                                    <button type="submit" class="btn btn-pink" [disabled]="!meetingform.valid">Send invites</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+
+                        </form>
+                        <!-- <pre>{{meetingform.value | json}}</pre> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--MODAL ENDS-->

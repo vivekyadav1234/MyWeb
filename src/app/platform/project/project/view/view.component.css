@@ -1,0 +1,378 @@
+.text_red{
+  color: #ff5050;
+}
+.text-left {
+  margin-top: 16px;
+}
+.marginTop {
+  margin-top: 4.2rem;
+}
+
+.comment_box{
+  min-height: 400px;
+}
+.mt30{
+    margin-top: 30px;
+}
+.black_text{
+    color: #616161;
+}
+#floorPlanLink {
+  max-height: 250px;
+  min-height: 160px;
+  overflow: hidden;
+}
+
+.inputForm .form-control {
+    border-bottom: 1px dotted #000;
+    background-color: transparent;
+    vertical-align: middle;
+    color: #757575;
+}
+.iconImg {
+    margin-top: -100px;
+    height: 60px;
+    margin-left: 20px;
+    box-shadow: 1px 3px 5px #908d8d;
+
+}
+
+
+.dashboardProjectRow .card-title a {
+	text-decoration: none;
+	color: #252222;
+}
+.dashboardProjectRow .card {
+	margin: 10px;
+	box-shadow: 2px 3px 4px #e0dddd;
+	border: none;
+}
+
+.bg_dashboard{
+
+  /*min-height: 65vh;*/
+
+}
+.card-header{
+    padding: 1.4rem 0rem;
+    background-color: #f7f7f7;
+    margin-bottom: 35px;
+    box-shadow: 0px 3px 10px -5px black;
+}
+.card-header h3{
+    margin-bottom: 0;
+    margin: auto;
+    border-bottom: 2px solid #8c031f !important;
+    padding-bottom: 4px;
+}
+.card{
+    margin: 0;
+    border: none;
+}
+.card_main{
+    margin: 2rem 0;
+}
+.card_box{
+    height: 30rem;
+    width: 22rem;
+    border: none;
+    box-shadow: 0px 0px 5px 0px #b5b5b5;
+    bottom: 4rem;
+    right: 5.5rem;
+    /*display: none;*/
+}
+.profileImg {
+    border-radius: 50%;
+    margin-bottom: 18px;
+}
+
+.fontAwesomeIcon {
+    margin-top: -20px;
+}
+.viewProfileForm .form-control:disabled {
+     border-bottom: 1px solid black;
+}
+.viewProfileForm .form-control.profileImgInput {
+    border-bottom: none;
+}
+.noFocus:focus{
+  outline: none;
+}
+
+#floorPlanLink {
+  max-height: 160px;
+  min-height: 160px;
+  overflow: hidden;
+}
+
+#floorPlanAdd{
+  border: 3px solid #bbb;
+  border-style: dashed;
+}
+/*
+.dashboardProjectRow .card-title a {
+	text-decoration: none;
+	color: #252222;
+}
+.dashboardProjectRow .card {
+	margin: 10px;
+	box-shadow: 2px 3px 4px #e0dddd;
+	border: none;
+}
+
+.bg_dashboard{
+	background-image: url("https://d2wtye2lnn1ee2.cloudfront.net/assets/v3/img/dashboard/background.png");
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+}
+.card-header{
+    border-bottom: none;
+    box-shadow: 0px 3px 10px -5px black;
+}
+.card-header h3{
+	font-size: 1.7rem;
+    font-weight: 300;
+    color: #ff5050;
+    margin: 0;
+    padding: 1rem 0;
+}
+.card{
+    margin: 3rem 0;
+}
+.card_main{
+    margin: 2rem 0;
+}
+.card_box{
+
+    box-shadow: 0px 2px 6px -3px black;
+
+    padding: 10px;
+}
+
+
+.InputForm .form-control {
+    border: none;
+    border-radius: 0px;
+    border-bottom: 1px solid black;
+    background-color: transparent;
+}
+.iconImg {
+    margin-top: -100px;
+    height: 60px;
+    margin-left: 20px;
+    box-shadow: 1px 3px 5px #908d8d;
+
+}
+.fontAwesomeIcon {
+    margin-top: -20px;
+}
+.commentIcon {
+	margin : 0 auto;
+}
+*/
+.bg_dashboard {
+  margin-top: 2rem;
+  min-height: 90vh;
+}
+.title {
+  padding: 1.4rem 0rem;
+  background-color: #f7f7f7;
+  position: fixed;
+  width: 83.4%;
+  z-index: 4;
+  border-bottom: 1px solid #ccc;
+}
+
+.title h3 {
+  margin-bottom: 0;
+  margin-left: 10px;
+  font-size: 20px;
+  color: rgba(0, 0, 0, 0.55);
+}
+
+.title h3 span {
+  color: #000;
+}
+.progress {
+  width: 85%;
+  display: inline-block;
+}
+
+.progressBar {
+  background-color: #00d000;
+  height: 8px;
+}
+.preValue {
+  display: inline-block;
+  margin: 0;
+  vertical-align: middle;
+}
+.productLabel {
+    width: 10rem;
+    vertical-align: top;
+    margin-top: 7px;
+}
+
+.form-control {
+  border: none;
+}
+
+.productInput {
+    display: inline-block;
+    width: 50%;
+    border: none;
+    border-bottom: 1px dotted;
+    vertical-align: super;
+}
+.details{
+  color: #8a8a8a;
+}
+.profile {
+    padding-top: 2.5rem;
+}
+.date {
+  color: #4a4a4a;
+}
+.profileInner{
+  margin: 6px 0px;
+  color: #6D6362;
+  font-size: 15px;
+}
+.floorPlanBox{
+text-align: center;
+border: 1px dotted #616161;
+padding: 8px 12px;
+width: 70%;
+height: 2.4rem;
+margin: auto;
+border-radius: 6px;
+color: #616161;
+overflow: hidden;
+text-overflow: ellipsis;
+}
+
+
+.floorPlanBox:hover {
+  background-color: #000;
+  color: #fff;
+}
+.msgBox{
+  position: absolute;
+  width: 100%;
+  bottom: 5px;
+}
+.commentTitle{
+  font-size: 18px;
+  border-bottom: 1px solid #dadada;
+  width: 100%;
+  margin: 0 auto;
+  padding: 10px 10px;
+}
+.commentTitle i{
+  float: right;
+}
+.scroll{
+  max-height: 24.6rem;
+  overflow: auto;
+}
+.adminMsg span{
+  font-size: 10px;
+  /*margin-right: 5px;*/
+}
+.adminMsg span i{
+  font-size: 30px;
+  vertical-align: top;
+}
+.adminMsg{
+  font-size: 15px;
+  margin-bottom: 15px;
+  overflow: hidden;
+}
+.textMsg{
+  padding: 7px 14px;
+  background-color: #EFEFEF;
+  border-radius: 0 7px 7px 7px;
+  line-height: 1.7;
+}
+.msgIcon{
+  position: fixed;
+  bottom: 1rem;
+  right: 0;
+  color: #444;
+}
+.msgIcon p{
+  position: absolute;
+  bottom: 0;
+  right: 2rem;
+  font-size: 34px;
+  background-color: #e3e3e3;
+  width: 3.2rem;
+  height: 3.2rem;
+  border-radius: 40px;
+  text-align: center;
+}
+.msgUser{
+  position: absolute;
+  font-size: 20px;
+  left: 2rem;
+  top: 0.5rem;
+}
+.arrowDiv{
+  width: 2.5rem;
+  height: 2rem;
+  background-color: #EFEFEF;
+  position: absolute;
+  transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+  top: -15px;
+  left: -14px;
+}
+.textDiv{
+  position: relative;
+}
+.msgBtn{
+  position: absolute;
+  bottom: 0.5rem;
+  right: 2rem;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+}
+.form-horizontal .comment{
+  border: 1px solid #ccc;
+  width: 90%;
+  margin: 15px 15px 3px 15px;
+  border-radius: 5px;
+}
+.back{
+  background-color: transparent;
+  border: none;
+  color: rgba(0, 0, 0, 0.7);
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 25vh;
+}
+.back:focus{
+  outline: none;
+}
+.cancel {
+  background-color: transparent;
+  border: none;
+  color: #aaa;
+  margin-left: 1rem;
+  padding: 0;
+  cursor: pointer;
+}
+
+.cancel:hover {
+  color: #000;
+}
+.cancel:focus {
+  outline: none;
+}
+.error{
+  position: absolute;
+  left: 11rem;
+}

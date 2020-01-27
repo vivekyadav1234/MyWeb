@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="40px" height="30px" viewBox="0 0 40 30" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48 (47235) - http://www.bohemiancoding.com/sketch -->
+    <title>close-envelope</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Client-Status-View" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-512.000000, -852.000000)">
+        <g id="Footer" transform="translate(0.000000, 812.000000)" fill="#FFFFFF" fill-rule="nonzero">
+            <g id="bottom-icons" transform="translate(83.000000, 27.500000)">
+                <g id="close-envelope" transform="translate(429.000000, 13.000000)">
+                    <path d="M20,20 L15.0514286,15.6685714 L0.902857143,27.7971429 C1.41714286,28.2742857 2.11142857,28.5714286 2.87714286,28.5714286 L37.1228571,28.5714286 C37.8857143,28.5714286 38.5771429,28.2742857 39.0885714,27.7971429 L24.9485714,15.6685714 L20,20 Z" id="Shape"></path>
+                    <path d="M39.0971429,0.774285714 C38.5828571,0.294285714 37.8914286,0 37.1228571,0 L2.87714286,0 C2.11428571,0 1.42285714,0.297142857 0.908571429,0.78 L20,17.1428571 L39.0971429,0.774285714 Z" id="Shape"></path>
+                    <polygon id="Shape" points="0 2.50857143 0 26.2457143 13.8085714 14.5114286"></polygon>
+                    <polygon id="Shape" points="26.1914286 14.5114286 40 26.2457143 40 2.5"></polygon>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

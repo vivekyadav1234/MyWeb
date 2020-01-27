@@ -1,0 +1,350 @@
+  <div class="rk-ui-notification err" *ngIf="erroralert"  style="z-index: 10000;">
+  <span id="notificationMessageText">{{errorMessage}}</span>
+  <a class="close rk-linknotification" (click)="erroralert=false">×</a>
+  </div>
+  <div class="rk-ui-notification p-1" *ngIf="successalert"  style="z-index: 10000;">
+    <!-- <span id="notificationMessageText">{{successMessage}}</span> -->
+    <marquee id="notificationMessageText" class="mt-3" direction = "left">{{successMessage}}</marquee>
+    <a class="close rk-linknotification mt-3" (click)="successalert=false">×</a>
+  </div>
+  <div class="row container-set container-set-change">
+    <div class="col-6">
+      <div class="ss-searchbox">
+        <i class="fa fa-search float-right"></i>
+        <input class="form-control" type="text" placeholder="Search by SKU" (keydown.enter)="searchTextFilter($event)">
+      </div>
+    </div>
+    <div class="col-6 pull-right mt-3">
+      <label class="switch pull-right" (change) = "updatePolka($event)" for="togBtn"><input type="checkbox" id="togBtn"><div class="slider round"></div></label>
+    </div>
+     
+    <!-- <div class="col-4">
+      <select (change) = "updatePolka($event)"class="switch1 pull-right" data-toggle="tooltip" title="{{changeFileFormat(item)}}">
+        <option value="" disabled>Catalog Type</option>
+        <option value="arrivae" data-toggle="tooltip"  title="Arrivae">Arrivae</option>
+        <option value="polka" data-toggle="tooltip" title="Polka House">Polka House</option>
+      </select> 
+    </div> -->
+  </div>
+  <nav class="navbar navbar-expand-lg navbar-light bg-white row">
+    <div class="p-0 pl-0 collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto ul-ff" *ngIf="catalog_segments.length > 0">
+        <li class="nav-item dropdown" *ngFor="let segment of catalog_segments" [routerLink]="['/catalogue','filter','segment',segment.id]" [queryParams]="{segment: segment.segment_name}">
+          <a class="nav-link dropdown-toggle cursor-pointer" id="navbarDropdown-{{segment.id}}" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {{segment.segment_name}}
+          </a>
+          <div class="subnavlist lt dropdown-menu" *ngIf="segment" [style.width.rem]="segment.categories.length*7">
+            <div class="subnavlist_wrapper clearfix"> 
+              <ul class="inline-list left" *ngFor="let category of segment.categories">
+                  <li class="sublist_item">
+                    <div class="taxontype cursor-pointer" style="font-size: 14px;font-family: 'Source Sans Pro', sans-serif;font-weight: 600;color: #231f20;margin-bottom: 10px;" [routerLink]="['/catalogue','filter','category',category.id]" [queryParams]="{segment: segment.segment_name, category: category.category_name,segment_id: segment.id}">
+                      {{category.category_name}}
+                    </div>
+                    <ul class="taxonslist">
+                      <li class="subnav_item cursor-pointer" *ngFor="let subcategory of category.subcategories" (click) = "$event.stopPropagation()" [routerLink]="['/catalogue/']" [queryParams]="{subcategory_ids: subcategory.id}"><span class="pl-2 cursor-pointer">{{subcategory.subcategory_name}}</span></li>
+                    </ul>
+                  </li>
+                </ul>
+              </div>
+            </div>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle cursor-pointer" id="marketplacenavbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Marketplace
+          </a>
+          <div class="subnavlist lt dropdown-menu dropdown-menu-right" [style.width.rem]="(marketplace_submenu_categories.length+1)*10">
+            <div class="subnavlist_wrapper clearfix d-flex" style="flex-direction: row-reverse;"> 
+              <div class="float-right">
+                <ul>
+                  <li *ngFor="let market of marketplace" (mouseover) = "getMarketplacecategories(market)" class="sublist_item">
+                    <div class="taxontype cursor-pointer" style="font-size: 14px;font-family: 'Source Sans Pro', sans-serif;font-weight: 600;color: #231f20;margin-bottom: 10px;">
+                      {{market.segment_name}}
+                    </div>
+                  </li>
+                </ul>
+              </div>
+              <div class="float-left">
+                <ul class="inline-list" style="margin-right: 1rem;" *ngFor="let category of marketplace_submenu_categories">
+                  <li class="sublist_item">
+                    <div class="taxontype cursor-pointer" style="font-size: 14px;font-family: 'Source Sans Pro', sans-serif;font-weight: 600;color: #231f20;margin-bottom: 10px;margin: 0 10px 10px 7px;" [routerLink]="['/catalogue','filter','category',category.id]">
+                      {{category.category_name}}
+                    </div>
+                    <ul class="taxonslist">
+                      <li *ngFor="let subcategory of category.subcategories"  class="subnav_item cursor-pointer" style="font-size: 14px;font-family: 'Source Sans Pro', sans-serif;color: #707070;" [routerLink]="['/catalogue/']" [queryParams]="{subcategory_ids: subcategory.id}">{{subcategory.subcategory_name}}</li>
+                    </ul>
+                  </li>
+                  <!-- <li  class="subnav_item">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" *ngIf="segment">
+                      {{segment.segment_name}}
+                    </a>
+                  </li> -->
+                </ul>
+              </div>
+              
+            </div>
+            
+          </div>
+        </li>
+      </ul>
+    </div>
+  
+  </nav>
+  
+  <div class="black-borderSeparator"></div>
+    <div class="row bg-white" style="padding: 1% 0% 1% 4%;">
+      <div class="col-12">
+        <div class="row">
+          <div class="col-7">
+            <label class="labels" style="padding-left:3.5%;">FILTERS</label>
+          </div>
+          <div class="col-3">
+            <label class="labels" style="padding-left:1.5%;">SORT BY</label>
+          </div>
+          <div class="col-2 text-right">
+            <div class="float-right cursor-pointer" (click) = "fetchSavedProducts()" >
+              <i class="fa fa-heart saved-products-heart;" style="color: #8c051e;float: left;margin-right: 7px;margin-top: 4px;" aria-hidden="true"></i>
+              <label class="saved-products-heart-label cursor-pointer">Saved Products</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12">
+          <div class="row">
+            <div class="col-7 d-flex">
+              <div class="px-2 py-2">
+                <div class="dropdown wrapper-dropdown-1">
+                  <div class="dropdown-toggle" id="pricedropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Price
+                    <i class="far fa-angle-down" style="font: normal normal normal 14px/1 FontAwesome;"></i>
+                  </div>
+                  <div class="dropdown-menu" aria-labelledby="pricedropdownMenu" style="padding: 10px;">
+                    <h6 _ngcontent-c6="" style="font-size: 12px;color: #231f20;">Price(INR)</h6>
+                    <ion-range-slider class="dropdown-item" #priceSliderElement
+                              type="double"
+                              [min]="master_minimum_price"
+                              [max]="master_maximum_price"
+                              [from]="master_minimum_price"
+                              [from_min]="master_minimum_price"
+                              [from_max]="(master_maximum_price)-1"
+                              from_shadow="true"
+                              [to]="master_maximum_price"
+                              [to_min]="master_minimum_price+1"
+                              [to_max]="master_maximum_price"
+                              to_shadow="true"
+                              grid="false"
+                              prefix=" "
+                              postfix=" "
+                              decorate_both="false" 
+                              (onFinish)="updateSlider('price',advancedSlider, $event)">
+                    </ion-range-slider>
+                    <!-- <button class="dropdown-item" type="button">Action</button> -->
+                  </div>
+                </div>
+  
+              </div>
+              <div class="px-2 py-2">
+                <div class="dropdown wrapper-dropdown-1">
+                  <div class="dropdown-toggle" data-toggle="dropdown">Class
+                      <i class="far fa-angle-down" style="font: normal normal normal 14px/1 FontAwesome;"></i></div>
+                  <ul class="dropdown-menu dd-dropdown px-2 py-2" style="margin-top: -0.2rem;" >
+                    <h6 _ngcontent-c6="" style="font-size: 12px;color: #231f20;">Class</h6>
+
+                    <li class="my-2" *ngFor="let clas of filter_classes">
+                      <input name="opt" type="checkbox" value="" id="opt1" class="mr-2 cursor-pointer" (change) = "updateFilterClass(clas.id,$event)" >
+                      <label class="checkbox-container ffssansp ffclr" style="font-size: 16px;">{{clas.name}}</label>
+                    </li>
+
+                  </ul>
+                </div>
+              </div>
+              <div class="px-2 py-2">
+                <div class="dropdown wrapper-dropdown-1">
+                  <div class="dropdown-toggle" id="leadtimedropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Lead Time
+                    <i class="far fa-angle-down" style="font: normal normal normal 14px/1 FontAwesome;"></i>
+                  </div>
+                  <div class="dropdown-menu" aria-labelledby="leadtimedropdownMenu" style="padding: 10px;">
+                    <h6 _ngcontent-c6="" style="font-size: 12px;color: #231f20;">Lead Time(Day)</h6>
+                    <ion-range-slider #leadtimeSliderElement
+                              type="double"
+                              [min]="master_minimum_lead_time"
+                              [max]="master_maximum_lead_time"
+                              [from]="master_minimum_lead_time"
+                              from_shadow="true"
+                              [to]="master_maximum_lead_time"
+                              
+                              to_shadow="true"
+                              grid="false"
+                              prefix=" "
+                              postfix=" "
+                              decorate_both="false" 
+                              (onFinish)="updateSlider('lead_time',advancedSlider, $event)">
+                    </ion-range-slider>
+                  </div>
+                </div>
+              </div>
+              <div class="px-2 py-2">
+                <div class="dropdown wrapper-dropdown-1">
+                  <div class="dropdown-toggle" id="dimensiondropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Dimensions
+                    <i class="far fa-angle-down" style="font: normal normal normal 14px/1 FontAwesome;"></i>
+                  </div>
+                  <div class="dropdown-menu" aria-labelledby="dimensiondropdownMenu" style="padding: 10px;">
+                    <h6 _ngcontent-c6="" style="font-size: 12px;color: #231f20;">Dimensions(mm)</h6>
+                    <h6 style="font-size: 11px;color: #6d6567;">Width:</h6>
+                    <ion-range-slider #widthSliderElement
+                              type="double"
+                              [min]="master_minimum_width"
+                              [max]="master_maximum_width"
+                              [from]="master_minimum_width"
+                              [from_min]="master_minimum_width"
+                              [from_max]="(master_maximum_width)-1"
+                              from_shadow="true"
+                              [to]="master_maximum_width"
+                              [to_min]="master_minimum_width+1"
+                              [to_max]="master_maximum_width"
+                              to_shadow="true"
+                              grid="false"
+                              prefix=" "
+                              postfix=" "
+                              decorate_both="false" 
+                              (onFinish)="updateSlider('width',advancedSlider, $event)">
+                    </ion-range-slider>
+                    <h6 style="font-size: 11px;color: #6d6567;">Length:</h6>
+                    <ion-range-slider #depthSliderElement
+                              type="double"
+                              [min]="master_minimum_length"
+                              [max]="master_maximum_length"
+                              [from]="master_minimum_length"
+                              [from_min]="master_minimum_length"
+                              [from_max]="(master_maximum_length)-1"
+                              from_shadow="true"
+                              [to]="master_maximum_length"
+                              [to_min]="master_minimum_length+1"
+                              [to_max]="master_maximum_length"
+                              to_shadow="true"
+                              grid="false"
+                              prefix=" "
+                              postfix=" "
+                              decorate_both="false" 
+                              (onFinish)="updateSlider('length',advancedSlider, $event)">
+                    </ion-range-slider>
+                    <h6 style="font-size: 11px;color: #6d6567;">Height:</h6>
+                    <ion-range-slider #heightSliderElement
+                              type="double"
+                              [min]="master_minimum_height"
+                              [max]="master_maximum_height"
+                              [from]="master_minimum_height"
+                              [from_min]="master_minimum_height"
+                              [from_max]="(master_maximum_height)-1"
+                              from_shadow="true"
+                              [to]="master_maximum_height"
+                              [to_min]="master_minimum_height+1"
+                              [to_max]="master_maximum_height"
+                              to_shadow="true"
+                              grid="false"
+                              prefix=" "
+                              postfix=" "
+                              decorate_both="false" 
+                              (onFinish)="updateSlider('height',advancedSlider, $event)">
+                    </ion-range-slider>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-3">
+              <div class="px-2 py-2">
+                <div class="dropdown wrapper-dropdown-1">
+                  <div class="dropdown-toggle sort-toggle" data-toggle="dropdown">None
+                  <span class="caret"></span></div>
+                  <ul class="dropdown-menu dd-dropdown-sort-price px-2 py-2" style="margin-top: -0.2rem;">
+                    <p>Sorting</p>
+                    <li class="my-2">
+                      <div class="checkbox-container" (click) = "sortFilter('none')" >None</div>
+                    </li>
+                    <li class="my-2">
+                      <div class="checkbox-container" (click) = "sortFilter('price_low_to_high')" >Price: Low to High</div>
+                    </li>
+                    <li class="my-2">
+                      <div class="checkbox-container" (click) = "sortFilter('price_high_to_low')" >Price: High to Low</div>
+                    </li>
+                    <li class="my-2">
+                      <div class="checkbox-container" (click) = "sortFilter('newest_first')" >Newest First</div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="col-2 text-right">
+              <p class="cursor-pointer" (click) = "clearAll()" style="color:#8f0020;text-align: right;font-size: .8rem;">Clear All</p>
+            </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="row mt-3 ml-5 mr-5" *ngIf="products_array.length > 0">
+    <div class="col-md-3 px-2 py-2" *ngFor="let product of products_array | paginate: { itemsPerPage: per_page, currentPage: current_page, totalItems: total_page  };let i = index">
+      <div class="card addCursor {{product.new_product ? 'new' : ''}}">
+        <div class="su-img-container">
+          <img class="product-card-img" src="{{product.image_url}}" onerror="this.src='./assets/img/noimage.jpg'" [routerLink]="['/catalogue','product',product.id]" id="prod-img-{{i}}">
+        </div>
+        <div class="row px-2 pt-2">
+          <div class="col-sm-7 catlogue-product-name" title="{{product.name}}">
+            {{product.name}}
+          </div>
+          <div class="col-sm-5">
+            <span style="font-size: 11px;color: #6d6567;">
+              Units Sold:
+            </span>
+            <span style="font-family: Roboto;font-size: 11px;font-weight: 500;color: #231f20;">
+              {{product.units_sold}}
+            </span>
+          </div>
+        </div>
+        <div class="row p-2">
+          <div class="col-sm-7 catlogue-product-price">
+            Rs.{{product.sale_price}}
+          </div>
+          <div class="col-sm-5">
+            <img src="./assets/img/view.jpg" alt="" style="margin-top: -10px;" (click)="zoomImg('prod-img-',i)"> 
+            <i class="fa {{product.liked ? 'fa-heart' : 'fa-heart-o'}} pull-right mx-2" style="color:#8c051e;font-size: 18px;" (click) = "likeProduct(product.id)" ></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-12 text-center" *ngIf="products_array && products_array.length >0">
+        <pagination-controls autoHide="true" (pageChange)="current_page = filterNewProducts($event)"></pagination-controls>
+    </div>
+
+  
+  </div>
+  <div class="row  mt-3 ml-5 mr-5" *ngIf="products_array && products_array.length == 0">
+    <div class="col-md-12 not-found text-center" >
+      <div class="boq-img">
+        <img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+      </div>
+      <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing to show...</p>
+    </div>
+    
+  </div>
+  
+  <!-- Modal For preview Image -->
+  <div class="modal fade zoom-img-modal-lg" tabindex="-1" role="dialog" aria-labelledby="zoomImageModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header text-right row">
+          <button type="button" class="btn close col-12 text-right px-3 py-0" data-dismiss="modal" aria-label="Close" (click)="normalImg()">
+            &times;
+          </button>
+        </div>
+        <div class="modal-body text-center" id="imagecontainer">
+          <img src="" class="large-img" id="img-lg-zoom1">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="zoomer-container">
+    <img src="{{this.activatedZoomerImg}}">
+  </div>
+   
+   

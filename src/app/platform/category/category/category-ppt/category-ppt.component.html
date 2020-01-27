@@ -1,0 +1,37 @@
+<div class="col-md-12 text-center p-5" style="background-color: #fff;" *ngIf="ppt_list.length <= 0">
+  <img src="../../../assets/img/nothing.png" class="img-fluid pt-5">
+</div>
+<div class="col-md-12">
+  <div class="row pt-5">
+    <div class="col-md-4 mt-4" *ngFor="let obj of ppt_list">
+      <div class="card card-chng">
+      	<img onerror="this.src='./assets/img/no_image.svg';" class="card-img-top img-fluid" src="{{obj.upload}}" alt="Card image cap" style="max-height: 165px;" />
+        <!-- <img class="card-img-top img-fluid" src="{{obj.attachment_file}}" alt="Card image cap" style="max-height: 165px;"> -->
+        <div class="card-block" style="padding: 1rem;">
+          <p class="card-text" style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap;border-bottom: 1px solid #e0e0e0;padding-bottom: 10px;">{{obj.name}}</p>
+          <div class="row">
+            <div class="col-md-12">
+              <!-- <p class="mb-0" style="font-size:13px;">
+                <span>{{obj.details}} </span>
+              </p>
+              <p class="mb-0 mt-2" style="font-size:13px;">
+                <span>Uploaded at: </span>
+                <span style="color: #7E7E7E;">{{obj.updated_at | date:'dd MMMM, y - h:mm a'}}</span>
+              </p> -->
+              <p class="mb-0 mt-2" style="font-size:13px;">
+                <span>Customer Status: </span>
+                <span style="color: #1eb531;" *ngIf="obj.shared_with_customer == true">Shared</span>
+                <span style="color: #de3c22;" *ngIf="!obj.shared_with_customer">Pending</span>
+              </p>
+            </div>
+            <div class="col-md-12 divbutton mt-2">
+              <a class="btn btn-pink btn-chng pull-right" href="{{obj.upload}}" download>
+                Download
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

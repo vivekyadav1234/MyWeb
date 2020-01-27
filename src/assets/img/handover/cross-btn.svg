@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="19.092" height="19.092" viewBox="0 0 19.092 19.092">
+    <defs>
+        <style>
+            .cls-1{fill:none;stroke:#8d0528;stroke-linecap:round;stroke-width:2px}
+        </style>
+    </defs>
+    <g id="Cross_button" data-name="Cross button" transform="translate(1.414 1.414)">
+        <path id="Path_278" d="M0 0h23" class="cls-1" data-name="Path 278" transform="rotate(45)"/>
+        <path id="Path_279" d="M0 0h23" class="cls-1" data-name="Path 279" transform="rotate(135 8.132 3.368)"/>
+    </g>
+</svg>

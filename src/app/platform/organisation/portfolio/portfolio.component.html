@@ -1,0 +1,139 @@
+<div class="row title">
+  <h3>Dashboard / Portfolio Data / <span>Add New Segment</span></h3>
+</div>
+
+<!-- <div class="row">
+    <div class="col-md-12">
+     <a [routerLink]="['/portfolio/list']" routerLinkActive='active' class="pull-right">View Portfolio Data</a>
+    </div>
+</div> -->
+<div class="row justify-content-center internalPageBodyContent">
+    <div class="col-md-10 col-md-offset-2 mb-3">
+        <button class="button button_emi" [routerLink]="['/organisation/portfolio']" routerLinkActive='active'> BACK TO PORTFOLIO DATA</button>
+        <div class="alert alert-success text-center mt-2" *ngIf="successMessage">{{successMessage}}</div>
+        <div class="alert alert-danger text-center mt-2" *ngIf="errorMessage">{{errorMessage}}</div>
+        <div class="card">
+            <div class="card-content my-2 mx-2">
+                <div class="tab-content">
+                    <div class="tab-pane active">
+                        <form [formGroup]="createPortfolioForm" (ngSubmit)="onSubmit(createPortfolioForm.value); createPortfolioForm.reset();" class="form-horizontal">
+                            <fieldset formArrayName="portfolio">
+                                <div class="row" *ngFor="let item of getJobAttributes(createPortfolioForm); let i=index" [formGroup]="item">
+                                    <div class="col-sm-12">
+                                        <i class="fa fa-minus-circle remove_button" (click)="createPortfolioForm.get('portfolio').removeAt(i)"></i>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group label-floating" >
+                                            <label class="control-label">Segment</label>
+                                            <!-- <input type="text" class="form-control" [attr.id]="'segment'+i" formControlName="segment"> -->
+                                            <select class="form-control custom-select"  [attr.id]="'segment'+i" formControlName="segment" (change)="firstDropDownChanged($event.target.value,i)">
+                                                <option value="">Select Segment</option>
+                                                <option value="Home">Home</option>
+                                                <option value="Office">Office</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                     <div class="col-md-6">
+                                        <div class="form-group label-floating" >
+                                            <label class="control-label">Space</label>
+                                           <!--  <input type="text" class="form-control" [attr.id]="'space'+i" formControlName="space"> -->
+                                           <select class="form-control" [attr.id]="'space'+i" formControlName="space" (change)="spaceDropDownChanged($event.target.value,i)">
+                                                <option value="">Select Space</option>
+                                               <option *ngFor="let v of spaces[i]" value="{{v}}">
+                                                   {{v}}
+                                               </option>
+                                           </select>
+                                        </div>
+                                    </div>
+<!--                                     <div class="col-md-2 td-actions">
+                                        <i class="fa fa-minus-circle pull-right removeIcon mr-2" (click)="createPortfolioForm.get('portfolio').removeAt(i)" style=""></i> -->
+                                        <!-- <button type="button" class="btn" (click)="createPortfolioForm.get('portfolio').removeAt(i)">-</button> -->
+<!--                                     </div> -->
+
+
+                                    <div class="col-md-6" [attr.id]="themeFlag[i]" *ngIf="themeFlag[i]">
+                                        <div class="form-group label-floating" >
+                                            <label class="control-label">Theme</label>
+                                            <!-- <input type="text" class="form-control" [attr.id]="'theme'+i" formControlName="theme"> -->
+                                             <select class="form-control" [attr.id]="'theme'+i" formControlName="theme" (change)="themeDropDownChanged($event.target.value,i)">
+                                                <option value="">Select Theme</option>
+                                               <option *ngFor="let v of themes[i]" value="{{v}}">
+                                                   {{v}}
+                                               </option>
+                                           </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6" [attr.id]="lifestageFlag[i]" *ngIf="lifestageFlag[i]">
+                                        <div class="form-group label-floating" >
+                                            <label class="control-label">Lifestage Kitchen</label>
+                                            <select class="form-control" [attr.id]="'lifestage'+i" formControlName="lifestage">
+                                                <option value="">Select Lifestage</option>
+                                                <option *ngFor="let v of lifestage[i]" value="{{v}}">{{v}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6" [attr.id]="elementsFlag[i]" *ngIf="elementsFlag[i]">
+                                        <div class="form-group label-floating" >
+                                            <label class="control-label">Elements</label>
+                                            <select class="form-control" [attr.id]="'element'+i" formControlName="element">
+                                                <option value="">Select Element</option>
+                                                <option *ngFor="let v of elements[i]" value="{{v}}">{{v}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group label-floating" >
+                                            <label class="control-label">Price</label>
+                                            <input type="number" min=0 class="form-control" placeholder="Enter Price" [attr.id]="'price_cents'+i" formControlName="price_cents">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group label-floating">
+                                            <label class="control-label">Select Image</label>
+                                            <input type="file" class="form-control border-0" (change)="onChange($event,i)" name="attachment_file" [attr.id]="'attachment_file'+i" formControlName="attachment_file">
+                                        </div>
+                                        <div id="errormsgblock">
+                                            <small [attr.id]="'errorsize'+i" class="text-danger"></small>
+                                            <small [attr.id]="'errorresolution'+i" class="text-danger"></small>
+                                        </div>
+                                        <!-- <p>Note* - Image dimension should be 1010 <i class="fa fa-times" aria-hidden="true"></i> 583</p> -->
+
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group label-floating" >
+                                            <label class="control-label">User Story Title</label>
+                                            <input type="text" class="form-control" placeholder="Enter User Story Title" [attr.id]="'user_story_title'+i" formControlName="user_story_title">
+                                        </div>
+                                    </div>
+                                   <!--  <div class="col-md-6">
+                                       <div class="form-group label-floating">
+                                            <label class="control-label"> Portfolio Data</label>
+                                            <textarea  class="form-control" formControlName="portfolio_data" [attr.id]="'portfolio_data'+i" placeholder="Enter Portfolio Data" rows="1"></textarea>
+                                        </div>
+                                    </div> -->
+                                    <div class="col-md-12">
+                                        <div class="form-group label-floating" >
+                                            <label class="control-label">Description</label>
+                                            <textarea rows="3" class="form-control" placeholder="Enter Description" [attr.id]="'description'+i" formControlName="description"></textarea>
+                                            <!-- <input type="" min=0 class="form-control" placeholder="Enter Price" [attr.id]="'description'+i" formControlName="description">-->
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </fieldset>
+                            <a (click)="pushJobAttributes(createPortfolioForm)" class="addIcon"><i class="fa fa-plus mr-1" aria-hidden="true"></i>Add Another New Segment Image</a>
+                            <button type="submit" class="button pull-right" [disabled]="createPortfolioForm?.invalid">Submit</button>
+
+
+                        </form>
+                            <!-- <h6 class="mt-3">FormGroup Model (<code>createPortfolioForm.value</code>)</h6>
+                            <div><pre><code>{{ createPortfolioForm?.value | json }}</code></pre></div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

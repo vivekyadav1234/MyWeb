@@ -1,0 +1,90 @@
+<div class="row ss-top-menu">
+	<div class="col-xl-12 col-lg-12 col-md-12 col-sm-9 col-xs-9">
+		<span class="ss-text-light">Dashboard <i class="rightArrow fa fa-angle-right"></i></span>
+		<span class="ss-text-dark">Client Ledger</span>
+
+
+	</div>
+</div>
+
+<div class="rk-ui-notification err" *ngIf="erroralert" style="z-index: 10000;">
+	<span id="notificationMessageText">{{errorMessage}}</span>
+	<a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+<div class="rk-ui-notification" *ngIf="successalert" style="z-index: 10000;">
+	<span id="notificationMessageText">{{successMessage}}</span>
+	<a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+<div class="row px-4 mt-4">
+	<div class="col-md-8">
+		<!-- <button class="btn btn-outline-danger cursor-pointer">Client Filter</button> -->
+		<div class="row">
+			<div class="col-md-11 bg-white rounded-left">
+				<span class="text-secondary">Filter By:</span>&nbsp;&nbsp;&nbsp;
+
+				<ng-select (change)="filterColumDropdownChange1($event)" id="filter1dropdown" placeholder="Select Client" style="width:17%">
+					<ng-option value="{{ item.id }}" *ngFor="let item of leadList">{{ item.name }}</ng-option>
+
+
+				</ng-select>
+
+				<ng-select (change)="filterColumDropdownChange2($event)" id="filter1dropdown" placeholder="Ageing" style="width:17%">
+					<ng-option value="{{ data.id }}" *ngFor="let data of ageing">{{ data.name }}</ng-option>
+
+
+				</ng-select>
+				<div class="form-check">
+					<input [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1" placeholder="Enter From Date" class="form-control form-control-change" (dateTimeChange)="takeFromDate($event)">
+					<owl-date-time #dt1 [pickerType]="'calendar'"></owl-date-time>
+				</div>
+				<div class="form-check">
+					<input [owlDateTime]="dt2" [owlDateTimeTrigger]="dt2" placeholder="Enter To Date" class="form-control form-control-change" (dateTimeChange)="takeToDate($event)">
+					<owl-date-time #dt2 [pickerType]="'calendar'"></owl-date-time>
+				</div>
+
+
+			</div>
+			<div class="col-md-1 bg-white rounded-right">
+				<img src="assets/img/dashboard/submit.png" class="ml-1 my-3 sendIcon filterRowIcon cursor-pointer" (click)="filterData()">
+
+			</div>
+		</div>
+
+
+	</div>
+	<div class="row mt-4 px-3">
+		<div class="col-12" *ngIf="client_ledger && client_ledger.length > 0">
+			<div class="tableDiv project-table">
+
+				<table class="table">
+					<thead class="ss-thead">
+						<tr>
+							<th class="firstTh">Date</th>
+							<th>Client</th>
+							<th>BOQ#</th>
+							<th class="lastTh">Credit</th>
+						</tr>
+					</thead>
+					<tbody class="ss-tbody">
+						<tr *ngFor="let ledger of client_ledger">
+							<td>{{ ledger.attributes.created_at | date:'dd/MM/yyyy - h:mm a'}}</td>
+							<td>{{ ledger.attributes.client_details.name }}</td>
+							<td>{{ ledger.attributes.quotation_details.reference_number }}</td>
+							<td>{{ledger.attributes.amount |  number : '1.2-2' }}</td>
+						</tr>
+
+					</tbody>
+				</table>
+
+			</div>
+		</div>
+		<div class="col-12 text-center bg-white" *ngIf="client_ledger && client_ledger.length == 0">
+			<div class="boq-img mt-5">
+				<img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+			</div>
+			<p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing To Show....
+
+		</div>
+
+	</div>
+</div>

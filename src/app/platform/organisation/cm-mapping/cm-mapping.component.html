@@ -1,0 +1,61 @@
+<div class="row ss-top-menu">
+  <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-xs-3">
+    <span class="ss-text-light" style="vertical-align: -webkit-baseline-middle;">Dashboard <i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;">CM Mapping</span>
+  </div>
+</div>
+<div class="row">
+    <div class="col-12" *ngIf="successalert">
+        <div class="alert-box grid-100" *ngIf="successMessage">
+            <div class="alert alert-success mt-3 text-center">
+                <a class="close link" data-dismiss="alert" (click)="successalert=false">×</a> {{successMessage}}
+            </div>
+        </div>
+    </div>
+    <div class="col-12" *ngIf="erroralert">
+        <div class="alert-box grid-100" *ngIf="errorMessage">
+            <div class="alert alert-success mt-3 text-center">
+                <a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a> {{errorMessage}}
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row px-4 mt-5">
+	<div class="col-12">
+    <div class="row">
+	    <div class="col-md-12  bg-white mb-4">
+	        <div class="row justify-content-center">
+	            <div class="col-sm-12">
+								<p class="pull-left mt-2 text-chng">cm mapping</p>  
+								<button (click)="downloadFile()" class="downloadFile mt-2">Download</button>
+			    </div>
+		        <div class="col-sm-12" >
+		            <div id="zui-wrapper" class="zui-wrapper mt-3">
+		              <div class="zui-scroller">
+		                <table class="zui-table">
+		                  <thead>
+		                    <tr>
+		                      <th class="zui-sticky-col" scope="col">COMMUNITY MANAGER NAME</th>
+		                      <th *ngFor="let col of colList" scope="col">{{col.humanized_name |replaceChar }}</th>
+		                    </tr>
+		                  </thead>
+		                  <tbody>
+		                    <tr *ngFor="let row of rowList">
+		                      <td *ngIf="row.cm_name" class="capitalize">{{row.cm_name}}</td>
+		                      <td *ngFor="let col of colList">
+		                        <input type="checkbox" id="box-{{row.cm_id}}-{{col.id}}" name=""  (click) = "restructureHash($event, row.cm_id,col.id)" [checked]="row.tags.includes(col.id)">
+		                        <label for="box-{{row.cm_id}}-{{col.id}}"></label>
+		                      </td>
+		                    </tr>
+		                  </tbody>
+		                </table>
+		              </div>
+		            </div>
+		            <input class="pull-right submitBtn mt-3 mb-3" type="button" name="" (click) = "submitMapping()" value="Submit">
+		        </div>
+	        </div>
+	    </div>
+    </div>
+  </div>
+	
+</div>

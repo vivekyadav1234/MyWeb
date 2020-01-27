@@ -1,0 +1,226 @@
+<div class="row ss-top-menu">
+    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-xs-4">
+        <span class="ss-text-light" style="vertical-align: -webkit-baseline-middle;">Dashboard</span>
+        <span style="vertical-align: -webkit-baseline-middle;"> <i class="rightArrow fa fa-angle-right"></i> </span>
+        <span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;">Questionnaire </span>
+    </div>  
+</div>
+<div class="rk-ui-notification" *ngIf="successalert">
+  <span id="notificationMessageText">{{successMessage}}</span>
+  <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+<div class="rk-ui-notification err" *ngIf="erroralert">
+  <span id="notificationMessageText">{{errorMessage}}</span>
+  <a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+
+<div class="row mt-5" style="justify-content: center;">
+  <div class="col-md-8 bg-white">
+    <div class="check" id="view_div" *ngIf="count == -1 ">
+      <div class="row">
+        <div class="col-md-12" style="border-bottom: 1px solid  #cacaca">
+          <div class="heading mt-4 mb-4">
+            <p>Hello, Nice to Meet You!</p>
+          </div>
+          
+        </div>          
+      </div>
+      <div class="row px-5" *ngIf="user_det">
+        <div class="col-md-6 mt-4">
+          <div class="form-group">
+            <label for="exampleFormControlInput1" class="ss-form-label">Lead Name</label>
+            <input type="text" class="form-control ss-form-control" id="exampleFormControlInput1" value="{{ user_det.name }}" readonly>
+          </div>
+        </div>
+        <div class="col-md-6 mt-4">
+          <div class="form-group">
+            <label for="exampleFormControlInput1" class="ss-form-label">Email</label>
+            <input type="text" class="form-control ss-form-control" id="exampleFormControlInput1" value="{{ user_det.email }}" readonly>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="exampleFormControlInput1" class="ss-form-label">Mobile</label>
+            <input type="email" class="form-control ss-form-control" id="exampleFormControlInput1" value="{{ user_det.contact }}" readonly>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="exampleFormControlInput1" class="ss-form-label">Instagram Handle:</label>
+            <input type="email" class="form-control ss-form-control" id="exampleFormControlInput1" value="{{ user_det.instagram_handle }}" readonly>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="exampleFormControlInput1" class="ss-form-label">Cv Upload</label>
+            <input type="email" class="form-control ss-form-control" id="exampleFormControlInput1" value="{{ user_det.designer_cv }}" readonly>
+            <span class="pull-right"><a style="color: darkred;" target="_blank" href="{{ user_det.designer_cv }}" download>View</a></span>
+          </div>
+        </div>      
+      </div>
+      <div class="row" >
+        <div class="col-12">
+          <button class="btn bt-boq pull-right mb-4 mr-4" (click)="selectDiv(0)">Next</button>
+          
+        </div>
+      </div>
+    </div> 
+    <form [formGroup]="addquestionnaireForm">
+      <fieldset formArrayName="sections" class="mx-3">
+        <div class="form-group  fieldsetBorder"
+           *ngFor = "let item2 of addquestionnaireForm.get('sections')['controls']; let i=index "
+           [formGroup]="item2">
+            <div class="check" *ngIf="i == count">
+              <div class="row">
+                <div class="col-md-12" style="border-bottom: 1px solid  #cacaca">
+                  <div class="heading mt-4 mb-4">
+
+                    <p><span>{{getformArray(addquestionnaireForm,'sections').controls[i]['controls'].section_id.value}}.</span>{{getformArray(addquestionnaireForm,'sections').controls[i]['controls'].section_name.value}}</p>
+                  </div>
+                  
+                </div>         
+              </div> 
+              <fieldset formArrayName="questions" class="mt-4" *ngIf="getformArray(addquestionnaireForm,'sections').controls[i]['controls'].section_id.value != 8">
+                <div class="form-group  fieldsetBorder"
+                 *ngFor = "let item3 of addquestionnaireForm.get('sections').controls[i]['controls'].questions.controls; let k=index "
+                 [formGroup]="item3">
+                  <p style="color: gray;font-family: 'roboto'">{{addquestionnaireForm.get('sections').controls[i]['controls'].questions.controls[k].controls.question.value}}</p>
+                  <textarea formControlName="answer"  class="form-control"
+                           [attr.id]="'answer'+k"></textarea>
+                </div>
+              </fieldset>
+              <fieldset formArrayName="questions" class="mt-4" *ngIf="getformArray(addquestionnaireForm,'sections').controls[i]['controls'].section_id.value == 8">
+                <div class="row" style="border-bottom:  1px solid gray;">
+                    <div class="col-md-6" *ngFor = "let item3 of addquestionnaireForm.get('sections').controls[i]['controls'].questions.controls; let k=index "
+                 [formGroup]="item3">
+                    <div class="form-group">
+                      <label class="control-label">{{addquestionnaireForm.get('sections').controls[i]['controls'].questions.controls[k].controls.question.value}}</label>
+                      <input type="text" class="form-control" [attr.id]="'customer_name'+i" formControlName="answer">
+                    </div>  
+                      
+                    </div>
+                
+                </div>
+              </fieldset>
+              <fieldset formArrayName="projects">
+                <div class="form-group  fieldsetBorder row"
+                 *ngFor = "let item4 of addquestionnaireForm.get('sections').controls[i]['controls'].projects.controls; let k1=index "
+                 [formGroup]="item4" style="border-bottom: 1px solid gray;">
+                  <div class="col-sm-12">
+                    <span class="span-chng1">PROJECT-{{ k1+1 }}</span>
+                    <i class="fa fa-minus-circle remove_button pull-right" (click)="addquestionnaireForm.get('sections').controls[i]['controls'].projects.removeAt(k1)"></i>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-6">
+                    <div class="form-group label-floating" >
+                      <label class="control-label">Customer Name</label>
+                      <input type="text" class="form-control" [attr.id]="'customer_name'+i" formControlName="customer_name">
+                    </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group label-floating" >
+                        <label class="control-label">Type</label>
+                        <!-- <input type="text" class="form-control" [attr.id]="'type'+i" formControlName="type"> -->
+                        <select class="form-control" [attr.id]="'type'+i" formControlName="type">
+                          <option value="">Select Type</option>
+                          <option value="Residential">Residential</option>
+                          <option value="Office">Office</option>  
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group label-floating" >
+                        <label class="control-label">budget</label>
+                        <!-- <input type="text" class="form-control" [attr.id]="'budget'+i" formControlName="budget"> -->
+                        <select class="form-control" [attr.id]="'budget'+i" formControlName="budget">
+                          <option value="" disabled>Choose</option>
+                          <option value="Less than 1.5 Lac">Less than 1.5 Lac</option>
+                          <option value="1.5 - 3 Lacs">1.5 - 3 Lacs</option>
+                          <option value="3 - 5 Lacs">3 - 5 Lacs</option>
+                          <option value="5 - 8 Lacs">5 - 8 Lacs</option>
+                          <option value="8 - 12 Lacs">8 - 12 Lacs</option>
+                          <option value="Above 12 Lacs">Above 12 Lacs</option>
+                          
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group label-floating" >
+                        <label class="control-label">Area </label>
+                        <input type="text" class="form-control" [attr.id]="'area'+i" formControlName="area">
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group label-floating" >
+                        <label class="control-label">Client Approval </label>
+                        <select class="form-control" [attr.id]="'client_pitches_and_design_approval'+i" formControlName="client_pitches_and_design_approval">
+                          <option value="" disabled>Choose</option>
+                          <option value="yes">Yes</option>
+                          <option value="no">No</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                
+                </div>
+              </fieldset>
+              <div class="row" *ngIf="addquestionnaireForm.get('sections').controls[i]['controls'].is_project_present.value">
+                <button class="btn bt-boqs pull-right mb-4 mr-4" (click)="pushProjectAttributes(addquestionnaireForm,i)">Add Project</button>
+              </div>
+              <div class="row" >
+                <div class="col-md-6 mt-4">
+                  <button class="btn  bt-boqs  mb-4 ml-4" (click)="selectDiv(i-1)" *ngIf="i != 0 ">Back</button>
+                  <button class="btn  bt-boqs  mb-4 ml-4" (click)="selectDiv(i-1)" *ngIf="i == 0 ">Back</button>
+                </div>
+                <div class="col-6 mt-4">
+                  
+                  <button class="btn bt-boq pull-right mb-4 mr-4" (click)="selectDiv(i+1)" *ngIf="count < (getformArray(addquestionnaireForm,'sections').length-1) ">Next</button>
+                  <button class="btn bt-boqs pull-right mb-4 mr-4" data-target="#skipModal" data-toggle="modal" (click)="skipDiv(i+1)"  *ngIf="count < (getformArray(addquestionnaireForm,'sections').length-1) ">Skip</button>
+                  <button class="btn bt-boqs pull-right mb-4 mr-4"  (click)="submitDpQuestionnaireForm()"  *ngIf="count >= (getformArray(addquestionnaireForm,'sections').length-1) ">Finish</button>
+                </div>
+              </div>
+            </div>  
+        </div>
+      </fieldset>     
+    </form> 
+    <!-- <pre>{{ addquestionnaireForm.value | json }}</pre>      -->
+  </div>
+  
+</div>
+
+<!-- Skip modal starts here -->
+<div class="modal fade modal-center modal-top" id="skipModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog modal-lg modal-width" role="document">
+    <div class="modal-content modal-content-chng">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="btn-chnges">
+            <button type="button" class="close pull-right" data-dismiss="modal" aria-label="Close" style="margin-top: 3px;margin-right: 7px" (click)="closeDiv()">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>  
+        </div>
+        
+      </div>
+      <div class="modal-header header-chng">
+        <h5 class="modal-title title-chnage" id="exampleModalLabel">SKIP SECTION !!</h5>
+        <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button> -->
+      </div>
+      <div class="modal-body">
+        <p class="p-chng">If you skip the section your chance of getting qualified will become less</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary bt-skip" (click)="skipQuestion(this.skipDivId)">SKIP IT!</button>
+
+      </div>
+    </div>
+  </div>
+</div><!-- /.modal -->
+
+
+
+
+

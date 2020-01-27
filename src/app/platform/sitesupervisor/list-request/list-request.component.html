@@ -1,0 +1,224 @@
+<div class="row ss-top-menu">
+  <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-xs-4">
+    <span class="ss-text-light" style="vertical-align: -webkit-baseline-middle;">Dashboard </span>
+    <span style="vertical-align: -webkit-baseline-middle;"> <i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-text-light" style="vertical-align: -webkit-baseline-middle;">Requests </span>
+  </div>
+  <div class="col-xl-5 col-lg-5 col-md-5 col-sm-5 col-xs-5">
+    <div class="ss-searchbox">
+      <i class="fa fa-search"></i>
+      <input class="form-control" type="text" placeholder="Type in name, contact, status, role, date to search..." #search (keyup)="0">
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12" *ngIf="erroralert">
+    <div class="alert-box grid-100" *ngIf="errorMessage">
+      <div class="alert alert-danger mt-3 text-center">
+        <a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a>
+        {{errorMessage}}
+      </div>
+    </div>
+  </div>
+  <div class="col-12" *ngIf="successalert">
+    <div class="alert-box grid-100" *ngIf="successMessage">
+      <div class="alert alert-success mt-3 text-center">
+        <a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+        {{successMessage}}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row body_height justify-content-center">
+  <div class="col-12">
+    <h5 *ngIf="requestList && requestList.length ==0" class="text-center my-5">No requests Available</h5>
+    <div class="tableDiv">
+      <table class="table" *ngIf="requestList && requestList.length >0">
+        <thead class="ss-thead">
+          <tr>
+            <th class="firstTh" style="min-width: 1rem;">#</th>
+            <th>Request Type</th>
+            <th>Request Status</th>
+            <th>Visit Time</th>
+            <th>Address</th>
+            <th>Project</th>
+            <th>Designer</th>
+            <th class="lastTh">Action</th>
+            
+          </tr>
+        </thead>
+        <tbody class="ss-tbody">
+          <tr *ngFor=" let obj of requestList; let i = index ">
+            <td style="min-width: 1rem;">{{i+1}}</td>
+            <td>{{obj.request_type | replaceChar}}</td>
+            <td>{{obj.request_status | replaceChar}}</td>
+            <td>
+            	<span *ngIf="obj.rescheduled_at" >{{obj.rescheduled_at | date:'yyyy-MM-dd, h:mm a'}}</span>
+            	<span *ngIf="!obj.rescheduled_at" >{{obj.scheduled_at | date:'yyyy-MM-dd, h:mm a'}}</span>
+            </td>
+            <td>{{obj.address}}</td>
+            <td>{{obj.project.name}}</td>
+            <td>
+            	<span *ngIf="obj.designer">{{obj.designer.name}}({{obj.designer.email}})</span>
+            </td>
+            <td>
+            	<!-- <i class="ion-android-more-vertical  ss-3-dot-drop" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"></i>
+            	<div class="dropdown-menu pt-2 pb-2" style="font-size: 14px;">
+            	  <a class="dropdown-item addCursor" (click)="reschedule(obj.id)" >Add details</a>
+            	  <a class="dropdown-item addCursor" (click)="completeRequest(obj.id)">Complete Request</a>
+            	</div> -->
+
+            	<input type="button" class="btn btn-pink" name="" value="Complete" *ngIf="obj.request_status != 'complete'" (click) = "completeRequestModal(obj.id)">
+              <input type="button" class="btn btn-pink" name="" value="View Gallery" *ngIf="obj.request_status == 'complete'" (click) = "getGallery(obj.id, obj.remark)" >
+             
+            </td>
+            <!-- <td> <input type="button" class="btn btn-pink" name="" value="Add More" *ngIf="obj.request_status == 'complete'" (click) = "addMoreFiles(obj.id)" ></td> -->
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Complete Request MODAL -->
+<div class="modal fade" id="completeRequestModal" tabindex="-1" role="dialog" aria-labelledby="completeRequestModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="border-bottom: 1px solid #e4e4e4;">
+        <h6 class="modal-title" id="completeRequestModalLabel">Complete the request: </h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+            <form [formGroup] = "completeRequestForm" (ngSubmit) = "completeRequest()" class="form-horizontal" enctype="multipart/form-data">
+              <div class="form-group">
+
+                <label for="fileupload" class="ss-form-label mt-4">Upload Files</label>
+                <input type="file" name="" class="form-control ss-form-control" multiple="multiple" id = "fileupload" (change) = "attachFile($event)">
+                <!-- <textarea class="form-control ss-form-control" id="address" name="address" rows="5" placeholder="Please enter remark" formControlName = "remark"></textarea> -->
+                <label for="address" class="ss-form-label mt-4">Remark</label>
+                <textarea class="form-control ss-form-control" id="address" name="address" rows="5" placeholder="Please enter remark" formControlName = "remark"></textarea>
+
+                <button type="submit" class="btn btn-pink button_emi pull-right mt-4" [disabled] = "!completeRequestForm.valid"> Submit </button>
+              </div>
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- View Gallery MODAL -->
+<div class="modal fade" id="viewGalleryModal" tabindex="-1" role="dialog" aria-labelledby="completeRequestModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="border-bottom: 1px solid #e4e4e4;">
+        <h6 class="modal-title" id="completeRequestModalLabel">Gallery : </h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row m-0">
+          <div class="col-sm-12"><strong>Remarks:</strong></div>
+          <div class="col-sm-12 remarks" style="border-bottom: 1px solid #bbb;"></div>
+          <div class="col-sm-12 text-center" *ngIf="imageGallery.length <= 0">
+            No Image available
+          </div>
+          <div class="col-md-4 mt-4" *ngFor="let item of imageGallery">
+            <div class="card card-chng">
+
+              <img onerror="this.src='./assets/img/no_image.svg';" class="card-img-top img-fluid" src="{{item.site_image}}" alt="Card image cap" style="max-height: 165px;" />
+              <div class="card-block" style="padding: 1rem;">
+                <div class="row">
+                  <div class="col-md-12">
+                    <p class="mb-0 mt-2" style="font-size:13px;">
+                      <span>Uploaded at: </span>
+                      <span style="color: #7E7E7E;">{{item.updated_at | date:'dd MMMM, y - h:mm a'}}</span>
+                    </p>
+                  </div>
+                  <div class="col-md-12 divbutton mt-2">
+                    <a class="btn btn-pink btn-chng pull-right" href="{{item.site_image}}" download>
+                      Download
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Add MOre Image file s Modal -->
+<div class="modal fade" id="addMoreImageModal" tabindex="-1" role="dialog" aria-labelledby="addMoreImageModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="border-bottom: 1px solid #e4e4e4;">
+        <h6 class="modal-title" id="completeRequestModalLabel">Add More Image Files : </h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+            <form [formGroup] = "addImageForm" (ngSubmit) = "addImageSubmit()" class="form-horizontal" enctype="multipart/form-data">
+              <div class="form-group">
+
+                <label for="fileupload" class="ss-form-label mt-4">Upload Files</label>
+                <input type="file" name="" class="form-control ss-form-control"  multiple="multiple" id = "fileupload" (change) = "attachFile($event)">
+                 <!-- <input type="file" class="" (change)="onChange($event)" name="attachment_file" ngModel #attachment_file="ngModel"> -->
+                
+                <button type="submit" class="btn btn-pink button_emi pull-right mt-4" [disabled] = "!addImageForm.valid"> Submit </button>
+              </div>
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add MOre Image file s Modal -->
+<div class="modal fade" id="addMoreImageModal" tabindex="-1" role="dialog" aria-labelledby="addMoreImageModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="border-bottom: 1px solid #e4e4e4;">
+        <h6 class="modal-title" id="completeRequestModalLabel">Add More Image Files : </h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+            <form [formGroup] = "addImageForm" (ngSubmit) = "addImageSubmit()" class="form-horizontal" enctype="multipart/form-data">
+              <div class="form-group">
+
+                <label for="fileupload" class="ss-form-label mt-4">Upload Files</label>
+                <input type="file" name="" class="form-control ss-form-control"  multiple="multiple" id = "fileupload" (change) = "attachFile($event)">
+                 <!-- <input type="file" class="" (change)="onChange($event)" name="attachment_file" ngModel #attachment_file="ngModel"> -->
+                
+                <button type="submit" class="btn btn-pink button_emi pull-right mt-4" [disabled] = "!addImageForm.valid"> Submit </button>
+              </div>
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- End Add more images Modal -->

@@ -1,0 +1,51 @@
+.btn-yel{
+  background: #fff5d4;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+}
+.btn-assign{
+    background: #A5A5A5;
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 41px;
+    width: 70%;
+    cursor: pointer;
+}
+.btn-up{
+  color: black;
+  border: 1px solid lightgrey;
+  font-weight: 500;
+  width: 100%;
+  cursor: pointer;
+
+}
+.btn-ups{
+  color: black;
+  border: 1px solid lightgrey;
+  font-weight: 500;
+  cursor: pointer;
+  width: 100%;
+  border-radius: 4px;
+  text-align: left;
+  
+
+}
+.btn-up-chng{
+    font-size: 12px;
+    white-space: normal;
+    word-wrap: break-word;
+    width: 78%;
+    border: 2px solid #ECF0EF;
+    cursor: pointer;
+}
+.divActive{
+  background: darkred;
+  color: white;
+
+}
+.btn:focus{
+  box-shadow: none;
+  outline: none;
+}

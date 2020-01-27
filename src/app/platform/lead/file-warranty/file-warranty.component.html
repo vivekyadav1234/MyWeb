@@ -1,0 +1,48 @@
+<div class="rk-ui-notification err" *ngIf="erroralert" style="z-index: 10000;">
+  <span id="notificationMessageText">{{errorMessage}}</span>
+  <a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+<div class="rk-ui-notification" *ngIf="successalert" style="z-index: 10000;">
+  <span id="notificationMessageText">{{successMessage}}</span>
+  <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+<div class="row mt-4 right-section warranty-document-section">
+  <!-- <div class="col-md-12">
+    <button type="button"  class="btn btn-pink pull-right" data-toggle="modal" data-target="#pptModal">
+      UPLOAD PPT FILE
+    </button>
+  </div> -->
+  <!-- <div class="col-md-12 mt-5 text-center p-5" style="background-color: #fff;">
+    <img src="../../../assets/img/nothing.png" class="img-fluid">
+  </div> -->
+  <div class="col-md-12 mt-5" >
+    <div class="row">
+      <div class="col-md-4 mt-4">
+        <div class="card card-chng">
+         <div class="text-right"><a data-tooltip="Share Document"><i class="fa fa-share-alt cursor-pointer trash-card text-right mt-2 mr-2 share_button" (click) = "confirmAndShare()" ></i></a></div>
+          <img onerror="this.src='./assets/img/no_image.svg';" class="card-img-top img-fluid" src="/assets/img/customerWarranty.pdf" alt="Card image cap" style="max-height: 165px;" />
+          <div class="card-block" style="padding: 1rem;">
+            <p class="card-text" style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap;border-bottom: 1px solid #e0e0e0;padding-bottom: 10px;"></p>
+            <p class="card-text" style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap;border-bottom: 1px solid #e0e0e0;padding-bottom: 10px;">Warranty Document</p>
+            <div class="row">
+              <!-- <div class="col-md-12">
+                <p class="mb-0" style="font-size:13px;">
+                  <span>Pdf </span>
+                </p>
+                <p class="mb-0 mt-2" style="font-size:13px;">
+                  <span>File Name: </span>
+                  <span style="color: #7E7E7E;">Warranty Document</span>
+                </p>
+              </div> -->
+              <div class="col-md-12 divbutton mt-2">
+                <a class="btn btn-pink btn-chng pull-right" href="/assets/img/customerWarranty.pdf" download target="_blank">
+                  Download
+                </a>
+              </div>
+            </div>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>
+

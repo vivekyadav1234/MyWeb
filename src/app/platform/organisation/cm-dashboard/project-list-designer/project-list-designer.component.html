@@ -1,0 +1,98 @@
+<div class="row title">
+  <h3>Dashboard / <span class="addCursor capitalize" [routerLink]="['/list-designer']" *ngIf="designer_name">Designer - {{designer_name}}</span> / <span>Project List</span></h3>
+</div>
+
+<div class="marginTop row">
+	<div class="col-12" *ngIf="erroralert">
+		<div class="alert-box grid-100" *ngIf="errorMessage">
+			<div class="alert alert-danger mt-3 text-center">
+				<a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a>
+				{{errorMessage}}
+			</div>
+		</div>
+	</div>
+	<div class="col-12" *ngIf="successalert">
+		<div class="alert-box grid-100" *ngIf="successMessage">
+			<div class="alert alert-success mt-3 text-center">
+				<a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+				{{successMessage}}
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row body_height" *ngIf="listDesignersProjects">
+	<div class="col-12 table-responsive p-0">
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th>Serial No.</th>
+					<th>Project Name</th>
+					<!-- <th>Project Description</th> -->
+					<th>Project Assigned Date</th>
+					<th>Lead Name</th>
+					<th>Lead Email</th>
+					<th class="text-center">Action</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr *ngFor="let project of listDesignersProjects.projects; let i=index; ">
+					<td>{{i+1}}</td>
+					<td>{{project.name}}</td>
+					<td>{{project.created_at | date: 'dd/MM/yyyy @ h:mma'}}</td>
+					<td>{{project.lead.name}}</td>
+					<td>{{project.lead.email}}</td>
+					<td class="text-center"><a href="" class="addCursor" (click)="getProjectDetails(project.id); setModalData(project.id);" data-toggle="modal" data-target="#projectModal">View Details</a></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+<div class="modal fade" id="projectModal" role="dialog" aria-hidden="true">
+  	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+		    	<h5 class="modal-title" id="projectModalLabel">Floorplans</h5>
+		    	<img class="close" data-dismiss="modal" src="https://www.homepolish.com/assets/close-ee1bfd7a4473933b6dd934b2c284dc856361b63581c8f43b8cdc1abe07c91765.svg" (click)="closeModal()">
+		    </div>
+		  	<div class="modal-body mBody_height" *ngIf="projectDetails">
+			    <div class="row"  *ngIf="projectDetails.floorplans && projectDetails.floorplans.length != 0">
+			    	<div class="col-3" *ngFor="let fp of projectDetails.floorplans; let j = index; ">
+			    		<div class="card">
+			    		  <div class="card-body">
+			    		    <h5 class="card-title">{{fp.name}}</h5>
+			    		    <p class="card-text card-text-body">{{fp.details}}</p>
+			    		    <a href="{{fp.attachment_file}}" class="card-link addCursor" target="_blank">View Floorplan File</a><br/>
+			    		    <a class="addCursor card-link" (click)="getFloorplanDesigns(projectIdForModal,fp.id)">View Designs</a>
+			    		  </div>
+			    		</div>
+			    	</div>
+			    </div>
+			    <div class="row" *ngIf="projectDetails.floorplans && projectDetails.floorplans.length == 0">
+			    	<div class="col-12">
+			    		No floorplans available for this project.
+			    	</div>
+			    </div>
+			    
+		    	<hr class="my-5" *ngIf="designDetails && designDetails.designs">
+
+			    <div class="row" *ngIf="designDetails && designDetails.designs && designDetails.designs.length !=0">
+			    	<div class="col-3" *ngFor="let des of designDetails.designs; let j = index; ">
+			    		<div class="card">
+			    		  <div class="card-body">
+			    		    <h5 class="card-title">{{des.name}}</h5>
+			    		    <p class="card-text card-text-body">{{des.details}}</p>
+			    		    <a href="{{des.attachment_file}}" class="card-link addCursor" target="_blank">View Design</a>
+			    		  </div>
+			    		</div>
+			    	</div>
+			    </div>
+			    <div class="row" *ngIf="designDetails && designDetails.designs && designDetails.designs.length == 0">
+			    	<div class="col-12">
+			    		No Design available for this floorplan.
+			    	</div>
+			    </div>
+		  	</div>
+		</div>
+	</div>
+</div>

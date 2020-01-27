@@ -1,0 +1,331 @@
+<div class="row title">
+  <h3>Scheduler</h3>
+</div>
+<div class="row justify-content-center" style="border-bottom: 1px solid #bbb;">
+  <div class="col-8" *ngIf="project_tasks && project_tasks?.length ==0">
+    <form (ngSubmit)="onSubmit(schedulerexceluploadForm.value); schedulerexceluploadForm.reset()" #schedulerexceluploadForm="ngForm"
+          class="form-horizontal my-3 text-center" enctype="multipart/form-data">
+      <div class="row">
+        <div class="col-4">
+          <input type="file" (change)="onChange($event)" name="attachment_file" ngModel #attachment_file="ngModel"
+                 [disabled]="project_tasks && project_tasks?.length !=0">
+        </div>
+        <div class="col-4">
+          <!-- <button type="submit" class="button" [disabled]="project_tasks && project_tasks?.length !=0">Upload Excel</button> -->
+        </div>
+        <div class="col-4">
+          <a href="https://s3.amazonaws.com/arrivae-assets/statics/Scheduler+TEMPLATE.xlsx">Download reference excel</a>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<br>
+<div class="row justify-content-center">
+  <div class="col-12" *ngIf="erroralert">
+    <div class="alert-box grid-100" *ngIf="errorMessage">
+      <div class="alert alert-danger text-center">
+        <a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a>
+        {{errorMessage}}
+      </div>
+    </div>
+  </div>
+  <div class="col-12" *ngIf="successalert">
+    <div class="alert-box grid-100" *ngIf="successMessage">
+      <div class="alert alert-success text-center">
+        <a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+        {{successMessage}}
+      </div>
+    </div>
+  </div>
+</div>
+<br>
+<div class="row" *ngIf="project_tasks && project_tasks?.length ==0">
+  <div class="noProject">
+    <p>This project has no task.</p>
+  </div>
+</div>
+<div class="row justify-content-center">
+  <div class="col-11">
+    <div class="body_height">
+      <table class="table text-center" *ngIf="project_tasks && project_tasks?.length>0">
+        <thead>
+        <tr>
+          <th class="text-center">Task Id</th>
+          <th class="text-center">Task Name</th>
+          <th class="text-center">Resource</th>
+          <th class="text-center">Start Date(yyyy-mm-dd)</th>
+          <th class="text-center">End Date(yyyy-mm-dd)</th>
+          <th class="text-center">Duration in days</th>
+          <th class="text-center">Dependencies</th>
+          <th>Status</th>
+          <th class="text-center">Percent Complete</th>
+          <th class="text-center">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let obj of project_tasks">
+          <td>{{obj.internal_name}}</td>
+          <td>{{obj.name}}</td>
+          <td>{{obj.resource}}</td>
+          <td>{{obj.actual_start | date:'yyyy-MM-dd'}}</td>
+          <td>{{obj.actual_end | date:'yyyy-MM-dd'}}</td>
+          <td>{{obj.duration}} Days</td>
+          <td>
+            <span *ngFor="let val of obj.upstream_dependencies">{{val.internal_name}},</span>
+          </td>
+          <td>{{obj.status}}</td>
+          <td>{{obj.percentComplete}} %</td>
+          <td>
+            <i class="fa fa-trash addCursor" (click)="deletTask(obj.id)"></i>
+            <i class="fa fa-pencil addCursor" data-toggle="modal" data-target="#editTaskModal" (click)="getTaskDetailWithId(obj.id)"></i>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+        <a class="addCursor" data-toggle="modal" data-target="#addTaskModal" *ngIf="project_tasks && project_tasks?.length>0"><i class="fa fa-plus"></i> Add New Task</a>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="editTaskModal" role="dialog">
+  <div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+        <h4 class="modal-title">Update Task</h4>
+			  <button type="button" class="close" data-dismiss="modal">&times;</button>
+			</div>
+			<div class="modal-body">
+			  	<form [formGroup]="editTaskForm" (ngSubmit)="editTaskDetails(editTaskForm.value);editTaskForm.reset()">
+			  		<div class="row justify-content-center">
+	            <div class="col-6">
+	              	<div class="form-group">
+                    <label>Task Id</label>
+		                <input type="text" class="form-control" placeholder="Enter Task Id"  id="internal_name" required name="internal_name" formControlName="internal_name" readonly>
+		                <div *ngIf="editTaskForm.controls['internal_name'].errors && !editTaskForm.controls['internal_name'].pristine" class="text-danger">
+		                  <div [hidden]="!editTaskForm.controls['internal_name'].errors.required">Task Id is required.</div>
+		                </div>
+	                </div>
+              </div>
+              <div class="col-6">
+	                <div class="form-group">
+                    <label>Task Name</label>
+		                <input type="text" class="form-control" placeholder="Enter Task Name"  id="name" required name="name" formControlName="name">
+		                <div *ngIf="editTaskForm.controls['name'].errors && !editTaskForm.controls['name'].pristine" class="text-danger">
+		                  <div [hidden]="!editTaskForm.controls['name'].errors.required">Task Name is required.</div>
+		                </div>
+	                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-group">
+                  <label>Start Date</label>
+	                <input type="date" class="form-control" placeholder="Enter Start Date"  id="start_date"  name="start_date" formControlName="start_date">
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-group">
+                  <label>End Date</label>
+	                <input type="date" class="form-control" placeholder="Enter End Date"  id="end_date"  name="end_date" formControlName="end_date">
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-group">
+                  <label>Duration in Days</label>
+	                <input type="number" class="form-control" placeholder="Enter Duration in Days"  id="duration"  name="duration" formControlName="duration" min="0" (keydown)="numberCheck($event)">
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-group">
+                  <label>Resource</label>
+	                <input type="text" class="form-control" placeholder="Enter Resource"  id="resource"  name="resource" formControlName="resource">
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-group">
+                  <label>Change Status</label>
+                  <select class="form-control" formControlName="status">
+                    <option value="not_started">Not Started</option>
+                    <option value="in_progress">In Progress</option>
+                    <option value="blocked">Blocked</option>
+                    <option value="completed">Completed</option>
+                    <option value="delayed">Completed with delay</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-group">
+                  <label>Percent Completion</label>
+	                <input type="number" class="form-control" placeholder="Enter Percent Completion"  id="percent_completion"  name="percent_completion" formControlName="percent_completion" min="0" (keydown)="numberCheck($event)">
+	                <div *ngIf="editTaskForm.controls['percent_completion'].errors && !editTaskForm.controls['percent_completion'].pristine" class="text-danger">
+	                  	<div [hidden]="!editTaskForm.controls['percent_completion'].errors.required">Percent Completion is required.</div>
+	                </div>
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="form-group">
+                  <label>Dependencies</label>
+                  <input type="text" class="form-control" placeholder="Enter Dependencies"  id="upstream_dependencies"  name="upstream_dependencies" formControlName="upstream_dependencies">
+                  <p class="text-danger">Note* - multiple dependencies should be comma separated.</p>
+                </div>
+              </div>
+			        <button class="button mt-3" type="submit"  [disabled]="!editTaskForm.valid">Submit</button> 
+			      </div>
+			  	</form>
+			</div>
+			<div class="modal-footer">
+			  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="addTaskModal" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Add New Task</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="addTaskForm" (ngSubmit)="addTaskDetails(addTaskForm.value);addTaskForm.reset()">
+          <div class="row justify-content-center">
+            <div class="col-6">
+              <div class="form-group">
+                <input type="text" class="form-control" placeholder="Enter Task Id" id="internal_name" required name="internal_name"
+                       formControlName="internal_name">
+                <div *ngIf="addTaskForm.controls['internal_name'].errors && !addTaskForm.controls['internal_name'].pristine" class="text-danger">
+                  <div [hidden]="!addTaskForm.controls['internal_name'].errors.required">Task Id is required.</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <input type="text" class="form-control" placeholder="Enter Task Name" id="name" required name="name" formControlName="name">
+                <div *ngIf="addTaskForm.controls['name'].errors && !addTaskForm.controls['name'].pristine" class="text-danger">
+                  <div [hidden]="!addTaskForm.controls['name'].errors.required">Task Name is required.</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <input type="date" class="form-control" placeholder="Enter Start Date" id="start_date" name="start_date" formControlName="start_date">
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <input type="date" class="form-control" placeholder="Enter End Date" id="end_date" name="end_date" formControlName="end_date">
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <input type="number" class="form-control" placeholder="Enter Duration in Days" id="duration" name="duration" formControlName="duration" min="0" (keydown)="numberCheck($event)">
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <input type="email" class="form-control" placeholder="Enter Resource Email" id="resource" name="resource" formControlName="resource">
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <select class="form-control" formControlName="status">
+                  <option value="">Select Status</option>
+                  <option value="not_started">Not Started</option>
+                  <option value="in_progress">In Progress</option>
+                  <option value="blocked">Blocked</option>
+                  <option value="completed">Completed</option>
+                  <option value="delayed">Completed with delay</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-group">
+                <input type="number" class="form-control" placeholder="Enter Percent Completion" id="percent_completion" name="percent_completion"
+                       formControlName="percent_completion" min="0" (keydown)="numberCheck($event)">
+                <div *ngIf="addTaskForm.controls['percent_completion'].errors && !addTaskForm.controls['percent_completion'].pristine"
+                     class="text-danger">
+                  <div [hidden]="!addTaskForm.controls['percent_completion'].errors.required">Percent Completion is required.</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="form-group">
+                <input type="text" class="form-control" placeholder="Enter Dependencies" id="upstream_dependencies" name="upstream_dependencies"
+                       formControlName="upstream_dependencies">
+                <p class="text-danger">Note* - multiple dependencies should be comma separated.</p>
+              </div>
+            </div>
+            <div class="col-12">
+              <button class="button my-2 float-right" type="submit" [disabled]="!addTaskForm.valid">Submit</button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- <div anygantt style="width: 800px; height: 400px" acType="ganttProject" acTitle="My Gantt Project" [acData]="myData"></div> -->
+
+<br/>
+<!-- Gantt chart html starts here -->
+<div *ngIf="project_tasks && project_tasks.length != 0"  class="row justify-content-center">
+  <div class="col-12 px-5">
+    <h3>Gantt Chart</h3>
+    <gantt [project]="project" [options]="options" (onGridRowClick)="gridRowClicked($event)" ></gantt>
+  </div>
+</div>
+
+<!-- <div *ngIf="project">
+    <h1>Project</h1>
+    <input type="text" [(ngModel)]="project.name"/>
+    <table>
+        <thead>
+            <tr>
+                <td>Id</td>
+                <td>Name</td>
+                <td>Tree Path</td>
+                <td>Percent Complete</td>
+                <td>Start Date</td>
+                <td>End Date</td>
+                <td></td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let task of project.tasks">
+                <td><input style="width:100%" type="text" [(ngModel)]="task.id"/></td>
+                <td><input style="width:100%" type="text" [(ngModel)]="task.name"/></td>
+                <td><input type="width:100%" type="text" [(ngModel)]="task.treePath"/></td>
+                <td><input type="number" [(ngModel)]="task.percentComplete" min="0" max="100"/>
+                <td><input type="text" [(ngModel)]="task.start"/></td>
+                <td><input type="text" [(ngModel)]="task.end"/></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h1>Playground</h1>
+    Task Status: 
+    <select #taskStatus>
+        <option>Error</option>
+        <option>Warning</option>
+        <option>Information</option>
+        <option>Completed</option>
+    </select>
+    <button (click)="createTask(taskStatus)">Create Task</button>
+    <button (click)="updateTasks()">Update Tasks Percent Complete</button>
+    <button (click)="loadBigDataSet()">Load big dataset</button>
+
+    <h1>Output</h1>
+    <p>{{ project | json }}</p>
+
+</div> -->
+
+<!-- Gantt chart html ends here -->
+
+
+
+

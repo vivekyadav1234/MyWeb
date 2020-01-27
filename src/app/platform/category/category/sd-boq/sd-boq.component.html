@@ -1,0 +1,61 @@
+<div class="row ss-top-menu">
+  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6">
+    <span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;">Dashboard</span>
+  </div>
+  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6">
+  </div>
+</div>
+<div class="row px-4">
+
+   <div class="col-12">
+    <div class="row mb-5">
+      <div class="col-md-12  pb-3">
+        <div class="row mt-4">
+          
+          <div class="col-md-12" >
+  	        <div class="tableDiv " >
+  	          <div class="table-responsive">
+  	            <table class="table ">
+  	                <thead class="thead-dark">
+  	                    <tr>
+	  	                  <th scope="col" class="firstTh">#</th>
+	  	                  <th scope="col">BOQ NAME</th>
+	  	                  <th scope="col">LAST EDITED ON</th>
+	  	                  <th scope="col">PRICE EXPIRY</th>
+	  	                  <th scope="col">TOTAL AMOUNT</th>
+	  	                  <th class="lastTh"></th>
+  	                    </tr>
+  	                </thead>
+  	                <tbody lass="ss-tbody">
+  	              	   <tr *ngFor="let obj of boq_list; let i = index" [attr.data-index]="i">
+  	              	    <td style="min-width: 1rem;">{{i+1}}</td>
+  	              	    <td  class="capitalize">
+			              <a class="addCursor ss-link" href=""   [routerLink]="['/shop_drawing/projects/'+project_id+'/boq/'+obj.id+'/drawings']">{{obj.reference_number}}</a>
+			             
+			            </td>
+			            <td style="min-width: 1rem;">{{obj.updated_at | date:"dd MMMM, y @ h:mma"}}</td>
+			            
+			            <td style="min-width: 1rem;">{{obj.expiration_date }}</td>
+			            <td style="min-width: 1rem;" class="capitalize">{{obj.net_amount}}</td>
+			            
+			            <td></td>
+			           </tr>
+  	               
+  	                </tbody>
+  	            </table>
+  	            <!-- <p>{{paymentForm.value | json}}</p> -->
+  	          </div>
+  	        </div>
+	        </div> 
+          <div class="col-md-12 not-found " *ngIf="boq_list && boq_list.length== 0">
+            <div class="boq-img">
+              <img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+            </div>
+            <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing to show...</p> 
+          </div> 
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div> 

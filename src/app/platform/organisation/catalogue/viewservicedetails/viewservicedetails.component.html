@@ -1,0 +1,91 @@
+<div class="row title" *ngIf="service">
+  <h3>Dashboard / <span class="addCursor" [routerLink]="['/catalogue/sections']" routerLinkActive='active'>Catalogue</span> / <span class="addCursor" [routerLink]="['/catalogue/section/'+service.section.parent.id+'/subsections']" routerLinkActive='active'>{{service.section.parent.name | ucwords}}</span> / <span class="addCursor" [routerLink]="['/catalogue/section/'+service.section.parent.id+'/subsection/'+service.section.id+'/product']" routerLinkActive='active'>{{service.section.name | ucwords}}</span> / <span>{{service.name | ucwords}}</span></h3>
+</div>
+<div class="marginTop">
+  <!-- <div class="col-12" *ngIf="erroralert">
+    <div class="alert-box grid-100" *ngIf="errorMessage">
+      <div class="alert alert-danger text-center">
+        <a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a>
+        {{errorMessage}}
+      </div>
+    </div>
+  </div>
+  <div class="col-12" *ngIf="successalert">
+    <div class="alert-box grid-100" *ngIf="successMessage">
+      <div class="alert alert-success text-center">
+        <a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+        {{successMessage}}
+      </div>
+    </div>
+  </div> -->
+</div>
+<div class="row body_height" *ngIf="service">
+  <div class="col-sm-12 col-md-8 col-lg-8 pull-left mb-2"><h4 class="productHeading">{{service.name}}</h4></div>
+  <div class="col-sm-12 col-md-8 col-lg-8">
+    <div class="mainDiv">
+      <img class="addCursor mb-2" src="{{service.attachment_file}}" width="90%" style="max-height: 380px;" onError="this.src = 'assets/v3/img/noImg2.jpg'; ">
+      <hr>
+      <div class="mainBody mt-2" *ngIf="service">
+        <h6 class="my-5 px-2"><strong>INFORMATION</strong> <!-- <a *ngIf="product.product_url !=''  || product.product_url != null " href="{{product.product_url}}" target="_blank" class="ml-3" >VIEW ON WEBSITE <i class="fa fa-external-link" aria-hidden="true"></i></a> --></h6>
+        <div class="row">
+          <div class="col-sm-12 col-md-6">
+            <div class="row">
+            	<p class="col-5 ml-2 productDetailsSpan">Product Type : </p>
+            	<p class="col-6 productDetailsSpan">{{service.product_type}}</p>
+            	<p class="col-5 ml-2 productDetailsSpan">SKU Code : </p>
+            	<p class="col-6 productDetailsSpan">{{service.unique_sku}}</p>
+            	<p class="col-5 ml-2 productDetailsSpan">Brand : </p>
+             	<p class="col-6 productDetailsSpan">{{service.brand}}</p>
+             	<p class="col-5 ml-2 productDetailsSpan">Measurement Unit : </p>
+             	<p class="col-6 productDetailsSpan">{{service.measurement_unit}}</p>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-6" *ngIf="service">
+            <div class="row">
+            	<p class="col-5 ml-2 productDetailsSpan">Product Sub Type : </p>
+            	<p class="col-6 productDetailsSpan">{{service.product_subtype}}</p>
+              	<p class="col-5 ml-2 productDetailsSpan">Specification (mm) : </p>
+              	<p class="col-6 productDetailsSpan">{{service.specification}}</p>
+              	<p class="col-5 ml-2 productDetailsSpan">Rate per unit : </p>
+              	<p class="col-6 productDetailsSpan">{{service.rate_per_unit}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- <div class="col-sm-12 col-md-4 col-lg-4">
+    <h3 class="productHeading">Warranty :</h3>
+    <span class="" style="font-size: 13px;">{{service.warranty}}</span><hr/>
+    <h3 class="productHeading mt-2">Remarks :</h3>
+    <span class="" style="font-size: 13px;">{{service.remark}}</span>
+  </div> -->
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

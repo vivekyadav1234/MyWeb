@@ -1,0 +1,42 @@
+.marginTop{
+  margin-top: 4.3rem;
+}
+.filterMainDiv{
+  margin-top: .7rem;
+  margin-bottom: .3rem;
+}
+.tableDiv{
+  overflow-x: scroll;
+}
+.tableDiv tbody tr{
+  height: 56px;
+}
+.table{
+  border-collapse: separate;
+  border-spacing: 0 5px;
+}
+.table td, .table th{
+  min-width: 10rem;
+}
+.table td{
+  padding: 0.7rem 0.75rem;
+  vertical-align: middle;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.7);
+  border: none;
+}
+.table th {
+  padding: .9rem;
+  vertical-align: middle;
+  border: none;
+  font-size: 12px;
+  color: #dedede;
+  background-color: #4a4a4a;
+}
+.tableDiv tbody{
+  background-color: #fff;
+}
+.tableDiv tbody tr{
+  box-shadow: 1px 1px 7px 0px #dadada;
+  border-radius: 5px;
+}

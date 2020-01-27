@@ -1,0 +1,119 @@
+<!-- <button class="button button_emi" [routerLink]="['/designer-portfolios/addportfolio']" routerLinkActive='active'> ADD  PORTFOLIO</button>
+ -->
+<div class="row title">
+  <h3>Dashboard / <span>Designer Portfolio </span></h3>
+  <p class="add" data-toggle="tooltip" title="Add Portfolio" data-placement="left" [routerLink]="['/designer-portfolios/addportfolio']" routerLinkActive='active' *ngIf="role && role =='designer' "><i class="fa fa-plus" aria-hidden="true"></i></p>
+
+</div>
+<div class="row body_height justify-content-center">
+  <div class="col-12" *ngIf="erroralert">
+    <div class="alert-box grid-100" *ngIf="errorMessage">
+      <div class="alert alert-danger mt-3 text-center">
+        <a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a>
+        {{errorMessage}}
+      </div>
+    </div>
+  </div>
+  <div class="col-12" *ngIf="successalert">
+    <div class="alert-box grid-100" *ngIf="successMessage">
+      <div class="alert alert-success mt-3 text-center">
+        <a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+        {{successMessage}}
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-12 col-md-12 col-lg-12 mt-5" *ngIf="designerPortfolio && designerPortfolio?.length == 0">
+    <div class="card text-center border-0">
+      <div class="card-block">
+        <h5 class="card-text py-4">No Portfolio uploaded !</h5>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 table-responsive p-0">
+    <table class="table table-hover" *ngIf="designerPortfolio && designerPortfolio?.length != 0">
+      <thead>
+        <tr>
+          <!-- <th class="text-center">ID</th> -->
+          <th>Name</th>
+          <th>Description</th>
+          <th>Reference Url</th>
+          <th *ngIf=" role && (role == 'admin' || role == 'design_head') ">Designer Name</th>
+          <th *ngIf="role && (role == 'admin' || role == 'design_head')">Designer Email</th>
+          <th class="table_img_col">Image</th>
+          <th class="table_active_col text-center" *ngIf="role && role =='designer' ">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of designerPortfolio">
+          <!-- <td class="text-center">{{data.id}}</td> -->
+          <td >{{data.name}}</td>
+          <td>{{data.description}}</td>
+          <td>{{data.url}}</td>
+          <td *ngIf=" role && (role == 'admin' || role == 'design_head') ">{{data.user.name}}</td>
+          <td *ngIf=" role && (role == 'admin' || role == 'design_head') ">{{data.user.email}}</td>
+          <td>
+            <img class="my-2" src="{{data.attachment_file}}" width="200px" height="180px" *ngIf="data.attachment_file !='/images/original/missing.png' && (data.attachment_file_type=='image/jpeg' || data.attachment_file_type=='image/jpg' || data.attachment_file_type=='image/png') ">
+            <a href="{{data.attachment_file}}" *ngIf="data.attachment_file !='/images/original/missing.png' && (data.attachment_file_type!='image/jpeg' && data.attachment_file_type!='image/jpg' && data.attachment_file_type!='image/png') && role && (role == 'admin' || role == 'design_head' || role == 'designer')">Download File</a>
+            <a download href="{{data.attachment_file}}"  *ngIf="data.attachment_file !='/images/original/missing.png' && (data.attachment_file_type=='image/jpeg' || data.attachment_file_type=='image/jpg' || data.attachment_file_type=='image/png')&& role && (role == 'admin' || role == 'design_head') "> Download Portfolio Image</a>
+            <img src="../../../../assets/v3/img/noimgicon.jpeg" height="240px" width="200px" *ngIf="data.attachment_file =='/images/original/missing.png' ">
+          </td>
+          <td class="text-center fa_icons" *ngIf="role && role =='designer' ">
+            <a data-toggle="modal" data-target="#exampleModalLong" (click)="getPortfolioDetailsWithId(data.id,data.user.id)"><i data-toggle="tooltip" title="Edit" data-placement="top" class="fa fa-pencil" aria-hidden="true"></i></a>
+            <a (click)="deletePortfolio(data.user.id,data.id)"><i data-toggle="tooltip" title="Delete" data-placement="top" class="fa fa-trash" aria-hidden="true"></i></a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+    <form (ngSubmit)="updatePortfolioDetails(editPortfolioForm.value); editPortfolioForm.reset();" [formGroup]="editPortfolioForm">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Update Portfolio Details</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+            <div class="col-md-6">
+              <div class="form-group label-floating">
+                <label class="control-label">Name*</label>
+                <input type="text" class="form-control" name="name" formControlName="name" required>
+              </div>
+              <div *ngIf="editPortfolioForm.controls['name'].errors && !editPortfolioForm.controls['name'].pristine" class="text-danger mb-2">
+                <div [hidden]="!editPortfolioForm.controls['name'].errors.required">Name is required.</div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group label-floating">
+                <label class="control-label"> Description</label>
+                <textarea  class="form-control" name="description" formControlName="description"></textarea>
+              </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group label-floating">
+                    <label class="control-label"> Reference URL</label>
+                    <input type="text" class="form-control" name="url" formControlName="url">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group label-floating">
+                  <label class="control-label"> Change Image</label>
+                  <input type="file" class="form-control" name="attachment_file" formControlName="attachment_file" (change)="onEditPortfolioFormChange($event)">
+                </div>
+                <img src="" id="output" height="60px" width="70px" class="my-2" alt="No Image Available">
+            </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit"  class="button button_emi" [disabled]="editPortfolioForm?.invalid">Update</button>
+      </div>
+    </form>
+    </div>
+  </div>
+</div>
+

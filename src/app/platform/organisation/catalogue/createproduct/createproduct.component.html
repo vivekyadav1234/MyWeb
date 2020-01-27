@@ -1,0 +1,255 @@
+<div class="row title" *ngIf="subsectionDetails">
+  <div class="col-8">
+    <h3>Dashboard / <span class="addCursor" [routerLink]="['/catalogue/sections']" routerLinkActive='active'>Catalogue</span>  / <span class="addCursor" [routerLink]="['/catalogue/section/'+subsectionDetails.parent.id+'/subsections']" routerLinkActive='active'>{{subsectionDetails.parent.name | ucwords}}</span> / <span>{{subsectionDetails.name | ucwords}} </span></h3>
+  </div>
+  <!-- <input class="searchBox addCursor" #search (keyup)="0"><p class="searchIcon"><i class="fa fa-search" aria-hidden="true"></i></p> -->
+  <div class="col-4 uploadBtn">
+  <button data-toggle="modal" data-target="#productDetails" *ngIf="(editAndDeleteProductAccess.length>0) && (editAndDeleteProductAccess.indexOf(role) > -1) "><p class="upload m-0"><!-- <i class="fa fa-upload" aria-hidden="true"></i> -->Upload Products</p></button>
+  <button data-toggle="modal" data-target="#serviceDetails" *ngIf="(editAndDeleteProductAccess.length>0) && (editAndDeleteProductAccess.indexOf(role) > -1) "><p class="upload m-0">Upload Services</p></button>
+  </div>
+</div>
+<div class="marginTop">
+  <div class="col-12" *ngIf="erroralert">
+    <div class="alert-box grid-100" *ngIf="errorMessage">
+      <div class="alert alert-danger text-center">
+        <a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a>
+        {{errorMessage}}
+      </div>
+    </div>
+  </div>
+  <div class="col-12" *ngIf="successalert">
+    <div class="alert-box grid-100" *ngIf="successMessage">
+      <div class="alert alert-success text-center">
+        <a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+        {{successMessage}}
+      </div>
+    </div>
+  </div>
+</div>
+<!-- <div class="row body_height" *ngIf="products && products?.length == 0">
+  <div class="col-sm-12 col-md-12 col-lg-12 mb-4"> 
+    <div class="card text-center">
+      <div class="card-block">
+        <h5 class="card-text py-4">No product created !</h5>
+      </div>
+    </div>
+  </div>
+</div> -->
+<div class="row body_height">
+  <div class="mx-auto pb-3">
+    <button class="upload upload0 actBtn mr-2" (click)="product()" >Products</button>
+    <button class="upload upload1 ml-2" (click)="servicesBtn()" >Services</button>
+  </div>
+  <div class="col-sm-12 col-md-12 col-lg-12" id="porductMsgCard" *ngIf="(products?.length == 0)"> 
+    <div class="card text-center border-0">
+      <div class="card-block">
+        <h5 class="card-text py-4">No product created !</h5>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-12 col-md-12 col-lg-12" id="serviceMsgCard" *ngIf="(services?.length == 0)"> 
+    <div class="card text-center border-0">
+      <div class="card-block">
+        <h5 class="card-text py-4">No service created !</h5>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-12 col-md-12 col-lg-12 p-0 addClass" *ngIf="products && products?.length>0">
+    <!-- <div class="imgDiv" *ngFor="let product of products">
+        <img class="addCursor" src="../../assets/img/ktichen.jpg" [routerLink]="['/catalogue/section/'+secId+'/subsection/'+id+'/product/'+product.id]" routerLinkActive='active'>
+        <p class="mt-2 mb-0 addCursor d-inline-block">{{product.name}}</p>
+        <p>{{product.sale_price}}</p>
+      <div class="pull-right mt-2 mb-0 icons">
+        <i class="fa fa-trash addCursor mr-2" aria-hidden="true" (click)="confirmAndDeleteSection(product.id)"></i>
+      </div>
+    </div> -->
+    <table class="table table-hover" *ngIf="products && products?.length>0">
+      <thead>
+        <tr>
+          <th>Image</th>
+          <th>Product</th>
+          <th>Price</th>
+          <th>Unique SKU</th>
+          <th>Color</th>
+          <th>Dimension (mm)</th>
+          <th *ngIf="editAndDeleteProductAccess && (editAndDeleteProductAccess.length>0) && (editAndDeleteProductAccess.indexOf(role) > -1) ">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let product of products" [attr.data-index]="i">
+        <td class="addCursor"><img src="{{product.image_url}}" height="100px" width="100px" [routerLink]="['/catalogue/section/'+secId+'/subsection/'+id+'/product/'+product.id]" routerLinkActive='active' onError="this.src = 'assets/v3/img/noImg.png'"/></td>
+        <td class="addCursor" ><a [routerLink]="['/catalogue/section/'+secId+'/subsection/'+id+'/product/'+product.id]" routerLinkActive='active'>{{product.name}}</a></td>
+        <td><span>&#x20B9;</span>{{product.sale_price}} </td>
+        <td>{{product.unique_sku}}</td>
+        <td>{{product.color}}</td>
+        <td>{{product.length}} x {{product.width}} x {{product.height}}</td>
+        <td class="text-center" *ngIf="editAndDeleteProductAccess && (editAndDeleteProductAccess.length>0) && (editAndDeleteProductAccess.indexOf(role) > -1) "> <i class="fa fa-trash addCursor mr-2" aria-hidden="true" (click)="confirmAndDeleteSection(product.id)"></i></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="col-sm-12 col-md-12 col-lg-12 p-0 addClass1 hideClass" *ngIf="services && services?.length>0">
+    <table class="table table-hover" *ngIf="services && services?.length>0">
+      <thead>
+        <tr>
+          <th>Product Name</th>
+          <th>Product Type</th>
+          <th>Product Subtype</th>
+          <th>Unique SKU</th>
+          <th>Rate per unit</th>
+          <th>Specification (mm)</th>
+          <th *ngIf="editAndDeleteProductAccess && (editAndDeleteProductAccess.length>0) && (editAndDeleteProductAccess.indexOf(role) > -1) ">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let service of services" [attr.data-index]="i">
+        <td class="addCursor"><a [routerLink]="['/catalogue/section/'+secId+'/subsection/'+id+'/service/'+service.id]" routerLinkActive='active'>{{service.name}}</a></td>
+        <td class="addCursor" >{{service.product_type}}</td>
+        <td>{{service.product_subtype}} </td>
+        <td>{{service.unique_sku}}</td>
+        <td><span>&#x20B9;</span> {{service.rate_per_unit}}</td>
+        <td>{{service.specification}}</td>
+        <td class="text-center" *ngIf="editAndDeleteProductAccess && (editAndDeleteProductAccess.length>0) && (editAndDeleteProductAccess.indexOf(role) > -1) "> <i class="fa fa-trash addCursor mr-2" aria-hidden="true" (click)="confirmAndDeleteService(service.id)"></i></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Product upload Modal -->
+<div class="modal fade" id="productDetails" tabindex="-1" role="dialog" aria-labelledby="productDetailsLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="productDetailsLabel">Upload Product Excel</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="onExcelUploadSubmit(productFileUploadForm.value); productFileUploadForm.reset()" #productFileUploadForm="ngForm" class="form-horizontal" enctype="multipart/form-data">
+          <!-- <label>Upload Product Excel*</label> -->
+          <input class="form-control" type="file" (change)="onExcelUploadChange($event)" name="attachment_file_excel" ngModel #attachment_file_excel="ngModel">
+          <p id="extErrorMsg" class="text-danger d-none">Check File extension (File should be in xls or xlsx format).</p>
+          <p class="mt-3">Note* - only .xlsx or .xls files are allowed.  </p>
+          <hr>
+          <div class="pull-right">
+            <button type="submit" class="button">Upload</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal -->
+
+<!-- Services upload Modal -->
+<div class="modal fade" id="serviceDetails" tabindex="-1" role="dialog" aria-labelledby="serviceDetailsLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="serviceDetailsLabel">Upload Services Excel</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="onServiceExcelUploadSubmit(serviceFileUploadForm.value); serviceFileUploadForm.reset()" #serviceFileUploadForm="ngForm" class="form-horizontal" enctype="multipart/form-data">
+          <!-- <label>Upload Product Excel*</label> -->
+          <input class="form-control" type="file" (change)="onExcelUploadChange($event)" name="attachment_file_excel" ngModel #attachment_file_excel="ngModel">
+          <p id="extErrorMsg" class="text-danger d-none">Check File extension (File should be in xls or xlsx format).</p>
+          <p class="mt-3">Note* - only .xlsx or .xls files are allowed.  </p>
+          <hr>
+          <div class="pull-right">
+            <button type="submit" class="button" [disabled]="basefileExcel==undefined">Upload</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal -->
+
+
+
+
+
+
+
+
+<!-- <div class="row bg_dashboard justify-content-center">
+    <div class="col-8">
+        <div class="card">
+            <div class="card-content">
+                <div class="tab-content">
+                    <div class="tab-pane active">
+                        <form (ngSubmit)="onExcelUploadSubmit(productFileUploadForm.value); productFileUploadForm.reset()" #productFileUploadForm="ngForm" class="form-horizontal" enctype="multipart/form-data">
+                            <label>Upload Product Excel*</label>
+                            <input type="file" (change)="onExcelUploadChange($event)" name="attachment_file_excel" ngModel #attachment_file_excel="ngModel">
+                            <button type="submit" class="button" [disabled]="basefileExcel==undefined">Upload</button>
+                        </form> -->
+                      <!--   <form [formGroup]="createProductForm" (ngSubmit)="onSubmit(createProductForm.value); createProductForm.reset()" class="form-horizontal">
+                            <fieldset formArrayName="product">
+                              <div class="row" *ngFor="let item of getJobAttributes(createProductForm); let i=index" [formGroup]="item">
+                                <div class="col-sm-12">
+                                    <i class="fa fa-minus-circle remove_button" (click)="createProductForm.get('product').removeAt(i)"></i>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group label-floating" >
+                                        <label class="control-label mb-0">Name*</label>
+                                        <input type="text" class="form-control" placeholder="Enter Your Name" [attr.id]="'name'+i" formControlName="name">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group label-floating" >
+                                        <label class="control-label mb-0">Price</label>
+                                        <input type="text" class="form-control" placeholder="Enter Price" [attr.id]="'price'+i" formControlName="price">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group label-floating" >
+                                        <label class="control-label mb-0">Description</label>
+                                        <textarea class="form-control" placeholder="Enter Description" [attr.id]="'description'+i" formControlName="description" ></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                  <input class="mt-4 d-block mx-auto" type="file" (change)="onChange($event,i)" name="attachment_file" [attr.id]="'attachment_file'+i">
+                                </div>
+                              </div>
+                            </fieldset>
+                            <button type="button" class="button my-3"  (click)="pushJobAttributes(createProductForm)">Add another item</button>
+                            <button type="submit" class="button my-3 pull-right" [disabled]="createProductForm?.invalid">Submit</button>
+                        </form> -->
+<!--                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="row body_height justify-content-center">
+      <div class="col-11 table-responsive">
+        <h4>Products</h4>
+        <table class="table table-hover" *ngIf="products && products?.length>0">
+          <thead>
+          <tr>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Unique SKU</th>
+            <th>Color</th>
+            <th>Dimension</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let product of products">
+            <td>{{product.name}}</td>
+            <td><small>&#x20B9;</small>{{product.sale_price}} </td>
+            <td>{{product.unique_sku}}</td>
+            <td>{{product.color}}</td>
+            <td>{{product.length}} * {{product.width}} * {{product.height}}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+</div> -->

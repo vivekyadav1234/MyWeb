@@ -1,0 +1,190 @@
+/* ################################################### */
+.marginTop{
+  margin-top: 4.3rem;
+}
+.filterMainDiv{
+  margin-top: .7rem;
+  margin-bottom: .3rem;
+}
+.tableDiv{
+  overflow-x: scroll;
+}
+.tableDiv tbody tr{
+  height: 56px;
+}
+.table{
+  border-collapse: separate;
+  border-spacing: 0 5px;
+}
+.table td, .table th{
+  min-width: 10rem;
+}
+.table td{
+  padding: 0.7rem 0.75rem;
+  vertical-align: middle;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.7);
+  border: none;
+}
+.table th {
+  padding: .9rem;
+  vertical-align: middle;
+  border: none;
+  font-size: 12px;
+  color: #dedede;
+  background-color: #4a4a4a;
+}
+.tableDiv tbody{
+  background-color: #fff;
+}
+.tableDiv tbody tr{
+  box-shadow: 1px 1px 7px 0px #dadada;
+  border-radius: 5px;
+}
+.firstTh{
+  border-radius: 5px 0 0 0;
+}
+.lastTh{
+  border-radius: 0px 5px 0 0;
+}
+.myForm-control{
+  width: 11rem;
+}
+select.form-control:not([size]):not([multiple]){
+  font-size: 12px;
+}
+.ss-send-circle {
+  vertical-align: text-top;
+}
+.tableActionBtn{
+  font-size: 28px;
+  float: right;
+  margin-top: 4px;
+  color: #888;
+}
+.ss-3-dot-drop{
+  margin-right: -5px;
+  margin-top: -4px;
+  cursor: pointer;
+}
+.dropdown-menuV{
+  min-width: 5.5rem;
+}
+.dropdown-menuV .dropdown-item{
+  padding: 1px 15px;
+}
+/* ################################################### */
+
+
+
+/*Vikrant changes for modal*/
+
+.activeCol{
+    width: 15%;
+}
+.close:focus{
+    outline: none;
+}
+
+.modal-title.vik-title {
+    margin-bottom: 0;
+    line-height: 1.5;
+    border-left: 5px solid #ccc;
+    padding-left: 5px;
+}
+.btnGroup{
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.btnGroup button{
+    background-color: transparent;
+    padding: 3px 10px;
+    border-radius: 0
+}
+.btnGroup  button.actBtn{
+    background-color: #000;
+    color: #fff;
+}
+.btnGroup  button.actBtn:focus{
+    outline: none;
+}
+button.button{
+    padding: 4px 30px;
+    background-color: #cacaca;
+}
+button.button:hover{
+    background-color: #808080;
+    color: #fff;
+}
+.inputBorder {
+  border-color: red;
+}
+
+.modal-dialog.vik-dialog{
+  max-width: 100%;
+  margin-top: 4.3rem;
+  margin-bottom: 0;
+  margin-left: 16.6%;
+}
+
+.hideClass{
+  display: none;
+}
+
+a.pop{
+  cursor: pointer;
+  color: #007bff;
+}
+.time-chng{
+  font-size: 12px;
+  font-weight: bolder;
+}
+/*Vikrant changes for modal*/
+
+@media (min-width: 768px) {
+  .mobView{
+    display: none;
+  }
+}
+@media (max-width: 767px) {
+  .lappyView{
+    display: none;
+  }
+  .mobView{
+    min-height: 100vh;
+  }
+  .mobCard a{
+    position: absolute;
+    right: 0rem;
+    font-size: 30px;
+    padding: 0 1rem;
+  }
+  .mobCard h4{
+    font-size: 18px !important;
+    width: 80%;
+  }
+  .mobCard p{
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 0;
+  }
+  .mobView .tableInner{
+    font-size: 14px;
+    margin-bottom: 5px;
+  }
+  .mobView .custom-select{
+    height: calc(2rem + 2px);
+    font-size: 14px;
+  }
+  .mobView .pop{
+    position: unset;
+    font-size: 15px;
+  }
+  .borderRight{
+    border: 1px solid #ccc;
+  }
+  .tableDiv{
+    overflow-x: unset;
+  }
+}

@@ -1,0 +1,79 @@
+
+
+.table td{
+    padding: 0.7rem 0.75rem;
+    vertical-align: middle;
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.7);
+    border: none;
+}
+.minWidthForTd{
+  min-width: 185px;
+}
+.table th {
+    padding: .9rem;
+    vertical-align: middle;
+    border: none;
+    font-size: 12px;
+    text-transform: uppercase;
+    color: #fff;
+    background-color: #5A5A5A;
+}
+.table{
+  border-collapse: separate;
+  border-spacing: 0 5px;
+}
+.tableDiv tbody{
+  background-color: #fff;
+}
+.tableDiv{
+  overflow-x:scroll;
+}
+
+.tableDiv tbody tr{
+  box-shadow: 1px 1px 7px 0px #dadada;
+  border-radius: 5px;
+}
+.firstTh{
+  border-radius: 5px 0 0 0;
+}
+.lastTh{
+  border-radius: 0px 5px 0 0;
+}
+.container-set{
+  background-color: white;
+  margin-top: 0px;
+
+}
+.navcontainer-chnage{
+margin-top: 40px;
+}
+.addCursor.active{
+  color: #980029;
+  border-color: #fff #fff #fff;
+}
+.tabs-chng{
+  margin-left: 450px;
+  margin-top: 40px;
+}
+.table-header-chnage{
+  background: #9c9fa2;
+}
+.approve-chnage{
+  color: #0ba90b !important;
+}
+.reject-chnage{
+  color: #d40909 !important;
+}
+.boq-img{
+  text-align: center;
+}
+.place-chng{
+  width: 40%;
+  display: inline-block;
+}
+.pencil{
+    font-size: 1.4rem;
+    color: darkred;
+    cursor: pointer;
+}

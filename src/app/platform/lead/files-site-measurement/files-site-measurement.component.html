@@ -1,0 +1,139 @@
+<div class="rk-ui-notification err" *ngIf="erroralert" style="z-index: 10000;">
+  <span id="notificationMessageText">{{errorMessage}}</span>
+  <a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+<div class="rk-ui-notification" *ngIf="successalert" style="z-index: 10000;">
+  <span id="notificationMessageText">{{successMessage}}</span>
+  <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+<!-- Site Measurement -->
+<div class="row mt-4 right-section site-section">
+  <div class="col-md-12">
+    <button type="button" *ngIf="project_id" class="btn btn-pink pull-right" data-toggle="modal" data-target="#siteModal">
+      CREATE REQUEST
+    </button>
+  </div>
+  <div class="col-md-12 mt-5 text-center p-5" style="background-color: #fff;" *ngIf="siteRequestList.length <= 0">
+    <!-- <i class="fa fa-trash trash-card" (click) = "deleteObject(obj.id)" *ngIf="role =='community_manager'" ></i> -->
+    <img src="../../../assets/img/nothing.png" />
+  </div>
+  <div class="col-md-12 mt-5">
+    <div class="row">
+      <div class="col-md-12 mt-4">
+        <div class="tableDiv table-responsive" *ngIf="siteRequestList.length > 0">
+          <table class="table">
+            <thead>
+              <tr>
+                <th class="firstTh">#</th>
+                <th style="min-width: 200px;">Request Type</th>
+                <th style="min-width: 200px;">Request Status</th>
+                <th style="min-width: 200px;">Address</th>
+                <th style="min-width: 200px;">Scheduled At</th>
+                <th style="min-width: 200px;">Rescheduled At</th>
+                <th style="min-width: 200px;">Project</th>
+                <th style="min-width: 200px;" class="lastTh">Sitesupervisor Assigned</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let obj of siteRequestList; let i = index ">
+                <td>{{i+1}}</td>
+                <td (click)="getGallery(obj.id, obj.remark)" class="btn-link"> {{obj.request_type | replaceChar}} </td>
+                <td> {{obj.request_status | replaceChar}} </td>
+                <td> {{obj.address}} </td>
+                <td> {{obj.scheduled_at | date:'dd MMMM, y , h:mm a'}} </td>
+                <td> {{obj.rescheduled_at | date:'dd MMMM, y , h:mm a'}} </td>
+                <td> {{obj.project.name}} </td>
+                <td>
+                  <span *ngIf="obj.sitesupervisor">{{obj.sitesupervisor.name}}</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CREATE SITE MODAL -->
+<div class="modal fade" id="siteModal" tabindex="-1" role="dialog" aria-labelledby="siteModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="border-bottom: 1px solid #e4e4e4;">
+        <h6 class="modal-title" id="siteModalLabel">Create a site measurement request : </h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+            <form [formGroup]="createRequestForm" (ngSubmit)="onRequest()" class="form-horizontal" enctype="multipart/form-data">
+              <div class="form-group">
+                <label for="request_type" class="ss-form-label">Request Type</label>
+                <select class="form-control ss-form-control" formControlName="request_type" id="request_type">
+                  <option [selected] = "true">Select request type</option>
+                  <option value="Initial_site_measurement_request">Initial Site Measurement</option>
+                  <option value="line_marking_site_measurement_request">Line Marking</option>
+                </select>
+                <label for="address" class="ss-form-label mt-4">Address</label>
+                <textarea class="form-control ss-form-control" id="address" name="address" rows="5" placeholder="Please enter the address of site" formControlName="address"></textarea>
+
+                <label for="scheduled_at" class="ss-form-label mt-4">Date and Time</label>
+                <input type="datetime-local" class="form-control ss-form-control" name="scheduled_at" id="scheduled_at" formControlName="scheduled_at">
+
+                <button type="submit" class="btn btn-pink button_emi pull-right mt-4" [disabled]="!createRequestForm.valid"> Submit </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- View Gallery MODAL -->
+<div class="modal fade" id="viewGalleryModal" tabindex="-1" role="dialog" aria-labelledby="completeRequestModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="border-bottom: 1px solid #e4e4e4;">
+        <h6 class="modal-title" id="completeRequestModalLabel">Gallery : </h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row m-0">
+          <div class="col-sm-12"><strong>Remarks:</strong></div>
+          <div class="col-sm-12 remarks" style="border-bottom: 1px solid #bbb;"></div>
+          <div class="col-sm-12 text-center" *ngIf="imageGallery.length <= 0">
+            No Image available
+          </div>
+
+          <div class="col-md-4 mt-4" *ngFor="let item of imageGallery">
+            <div class="card card-chng">
+              <i class="fa fa-trash trash-card" (click) = "deleteObject(item.id)" *ngIf="role =='community_manager'" ></i>
+              <img onerror="this.src='./assets/img/no_image.svg';" class="card-img-top img-fluid" src="{{item.site_image}}" alt="Card image cap" style="max-height: 165px;" />
+              <div class="card-block" style="padding: 1rem;">
+                <div class="row">
+                  <div class="col-md-12">
+                    <p class="mb-0 mt-2" style="font-size:13px;">
+                      <span>Uploaded at: </span>
+                      <span style="color: #7E7E7E;">{{item.updated_at | date:'dd MMMM, y - h:mm a'}}</span>
+                    </p>
+                  </div>
+                  <div class="col-md-12 divbutton mt-2">
+                    <a class="btn btn-pink btn-chng pull-right" href="{{item.site_image}}" download>
+                      Download
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

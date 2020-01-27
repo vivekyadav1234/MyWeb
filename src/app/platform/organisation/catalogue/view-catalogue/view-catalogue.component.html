@@ -1,0 +1,612 @@
+<div class="row ss-top-menu">
+	<div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+		<span class="ss-text-dark">Dashboard <i class="rightArrow fa fa-angle-right"></i></span>
+    <span class="ss-text-dark">Catalogue</span>
+
+    <button class="bt-boq btn btn-pink mr-2 p-2 pull-right" type="button" data-toggle="modal" data-target="#inviteChampionModal" *ngIf = "is_champion=='true'" (click)="referralinvitechampions.getChampionList()">Invite Level 2 & Level 3 User</button>
+  </div>
+</div>
+
+<div class="rk-ui-notification err" *ngIf="erroralert"  style="z-index: 10000;">
+	<span id="notificationMessageText">{{errorMessage}}</span>
+	<a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+<div class="rk-ui-notification" *ngIf="successalert"  style="z-index: 10000;">
+	<span id="notificationMessageText">{{successMessage}}</span>
+	<a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+
+<div class="container-fluid">
+	<!--Search box row start-->
+	<div class="row mt-3 searchboxRow py-2">
+		<div class="col-sm-6">
+			<div class="ss-searchbox d-inline-block col-8" style="">
+	      <i class="fa fa-search"></i>
+	      <input class="form-control" placeholder="Type in name, unique sku or vendor sku..." type="text" [(ngModel)]="search_string" #ctrl="ngModel">
+	    </div>
+	    <div class="col-1 d-inline-block">
+	    	<div class="planeIcon d-inline-block addCursor" (click)="filterProducts()">
+          <img src="assets/v3/img/White_Arrow.svg" height="33px">
+        </div>
+      </div>
+	  </div>
+	  <div class="col-sm-6">
+    	<span class="pull-right addCursor advancefiltertext" (click)="opensideOverlay()">Advance Filters</span>
+    </div>
+	</div>
+	<!--Search box row end-->
+	<!--filter dropdowns start--> 
+
+	<div class="row mt-3">
+		<div class="col-sm-2 px-0 mr-4">
+			<div id="dd0" class="wrapper-dropdown-1" tabindex="1" (click)="displayDropDown('dd0')">
+				<span class="spanText" id="dd0-text" *ngIf="selectedRangesArr.length==0">Select Range</span>
+				<span class="spanText" *ngIf="selectedRangesArr.length>0"><ng-container *ngFor="let range of selectedRangesArr">{{range.humanized_name}},</ng-container></span>
+			</div>
+			<ul class="dd-dropdown px-2 py-2 d-none" id="dd0-dropdown">
+				<!-- {{spaces_list | json}} -->
+	      <li *ngFor="let opt of ranges_list" class="my-2">
+	      	<label class="checkbox-container">{{opt.humanized_name}}
+					  <input type="checkbox" value="{{opt | json}}" name="opt" class="" id="text{{opt.id}}" (change)="checkRanges($event)" [checked]="isElementPresent(opt,selectedRangesArr)">
+					  <span class="checkbox-checkmark"></span>
+					</label>
+	      	<div class="pull-right mr-2 dd-countbox">{{opt.product_count}}</div>
+	      </li>
+	    </ul>
+		</div>
+		<div class="col-sm-2 px-0 mr-4">
+			<div id="dd1" class="wrapper-dropdown-1" tabindex="1" (click)="displayDropDown('dd1')">
+				<span class="spanText" id="dd1-text" *ngIf="selectedSpacesArr.length==0">Select Space</span>
+				<span class="spanText" *ngIf="selectedSpacesArr.length>0"><ng-container *ngFor="let space of selectedSpacesArr">{{space.humanized_name}},</ng-container></span>
+			</div>
+			<ul class="dd-dropdown px-2 py-2 d-none" id="dd1-dropdown">
+				<!-- {{spaces_list | json}} -->
+	      <li *ngFor="let opt of spaces_list" class="my-2">
+	      	<label class="checkbox-container">{{opt.humanized_name}}
+					  <input type="checkbox" value="{{opt | json}}" name="opt" class="" id="text{{opt.id}}" (change)="checkSpaces($event)" [checked]="isElementPresent(opt,selectedSpacesArr)">
+					  <span class="checkbox-checkmark"></span>
+					</label>
+	      	<div class="pull-right mr-2 dd-countbox">{{opt.product_count}}</div>
+	      </li>
+	    </ul>
+		</div>
+		<div class="col-sm-2 px-0 mr-4">
+			<div id="dd2" class="wrapper-dropdown-1" tabindex="1" (click)="displayDropDown('dd2')">
+				<span class="spanText" id="dd2-text" *ngIf="selectedCategoriesArr.length==0">Select Category</span>
+				<span class="spanText" *ngIf="selectedCategoriesArr.length>0"><ng-container *ngFor="let cat of selectedCategoriesArr">{{cat.name}},</ng-container></span>
+			</div>
+			<ul class="dd-dropdown px-2 py-2 d-none" id="dd2-dropdown">
+				<li *ngIf="categories_list.length==0">No Category</li>
+	      <li *ngFor="let opt of categories_list" class="my-2">
+	      	<label class="checkbox-container">{{opt.name}}
+					  <input type="checkbox" value="{{opt | json}}" name="opt" class="" id="text{{opt.id}}" (change)="checkCategory($event)" [checked]="isElementPresent(opt,selectedCategoriesArr)">
+					  <span class="checkbox-checkmark"></span>
+					</label>
+	      	<div class="pull-right mr-2 dd-countbox">{{opt.product_count}}</div>
+	      </li>
+	    </ul>
+		</div>
+		<div class="col-sm-2 px-0 mr-3">
+			<div id="dd3" class="wrapper-dropdown-1" tabindex="1" (click)="displayDropDown('dd3')">
+				<span class="spanText" id="dd3-text" *ngIf="selectedSubCategoriesArr.length==0">Select Configuration</span>
+				<span class="spanText" *ngIf="selectedSubCategoriesArr.length>0"><ng-container *ngFor="let subcat of selectedSubCategoriesArr">{{subcat.configuration}},</ng-container></span>
+			</div>
+			<ul class="dd-dropdown px-2 py-2 d-none" id="dd3-dropdown">
+				<li *ngIf="subcategories_list.length==0">No Configuration</li>
+	      <li *ngFor="let opt of subcategories_list" class="my-2">
+	      	<label class="checkbox-container">{{opt.configuration}}
+					  <input type="checkbox" value="{{opt | json}}" name="opt" class="" (change)="checkSubCategory($event)" [checked]="isElementPresent(opt,selectedSubCategoriesArr,'subcategory')">
+					  <span class="checkbox-checkmark"></span>
+					</label>
+					<div class="pull-right mr-2 dd-countbox">{{opt.count}}</div>
+	      </li>
+	    </ul>
+		</div>
+		<div class="col-2 pt-1">
+    	<div class="planeIcon d-inline-block addCursor" (click)="filterProducts()" >
+        <img  height="33px" src="assets/v3/img/White_Arrow.svg">
+      </div>
+    </div>
+	</div>
+	<!--filter dropdowns end-->
+
+	<!--Selected Elements Rows start-->
+	<div class="row mt-3" *ngIf="selectedRangesArr.length>0">
+		<div class="col-sm-1 mt-2 px-0 selectedElementsText">Range : </div>
+    <div class="col-sm-11 mt-2">
+	    <div class="d-inline-block px-2 py-1 selectedBlocks capitalize" *ngFor="let range of selectedRangesArr; let index = index">{{range.humanized_name}}<i class="fa fa-times ml-2 addCursor" (click)="removeElement(range,selectedRangesArr,checked_ranges,'range')"></i>
+	  	</div>
+  	</div>
+	</div>
+
+	<div class="row" *ngIf="selectedSpacesArr.length>0">
+		<div class="col-sm-1 mt-2 px-0 selectedElementsText">Space : </div>
+    <div class="col-sm-11 mt-2">
+	    <div class="d-inline-block px-2 py-1 selectedBlocks capitalize" *ngFor="let space of selectedSpacesArr; let index = index">{{space.humanized_name}}<i class="fa fa-times ml-2 addCursor" (click)="removeElement(space,selectedSpacesArr,checked_spaces,'space')"></i>
+	  	</div>
+  	</div>
+	</div>
+	<div class="row" *ngIf="selectedCategoriesArr.length>0">
+		<div class="col-sm-1 mt-2 px-0 selectedElementsText">Category : </div>
+    <div class="col-sm-11 mt-2">
+	    <div class="d-inline-block px-2 py-1 selectedBlocks capitalize" *ngFor="let cat of selectedCategoriesArr; let index = index">{{cat.name}}<i class="fa fa-times ml-2 addCursor" (click)="removeElement(cat,selectedCategoriesArr,checked_categories,'category')"></i>
+	  	</div>
+  	</div>
+	</div>
+	<div class="row" *ngIf="selectedSubCategoriesArr.length>0">
+		<div class="col-sm-1 mt-2 px-0 selectedElementsText">Configuration : </div>
+    <div class="col-sm-11 mt-2">
+	    <div class="d-inline-block px-2 py-1 selectedBlocks capitalize" *ngFor="let subcat of selectedSubCategoriesArr; let index = index">{{subcat.configuration}}<i class="fa fa-times ml-2 addCursor" (click)="removeElement(subcat,selectedSubCategoriesArr,checked_subcategories,'subcategory')"></i>
+
+	  	</div>
+  	</div>
+	</div>
+	<!--Selected Elements Rows end-->
+</div>
+
+<div class="my-3 borderSeparator"></div>
+
+<!-- div for card view -->
+<div class="container-fluid" >
+	<p class="text-center" *ngIf="products_list.length==0">No Product Available</p>
+	<div class="row mt-3" *ngIf="products_list.length>0">
+    <div class="col-sm-4 px-2 py-2" *ngFor="let product of products_list | paginate: { itemsPerPage: per_page, currentPage: current_page, totalItems: total_page  }; let i=index;">
+			<div class="card px-2 pt-2 addCursor">
+				<img class="product-card-img" src="{{product.image_urls[0]}}" *ngIf="product.image_urls[0]" onerror="this.src='./assets/img/no_image.svg'" (click)="showProductInfo(product.id,product.section_id)" id="prod-img-{{i}}">
+				<p data-target="#myModal" data-toggle="modal" (click)="showProductInfo(product.id,product.section_id)">
+						<a data-trigger="hover" title="Name" [attr.data-content]="product.name" class="pop col-xs-8 p-0 w-50 ml-3" 
+						(mouseenter)="openpopup($event)">
+						<div class="p-0 product-card-text pull-left mt-3 d-inline-block" style="width:38%!important;display: -webkit-box!important;-webkit-line-clamp: 1;-webkit-box-orient: vertical;overflow: hidden;text-overflow: ellipsis;">{{ product.name }}</div>
+						</a>
+						<span class="product-card-text pull-right mt-3">Price: &#8377; {{product.sale_price | number : '1.2-2'}}</span>
+				</p>
+				<div class="py-2 border border-bottom-0 " style="margin-right: -8px;margin-left: -8px;">
+					<span class="text-muted pull-left mx-2" style="font-weight: 800">Units Sold:&nbsp;{{product.units_sold}}</span>
+					<button class="rk-interalBtnColor addCursor pull-right mx-2 rk-form-fontsize" (click)="zoomImg('prod-img-',i)">Preview Image</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row text-center" *ngIf="products_list && products_list.length >0">
+      <div class="col-sm-12"><pagination-controls autoHide="true" (pageChange)="current_page = filterProducts($event)"></pagination-controls></div>
+  </div>
+</div>
+
+<!-- div for card view ends here -->
+  
+
+<div class="sidenav-overlay row mx-0 d-none" id="sidenavoverlay" style="width: 100%;">
+  <div class="col-9 backdropDiv"></div>
+	<div class="col-3 filterDiv">
+	  <div class="row"><div class="col-12"><i class="fa fa-times-circle overlay_closebtn pull-right mt-3 addCursor" (click)="closesideOverlay()"></i> </div></div>
+
+	  <!-- Materials -->
+	  <div class="row mt-3">
+	  	<div class="col-12">
+	  		<div>
+	  			<div id="dd4" class="wrapper-dropdown-1" tabindex="1" (click)="displayDropDown('dd4')">
+	  				<span class="spanText" id="dd4-text" *ngIf="checked_materials.length==0">Select Materials</span>
+	  				<span class="spanText" *ngIf="checked_materials.length>0"><ng-container *ngFor="let material of checked_materials">{{material}},</ng-container></span>
+	  			</div>
+			</div>
+	  	</div>
+	  	<div class="col-12">
+				<ul class="dd-dropdown px-2 py-2 d-none" id="dd4-dropdown" style="width: 90%;">
+		      <li *ngFor="let opt of all_materials" class="my-2">
+		      	<label class="checkbox-container">{{opt}}
+						  <input type="checkbox" value="{{opt}}" name="opt" class="" id="text{{opt}}" (change)="checkElement('materials',$event)" [checked]="isElementPresent(opt,selectedSpacesArr)">
+						  <span class="checkbox-checkmark"></span>
+						</label>
+		      </li>
+		    </ul>
+	  	</div>
+	  </div> 
+
+	  <!-- Colors -->
+	  <div class="row mt-3">
+	  	<div class="col-12">
+	  		<div>
+	  			<div id="dd5" class="wrapper-dropdown-1" tabindex="1" (click)="displayDropDown('dd5')">
+	  				<span class="spanText" id="dd5-text" *ngIf="checked_colors.length==0">Select Colors</span>
+	  				<span class="spanText" *ngIf="checked_colors.length>0"><ng-container *ngFor="let color of checked_colors">{{color}},</ng-container></span>
+	  			</div>
+				</div>
+	  	</div>
+	  	<div class="col-12">
+				<ul class="dd-dropdown px-2 py-2 d-none" id="dd5-dropdown" style="width: 90%;">
+		      <li *ngFor="let opt of all_colors" class="my-2">
+		      	<label class="checkbox-container">{{opt}}
+						  <input type="checkbox" value="{{opt}}" name="opt" class="" id="text{{opt}}" (change)="checkElement('colors',$event)" [checked]="isElementPresent(opt,selectedSpacesArr)">
+						  <span class="checkbox-checkmark"></span>
+						</label>
+		      </li>
+		    </ul>
+	  	</div>
+	  </div> 
+
+	  <!-- Finish -->
+	  <div class="row mt-3">
+	  	<div class="col-12">
+	  		<div>
+	  			<div id="dd6" class="wrapper-dropdown-1" tabindex="1" (click)="displayDropDown('dd6')">
+	  				<span class="spanText" id="dd6-text" *ngIf="checked_finishes.length==0">Select Finishes</span>
+	  				<span class="spanText" *ngIf="checked_finishes.length>0"><ng-container *ngFor="let finish of checked_finishes">{{finish}},</ng-container></span>
+	  			</div>
+				</div>
+	  	</div>
+	  	<div class="col-12">
+				<ul class="dd-dropdown px-2 py-2 d-none" id="dd6-dropdown" style="width: 90%;">
+		      <li *ngFor="let opt of all_finishes" class="my-2">
+		      	<label class="checkbox-container">{{opt}}
+						  <input type="checkbox" value="{{opt}}" name="opt" class="" id="text{{opt}}" (change)="checkElement('finishes',$event)" [checked]="isElementPresent(opt,selectedSpacesArr)">
+						  <span class="checkbox-checkmark"></span>
+						</label>
+		      </li>
+		    </ul>
+	  	</div>
+	  </div> 
+
+	  <div class="row mt-3">
+	  	<div class="col-12">
+	  		<div class="mb-4">
+	  			<span class="pull-left sideoverlay-filterHeading">Price</span>
+					<span class="pull-right sideoverlay-minusicon">&minus;</span>
+				</div>
+				<hr>
+	  	</div>
+	  	<div class="col-12">
+	  		<ion-range-slider #priceSliderElement
+                  type="double"
+                  [min]="all_minimum_price"
+                  [max]="all_maximum_price"
+                  [from]="all_minimum_price"
+                  [from_min]="all_minimum_price"
+                  [from_max]="(all_maximum_price)-1"
+                  from_shadow="true"
+                  [to]="all_maximum_price"
+                  [to_min]="all_minimum_price+1"
+                  [to_max]="all_maximum_price"
+                  to_shadow="true"
+                  grid="false"
+                  prefix="Price: "
+                  postfix=" INR"
+                  decorate_both="false" 
+                  (onUpdate)="updateSlider('price',advancedSlider, $event)"
+                  (onChange)="updateSlider('price', advancedSlider, $event)">
+        </ion-range-slider>
+	  	</div>
+	  </div> 
+	  <div class="row mt-3">
+	  	<div class="col-12">
+	  		<div class="mb-4">
+	  			<span class="pull-left sideoverlay-filterHeading">Width</span>
+					<span class="pull-right sideoverlay-minusicon">&minus;</span>
+				</div>
+				<hr>
+	  	</div>
+	  	<div class="col-12">
+	  		<ion-range-slider #widthSliderElement
+                  type="double"
+                  [min]="all_minimum_width"
+                  [max]="all_maximum_width"
+                  [from]="all_minimum_width"
+                  [from_min]="all_minimum_width"
+                  [from_max]="(all_maximum_width)-1"
+                  from_shadow="true"
+                  [to]="all_maximum_width"
+                  [to_min]="all_minimum_width+1"
+                  [to_max]="all_maximum_width"
+                  to_shadow="true"
+                  grid="false"
+                  prefix="Width: "
+                  postfix=" mm"
+                  decorate_both="false" 
+                  (onUpdate)="updateSlider('width',advancedSlider, $event)"
+                  (onChange)="updateSlider('width', advancedSlider, $event)">
+        </ion-range-slider>
+	  	</div>
+	  </div> 
+	  <div class="row mt-3">
+	  	<div class="col-12">
+	  		<div class="mb-4">
+	  			<span class="pull-left sideoverlay-filterHeading">Depth</span>
+					<span class="pull-right sideoverlay-minusicon">&minus;</span>
+				</div>
+				<hr>
+	  	</div>
+	  	<div class="col-12">
+	  		<ion-range-slider #depthSliderElement
+                  type="double"
+                  [min]="all_minimum_length"
+                  [max]="all_maximum_length"
+                  [from]="all_minimum_length"
+                  [from_min]="all_minimum_length"
+                  [from_max]="(all_maximum_length)-1"
+                  from_shadow="true"
+                  [to]="all_maximum_length"
+                  [to_min]="all_minimum_length+1"
+                  [to_max]="all_maximum_length"
+                  to_shadow="true"
+                  grid="false"
+                  prefix="Depth: "
+                  postfix=" mm"
+                  decorate_both="false" 
+                  (onUpdate)="updateSlider('length',advancedSlider, $event)"
+                  (onChange)="updateSlider('length', advancedSlider, $event)">
+        </ion-range-slider>
+	  	</div>
+	  </div> 
+	  <div class="row mt-3">
+	  	<div class="col-12">
+	  		<div class="mb-4">
+	  			<span class="pull-left sideoverlay-filterHeading">Height</span>
+					<span class="pull-right sideoverlay-minusicon">&minus;</span>
+				</div>
+				<hr>
+	  	</div>
+	  	<div class="col-12">
+	  		<ion-range-slider #heightSliderElement
+                  type="double"
+                  [min]="all_minimum_height"
+                  [max]="all_maximum_height"
+                  [from]="all_minimum_height"
+                  [from_min]="all_minimum_height"
+                  [from_max]="(all_maximum_height)-1"
+                  from_shadow="true"
+                  [to]="all_maximum_height"
+                  [to_min]="all_minimum_height+1"
+                  [to_max]="all_maximum_height"
+                  to_shadow="true"
+                  grid="false"
+                  prefix="Height: "
+                  postfix=" mm"
+                  decorate_both="false" 
+                  (onUpdate)="updateSlider('height',advancedSlider, $event)"
+                  (onChange)="updateSlider('height', advancedSlider, $event)">
+        </ion-range-slider>
+	  	</div>
+	  </div> 
+	  <div class="row mt-3">
+	  	<div class="col-12">
+	  		<div class="mb-4">
+	  			<span class="pull-left sideoverlay-filterHeading">Lead Time</span>
+					<span class="pull-right sideoverlay-minusicon">&minus;</span>
+				</div>
+				<hr>
+	  	</div>
+	  	<div class="col-12">
+	  		<ion-range-slider #leadtimeSliderElement
+                  type="double"
+                  [min]="all_minimum_lead_time"
+                  [max]="all_maximum_lead_time"
+                  [from]="all_minimum_lead_time"
+                  from_shadow="true"
+                  [to]="all_maximum_lead_time"
+                  
+                  to_shadow="true"
+                  grid="false"
+                  prefix="Lead Time: "
+                  postfix=" days"
+                  decorate_both="false" 
+                  (onUpdate)="updateSlider('lead_time',advancedSlider, $event)"
+                  (onChange)="updateSlider('lead_time', advancedSlider, $event)">
+        </ion-range-slider>
+	  	</div>
+	  </div> 
+
+	  <div class="row mt-3">
+	  	<div class="col-12">
+	  		<div class="mb-4">
+	  			<input type="button" name="" value="Filter" (click) = "filterProducts()" class="btn rk-internalBtn pull-right mt-5 mb-2 addCursor" style="background-color: #8c0420;color: #ffffff;" >
+
+				</div>
+				<hr>
+	  	</div>
+	  </div>
+
+	</div>  
+</div>
+
+
+
+<!-- Anannya modal starts here -->
+<div id="myModal" class="modal fade" role="dialog" style="overflow-y: scroll;"> 
+  <div class="modal-dialog">
+    <div class="modal-content modal-change" id="viewproductRow">
+      <div class="modal-header" >
+          <div class="col-sm-9"> 
+          </div>
+          <div class="col-sm-2 pull-right mt-2">
+            <button type="button" class="close addProductModalClose" data-dismiss="modal" aria-label="Close" style="height: 31px" (click)="closeMyModal('#myModal')">
+              <span aria-hidden="true"><img src="../../../assets/img/cross-out.svg" style="width:20px;"></span>
+            </button>
+          </div>
+      </div>
+      <div class="modal-body" >
+        <div class="row justify-content-center" *ngIf="product_details">
+          <div class="col-11">
+            <div class="row">
+                <div class="col-md-8 cl-chng"> 
+	                <div class="row">
+		                <div class="col-md-8 my-5">
+		                    <ui-carousel  [infinite]="true" [fade]="false"  height="400px"  [dots]="dotsShow" [autoPlay]="false" [arrows]="arroWShow">
+							    <ui-carousel-item *ngFor="let obj of itemMedium;let m = index">
+							        <div class="chng" (mouseenter)="addIndex(m)">
+							        	<div class="mainDiv px-2 img-zoom-container" (mouseenter)="imageZoom('img-lg-zoom','myresult',m)" (mouseleave)="removeHover('myresult',m)">
+					                    <img class="addCursor mb-2 img-scaledown" src="{{ obj.medium }}"  id="img-lg-zoom{{ m }}" width="100%" height="300px;" onerror="this.src='./assets/img/no_image.svg'">
+					                     
+					                   </div>
+					                </div>   
+							    </ui-carousel-item>
+							    
+							    
+							    
+							    
+							</ui-carousel>
+							<div id="myresult" class="img-zoom-result" style="display: none"></div>
+								                 
+		                   
+
+		                  
+	              	    </div>
+	                </div>
+                </div>  
+            <div class="col-md-4 cl-chngs" *ngIf="product_details">
+	            <div class="row infos-change">
+	                <div class="col-12">
+	                    <div class="text-chng">
+	                      <h4>{{ product_details.name }}</h4>
+	                    </div>
+	                  <div class="row">
+	                    <div class="col-md-6 price-chng">
+	                      &#8377; {{ product_details.sale_price | number : '1.2-2' }}
+	                    </div>
+	                    <div class=" col-md-6 sku-chng">
+	                      SKU Code : {{product_details.unique_sku}}
+	                    </div>
+	                  </div>
+	                  <hr>
+	                </div>
+	            </div>
+
+	            <div class="row p-0 img-chng">
+	            	<div class="container-fluid">
+					    <div id="carouselExample" class="carousel slide" data-ride="carousel" data-interval="9000">
+					        <div class="carousel-inner row w-100 mx-auto" role="listbox">
+					            <div class="carousel-item col-md-3 mt-3" *ngFor="let item of itemsList;let i= index" [class.active]="selectedIndex === i">
+					                <img class="img-fluid mx-auto d-block" src="{{ item.thumbnail }}" alt="slide 2" onerror="this.src='./assets/img/no_image.svg'" (click)="sendMidImge(item.medium,i)" style="width:100px" [class.active]="selectedIndexChange === i" >
+					            </div>
+					           
+					        </div>
+					        <a class="carousel-control-prev" href="#carouselExample" role="button" data-slide="prev">
+					            <i class="fa fa-chevron-left fa-lg text-muted"></i>
+					            <span class="sr-only" (click)="callCarousel()">Previous</span>
+					        </a>
+					        <a class="carousel-control-next text-faded" href="#carouselExample" role="button" data-slide="next" (click)="callCarousel()">
+					            <i class="fa fa-chevron-right fa-lg text-muted"></i>
+					            <span class="sr-only">Next</span>
+					        </a>
+					    </div>
+					</div>
+	                
+	            </div>
+	            
+              <br>
+              <div class="row">
+              	<div class="col-sm-12">
+              		<div *ngIf="this.master_options.length > 0">
+              		    <label>Master option : </label>
+              		    <select class="form-control" (change) = "fetchSubOption($event)" >
+              		        <option disabled="true">Select Master Option</option>
+              		        <option *ngFor="let mo of this.master_options; let i = index" value="{{mo.id}}" [selected] = "i==0" >{{mo.name}}</option>
+              		    </select>
+              		    <br>
+
+              		    <label>Master suboption : </label>
+              		    <select class="form-control" (change) = "fetchCatalogueOption($event)" >
+              		        <option>Select Master Suboption</option>
+              		        <option *ngFor="let mso of this.sub_options; let i = index" value="{{mso.id}}" [selected] = "i==0">{{mso.name}}</option>
+              		    </select>
+              		    <br>
+
+              		    <label>Catalogue option : </label>
+              		    <select class="form-control" (change) = "fetchVariation($event)" >
+              		        <option>Select Master Option</option>
+              		        <option *ngFor="let co of this.catalogue_options;let i = index" value="{{co.id}}" [selected] ="this.autoselect ==true && i==0">{{co.name}}</option>
+              		    </select>
+              		    <br>
+              		    <div class="variation-img-container variation-img-container-{{variation.id}}" *ngFor="let variation of variations; let i =index" (mouseenter) = "activateZoomer(variation.attributes.medium_image, $event)" (mouseleave) = "deActivateZoomer()">
+              		    	<!-- <ngx-image-zoom
+              		    	    [thumbImage]="variation.attributes.thumbnail"
+              		    	    [fullImage]="variation.attributes.medium_image"
+              		    	    [magnification]="1"
+              		    	    class="variation-img"
+              		    	    height="50px" width="50px"
+              		    	    title="{{variation.attributes.name}}"
+              		    	></ngx-image-zoom> -->
+              		    	<!-- <img
+              		    	    ez-plus 
+              		    	    ezp-model="{thumb:{{variation.attributes.fabric_image}}, small:{{variation.attributes.fabric_image}}, large:{{variation.attributes.fabric_image}}}"
+              		    	    ezp-options="{scrollZoom: true, easing: true}"
+              		    	     id="zoom_0{{i}}" src='{{variation.attributes.fabric_image}}'
+              		    	     title="{{variation.attributes.name}}"
+              		    	     class="variation-img" /> -->
+              		        <img src="{{variation.attributes.thumbnail}}" title="{{variation.attributes.name}}" class="variation-img">
+              		    </div>
+              		    <br>
+              		</div>
+              	</div>
+              </div>
+            </div>
+          </div>   
+          <div class="row mt-5">
+            <div class="col-md-12 details-info">
+              <p class="marg-chng">Items Details</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <div class="row">
+                <div class="col-md-12 details-infos">
+                  <div class="text-infos">
+                    Product Information
+                  </div>
+                  <hr style="border-top: 2px dashed #a2a0a2;">
+                  <div class="row">
+                    <div class="col-md-4">
+                      <ul class="font-chng">
+                        <li class="mb-2">Color: {{ product_details.color}}</li>
+                        <li class="mb-2" *ngIf="product_details">Configuration: {{ product_details.product_config}}</li>
+                        <li>Measurement Unit: {{ product_details.measurement_unit}}</li>
+                      </ul>
+                    </div>
+                    <div class="col-md-4">
+                      <ul class="font-chng">
+                        <li class="mb-2">Lead Time: {{ product_details.lead_time}}</li>
+                        <li class="mb-2">Finish: {{ product_details.finish}}</li>
+                        <li>Dimension Remark: {{ product_details.dimension_remark}}</li>
+                      </ul>
+                    </div>
+                    <div class="col-md-4">
+                      <ul class="font-chng">
+                        <li class="mb-2">Dimension(mm): {{ product_details.width}}x{{ product_details.length}}x{{ product_details.height}}</li>
+                        <li class="mb-2">Material: {{ product_details.material}}</li>
+                        <li>Remarks: {{ product_details.remark}}</li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-12">
+                      <ul class="font-chng" style="margin-top: 0px;">
+                        <li>Warranty: {{ product_details.warranty}}</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div> 
+          </div>
+        </div>  
+      </div>
+    </div>
+  </div>
+	</div>
+</div>
+
+<div class="modal fade zoom-img-modal-lg" tabindex="-1" role="dialog" aria-labelledby="zoomImageModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header text-right row">
+        <button type="button" class="btn close col-12 text-right px-3 py-0" data-dismiss="modal" aria-label="Close" (click)="normalImg()">
+          &times;
+        </button>
+      </div>
+      <div class="modal-body text-center" id="imagecontainer">
+        <img src="" class="large-img" id="img-lg-zoom1">
+      </div>
+    </div>
+  </div>
+</div>
+<div class="zoomer-container">
+  <img src="{{this.activatedZoomerImg}}">
+</div>

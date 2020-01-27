@@ -1,0 +1,115 @@
+<div class="row ss-top-menu">
+  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6">
+    <span class="ss-text-light ss-link" style="vertical-align: -webkit-baseline-middle;" [routerLink]="['/']">Dashboard</span>
+    <span style="vertical-align: -webkit-baseline-middle;"><i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-text-light ss-link" style="vertical-align: -webkit-baseline-middle;" [routerLink]="['/community_manager/leads']" [queryParams]="{lead_status: lead_status}" *ngIf="(role=='city_gm' || role=='business_head' || role=='community_manager' || role=='design_manager')">Lead</span>
+    <span class="ss-link" style="vertical-align: -webkit-baseline-middle;" [routerLink]="['/designer/leads']" [queryParams]="{customer_status: lead_details.lead_status}" *ngIf="role=='designer'">Lead </span>
+    <span *ngIf="lead_details" class="capitalize" style="vertical-align: -webkit-baseline-middle;"><i class="rightArrow fa fa-angle-right"></i> {{lead_details.lead_status | replaceChar}}</span>
+    <span style="vertical-align: -webkit-baseline-middle;"><i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;" *ngIf=" lead_details && lead_details.user_reference">{{lead_details.user_reference.name}}</span>
+  </div>
+</div>
+<div class="rk-ui-notification" *ngIf="successalert">
+  <span id="notificationMessageText">{{successMessage}}</span>
+  <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+<div class="rk-ui-notification err" *ngIf="erroralert">
+  <span id="notificationMessageText">{{errorMessage}}</span>
+  <a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+
+<div class="row px-4">
+  <app-shared-top-menu [lead_id]='lead_id' [lead_details]='lead_details' [lead_status]='lead_status' [ppt_tab]='"active"'></app-shared-top-menu>
+  <div class="col-12 bg-white">
+    <app-sms-call></app-sms-call>
+    <div class="row mb-5">
+      <div class="col-md-12">
+        <div class="row mt-4">
+          <div class="col-md-12">
+            <button type="button" *ngIf="project_id" class="btn btn-pink pull-right" data-toggle="modal" data-target="#pptModal">
+              CREATE PPT
+            </button>
+          </div>
+        </div>
+        <!-- CODE BY SUNNY FROM PRESENTATION STARTS -->
+        <div class="row">
+          <div class="col-md-12 text-center p-5" *ngIf="initLoader">
+            <div class="ss-spinner ss-spinner--orange">
+              <div class="ss-spinner__item1"></div>
+              <div class="ss-spinner__item2"></div>
+              <div class="ss-spinner__item3"></div>
+              <div class="ss-spinner__item4"></div>
+            </div>
+          </div>
+          <div class="col-md-12 mt-3 text-center p-5" style="background-color: #fff;" *ngIf="presentationList.length <= 0">
+            <img src="../../../assets/img/nothing.png" />
+          </div>
+          <div class="col-md-4 mt-4" *ngFor="let presentation of presentationList">
+            <div class="card card-chng">
+              <img class="card-img-top" src="./assets/img/pptlogo.png" alt="Card image cap" style="max-height: 165px;">
+              <div class="card-block" style="padding: 1rem;">
+                <p class="card-text" style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap;border-bottom: 1px solid #e0e0e0;padding-bottom: 10px;">{{presentation.title}}</p>
+                <div class="row">
+                  <div class="col-md-8">
+                    <p class="mb-0" style="font-size:13px;">
+                      <span>Created at: </span>
+                      <span style="color: #7E7E7E;">{{presentation.created_at}}</span>
+                    </p>
+                    <p class="mb-0" style="font-size:13px;">
+                      <span>Updated at: </span>
+                      <span style="color: #7E7E7E;">{{presentation.updated_at}}</span>
+                    </p>
+                  </div>
+                  <div class="col-md-4 divbutton">
+                    <button class="btn btn-pink btn-chng pull-right" type="button" [routerLink]="['/projects',project_id,'presentation',presentation.id,'edit']" routerLinkActive="active">
+                      View
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- CODE BY SUNNY FROM PRESENTATION ENDS -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CREATE PPT MODAL -->
+<div class="modal fade" id="pptModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="border-bottom: 1px solid #e4e4e4;">
+        <h6 class="modal-title" id="exampleModalLabel">Choose from the given template : </h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-10" style="margin-left: 60px;">
+            <div class="card-deck">
+              <div class="card" [routerLink]="['/projects',project_id,'presentation','create']" [queryParams]="{theme: '', lead_status: lead_status}" routerLinkActive="active" *ngIf="project_id" data-dismiss="modal" aria-label="Close">
+                <i class="ion-ios-plus-outline" style="margin: 50% 0;text-align: center;font-size: 2.5rem;color: #8f0521; cursor: pointer;"></i>
+              </div>
+              <!-- <div class="card">
+                <img class="card-img-top" src="./assets/img/ppt/thumbnail/theme1.jpg" alt="Card image cap">
+                <div class="card-block text-center p-4">
+                  <a class="btn btn-pink pl-5 pr-5" [routerLink]="['/projects',project_id,'presentation','create']" [queryParams]="{theme: 'theme1', lead_status: lead_status}" routerLinkActive="active" *ngIf="project_id" data-dismiss="modal" aria-label="Close">Choose</a>
+                </div>
+              </div> -->
+              <div class="card">
+                <img class="card-img-top" src="./assets/img/ppt/thumbnail/theme2.png" alt="Card image cap">
+                <div class="card-block text-center p-4">
+                  <a class="btn btn-pink pl-5 pr-5" [routerLink]="['/projects',project_id,'presentation','create']" [queryParams]="{theme: 'theme2',lead_status: lead_status}" routerLinkActive="active" *ngIf="project_id" data-dismiss="modal" aria-label="Close" style="margin-top: 45px !important;">Choose</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

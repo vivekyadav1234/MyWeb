@@ -1,0 +1,101 @@
+<div class="row ss-top-menu">
+  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6">
+    <span class="ss-link ss-text-dark" style="vertical-align: -webkit-baseline-middle;">WIP Dashboard</span>
+  </div>
+  <!-- <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6">
+    <a class="addCursor float-right downloadBtn" (click)="downloadExcel()">Download Lead</a>
+  </div> -->
+</div>
+<div class="row">
+  <div class="col-12" *ngIf="erroralert">
+    <div class="alert-box grid-100" *ngIf="errorMessage">
+      <div class="alert alert-danger mt-3 text-center">
+        <a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a>
+        {{errorMessage}}
+      </div>
+    </div>
+  </div>
+  <div class="col-12" *ngIf="successalert">
+    <div class="alert-box grid-100" *ngIf="successMessage">
+      <div class="alert alert-success mt-3 text-center">
+        <a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+        {{successMessage}}
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row my-4">
+  <div class="col-sm-12 col-md-6 col-lg-4 mb-lg-3 mb-sm-2">
+    <div class="ss-card p-4 cursor-pointer" [routerLink]="['/designer/wip']" routerLinkActive="active"  [queryParams]="{customer_status: 'active'}">
+      <div class="ss-card-head pt-2 pb-4">
+        <span>
+          <img src="/assets/img/dashboard/not_contactable.png">
+        </span>
+        <span class="theme-font ml-4">
+          ACTIVE
+        </span>
+      </div>
+      <div class="ss-card-body text-center pt-5 pb-5">
+        <span class="h1">{{statusCountArr.active}}</span>
+      </div>
+      <div class="ss-card-footer pt-4 pb-2">
+        <span> The number of count shows the data of the leads that are not contactable for some reasons.</span>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-12 col-md-6 col-lg-4 mb-lg-3 mb-sm-2">
+    <div class="ss-card p-4 cursor-pointer" [routerLink]="['/designer/wip']" routerLinkActive="active"  [queryParams]="{customer_status: 'inactive'}">
+      <div class="ss-card-head pt-2 pb-4">
+        <span>
+          <img src="/assets/img/dashboard/follow_up.png">
+        </span>
+        <span class="theme-font ml-4">
+          IN ACTIVE
+        </span>
+      </div>
+      <div class="ss-card-body text-center pt-5 pb-5">
+        <span class="h1">{{statusCountArr.inactive}}</span>
+      </div>
+      <div class="ss-card-footer pt-4 pb-2">
+        <span> The number of count shows the leads which are in INACTIVE.</span>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-12 col-md-6 col-lg-4 mb-lg-3 mb-sm-2">
+    <div class="ss-card p-4 cursor-pointer" [routerLink]="['/designer/wip']" routerLinkActive="active" [queryParams]="{customer_status: 'on_hold'}">
+      <div class="ss-card-head pt-2 pb-4">
+        <span>
+          <img src="/assets/img/dashboard/lost.png">
+        </span>
+        <span class="theme-font ml-4">
+          ON HOLD
+        </span>
+      </div>
+      <div class="ss-card-body text-center pt-5 pb-5">
+        <span class="h1" style="color: #FF0018;">{{statusCountArr.on_hold}}</span>
+      </div>
+      <div class="ss-card-footer pt-4 pb-2">
+        <span> The number of count shows the leads which are in ON HOLD.</span>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-12 col-md-6 col-lg-4 mb-lg-3 mb-sm-2">
+    <div class="ss-card p-4 cursor-pointer" [routerLink]="['/designer/wip']" routerLinkActive="active"  [queryParams]="{customer_status: 'completed'}">
+      <div class="ss-card-head pt-2 pb-4">
+        <span>
+          <img src="/assets/img/dashboard/not_contactable.png">
+        </span>
+        <span class="theme-font ml-4">
+          COMPLETED
+        </span>
+      </div>
+      <div class="ss-card-body text-center pt-5 pb-5">
+        <span class="h1">{{statusCountArr.completed}}</span>
+      </div>
+      <div class="ss-card-footer pt-4 pb-2">
+        <span> The number of count shows the leads which has been COMPLETED.</span>
+      </div>
+    </div>
+  </div>
+
+</div>

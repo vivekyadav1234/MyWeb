@@ -1,0 +1,172 @@
+<div class="row">
+	<div class="col-sm-12 bg-white">
+		<nav class="navbar navbar-expand-lg navbar-light">
+      <a class="navbar-brand">Arrivae Weekly Statistics</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+
+        </ul>
+        <form class="form-inline my-2 my-lg-0">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+              <a class="nav-link" [routerLink]="['/aws-dashboard']" routerLinkActive='active' (click)="selectNavBar('aws_nav')" [ngClass]="{'active': nav_select == 'fhi_nav'}">Graph View</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link " (click)="selectNavBar('fhi_nav')" [ngClass]="{'active': nav_select == 'fhi_nav'}" [routerLink]="['/aws/fhi-data']" routerLinkActive='active'>FHI Data</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" (click)="selectNavBar('mkw_nav')" [ngClass]="{'active': nav_select == 'mkw_nav'}" [routerLink]="['/aws/mkw-data']" routerLinkActive='active'>MKW Data</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" (click)="selectNavBar('order_book')" [ngClass]="{'active': nav_select == 'order_book'}" [routerLink]="['/aws/order-book']" routerLinkActive='active'>Order Book</a>
+            </li>
+
+          </ul>
+        </form>
+      </div>
+    </nav>
+	</div>
+</div>
+<div class="container">
+  <div class="row">
+    <br>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="row">
+        <div class="col-md-4 filter2">
+          <span class="fltype">Filter by TYPE</span>
+          <div class="floptions">
+            <button type="button" class="btn  btn-sm col_buttons" name="button" (click)="FilterByType('all')" [ngClass]="{'active': filter_by_type == 'all'}">All</button>
+            <button type="button" class="btn btn-sm col_buttons" name="button" (click)="FilterByType('digital')" [ngClass]="{'active': filter_by_type == 'digital'}">Digital</button>
+            <button type="button" class="btn  btn-sm col_buttons" name="button" (click)="FilterByType('physical')" [ngClass]="{'active': filter_by_type == 'physical'}">Physical</button>
+          </div>
+        </div>
+        <div class="col-md-4 filter2">
+          <span class="fltype">Filter by CITY</span>
+          <span class="text-danger pull-right text-bold cursor-pointer mt-1" (click)="ClearCityFilter()" style="font-size: 12px">Clear</span>
+          <div class="floptions">
+            <button type="button" class="btn  btn-sm  btn_chn" name="button" (click)="SelectCity(2)" [ngClass]="{'active': city == 2}">Pune</button>
+            <button type="button" class="btn  btn-sm btn_chn" name="button" (click)="SelectCity(1)" [ngClass]="{'active': city == 1}">Mumbai</button>
+            <button type="button" class="btn  btn-sm  btn_chn" name="button" (click)="SelectCity(3)" [ngClass]="{'active': city == 3}">Bangalore</button>
+            <button type="button" class="btn  btn-sm  btn_chn" name="button" (click)="SelectCity(10)" [ngClass]="{'active': city == 10}">Chennai</button>
+            <button type="button" class="btn  btn-sm  btn_chn" name="button" (click)="SelectCity(11)" [ngClass]="{'active': city == 11}">Kochi</button>
+          </div>
+        </div>
+        <div class="col-md-4 filter2">
+          <span class="fltype">Filter by DATE</span>
+          <span class="text-danger pull-right text-bold cursor-pointer mt-1" (click)="ClearDateFilter()" style="font-size: 10px">Clear</span>
+          <div class="floptions d-flex">
+          	 <input [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1" placeholder="From Date"  class=" rk-form-fontsize d-block rounded px-2 p-1" [(ngModel)]="from_date">
+			       <owl-date-time #dt1 [pickerType]="'calendar'"></owl-date-time> <span style="font-weight:lighter;" class="ml-2"> to </span>
+			       <input [owlDateTime]="dt2" [owlDateTimeTrigger]="dt2" placeholder="To Date"  class=" rk-form-fontsize d-block  rounded p-1 px-2 ml-2" [(ngModel)]="to_date" [min]="from_date">
+			       <owl-date-time #dt2 [pickerType]="'calendar'" ></owl-date-time>
+			        <button class="btn btn-sm go-filter ml-3" (click)="submitByDate()">GO</button> 
+          </div>
+        </div>
+      </div>
+      <div class="row mr-0">
+        <div class="col-md-12 filter2">
+          <span class="clear_all cursor-pointer ml-2 pull-right" (click)="clearFilter('cm')">Clear</span>
+          <span class="fltype"> Filter by COMMUNITY MANAGER</span><br>
+          <ng-container *ngFor="let cms of cm_dropdownList" class="d-flex hover-class p-0">
+            <button class="btn  btn-sm col_buttonss mt-1 mb-1 mr-3" (click)="SelectCm(cms)" [ngClass]="{'active': cm_id == cms.id}">{{SplitString(cms.itemName)| titlecase}}</button> 
+          </ng-container>  
+        </div>
+      </div>
+      <div class="clearfix">
+        <br>
+      </div>
+     
+      <div class="clearfix">
+        <br>
+      </div>
+      <div class="row">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th colspan="2"> </th>
+               
+              <th style="width:9%; color: #292121;" *ngFor="let week of weekly_data">Week {{ week.week_number}} <br> ({{week.week_start_date}} -{{week.week_end_date}})</th>
+             
+            </tr>
+          </thead>
+          <tbody>
+            
+             <tr>
+              <td style="color:#646464" colspan="2">Actual Leads (Target)</td>
+              
+              <td *ngFor="let week of weekly_data" [ngClass]="(week.data_hash.qualified_leads_actual > 0)?((week.data_hash.qualified_leads_actual >= week.data_hash.qualified_leads_target)?'greencolor':'pinkcolor'): 'whiteBack'"><span>{{ week.data_hash.qualified_leads_actual }}
+              </span>({{ week.data_hash.qualified_leads_target }})</td>
+            </tr>
+            <tr>
+              <td rowspan="2"  style="color:#646464">Closures this week</td>
+              <td  style="color:#646464;width:16%;"> Number</td>
+              <td *ngFor="let week of weekly_data">{{week.data_hash.closure_shared_within_week }}</td>
+            </tr>
+            <tr>
+              <td  style="color:#646464;width:16%;" > Value</td>
+              <td *ngFor="let week of weekly_data">₹{{ week.data_hash.value_of_closure_shared_within_week }}</td>
+            </tr>
+            <tr>
+              <td rowspan="2"  style="color:#646464">BOQs created this week</td>
+              <td style="color:#646464;width:16%;"> Number</td>
+              <td *ngFor="let week of weekly_data">{{week.data_hash.boq_created_within_week}}</td>
+            </tr>
+            <tr>
+              <td style="color:#646464;width:16%;">  Value</td>
+              <td *ngFor="let week of weekly_data">₹{{ week.data_hash.value_of_boq_created_within_week}}</td>
+            </tr>
+            <tr>
+              <td rowspan="2"  style="color:#646464">BOQs shared this week</td>
+              <td   style="color:#646464;width:16%;"> Number</td>
+              <td *ngFor="let week of weekly_data">{{week.data_hash.boq_shared_within_week}}</td>
+            </tr>
+            <tr>
+              <td  style="color:#646464;width:16%;"> Value</td>
+              <td *ngFor="let week of weekly_data">₹{{ week.data_hash.value_of_boq_shared_within_week}}</td>
+             </tr>
+            <tr>
+              <td rowspan="2"  style="color:#646464">Meetings </td>
+              <td  style="color:#646464;width:16%;"> < 7 days  (Target)</td>
+              <td *ngFor="let week of weekly_data"[ngClass]="(week.data_hash.first_meeting_target > 0)?((week.data_hash.first_meeting_actual >= week.data_hash.first_meeting_target)?'greencolor':'pinkcolor'): 'whiteBack'"><span>{{ week.data_hash.first_meeting_actual }}</span>({{ week.data_hash.first_meeting_target }})</td>
+            </tr>
+            <tr>
+              <td   style="color:#646464;width:16%;"> > 7 days </td>
+              <td *ngFor="let week of weekly_data">{{ week.data_hash.meeting_after_7_days }}</td>
+            </tr>
+            <tr>
+              <td rowspan="2"  style="color:#646464">BOQs Shared</td>
+              <td   style="color:#646464;width:16%;"> < 15 days  (Target)</td>
+              <td *ngFor="let week of weekly_data" [ngClass]="(week.data_hash.boq_shared_target > 0)?((week.data_hash.boq_shared_actual >= week.data_hash.boq_shared_target)?'greencolor':'pinkcolor'): 'whiteBack'"><span>{{week.data_hash.boq_shared_actual }}</span> ({{week.data_hash.boq_shared_target }})</td>
+            </tr>
+            <tr>
+              <td   style="color:#646464;width:16%;">  >15 days </td>
+              <td *ngFor="let week of weekly_data">{{ week.data_hash.boq_shared_after_15_days }}</td>
+            </tr>
+             
+            <tr>
+              <td   style="color:#646464" colspan="2">BOQs NOT shared</td>
+              <td *ngFor="let week of weekly_data" style="color: #ff3366">{{ week.data_hash.boq_not_shared_within_week }}</td>
+            </tr>
+            <tr>
+              <td rowspan="2"  style="color:#646464">Closures</td>
+              <td   style="color:#646464;width:16%;"> < 45 days  (Target)</td>
+              <td *ngFor="let week of weekly_data" [ngClass]="(week.data_hash.closure_target > 0)?((week.data_hash.closure_actual >=week.data_hash.closure_target)?'greencolor':'pinkcolor'): 'whiteBack'"><span>{{ week.data_hash.closure_actual }}</span>({{ week.data_hash.closure_target }})</td>
+            </tr>
+            <tr>
+              <td   style="color:#646464;width:16%;"> > 45 days </td>
+              <td *ngFor="let week of weekly_data">{{ week.data_hash.closures_after_45_days}}</td>
+            </tr>
+             
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+

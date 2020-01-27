@@ -1,0 +1,121 @@
+<div class="row ss-top-menu">
+    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-xs-4">
+    	<span class="ss-link ss-text-light" style="vertical-align: -webkit-baseline-middle;" [routerLink]="['/']">Dashboard</span>
+        <span style="vertical-align: -webkit-baseline-middle;"> <i class="rightArrow fa fa-angle-right"></i> </span>
+        <span class="ss-link ss-text-light" style="vertical-align: -webkit-baseline-middle;" [routerLink]="['/tasks/task-list']">Tasks</span>
+        <span style="vertical-align: -webkit-baseline-middle;"  class="capitalize text-muted"><i class="rightArrow fa fa-angle-right"></i></span>
+    </div>  
+</div>
+
+<div class="row mt-4 justify-content-center">
+	<div class="col-sm-2">
+		<div class="card text-center active card-body-out"  [ngClass]="{'active': selectSection == 'outstanding'}">
+		    <div class="card-body ">
+		      <h5 class="card-title">{{ projectTaskCount.outstanding}}</h5>
+		      <p class="card-text"><img src="../../../assets/img/shape.svg" *ngIf="shapeImage == true "><img src="../../../assets/img/vectorpaint.svg" *ngIf="shapeImage == false "><br><small>Outstanding Tasks</small></p>
+		      
+		    </div>
+		</div>
+		
+	</div>
+	<div class="col-sm-2">
+		<div class="card text-center card-body-complete"  [ngClass]="{'active': selectSection == 'completed-task'}">
+		    <div class="card-body">
+		      <h5 class="card-title">{{ projectTaskCount.completed}}</h5>
+		      <p class="card-text"><img src="../../../assets/img/check.svg"><br><small >Completed Tasks</small></p>
+		      
+		    </div>
+		</div>
+		
+	</div>
+	<div class="col-sm-2">
+		<div class="card text-center card-body-overdue" [ngClass]="{'active': selectSection == 'overdue-task'}">
+		    <div class="card-body ">
+		      <h5 class="card-title card-title-change" [ngClass]="{'active': selectSection == 'overdue-task'}">{{ projectTaskCount.overdue}}</h5>
+		      <p class="card-text"><img src="../../../assets/img/exclamation.svg" *ngIf="exclamImage == false"><img src="../../../assets/img/vectorpaint2.svg" *ngIf="exclamImage == true"><br><small >Overedue Tasks</small></p>
+		      
+		    </div>
+		</div>
+		
+	</div>
+	
+
+</div>
+<div class="row px-5 mt-4">
+	<div class="col-12">
+		<div class="row mx-0 bg-change">
+			<div class="col-sm-4">
+				<div class="text my-3">
+					
+				</div>
+				
+			</div>
+			<div class="col-sm-4">
+				<div class="text my-3">
+					PROJECT ID-{{ projectId }}
+				</div>
+				
+			</div>
+			<div class="col-sm-4">
+				<div class="text my-3">
+					LEAD ID-{{ lead_id }}
+				</div>
+				
+			</div>
+			
+		</div>
+		
+	</div>
+	
+	<div class="col-md-12" *ngIf="selectSection == 'outstanding'">
+	    <div class="tableDiv" >
+	        <table class="table table-striped">
+
+		        <thead class="thead-dark">
+
+		            <tr>
+		              <th scope="col" class="firstTh"></th>
+		              <th scope="col">Progress</th>
+		              <th scope="col">TASKS</th>
+		              <!-- <th scope="col">OWNER </th> -->
+		              <th scope="col">STATUS</th>
+		              <th scope="col">TIMER</th>
+		              <!-- <th scope="col">OUTPUT</th> -->
+		              <th scope="col" class="lastTh"></th>
+		                
+		            </tr>
+		        </thead>
+
+		           
+		         
+		        <tbody>
+		            
+		        </tbody>     
+		    </table>
+		    <div class="row justify-content-center">
+		    	<div class="col-md-6">
+		    		<div class="progressRow my-3">
+		    			<img src="../../../assets/img/designer/prebid d.svg" (click)="progressChange('pre-bid')">
+             
+		    			<img src="../../../assets/img/designer/rect.svg" class="rect">
+		    			<img src="../../../assets/img/designer/rect.svg" class="rect2">
+		    			<img src="../../../assets/img/designer/rect.svg" class="rect3">
+		    			<img src="../../../assets/img/designer/rect.svg" class="rect4"> 
+		    			<img src="../../../assets/img/designer/rect2.svg"  class="rect5">
+		    			
+		    		</div>
+		    		
+		    	</div>
+		    	
+		    </div>
+	    </div>
+	      
+	          
+	       
+	</div>
+    
+
+      
+
+  
+</div>

@@ -1,0 +1,870 @@
+<div class="">
+  <div class="pt-4 w-100">
+    <div class="">
+      <div class="col-12 not-found" *ngIf="boq_list && boq_list.length==0 ">
+        <div class="boq-img text-center">
+          <img src="../../../assets/img/desktop.png">
+        </div>
+        <p class="pb-4 nothing-to-show">Nothing to show...</p>
+      </div>
+      <div class="col-12" *ngIf="boq_list && boq_list.length>0">
+        <div class="tableDiv project-table">
+          <table class="table">
+            <thead class="ss-thead">
+              <tr>
+                <th class="firstTh">LEAD ID</th>
+                <th>CLIENT NAME</th>
+                <th> DESIGNER AND CM NAME</th>
+                <th>BOQ NUMBER</th>
+                <th>NEW TASK?</th>
+                <th>TIME OF SLI ADDITION</th>
+                <th>TAT(RED IF OVERDUE)</th>
+                <th class="lastTh">SLI WITHOUT VENDOR</th>
+              </tr>
+            </thead>
+            <tbody class="ss-tbody" *ngFor="let obj of boq_list | paginate: { itemsPerPage: per_page, currentPage: current_page, totalItems: total_page  }; let i = index"
+              [attr.data-index]="i">
+              <tr class="addCursor" (click)="toggleRow(obj,i);openVendorCollapsible(obj);">
+                <td class="capitalize">{{ obj.lead_details.id }}</td>
+                <td class="capitalize">{{obj.lead_details.name}}</td>
+                <td class="capitalize">{{obj.designer_details.name}}
+                  <br>
+                  <span>{{obj.cm_details.name}}</span>
+                </td>
+                <td>{{obj.reference_number}}</td>
+                <td>
+                  <span class="text-danger" *ngIf="obj.unseen">New!</span>
+                </td>
+                <td>{{obj.created_at | date: 'd/M/yy'}}</td>
+                <td class="capitalize">
+                    <div *ngIf="obj.tat && obj.time_left">
+                     <span  [ngClass]="{'text-danger':obj.time_left.search('over')}">
+                        {{obj.time_left}}/{{obj.tat | date: 'd-M-yy'}}
+                     </span>
+                    </div>
+                </td>
+                <td>{{obj.sli_without_vendor}}</td>
+                <!-- <td>
+                      <button class="category-btn rounded addCursor py-1 px-2" [ngClass]="{'active': obj.expanded}"
+                      (click)="openVendorCollapsible(obj);" [disabled]="obj.expanded">Select Vendors</button>
+                    </td> -->
+              </tr>
+              <tr *ngIf="obj.expanded">
+                <td colspan="8">
+                  <div class="row boqlist-row mx-0 pb-0">
+                    
+                    <div class="col-12 pl-3 pr-3 pt-0 pb-0" >
+                      <div class="w-100 mx-auto pb-0">
+                        <table class="table" *ngIf="(line_items_list && line_items_list.length > 0) || (other_items_list && other_items_list.length > 0)">
+                          <thead class="ss-thead">
+                            <tr>
+                              <th class="firstTh" style="min-width: 220px!important;">Line Item</th>
+                              <th>Space</th>
+                              <th > Type(MKW, LF, NP)</th>
+                              <th class="text-left pl-4" style="width:200px!important">Sub Line Items</th>
+                              <th class="text-left pl-4" style="width:200px!important">Add Vendors</th>
+                              <th class="text-left pl-5" style="width:140px!important">Cost </th>
+                              <th class="text-left pl-5" style="width:140px!important">Quantity </th>
+                              <th class="lastTh text-left" style="width:140px!important">Edit/Remove</th>
+                            </tr>
+                          </thead>
+                          <tbody class="ss-tbody" *ngFor="let line of line_items_list | paginate: { itemsPerPage: per_page, currentPage: current_page, totalItems: total_page  }; let i = index"
+                            [attr.data-index]="i">
+                            <tr>
+                              <td class="capitalize">{{ line.name }}
+                                  <div *ngIf="line.type==='loose_furniture'">
+                                      <div class="col-12">
+                                        <div class="row">
+                                          <div class="col-4 font-weight-bold p-0">Fabric:</div> <div class="col-8 p-0">{{ line.fabric}}</div>
+                                        </div>
+                                      </div>
+                                  </div>
+                                  <div *ngIf="line.type==='custom_jobs'">
+                                      <div class="col-12">
+                                        <div class="row">
+                                          <div class="col-4 font-weight-bold p-0">Specs:</div> <div class="col-8 p-0">{{ line.specs}}</div>
+                                        </div>
+                                      </div>
+                                      <div class="col-12">
+                                        <div class="row">
+                                          <div class="col-4 font-weight-bold p-0">Remark:</div> <div class="col-8 p-0">{{ line.remark}}</div>
+                                        </div>
+                                      </div>
+                                      <div class="col-12">
+                                        <div class="row">
+                                          <div class="col-4 font-weight-bold p-0">Dimension:</div> <div class="col-8 p-0">{{ line.dimension}}</div>
+                                        </div>
+                                      </div>
+                                  </div>
+                                  <div *ngIf="line.type==='services'">
+                                      <div class="col-12">
+                                        <div class="row">
+                                          <div class="col-4 font-weight-bold p-0">Base Rate::</div> <div class="col-8 p-0">{{ line.base_rate}}</div>
+                                        </div>
+                                      </div>
+                                  </div>
+                              </td>
+                              <td class="capitalize">
+                                {{ line.space }}
+                              </td>
+                              <td class="capitalize">{{ line.type.split("_").join(" ") }}</td>
+                              <td class="capitalize w-auto pt-0 pb-0" colspan="5">
+                                <div *ngFor="let subline of line.subline_items; let j = index" class="border text-left p-0">
+                                  <!-- <input type="radio" value="{{subline.id}}" id="text{{subline.id}}" [(ngModel)]="selected_boq_sublineitem" [checked]="line && subline.id==line.id">
+                                  <label for="text{{subline.id}}" class="mr-3 ml-2 pt-1 d-inline-block"></label> -->
+                                  <div class="d-inline-block pb-1 pt-1 pl-3" style="width: 24%!important;">
+                                    <span>{{subline.element_name}}</span>
+                                  </div>
+                                  <div class="align-middle w-75 d-inline-block mr-0 p-0 text-center">
+                                    <div class="p-0">
+                                      <div class="col-12 p-0">
+                                        <div class="pt-2 pb-0" *ngFor="let vendor of subline.job_element_vendor_details">
+                                          <div class="col-4 d-inline-block p-0 pl-1 pull-left py-0 text-left">{{vendor.vendor_name}}</div>
+                                          <div class="d-inline-block col-2 py-0">{{vendor.cost}}</div>
+                                          <div class="col-2 d-inline-block pl-5 py-0">{{vendor.quantity}}</div>
+                                          <div class="d-inline-block col-3 text-right text-center py-0 pull-right">
+                                            <span class="p-1 edit-icon addCursor" (click)="openVendorForm('updatevendorform',vendor,subline)" data-toggle="modal" data-target="#addVendorModal">
+                                              <i class="fa fa-pencil"></i>
+                                            </span>
+                                            <span class="p-1 delete-icon addCursor">
+                                              <i class="fa fa-trash" (click)="deleteVendor(vendor.vendor_id,subline)"></i>
+                                            </span>
+                                            <!-- <div class="d-inline-block col-6 pull-left"> -->
+
+                                              <!-- </div> -->
+                                          </div>
+                                        </div>
+                                      <div class="p-0" *ngIf="subline.job_element_vendor_details.length == 0">
+                                          <div class="d-inline-block col-6 pull-left p-0"></div>
+                                          <div class="col-2 d-inline-block p-0 pl-3"></div>
+                                          <div class="d-inline-block col-3 text-right p-0 text-center">
+                                              <button data-toggle="modal" data-target="#addVendorModal" (click)="getAddVendorFormDetails(subline);openVendorForm('addvendorform',vendor)"
+                                              class="add-other-items circularIcon addCursor">
+                                                <i class="fa fa-plus"></i>
+                                                </button>
+                                          <div class="d-inline-block col-6 pull-left">
+
+                                            </div>
+                                        </div>
+                                      </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                          <tbody class="ss-tbody" *ngIf="other_items_list">
+                            <tr *ngFor="let other_item of other_items_list; let i = index" [attr.data-index]="i">
+                                <td class="capitalize" style="width:24%;">
+                                    <span class="pl-4 text-left">{{other_item.element_name}}</span>
+                                </td>
+                                <td colspan="7" class="w-75" *ngIf="other_item.job_element_vendor_details">
+                                    <div class="" *ngFor="let vendor of other_item.job_element_vendor_details">
+                                        <div class="col-1 d-inline-block py-0"></div>
+                                        <div class="col-3 d-inline-block pl-1 py-0"></div>
+                                        <div class="col-2 d-inline-block py-0 text-left"><span *ngIf="vendor.vendor_contact_person"></span>{{vendor.vendor_contact_person}}</div>
+                                        <div class="col-2 d-inline-block py-0"><span *ngIf="vendor.cost">{{vendor.cost}}</span></div>
+                                        <div class="d-inline-block pl-3 py-0 text-left"><span *ngIf="vendor.quantity">{{vendor.quantity}}</span></div>
+                                        <div class="col-1 d-inline-block mr-4 pl-0 pull-right py-0 text-center text-right">
+                                          <span class="p-1 edit-icon addCursor" (click)="
+                                          getAddVendorFormDetails(other_item);openVendorForm('updatevendorform',vendor,other_item)" data-toggle="modal" data-target="#addVendorModal">
+                                            <i class="fa fa-pencil"></i>
+                                          </span>
+                                          <span class="p-1 delete-icon addCursor">
+                                            <i class="fa fa-trash" (click)="deleteVendor(vendor.vendor_id,other_item)"></i>
+                                          </span>
+                                        </div>
+                                      </div>
+                                      <div class="" *ngIf="other_item.job_element_vendor_details && other_item.job_element_vendor_details.length == 0">
+                                          <div class="d-inline-block col-6 pull-left"></div>
+                                          <div class="d-inline-block col-2 pl-3"></div>
+                                          <div class="col-3 d-inline-block pl-4 pull-right text-center text-right">
+                                            <button data-toggle="modal" data-target="#addVendorModal" (click)="getAddVendorFormDetails(other_item);openVendorForm('addvendorform',vendor)"
+                                            class="add-other-items circularIcon addCursor pull-right">
+                                              <i class="fa fa-plus"></i>
+                                              </button>
+                                          </div>
+                                        </div>
+                                </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                        <div class="card shadow pr-0 not-found" *ngIf="line_items_list && line_items_list.length === 0 && other_items_list && other_items_list.length === 0 ">
+                          <div class="boq-img text-center">
+                            <img src="../../../assets/img/desktop.png">
+                          </div>
+                          <p class="nothing-to-show pb-4">Nothing to show...</p>
+                        </div>
+                        <!-- <table class="mr-5 pl-5 pr-5 table">
+                            <thead class="ss-thead">
+                                <tr *ngIf="other_items_list && other_items_list.length > 0">
+                                    <th class="firstTh">Extra Item</th>
+                                    <th style="width:200px!important">Add Vendors</th>
+                                    <th style="width:140px!important">Cost </th>
+                                    <th class="lastTh">Edit/Remove</th>
+                                </tr>
+                                <tr *ngIf="other_items_list && other_items_list.length === 0">
+                                    <th class="firstTh">Extra Item</th>
+                                </tr>
+                            </thead>
+                            <tbody class="ss-tbody">
+                              <ng-container *ngIf="other_items_list && other_items_list.length > 0">
+                                  <tr *ngFor="let other_item of other_items_list; let i = index" [attr.data-index]="i">
+                                      <td class="capitalize">
+                                          <span class="pl-4 text-left w-75">{{other_item.element_name}}</span>
+                                      </td>
+                                      <td colspan="2" *ngIf="other_item.job_element_vendor_details">
+                                          <div class="" *ngFor="let vendor of other_item.job_element_vendor_details">
+                                              <div class="d-inline-block col-6 pull-left py-0">{{vendor.vendor_contact_person}}</div>
+                                              <div class="d-inline-block col-2 pl-3 py-0">{{vendor.cost}}</div>
+                                              <div class="d-inline-block col-3 text-right pl-5 text-center py-0">
+                                                <span class="p-1 edit-icon addCursor" (click)="openVendorForm('updatevendorform',vendor,subline)" data-toggle="modal" data-target="#addVendorModal">
+                                                  <i class="fa fa-pencil"></i>
+                                                </span>
+                                                <span class="p-1 delete-icon addCursor">
+                                                  <i class="fa fa-trash" (click)="deleteVendor(vendor.vendor_id,other_item)"></i>
+                                                </span>
+                                                <div class="d-inline-block col-6 pull-left">
+
+                                                  </div>
+                                              </div>
+                                            </div>
+                                            <div class="" *ngIf="other_item.job_element_vendor_details && other_item.job_element_vendor_details.length == 0">
+                                                <div class="d-inline-block col-6 pull-left"></div>
+                                                <div class="d-inline-block col-2 pl-3"></div>
+                                                <div class="d-inline-block col-3 text-right pl-5 text-center">
+                                                    <button data-toggle="modal" data-target="#addVendorModal" (click)="getAddVendorFormDetails(subline);openVendorForm('addvendorform',vendor)"
+                                                    class="add-other-items circularIcon addCursor">
+                                                      <i class="fa fa-plus"></i>
+                                                      </button>
+                                                </div>
+                                              </div>
+                                      </td>
+                                  </tr>
+                              </ng-container>
+                                <tr *ngIf="other_items_list && other_items_list.length === 0">
+                                        <div class="pr-0">
+                                                <div class="boq-img text-center">
+                                                    <img src="../../../assets/img/desktop.png">
+                                                </div>
+                                                <p class="nothing-to-show pb-4">Nothing to show...</p>
+                                            </div>
+                                </tr>
+                            </tbody>
+                        </table> -->
+                      </div>
+                    </div>
+                    <div class="px-5 mx-5  py-0" *ngIf="selectView == 'clubView'">
+                        <div class="w-100 mx-auto pb-0">
+                            <table class="table" *ngIf="(club_view_list && club_view_list.length > 0)">
+                              <thead class="ss-thead">
+                                <tr>
+                                  <th class="firstTh" style="width:110px!important">SLI Name</th>
+                                  <th class="minWidth">View</th>
+                                  <th class="text-left pl-4" style="width: 145px!important">Qty.</th>
+                                  <th class="text-left pl-4">Unit</th>
+                                  <th class="text-left pl-5">Vendor name </th>
+                                  <th class="text-left pl-4">Rate </th>
+                                  <th class="text-left">Edit/Remove</th>
+                                  <th class="lastTh"></th>
+                                </tr>
+                              </thead>
+                              <tbody class="an-tbody" *ngIf="club_view_list" >
+                                <tr *ngFor="let club_line of club_view_list ; let j = index"
+                                [attr.data-index]="j">
+                                  <td>{{ club_line.sli_name}}</td>
+                                  <td><i class="fa fa-eye cursor-pointer" style="font-size:20px;" (click)="showMlidDIv(club_line)" data-target="#lineModuleItem" data-toggle="modal"></i>
+                                    
+                                  </td>
+                                  <td style="display: flex;">
+                                    <ng-container *ngIf="club_line.quantity">
+                                      <input type="number"  min='0' onkeypress="return (event.charCode == 8 || event.charCode == 0) ? null : event.charCode >= 48 && event.charCode <= 57"  class="form-control form-control-change" value="{{club_line.quantity}}" id="qty_{{ j }}" disabled>
+                                    </ng-container> 
+                                    <ng-container *ngIf="!club_line.quantity">
+                                      <input type="number"  class="form-control form-control-change" value= 0 id="qty_{{ j }}" disabled>
+                                    </ng-container> 
+
+                                    
+                                      <img src="assets/img/dashboard/submit.png" class="ml-1 sendIcon d-none cursor-pointer" (click)="editQty(j,club_line,obj)" id="img_{{ j }}">
+                                    
+                                  </td>
+                                  <td>{{ club_line.unit }}</td>
+                                  <td>{{ club_line.vendor_name }}</td>
+                                  <td>{{ club_line.rate }}</td>
+                                  <td>
+                                    <div class="d-inline-block col-3 text-right text-center py-0">
+                                      <span class="p-1 edit-icon addCursor" (click)="editClubQty(j)">
+                                        <i class="fa fa-pencil"></i>
+                                      </span>
+                                      <!-- <span class="p-1 delete-icon addCursor">
+                                        <i class="fa fa-trash" (click)="deleteVendor(vendor.vendor_id,subline)"></i>
+                                      </span> -->
+                                      
+                                    </div>
+                                  </td>
+                                  <td>
+                                      <button *ngIf="club_line.vendor_id" (click)="getSLIOptions(club_line)" data-toggle="modal"
+                                                                            data-target="#viewOptionsModal" class="btn btn-pink">View<br/> Alternatives</button>
+                                  </td>
+                                </tr>  
+                              
+                              </tbody>
+                              
+                            </table>
+                            <div class="card shadow pr-0 not-found" *ngIf="club_view_list && club_view_list.length == 0">
+                              <div class="boq-img text-center">
+                                <img src="../../../assets/img/desktop.png">
+                              </div>
+                              <p class="nothing-to-show pb-4">Nothing to show...</p>
+                            </div>
+                            
+                          </div>
+
+                    </div>
+                    <div class="col-12 not-found text-center" *ngIf="!boq_list || (boq_list && boq_list.length===0)">
+                      <div class="boq-img text-center col-xs-11 col-sm-11 col-md-11 col-lg-11 d-inline-block">
+                        <img src="../../../assets/img/desktop.png">
+                      </div>
+                      <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 pt-0 d-inline-block pull-right">
+                        <button type="button" class="close close-project-row" aria-label="Close" (click)="toggleRow(obj)">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <p class="nothing-to-show pb-4">Nothing to show...</p>
+
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="text-center" *ngIf="boq_list && boq_list.length >0">
+            <pagination-controls autoHide="true" (pageChange)="current_page = getBoqListForPreProductionTab($event)"></pagination-controls>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade m-auto" role="dialog" id="addVendorModal" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" role="document" style="overflow-y: hidden;">
+    <div class="modal-content" style="overflow-y: scroll; max-height: 708px;">
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-12">
+            <button type="button" class="close addCursor" data-dismiss="modal" (click)="closeVendorModal()">&times;</button>
+          </div>
+        </div>
+        <div class="row filterRow py-2 mx-1" *ngIf="formtype =='addvendorform'">
+          <div class="col-3 py-0 mb-0">
+            <div class="ss-searchbox d-inline-block py-2 p-0">
+              <input class="form-control" type="text" placeholder="Type in name, contact person,contact number, pan no.,email to search..."
+                [(ngModel)]="searchstring_vendorFilter" style="padding:6px">
+            </div>
+          </div>
+          <div class="col-3 py-0 mb-0">
+            <span class="filterHeading mr-1">Filter By </span>
+            <select class="form-control d-inline filterSelectBox capitalize" (change)="getVendorSubCategories($event.target.value)" [(ngModel)]="category_id_vendorFilter">
+              <option value="">Select Category</option>
+              <option *ngFor="let cat of vendor_categories_arr" value="{{cat.id}}">{{cat.category_name}}</option>
+            </select>
+          </div>
+          <div class="col-3 py-0 mb-0">
+            <span class="filterHeading mr-1">Filter By </span>
+            <select class="form-control d-inline filterSelectBox capitalize" [(ngModel)]="sub_category_id_vendorFilter">
+              <option value="">Select Sub Category</option>
+              <option *ngFor="let subcat of vendor_subcategories_arr" value="{{subcat.id}}">{{subcat.category_name}}</option>
+            </select>
+          </div>
+          <div class="col-2 py-0 mb-0">
+            <span class="filterHeading mr-0">Filter By </span>
+            <select class="form-control d-inline filterSelectBox capitalize" [(ngModel)]="serviceable_city_id_vendorFilter">
+              <option value="">Select City</option>
+              <option *ngFor="let city of vendor_cities_arr" value="{{city.id}}">{{city.name}}</option>
+            </select>
+          </div>
+          <div class="col-1 py-0 mb-0">
+            <div class="planeIcon d-inline-block addCursor py-0" (click)="listVendors()">
+              <img src="assets/v3/img/White_Arrow.svg" height="33px">
+            </div>
+          </div>
+        </div>
+        <div class="row boqlist-row mx-0">
+          <form [formGroup]="addVendorForm" class="col-12">
+            <div class="row font-weight-bold m-2 row text-capitalize" *ngIf="jobelem_details">
+              {{jobelem_details.element_name}}
+            </div>
+            <div class="row">
+              <div class="col-3" *ngIf="formtype =='addvendorform'" style="overflow-y: scroll; max-height: 500px;">
+                <div class="col-12" *ngFor="let vendor of vendorlist; let v = index " class="vendor-list col-12">
+                  <span class="addCursor" (click)="openVendorForm(formtype,vendor)">{{vendor.name | replaceChar}}
+                            <img src="assets/v3/img/White_Arrow.svg" height="13px" class="planeIcon d-inline-block addCursor py-0 pull-right">
+                  </span>
+                </div>
+              </div>
+              <div class="col-8" *ngIf="is_vendor_selected">
+                <div class="col-md-4 d-inline-block">
+                  <label class="filterHeading vendorForm">Name :</label>
+                  <span class="filterHeading capitalize vendorForm">{{addVendorForm.controls['name'].value}}</span>
+
+                  <span class="filterHeading capitalize vendorForm" formControlName="contact_person"></span>
+                </div>
+                <div class="col-md-4 mt-4 d-inline-block">
+                  <label class="d-inline filterHeading vendorForm">Contact Person :</label>
+                  <span class="filterHeading capitalize vendorForm">{{addVendorForm.controls['contact_person'].value}}</span>
+                </div>
+                <div class="col-md-3 mt-4 d-inline-block">
+                  <label class="filterHeading vendorForm">Number :</label>
+                  <span class="filterHeading capitalize vendorForm">{{addVendorForm.controls['contact_number'].value}}</span>
+                </div>
+                <div class="col-md-4 mt-4 d-inline-block">
+                  <label class="filterHeading vendorForm">Tax Type
+                    <span class="text-danger">*</span> :</label>
+                  <select class="form-control filterHeading vendorForm" formControlName="tax_type">
+                    <option value="cgst_sgst">SGST & CGST</option>
+                    <option value="igst">IGST</option>
+                  </select>
+                </div>
+                <div class="col-md-4 mt-4 d-inline-block">
+                  <label class="filterHeading vendorForm">Tax Percent
+                    <span class="text-danger">*</span> :</label>
+                  <input type="number" name="" formControlName="tax_percent" class="form-control filterHeading vendorForm" min="0" max="100">
+                </div>
+                <div class="col-md-4 mt-4 tax-types d-inline-block" *ngIf="addVendorForm.value.tax_type == 'cgst_sgst'">
+                  <label class="filterHeading vendorForm">CGST
+                    <span class="text-danger">*</span> :</label>
+                  <input type="text" name="" readonly class="form-control filterHeading vendorForm cgst" min="0" max="100" value="{{setTaxTypes()}}">
+                </div>
+                <div class="col-md-4 mt-4 tax-types d-inline-block" *ngIf="addVendorForm.value.tax_type == 'cgst_sgst'">
+                  <label class="filterHeading vendorForm">SGST
+                    <span class="text-danger">*</span> :</label>
+                  <input type="text" name="" readonly class="form-control filterHeading vendorForm sgst" min="0" max="100" value="{{setTaxTypes()}}">
+                </div>
+                <div class="col-md-4 mt-4 d-inline-block">
+                  <label class="filterHeading vendorForm">Quantity
+                    <span class="text-danger">*</span> :</label>
+                  <input type="number" name="" formControlName="quantity" class="form-control filterHeading vendorForm" min="1">
+                </div>
+                <div class="col-md-4 mt-4 d-inline-block">
+                  <label class="filterHeading vendorForm">Cost
+                    <span class="text-danger">*</span> :</label>
+                  <input type="number" name="" formControlName="cost" class="form-control filterHeading vendorForm" min="1">
+                </div>
+                <div class="col-md-4 mt-4 d-inline-block">
+                  <label class="filterHeading vendorForm">Total Amount :</label>
+                  <input type="text" name="" readonly formControlName="total_amt" class="form-control filterHeading vendorForm" value="{{calculateTotalAmt()}}">
+                </div>
+                <div class="col-md-4 mt-4 d-inline-block">
+                  <label class="filterHeading vendorForm">UOM :</label>
+                  <input type="text" disabled formControlName="unit_of_measurement" class="form-control filterHeading vendorForm">
+                </div>
+                <div class="col-md-4 mt-4 d-inline-block">
+                  <input type="checkbox" name="recommended" formControlName="recommended" class="mr-2">
+                  <span class="filterHeading vendorForm">Recommended</span>
+                </div>
+                <div class="col-md-12 mt-4">
+                  <label class="filterHeading vendorForm">Description :</label>
+                  <textarea formControlName="description" class="form-control filterHeading vendorForm" rows="1"></textarea>
+                </div>
+                <div class="col-md-12 mt-4">
+                  <label class="filterHeading vendorForm">Delivery Date :</label>
+                  <input type="date" name="" formControlName="deliver_by_date" class="form-control filterHeading vendorForm">
+                </div>
+              </div>
+            </div>
+            <div class="row mt-4">
+                <div class="m-auto">
+                    <button class="rk-interalBtnColor addCursor" (click)="addVendor(addVendorForm.value)" [disabled]="!addVendorForm.valid">Save Details</button>
+                  </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="rk-ui-notification" *ngIf="successalert">
+  <span id="notificationMessageText">{{successMessage}}</span>
+  <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+<div class="rk-ui-notification err" *ngIf="erroralert">
+  <span id="notificationMessageText">{{errorMessage}}</span>
+  <a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+
+
+
+<div class="modal fade m-auto" id="viewOptionsModal" role="dialog">
+        <div class="modal-dialog modal-lg mt-5 pt-4">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="">
+                    <div class="pull-right m-2">
+                        <button type="button" class="close pull-right" data-dismiss="modal" (click)="selected_view_option=undefined;">&times;</button>
+                    </div>
+                </div>
+                <div class="modal-body">
+                        <!-- <div class="row filterRow py-2 mx-1">
+                                <div class="col-12 mb-0 pt-2 pb-2">
+                                    <span class="filterHeading mr-1">SLI OPTIONS </span>
+                                    <select class="form-control d-inline filterSelectBox capitalize" (change)="showViewOptionDetails()" [(ngModel)]="sli_options_id">
+                                        <option value="">Select SLI Options</option>
+                                        <option *ngFor="let option of sli_options_list" value="{{option.id}}">{{option.sli_name}}</option>
+                                    </select>
+                                </div>
+                        </div> -->
+                        <div class="row filterRow py-2 mx-1">
+                                <div class="tableDiv project-table">
+                                        <table class="table" *ngIf="sli_options_list && sli_options_list.length > 0">
+                                            <thead class="ss-thead">
+                                                <tr  class="viewOptions">
+                                                    <th class="firstTh">SLI Name</th>
+                                                    <th>Price</th>
+                                                    <th>Unit</th>
+                                                    <th class="lastTh"> </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <ng-container *ngIf="sli_options_list && sli_options_list.length > 0">
+                                                    <tr *ngFor="let option of sli_options_list">
+                                                    <td>{{option.sli_name}}</td>
+                                                    <td>{{option.rate}}</td>
+                                                    <td>{{option.unit}}</td>
+                                                    <td>
+                                                        <button (click)="changeViewOption(option.id)" class="btn category-btn d-block m-auto mt-5 p-2 rounded">Select</button>
+                                                    </td>
+                                                </tr>
+                                                </ng-container>
+                                            </tbody>
+                                        </table>
+                                </div>
+                                <ng-container class="mx-auto" *ngIf="sli_options_list && sli_options_list.length === 0">
+                                        <div class="bg-white boq-img col-12 d-inline-block text-center">
+                                                <img src="../../../assets/img/desktop.png">
+                                        </div>
+                                        <p class="col-12 nothing-to-show">Nothing to show...</p>
+                            </ng-container>
+                        </div>
+                <div *ngIf="selected_view_option">
+                </div>
+                </div>
+            </div>
+        </div>
+</div>
+
+
+<!--
+<div class="">
+  <div class="pt-4 w-100">
+    <div class="">
+      <div class="col-12 not-found" *ngIf="project_list && project_list.length==0 ">
+              <div class="boq-img text-center">
+                  <img src="../../../assets/img/desktop.png">
+              </div>
+              <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing to show...</p>
+      </div>
+      <div class="col-12" *ngIf="project_list && project_list.length>0">
+          <div class="tableDiv project-table">
+            <table class="table">
+              <thead class="ss-thead">
+                <tr>
+                  <th class="firstTh">PROJECT ID</th>
+                  <th>LEAD NAME</th>
+                  <th> DESIGNER </th>
+                  <th>COMMUNITY MANAGER</th>
+                  <th class="lastTh">SELECT VENDORS</th>
+                </tr>
+              </thead>
+              <tbody class="ss-tbody" *ngFor="let obj of project_list | paginate: { itemsPerPage: per_page, currentPage: current_page, totalItems: total_page  }; let i = index"
+                    [attr.data-index]="i">
+                <tr>
+                  <td>{{obj.id}}</td>
+                  <td class="capitalize">{{ obj.lead_details.name }}</td>
+                  <td class="capitalize">{{obj.designer_datails.name}}
+                    <br>
+                    <span class="email-chng">({{obj.designer_datails.email }})</span>
+                  </td>
+                  <td class="capitalize">{{obj.cm_details.name}}
+                    <br>
+                    <span class="email-chng">({{ obj.cm_details.email }})</span>
+                  </td>
+                  <td>
+                    <button class="category-btn rounded addCursor py-1 px-2" [ngClass]="{'active': obj.expanded}" (click)="openVendorCollapsible(obj); toggleRow(obj,i)" [disabled]="obj.expanded">Select Vendors</button>
+                  </td>
+                </tr>
+                <tr *ngIf="obj.expanded">
+                  <td colspan="5">
+                    <div class="row filterRow py-2 mx-1">
+                      <div class="col-3 py-0 mb-0">
+                        <div class="ss-searchbox d-inline-block py-2">
+                          <i class="fa fa-search"></i>
+                          <input class="form-control" type="text" placeholder="Type in name, contact person,contact number, pan no.,email to search..." [(ngModel)]="searchstring_vendorFilter" style="width: 91%">
+                        </div>
+                      </div>
+                      <div class="col-3 py-0 mb-0">
+                        <span class="filterHeading mr-1">Filter By </span>
+                        <select class="form-control d-inline filterSelectBox capitalize" (change)="getVendorSubCategories($event.target.value)" [(ngModel)]="category_id_vendorFilter">
+                          <option value="">Select Category</option>
+                          <option *ngFor="let cat of vendor_categories_arr" value="{{cat.id}}">{{cat.category_name}}</option>
+                        </select>
+                      </div>
+                      <div class="col-3 py-0 mb-0">
+                        <span class="filterHeading mr-1">Filter By </span>
+                        <select class="form-control d-inline filterSelectBox capitalize" [(ngModel)]="sub_category_id_vendorFilter">
+                          <option value="">Select Sub Category</option>
+                          <option *ngFor="let subcat of vendor_subcategories_arr" value="{{subcat.id}}">{{subcat.category_name}}</option>
+                        </select>
+                      </div>
+                      <div class="col-2 py-0 mb-0">
+                        <span class="filterHeading mr-0">Filter By </span>
+                        <select class="form-control d-inline filterSelectBox capitalize" [(ngModel)]="serviceable_city_id_vendorFilter">
+                          <option value="">Select City</option>
+                          <option *ngFor="let city of vendor_cities_arr" value="{{city.id}}">{{city.name}}</option>
+                        </select>
+                      </div>
+                      <div class="col-1 py-0 mb-0">
+                        <div class="planeIcon d-inline-block addCursor py-0" (click)="listVendors()">
+                          <img src="assets/v3/img/White_Arrow.svg" height="33px">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row boqlist-row mx-0">
+                      <!--boq list col start-->
+<!-- <div class="col-3">
+                        <table class="tableBodyScroll">
+                          <thead>
+                            <tr>
+                              <th class="rounded-top">BOQ</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let boq of boq_list">
+                              <td (click)="selectBoq(boq, $event.target)" class="addCursor boqSpanText" [ngClass]="{'active-text':(selected_boq.id==boq.id)}">{{boq.reference_number}}</td>
+                            </tr>
+                            <tr *ngIf="boq_list.length==0">
+                              <td>No Boq</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div> -->
+<!--boq list col end-->
+<!--subline item list col start-->
+<!-- <div class="col-3" *ngIf="selected_boq">
+                        <table class="table tableBodyScroll">
+                          <thead>
+                            <tr>
+                              <th colspan="1" class="rounded-top">SUB LINE ITEMS</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let item of sublineitems_arr">
+                              <td class="text-left">
+                                <input type="radio" value="{{item.id}}" id="text{{item.id}}" [(ngModel)]="selected_boq_sublineitem" (change)="getDetailsOfJobelement(item.id)" [checked]="jobelem_details && item.id==jobelem_details.id"><label for="text{{item.id}}" class="mr-4 pt-1"></label>
+                                <span>{{item.element_name}}</span>
+                              </td>
+                            </tr>
+                            <tr *ngIf="sublineitems_arr.length==0">
+                              <td>No sub line item added</td>
+                            </tr>
+                          </tbody>
+                        </table>
+
+                        <table class="mt-3 table tableBodyScroll">
+                          <thead>
+                            <tr>
+                              <th colspan="1" class="rounded-top">OTHER ITEMS</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let item1 of otheritems_arr">
+                              <td class="text-left">
+                                <input type="radio" value="{{item1.id}}" id="text{{item1.id}}" [(ngModel)]="selected_boq_sublineitem" (change)="getDetailsOfJobelement(item1.id)" [checked]="jobelem_details && item1.id==jobelem_details.id"><label for="text{{item1.id}}" class="mr-4 pt-1"></label>
+                                <span>{{item1.element_name}}</span>
+                              </td>
+                            </tr>
+                            <tr *ngIf="otheritems_arr.length==0">
+                              <td>No other item added</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div> -->
+<!--subline item list col end-->
+<!--vendor list start-->
+<!-- <div class="col-5">
+                        <table class="table tableBodyScroll">
+                          <thead>
+                            <tr>
+                              <th colspan="4" class="rounded-top">VENDORS LIST</th>
+                            </tr>
+                            <tr style="background: #f5f3f3;">
+                              <td>SR NO.</td>
+                              <td>NAME</td>
+                              <td>CONTACT PERSON</td>
+                              <td></td>
+                            </tr>
+                          </thead>
+                          <tbody>
+
+                            <tr *ngFor="let vendor of vendorlist; let i1=index;">
+                              <td>{{i1+1}}</td>
+                              <td class="capitalize">{{vendor.name}}</td>
+                              <td class="capitalize">{{vendor.contact_person}}</td>
+                              <td>
+                                <ng-container  *ngIf="selected_boq_sublineitem"><button class="addVendorDetailsBtn addCursor" data-toggle="modal" data-target="#addVendorModal" (click)="openVendorForm('addvendorform',vendor)"><i class="fa fa-plus"></i></button></ng-container>
+                              </td>
+                            </tr>
+                            <tr *ngIf="vendorlist.length==0">
+                              <td>No Vendor</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div> -->
+<!--vendor list end-->
+<!-- <div class="col-1 py-0">
+                         <button type="button" class="close addCursor pull-left collapse-close-btn" data-dismiss="modal" (click)="closeBoqCollapsible(); toggleRow(obj,i)" style="height: 38px;">&times;</button>
+                      </div>
+                    </div>
+                    <div class="row boqlist-row mx-0" *ngIf="jobelem_details">
+                      <div class="col-3"></div>
+                      <div class="col-6">
+                        <table class="table tableBodyScroll">
+                          <thead>
+                            <tr>
+                              <th colspan="5" class="rounded-top">ADDED VENDORS </th>
+                            </tr>
+                            <tr style="background: #f5f3f3;">
+                              <td>SR NO.</td>
+                              <td>NAME</td>
+                              <td>CONTACT PERSON</td>
+                              <td>RECOMMENDED</td>
+                              <td></td>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let item2 of jobelem_details.job_element_vendor_details; let k=index;">
+                              <td>{{k+1}}</td>
+                              <td class="capitalize">{{item2.vendor_name}}</td>
+                              <td class="capitalize">{{item2.vendor_contact_person}}</td>
+                              <td class="capitalize">
+                                <span *ngIf="item2.recommended"> Yes</span>
+                                <span *ngIf="!item2.recommended">No</span>
+                              </td>
+                              <td>
+                                <i class="ion-android-more-vertical ss-3-dot-drop" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"></i>
+                                <div class="dropdown-menu pt-2 pb-2" style="font-size: 14px;">
+                                  <a class="dropdown-item addCursor" (click)="deleteVendor(item2.vendor_id)">Delete</a>
+                                  <a class="dropdown-item addCursor" (click)="openVendorForm('updatevendorform',item2)" data-toggle="modal" data-target="#addVendorModal">Edit</a>
+                                </div>
+                              </td>
+                            </tr>
+                            <tr *ngIf="jobelem_details.job_element_vendor_details.length==0">
+                              <td>No Vendors Added</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="text-center" *ngIf="project_list && project_list.length >0">
+              <pagination-controls autoHide="true" (pageChange)="current_page = getProjectList($event)"></pagination-controls>
+            </div>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" tabindex="-1" role="dialog" id="addVendorModal" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-12">
+            <button type="button" class="close addCursor" data-dismiss="modal" (click)="closeVendorModal()">&times;</button>
+          </div>
+        </div>
+        <h5 class="text-center">Other Details</h5>
+        <form [formGroup]="addVendorForm">
+          <div class="row">
+            <div class="col-md-12">
+              <label class="filterHeading vendorForm">Name :</label>
+              <input type="text" name="" readonly formControlName="name" class="form-control filterHeading capitalize vendorForm">
+            </div>
+            <div class="col-md-12 mt-4">
+              <label class="filterHeading vendorForm">Contact Person :</label>
+              <input type="text" name="" readonly formControlName="contact_person" class="form-control filterHeading vendorForm capitalize">
+            </div>
+            <div class="col-md-6 mt-4">
+              <label class="filterHeading vendorForm">Tax Type<span class="text-danger">*</span> :</label>
+              <select class="form-control filterHeading vendorForm" formControlName="tax_type">
+                <option value="cgst_sgst">SGST & CGST</option>
+                <option value="igst">IGST</option>
+              </select>
+            </div>
+            <div class="col-md-6 mt-4">
+              <label class="filterHeading vendorForm">Tax Percent<span class="text-danger">*</span> :</label>
+              <input type="number" name="" formControlName="tax_percent" class="form-control filterHeading vendorForm" min="0" max="100">
+            </div>
+            <div class="col-md-6 mt-4 tax-types">
+              <label class="filterHeading vendorForm">CGST<span class="text-danger">*</span> :</label>
+              <input type="text" name="" readonly class="form-control filterHeading vendorForm cgst" min="0" max="100" value="{{setTaxTypes()}}">
+            </div>
+            <div class="col-md-6 mt-4 tax-types">
+              <label class="filterHeading vendorForm">SGST<span class="text-danger">*</span> :</label>
+              <input type="text" name="" readonly class="form-control filterHeading vendorForm sgst" min="0" max="100" value="{{setTaxTypes()}}">
+            </div>
+            <div class="col-md-6 mt-4">
+              <label class="filterHeading vendorForm">Quantity<span class="text-danger">*</span> :</label>
+              <input type="number" name="" formControlName="quantity" class="form-control filterHeading vendorForm" min="1">
+            </div>
+            <div class="col-md-6 mt-4">
+              <label class="filterHeading vendorForm">Cost<span class="text-danger">*</span> :</label>
+              <input type="number" name="" formControlName="cost" class="form-control filterHeading vendorForm" min="1">
+            </div>
+            <div class="col-md-6 mt-4">
+              <label class="filterHeading vendorForm">Number :</label>
+              <input type="text" name="" readonly formControlName="contact_number" class="form-control filterHeading vendorForm">
+            </div>
+            <div class="col-md-6 mt-4">
+              <label class="filterHeading vendorForm">Total Amount :</label>
+              <input type="text" name="" readonly formControlName="total_amt" class="form-control filterHeading vendorForm" value="{{calculateTotalAmt()}}">
+            </div>
+            <div class="col-md-6 mt-4">
+              <label class="filterHeading vendorForm">Delivery Date :</label>
+              <input type="date" name="" formControlName="deliver_by_date" class="form-control filterHeading vendorForm">
+            </div>
+            <div class="col-md-6 mt-4">
+              <label class="filterHeading vendorForm">UOM :</label>
+              <input type="text" formControlName="unit_of_measurement" class="form-control filterHeading vendorForm">
+            </div>
+            <div class="col-md-12 mt-4">
+              <label class="filterHeading vendorForm">Description :</label>
+              <textarea formControlName="description" class="form-control filterHeading vendorForm" rows="1"></textarea>
+            </div>
+            <div class="col-md-6 mt-4">
+              <input type="checkbox" name="recommended" formControlName="recommended" class="mr-2"><span class="filterHeading vendorForm">Recommended</span>
+            </div>
+            <div _ngcontent-c8="" class="col-md-12 mt-4 text-right">
+              <button class="rk-interalBtnColor addCursor" (click)="addVendor(addVendorForm.value)" [disabled]="!addVendorForm.valid">Save Details</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="rk-ui-notification" *ngIf="successalert">
+  <span id="notificationMessageText">{{successMessage}}</span>
+  <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+<div class="rk-ui-notification err" *ngIf="erroralert">
+  <span id="notificationMessageText">{{errorMessage}}</span>
+  <a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div> -->

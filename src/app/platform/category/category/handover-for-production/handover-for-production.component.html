@@ -1,0 +1,126 @@
+<!--Messages-->
+<div class="rk-ui-notification" *ngIf="successalert">
+  <span id="notificationMessageText">{{successMessage}}</span>
+  <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+<div class="rk-ui-notification err" *ngIf="erroralert">
+  <span id="notificationMessageText">{{errorMessage}}</span>
+  <a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+
+
+
+<!--Table-->
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-lg-12 col-md-12 col-sm-12" *ngIf="project_list && project_list.length > 0">
+			<table class="table mb-1">
+				<thead>
+					<tr>
+						<th class="first_th table_head"></th>
+						<th class="table_head" style="width: 5rem;">Lead ID</th>
+						<th class="table_head tableth10rem">Client</th>
+						<th class="table_head text-center">Designer + CM</th>
+						<th class="table_head text-center">First Request Date</th>
+						<th class="table_head text-center">Latest Request Date</th>
+						<th class="table_head text-center">Additional Files Requested</th>
+						<th class="last_th table_head"></th>
+						<th class="last_th"></th>
+					</tr>
+
+					<!--First row-->
+					<ng-container *ngFor="let obj of project_list | paginate: { itemsPerPage: per_page, currentPage: current_page, totalItems: total_page  };let i = index">
+						<tr class="bg-white addCursor">
+							<td class="thBorderLeftRadius pt-4">
+								<div *ngIf = "obj.new_handover_file == true">
+									<div class="newIndicator ml-2 mt-1"></div>
+								</div>
+							</td>
+							<td class="fontsize14 pt-4">{{obj.lead_id}}</td>
+							<td class="font-weight-bold fontsize14 text-capitalize pt-4">{{obj.client_name}}</td>
+							<td class="fontsize12 text-center text-capitalize">{{obj.designer }}/<br>{{obj.community_manager}}</td>
+							<td class="fontsize14 text-center">{{obj.first_request_date | date:'dd/MM/yyyy - h:mm a'}}</td>
+							<td class="fontsize14 text-center">{{obj.last_request_date | date:'dd/MM/yyyy - h:mm a'}}</td>
+							<td class="fontsize14 text-center pt-4">{{obj.additional_file_requested}}</td>
+							<td>
+								<div>
+									<button class="btn btn-warning request-btn mt-2" data-toggle="modal" data-target="#requestModal" (click) = "leadID(obj.lead_id,obj.id);">Request Files</button> 
+								</div>
+							</td>
+							<td class="thBorderRightRadius">
+								<i class="fa fa-angle-down ml-4 mt-1"  (click)="toggleRow(obj,i)" style="font-size:24px" *ngIf="!obj.expanded"></i>
+								<i class="fa fa-angle-up ml-4 mt-1"  (click)="toggleRow(obj,i)" style="font-size:24px" *ngIf="obj.expanded"></i>
+							</td>
+						</tr>
+
+						<tr>
+							<td colspan="11" class="p-0 rowpadding">
+								<div class="bg-white w-100" style="display: inline-flex;">
+									<div class="fontsize12 ml-4 mt-2 mr-4" style="min-width:45%;">
+										<span style="font-weight: 500">Address &nbsp;:&nbsp;</span><span>{{obj.project_address}}</span>
+									</div>
+									<div class="" style="min-width:48%;">
+										<div class="btn fontsize12 mt-2 mb-2 " [ngClass]="{'border-success btn-green': obj.handover_dashboard.accepted_acceptance_files == obj.handover_dashboard.total_acceptance_files, 'border-danger btn-red':obj.handover_dashboard.accepted_acceptance_files < obj.handover_dashboard.total_acceptance_files }" (click) = "slectBtn('acceptance')">Acceptance<br><span>{{obj.handover_dashboard.accepted_acceptance_files}}</span>/<span>{{obj.handover_dashboard.total_acceptance_files}}</span></div>
+										<div class="btn fontsize12 ml-1 mt-2 mb-2 " [ngClass]="{'border-success btn-green': obj.handover_dashboard.splited_line_items == obj.handover_dashboard.total_line_items, 'border-danger btn-red':obj.handover_dashboard.splited_line_items < obj.handover_dashboard.total_line_items }" (click) = "slectBtn('split')">Split<br><span>{{obj.handover_dashboard.splited_line_items}}</span>/<span>{{obj.handover_dashboard.total_line_items}}</span></div>
+										<div class="btn fontsize12 ml-1 mt-2 mb-2 " [ngClass]="{'border-success btn-green': obj.handover_dashboard.production_drawings_count == obj.handover_dashboard.total_line_items, 'border-danger btn-red':obj.handover_dashboard.production_drawings_count < obj.handover_dashboard.total_line_items }">Production Drawing<br><span>{{obj.handover_dashboard.production_drawings_count}}</span>/<span>{{obj.handover_dashboard.total_line_items}}</span></div>
+										<div class="btn fontsize12 ml-1 mt-2 mb-2 " [ngClass]="{'border-success btn-green': obj.handover_dashboard.bom_uploaded == obj.handover_dashboard.total_line_items_in_bom, 'border-danger btn-red':obj.handover_dashboard.bom_uploaded < obj.handover_dashboard.total_line_items_in_bom }">BOM<br><span>{{obj.handover_dashboard.bom_uploaded}}</span>/<span>{{obj.handover_dashboard.total_line_items_in_bom}}</span></div>
+										<div class="btn fontsize12 ml-1 mt-2 mb-2 " [ngClass]="{'border-success btn-green': obj.handover_dashboard.send_to_factory > 0, 'border-secondary btn-yellow':obj.handover_dashboard.send_to_factory == 0 }">Send to Factory<br><span>{{obj.handover_dashboard.send_to_factory}}</span></div>
+								  </div>
+								</div>
+							</td>
+						</tr>
+            <tr *ngIf="obj.expanded">
+							<td colspan="11" class="p-0">
+								<!--collapse-1 start here-->
+								<div class="row mx-0">
+				        	<div class="w-100">
+				        	 	<app-acceptance  [project_id]='project_id'></app-acceptance>
+				        	</div>
+				        </div>
+							</td>
+						</tr>
+				    </ng-container>
+				</thead>
+			</table>
+			<div class="text-center" *ngIf="project_list && project_list.length >0">
+				<pagination-controls autoHide="true" (pageChange)="current_page = getProjectList($event)"></pagination-controls>
+			</div>
+		</div>
+		<div class=" col-12 pb-3 px-5" *ngIf="project_list && project_list.length == 0">
+            <div class="boq-img text-center">
+              <img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+            </div>
+            <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing to show...</p>
+        </div>
+	</div>
+</div>
+
+
+
+
+
+
+<!-- The Request Modal -->
+<div class="modal" id="requestModal">
+  <div class="modal-dialog">
+    <div class="modal-content requestModal">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title pl-3 pt-4">Request Additional Files</h4>
+        <button type="button" class="close requestloseBtn" data-dismiss="modal" style="font-size: 31px;">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <form [formGroup]="request" class="text-center">
+				  <textarea formControlName = "remark_description" rows="6" cols="60" name="comment" placeholder="Enter Comments for Additional Files..">
+				  </textarea>
+				  <br>
+				  <button class="btn btn-pink requestDonebtn mt-2" type="submit" [disabled]="!request.valid" (click) = "sendRequest()">Done</button>
+				</form>
+      </div>
+    </div>
+  </div>
+</div>
+

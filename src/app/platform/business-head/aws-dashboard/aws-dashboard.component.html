@@ -1,0 +1,269 @@
+<div class="row">
+  <div class="col-sm-12 bg-white">
+    <nav class="navbar navbar-expand-lg navbar-light">
+      <a class="navbar-brand">Arrivae Weekly Statistics</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+
+        </ul>
+        <form class="form-inline my-2 my-lg-0">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+              <a class="nav-link active" (click)="selectNavBar('graph_nav')" [ngClass]="{'active': nav_select == 'graph_nav'}">Graph View</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" (click)="selectNavBar('fhi_nav')" [ngClass]="{'active': nav_select == 'fhi_nav'}" [routerLink]="['/aws/fhi-data']" routerLinkActive='active'>FHI Data</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" (click)="selectNavBar('mkw_nav')" [ngClass]="{'active': nav_select == 'mkw_nav'}" [routerLink]="['/aws/mkw-data']" routerLinkActive='active'>MKW Data</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" (click)="selectNavBar('order_book')" [ngClass]="{'active': nav_select == 'order_book'}" [routerLink]="['/aws/order-book']" routerLinkActive='active'>Order Book</a>
+            </li>
+
+          </ul>
+        </form>
+      </div>
+    </nav>
+    
+  </div>
+
+</div>
+<div class="rk-ui-notification err" *ngIf="erroralert"  style="z-index: 10000;">
+<span id="notificationMessageText">{{errorMessage}}</span>
+<a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+<div class="rk-ui-notification" *ngIf="successalert"  style="z-index: 10000;">
+<span id="notificationMessageText">{{successMessage}}</span>
+<a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+<div class="container">
+  <div class="row">
+    <div class="col-md-9">
+      <span class="section1">Overall Statistics Per Week </span>
+    </div>
+    <div class="col-md-3">
+      <a class="clear_all float-left text-danger cursor-pointer" (click)="ClearFilterData()"> Clear All FILTERS</a>
+      <!-- <a  class="clear_all float-right text-danger cursor-pointer" (click)="FilterData()" style="margin-right: 4rem">Filter</a> -->
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-3 filter1">
+      <span class="fltype"> Filter</span>
+      <div class="floptions">
+        <button type="button" class="btn  active btn-sm col_buttons" name="button" (click)="FilterByData('overall_data')" [ngClass]="{'active': filter_by_data == 'overall_data'}">Overall Data</button>
+        <button type="button" class="btn  btn-sm col_buttons" name="button" (click)="FilterByData('fhi_data')" [ngClass]="{'active': filter_by_data == 'fhi_data'}">FHI Data</button>
+        <button type="button" class="btn  btn-sm col_buttons" name="button" (click)="FilterByData('mkw_data')" [ngClass]="{'active': filter_by_data == 'mkw_data'}">MKW Data</button>
+      </div>
+    </div>
+    <div class="col-md-3 filter1">
+      <span class="fltype">Filter by TYPES</span>
+      <div class="floptions">
+        <button type="button" class="btn  btn-sm col_buttons" name="button" (click)="FilterByType('all')" [ngClass]="{'active': filter_by_type == 'all'}">All</button>
+        <button type="button" class="btn  btn-sm col_buttons" name="button" (click)="FilterByType('digital')" [ngClass]="{'active': filter_by_type == 'digital'}">Digital</button>
+        <button type="button" class="btn  btn-sm col_buttons" name="button" (click)="FilterByType('physical')" [ngClass]="{'active': filter_by_type == 'physical'}">Physical</button>
+      </div>
+    </div>
+    <div class="col-md-3 filter1">
+      <span class="fltype">Filter by DATE</span>
+      <span class="text-danger pull-right text-bold cursor-pointer mt-1" (click)="ClearDateFilter()" style="font-size: 10px">Clear</span>
+      <div class="floptions d-flex">
+        <input [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1" placeholder="From Date"  class=" rk-form-fontsize d-block rounded py-1 border" [(ngModel)]="from_date">
+        <owl-date-time #dt1 [pickerType]="'calendar'"></owl-date-time> <span style="font-weight:lighter;"> to </span>
+        <input [owlDateTime]="dt2" [owlDateTimeTrigger]="dt2" placeholder="To Date"  class=" rk-form-fontsize d-block  rounded py-1 border" [(ngModel)]="to_date" [min]="from_date">
+        <owl-date-time #dt2 [pickerType]="'calendar'" ></owl-date-time>
+              
+      </div>
+      <button class="btn btn-sm go-filter" (click)="submitByDate()">Submit</button>
+    </div>
+
+    <div class="col-md-2 filter1">
+      <span class="fltype">Filter by CITY</span>
+      <angular2-multiselect [data]="city_dropdownList" [(ngModel)]="selectedCityItems"
+      [settings]="city_dropdownSettings"
+      (onSelect)="onItemSelect($event,'city',0)"
+      (onDeSelect)="OnItemDeSelect($event,'city',0)"
+      (onSelectAll)="onSelectAll($event)"
+      (onDeSelectAll)="onDeSelectAll($event)"></angular2-multiselect>
+    </div>
+  </div>
+
+  <div class="clearfix">
+    <br>
+  </div>
+<div class="row">
+
+  <div class="col-md-9 ">
+    <div class="row">
+      <div class="col-md-3"  style="padding-right:1px;padding-left:2px;">
+        <div class="card ">
+          <div class="card-body text-center">
+            <span class="lead-count">Qualified Leads</span>
+            <div class="" style="display: block;height: 64px" *ngIf="doughnutChartData">
+                <canvas baseChart
+                  [data]="doughnutChartData"
+                  [labels]="doughnutChartLabels"
+                  [options]="doughChartOptions"
+                  [colors]="circleColors"
+                  [chartType]="doughnutChartType"
+                  id="firstChart"
+                  (chartHover)="chartHovered($event)"
+                  (chartClick)="chartClicked($event)"></canvas>
+              </div>
+              <div class="clearfix">
+                <br>
+              </div>
+              <div class="">
+                <span class="lead-count" *ngIf="card_data && quali_t != 0">Target:{{ card_data.qualified_leads_target }}  Leads</span>
+        </div>
+        </div>
+        </div>
+      </div>
+      <div class="col-md-3"  style="padding-right:1px;padding-left:2px;">
+        <div class="card ">
+          <div class="card-body text-center">
+            <span class="lead-count">1st Meeting</span>
+              <div class="" style="display: block;height: 64px" *ngIf="doughnutChartDataMeeting">
+                  <canvas baseChart
+                    [data]="doughnutChartDataMeeting"
+                    [labels]="doughnutChartLabelsOne"
+                    [options]="doughChartOptions"
+                    [colors]="circleMeetingColors"
+                    [chartType]="doughnutChartType"
+                    id="secondChart"
+                    (chartHover)="chartHovered($event)"
+                    (chartClick)="chartClicked($event)"></canvas>
+                </div>
+              <div class="clearfix">
+                <br>
+              </div>
+              <div class="">
+                <span class="lead-count" *ngIf="card_data && meeting_t != 0">Target:{{ card_data.first_meeting_target }}% of FirstMeeting</span>
+        </div>
+        </div>
+        </div>
+      </div>
+      <div class="col-md-3"  style="padding-right:1px;padding-left:2px;">
+        <div class="card ">
+          <div class="card-body text-center">
+            <span class="lead-count">BOQs Shared</span>
+            <div class="" style="display: block;height: 64px" *ngIf="doughnutChartDataBOQ">
+              <canvas baseChart
+                [data]="doughnutChartDataBOQ"
+                [labels]="doughnutChartLabelsTwo"
+                [options]="doughChartOptions"
+                [colors]="circleBOQColors"
+                [chartType]="doughnutChartType"
+                id="thirdChart"
+                (chartHover)="chartHovered($event)"
+                (chartClick)="chartClicked($event)"></canvas>
+              </div>
+              <div class="clearfix">
+                <br>
+              </div>
+              <div class="">
+                <span class="lead-count" *ngIf="card_data && shared_t != 0">Target: {{ card_data.boq_shared_target }}% of BOQ Shared</span>
+              </div>
+        </div>
+        </div>
+      </div>
+      <div class="col-md-3"  style="padding-right:1px;padding-left:2px;">
+        <div class="card ">
+          <div class="card-body text-center">
+            <span class="lead-count">Closure</span>
+<br>          <div class="" style="display: block;height: 64px" *ngIf="doughnutChartDataBOQ">
+              <canvas baseChart
+                [data]="doughnutChartDataClosure"
+                [labels]="doughnutChartLabelsThree"
+                [options]="doughChartOptions"
+                [colors]="circleClosureColors"
+                [chartType]="doughnutChartType"
+                id="fourthChart"
+                (chartHover)="chartHovered($event)"
+                (chartClick)="chartClicked($event)"></canvas>
+              </div>
+              <div class="clearfix">
+                <br>
+              </div>
+              <div class="">
+                <span class="lead-count" *ngIf="card_data && closer_t != 0 ">Target: {{ card_data.closure_target }}% of Closure</span>
+              </div>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3" style="padding-right:68px;">
+    <div class="filter1" style="padding:9px;">
+      <span class="fltype">Filter by CM</span>
+      <div class="floptions">
+        <angular2-multiselect [data]="cm_dropdownList" [(ngModel)]="selectedCmItems"
+          [settings]="cm_dropdownSettings"
+          (onSelect)="onItemSelect($event,'cm',1)"
+          (onDeSelect)="OnItemDeSelect($event,'cm',1)"
+          (onSelectAll)="onSelectAll($event)"
+          (onDeSelectAll)="onDeSelectAll($event)"></angular2-multiselect>
+      </div>
+    </div>
+    <div class="filter1" style="padding:9px;">
+      <span class="fltype">Filter by Designer</span>
+      <div class="floptions">
+        <angular2-multiselect [data]="designer_dropdownList" [(ngModel)]="selectedDesignerItems"
+        [settings]="designer_dropdownSettings"
+        (onSelect)="onItemSelect($event,'designer',2)"
+        (onDeSelect)="OnItemDeSelect($event,'designer',2)"
+        (onSelectAll)="onSelectAll($event)"
+        (onDeSelectAll)="onDeSelectAll($event)"></angular2-multiselect>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+
+<div class="row mt-4 justify-content-center pr-5" *ngIf="barChartData && barChartLabels">
+  <div class="col-12">
+
+    <div class="row px-2 mb-2">
+      <div class="col-sm-6">
+        <span class="pull-left stat-check">OverAll Statistics For 10 weeks</span>
+        
+        
+      </div>
+      <div class="col-sm-6">
+        
+        <div class="floptions pull-right mr-4" style="width: 30%">
+          <ng-select  (change)="setWeekView($event)" [ngModel]="number_of_weeks" placeholder="Select Week View">
+            <ng-option value="10" >10 Week View</ng-option>
+            <ng-option value="5" selected>5 Week View </ng-option>
+        </ng-select>
+        </div>
+        
+      </div>
+      
+    </div>
+    
+  </div>
+  <div class="col-11 shadow bg-white">
+    <div style="display: block" class="mt-5" *ngIf="barChartLabels.length != 0">
+      <canvas baseChart
+        [datasets]="barChartData"
+        [labels]="barChartLabels"
+        [colors]="lineChartColors"
+        [options]="barChartOptions"
+        [legend]="barChartLegend"
+        [chartType]="barChartType"
+        id="barChartCS"
+        (chartHover)="chartHovered($event)"
+        (chartClick)="chartClicked($event)">
+          
+      </canvas>
+    </div>
+    
+  </div>
+  
+</div>

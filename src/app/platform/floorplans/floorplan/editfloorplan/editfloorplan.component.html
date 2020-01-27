@@ -1,0 +1,50 @@
+<div class="row title">
+  <h3>Dashboard / <span [routerLink]="['/projects/view/'+id]" routerLinkActive="active" [queryParams]="{customer_status: customer_status}" class="addCursor">Project</span> / <span [routerLink]="['/projects/'+id+'/floorplan/view/'+fpid]" routerLinkActive="active" [queryParams]="{customer_status: customer_status}"  class="addCursor">Floorplan</span> / <span>Edit Floor Plan</span></h3>
+</div>
+<div class="col-12" *ngIf="erroralert">
+	<div class="alert-box grid-100 col-sm-10" *ngIf="errorMessage">
+		<div class="alert alert-danger mt-3 text-center">
+			<a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a>
+			{{errorMessage}}
+		</div>
+	</div>
+</div>
+<div class="col-12" *ngIf="successalert">
+	<div class="alert-box grid-100" *ngIf="successMessage">
+		<div class="alert alert-success mt-3 text-center">
+			<a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+			{{successMessage}}
+		</div>
+	</div>
+</div>
+<div class="row inputForm bg_dashboard justify-content-center">
+  <div class="col-sm-10 col-md-10 col-lg-10">
+    <div class="card text-center">
+      <form (ngSubmit)="onSubmit(editFloorplanForm.value); editFloorplanForm.reset()" #editFloorplanForm="ngForm" class="form-horizontal">
+        <div class="card-body card_main">
+          <div class="row justify-content-center">
+          <div class="col-sm-10 col-md-6">
+              <input type="text" class="form-control" name="name"  required [(ngModel)]="name">
+              <i class="fa fa-pencil float-right fontAwesomeIcon" aria-hidden="true"></i>
+              <input type="text" class="form-control" name="details" [(ngModel)]="details" ngModel/>
+              <i class="fa fa-pencil float-right fontAwesomeIcon" aria-hidden="true"></i>
+
+           </div>
+           <div class="col-sm-10 col-md-6">
+              <div class="fileinput-new thumbnail">
+                  <img src={{attachment_file_fp}} alt="..." width="400px;">
+              </div>
+
+              <input type="file" class="mb-3 mt-3" (change)="onChange($event)" name="attachment_file" ngModel #attachment_file="ngModel">
+
+           </div>
+          <div class="col-md-10">
+            <!-- <button class="button button_emi pull-left"> Back</button> -->
+            <button type="submit" class="button button_emi pull-right" [disabled]="!editFloorplanForm.valid">Update</button>
+          </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

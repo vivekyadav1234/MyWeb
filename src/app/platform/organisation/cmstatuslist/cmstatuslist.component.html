@@ -1,0 +1,84 @@
+
+<div class="row ss-top-menu">
+  <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-xs-3">
+    <span class="ss-text-light" style="vertical-align: -webkit-baseline-middle;">Dashboard <i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;">List of CM</span>
+  </div>
+  <div class="col-xl-5 col-lg-5 col-md-5 col-sm-5 col-xs-5">
+    <div class="ss-searchbox">
+      <i class="fa fa-search"></i>
+      <input class="form-control" type="text" placeholder="Type in name, email, lead type, lead source, campaign to search..." #search (keyup)="0">
+    </div>
+  </div>
+</div>
+<!-- <div class="rk-ui-notification" *ngIf="successalert">
+  <span id="notificationMessageText">{{successMessage}}</span>
+  <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div> -->
+<!-- <div class="rk-firstRow row">
+  <div class="col-12" *ngIf="erroralert">
+    <div class="alert-box grid-100" *ngIf="errorMessage">
+      <div class="alert alert-danger mt-3 text-center">
+        <a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a>
+        {{errorMessage}}
+      </div>
+    </div>
+  </div>
+  <div class="col-12" *ngIf="successalert">
+    <div class="alert-box grid-100" *ngIf="successMessage">
+      <div class="alert alert-success mt-3 text-center">
+        <a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+        {{successMessage}}
+      </div>
+    </div>
+  </div>
+</div> -->
+
+<div style="margin-top: 1rem" class="container-fluid container-set">
+  <div class="row" style="padding: 16px;">
+    <div class="col-md-12">
+      <div class="tableDiv">
+        <table class="table">
+          <thead>
+            <tr>
+              <th class="text-center firstTh">#</th>
+              <th (click)="sort('name')">Name <i class="fa ml-2" [ngClass]="{'fa-sort': column != 'name', 'fa-sort-asc': (column == 'name' && !isDesc), 'fa-sort-desc': (column == 'name' && isDesc) }" aria-hidden="true"></i></th>
+              <th (click)="sort('email')">Email <i class="fa ml-2" [ngClass]="{'fa-sort': column != 'email', 'fa-sort-asc': (column == 'email' && !isDesc), 'fa-sort-desc': (column == 'email' && isDesc) }" aria-hidden="true"></i></th>
+              <th>Contact</th>
+              <th class="lastTh text-center">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngIf="(cmList.users | category: search.value).length==0">
+              <td colspan="5" class="text-center">No Match</td>
+            </tr>
+            <ng-container *ngIf="cmList.users.length>0">
+            <tr *ngFor="let user of cmList.users | category: search.value | sort: {property: column, direction: direction} ; let i = index; " [attr.data-index]="i">
+              <td class="text-center">{{i+1}}</td>
+              <td class="capitalize">{{user.name}}</td>
+              <td>{{user.email}}</td>
+              <td>{{user.contact}}</td>
+              <!-- <td class="capitalize">
+                <ng-container *ngIf="user.is_cm_enable== false">
+                  <img src="assets/v3/img/redColor.svg">
+                  <span class="ml-1">Stopped</span>
+                </ng-container>
+                <ng-container *ngIf="user.is_cm_enable== true">
+                  <img src="assets/v3/img/greenColor.svg">
+                  <span class="ml-1">Intake</span>
+                </ng-container>
+              </td> -->
+              <td class="capitalize text-center">
+                <span class="lead-status pl-3 external">Stopped Lead</span>
+                <input class="checkbox" name="checkbox" id="checkbox{{user.id}}" type="checkbox" [checked]="!user.is_cm_enable" style="display: none;" />
+                <label class="label1 ml-2 mb-0" for="checkbox" (click)="intakeStoppedHandler(user.id)">label</label>
+                <span class="lead-status pl-2 internal">Intake Lead</span>
+              </td>
+            </tr>
+          </ng-container>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

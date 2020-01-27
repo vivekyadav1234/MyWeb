@@ -1,0 +1,336 @@
+<div class="col-12 not-found" *ngIf="project_list && project_list.length==0 ">
+  <div class="boq-img text-center">
+    <img src="../../../assets/img/desktop.png">
+  </div>
+  <p class="nothing-to-show pb-4">Nothing to show...</p>
+</div>
+<div class="col-12" *ngIf="project_list && project_list.length>0">
+  <div class="tableDiv project-table">
+    <table class="table">
+      <thead class="ss-thead">
+        <tr>
+          <th class="firstTh">LEAD ID</th>
+          <th>CLIENT NAME</th>
+          <th> DESIGNER & CM </th>
+          <th>BOQ</th>
+          <th>NEW TASK?</th>
+          <th>TIME OF SLI ADDITION</th>
+          <th>TAT</th>
+          <th class="lastTh">PO's WITHOUT PI's</th>
+        </tr>
+      </thead>
+      <tbody class="ss-tbody" *ngFor="let obj of project_list |
+      paginate: { itemsPerPage: per_page, currentPage: current_page, totalItems: total_page  }; let i = index" [attr.data-index]="i">
+        <tr (click)="showBOQList(obj.project_id, obj.id,i,obj.reference_number);toggleRow(obj)" [ngClass]="{'active': obj.expanded}" class="addCursor">
+          <td>
+            <span *ngIf="obj.lead_details">{{obj.lead_details.id}}</span>
+          </td>
+          <td class="capitalize">
+            <span *ngIf="obj.lead_details">{{ obj.lead_details.name }}</span>
+          </td>
+          <td class="capitalize">
+            <span *ngIf="obj.designer_details">{{obj.designer_details.name}}</span>
+            <br>
+            <span *ngIf="obj.cm_details">{{obj.cm_details.name}}</span>
+          </td>
+          <td class="capitalize">{{obj.reference_number}}</td>
+          <td class="capitalize">
+            <span *ngIf="obj.unseen" style="color: #89081c;font-weight: 600;">New!</span>
+          </td>
+          <td class="capitalize">{{obj.sli_creation_time | date: 'd/M/yy'}}</td>
+          <td class="capitalize">
+              <div *ngIf="obj.tat && obj.time_left">
+                  <span [ngClass]="{'text-danger':obj.time_left.search('over')}">
+                      {{obj.time_left}}/{{obj.tat | date: 'd-M-yy'}}
+                  </span>
+                </div>
+          </td>
+          <td class="capitalize">{{obj.po_without_pi}}</td>
+
+        </tr>
+        <tr *ngIf="obj.expanded">
+          <td colspan="9">
+            <div class="row pl-5 pt-0">
+
+              <div class="col-sm-5 col-xs-5 col-md-5 col-lg-5 pt-0 d-inline-block">
+                <div class="card shadow pr-0">
+                  <table>
+                    <thead>
+                      <tr class="header-border-radius">
+                        <th colspan="6" class="rounded-top">List of POs</th>
+                      </tr>
+                      <tr class="subheader">
+                        <th class="firstTh subheader">
+                          Sr no
+                        </th>
+                        <th class="subheader">
+                          PO
+                        </th>
+                        <th class="subheader">
+                          Value
+                        </th>
+                        <th class="subheader">
+                          PO Date
+                        </th>
+                        <th class="subheader">
+                          Vendor Name
+                        </th>
+                        <th class="lastTh subheader">Select</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+
+                      <tr class="line-items-parent" *ngFor="let po of po_list; let i = index">
+                        <td class="small-font">{{i+1}}</td>
+                        <td class="small-font">
+                          <span>{{po.reference_no}}</span>
+                        </td>
+                        <td class="small-font">
+                          <span>{{po.value}}</span>
+                        </td>
+                        <td class="small-font">
+                          <span>{{po.po_created_at | date: 'd/M/yy'}}</span>
+                        </td>
+                        <td class="small-font">
+                          <span>{{po.vendor_name}}</span>
+                        </td>
+                        <td class="small-font">
+                          <input type="checkbox" value="{{po.id}}" id="text{{po.id}}"  name="lineItem" (change)= "this.selectPOArray($event, po.value, po.vendor_name)" >
+                          <label for="text{{po.id}}"></label>
+                        </td>
+                      </tr>
+                      <tr *ngIf="po_list.length===0">
+                        <td colspan="6">No Data</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="col-sm-2 col-xs-2 col-md-2 col-lg-2 pt-0 d-inline-block">
+                <button class="category-btn btn m-2" (click)="checkPoPiMapping()">
+                    Create Mapping
+                  </button>
+              </div>
+              <div class="col-sm-5 col-xs-5 col-md-5 col-lg-5 pt-0 d-inline-block">
+                <div class="card shadow pr-0">
+                  <table>
+                    <thead>
+                      <th class="header-border-radius" colspan="6">
+                        List of PIs
+                        <button class="category-btn btn m-2" data-toggle="modal" data-target="#piModal" (click)="showVendorList()">
+                          Upload new PI
+                        </button>
+                      </th>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Sr no</td>
+                        <td>PI no</td>
+                        <td>Value</td>
+                        <td>PI Date</td>
+                        <td>Vendor Name</td>
+                        <td></td>
+                      </tr>
+                      <tr class="line-items-parent" *ngFor="let item of pi_list; let i = index">
+                        <td class="small-font">{{i+1}}</td>
+                        <td class="small-font">{{item.reference_no}}</td>
+                        <td class="small-font">{{item.amount}}</td>
+                        <td class="small-font">{{item.created_at | date: 'd/M/yy'}}</td>
+                        <td class="small-font">
+                          <span>{{item.vendor_name}}</span>
+                        </td>
+                        <td class="small-font">
+                          <input type="checkbox" value="{{item.id}}" id="text{{item.id}}"  name="lineItem" (change) = "this.selectPIArray($event, item.amount, item.vendor_name)" >
+                          <label for="text{{item.id}}"></label>
+                        </td>
+                      </tr>
+                      <tr *ngIf="pi_list.length===0">
+                        <td class="small-font" colspan="5">No Data</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="col-sm-12 col-xs-12 col-md-12 col-lg-12 pt-0 d-inline-block">
+                <div class="card shadow pr-0" *ngIf="po_pi_list.length>0">
+                  <table>
+                    <thead>
+                      <tr class="header-border-radius">
+                        <th colspan="5" class="rounded-top">PAIRING</th>
+                      </tr>
+                      <tr class="subheader">
+                        <th class="firstTh subheader">
+                          VENDOR
+                        </th>
+                        <th class="subheader">
+                          PO
+                        </th>
+                        <th class="subheader">
+                          PI
+                        </th>
+                        <th class="lastTh subheader">
+                          PO COST
+                        </th>
+                        <th class="lastTh subheader">
+                          PI COST
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let item of po_pi_list; let l = index" class="line-items-parent">
+                        <td>
+                          <span *ngIf="item">{{item.vendor_name}}</span>
+                        </td>
+                        <td>
+                          <div *ngFor="let po_detail of item.mapped_pos">
+                            {{po_detail.reference_no}}
+                            <br>
+                          </div>
+                        </td>
+                        <td>
+                          <span>{{item.pi_reference_no}}</span>
+                        </td>
+                        <td>
+                          <div *ngFor="let po_detail of item.mapped_pos">
+                            {{po_detail.value}}
+                            <br>
+                          </div>
+                        </td>
+
+                        <td>
+                          <span>{{item.pi_value}}</span>
+                        </td>
+                      </tr>
+                      <tr *ngIf="po_pi_list.length===0">
+                        <td colspan="5">No Data</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+            </div>
+            <!-- <div class="col-12 not-found" *ngIf="!boq_list || (boq_list && boq_list.length===0)">
+              <div class="boq-img text-center col-xs-11 col-sm-11 col-md-11 col-lg-11 d-inline-block">
+                <img src="../../../assets/img/desktop.png">
+              </div>
+              <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 pt-0 d-inline-block pull-right">
+                <button type="button" class="close close-project-row addCursor" aria-label="Close" (click)="toggleRow(obj)">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <p class="nothing-to-show pb-4">Nothing to show...</p>
+            </div> -->
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="text-center" *ngIf="project_list && project_list.length >0">
+      <pagination-controls autoHide="true" (pageChange)="current_page = getProjectList($event)"></pagination-controls>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade m-auto" id="piModal" role="dialog" data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="">
+        <div class="pull-right m-2">
+          <button type="button" class="close pull-right" data-dismiss="modal" id="closePiModal" (click) = "resetForm()" >&times;</button>
+        </div>
+      </div>
+      <div class="modal-body">
+        <div class="text-center">Upload a Proforma Invoice</div>
+        <div class="p-2 mt-3">
+          <form [formGroup]="piform">
+            <!-- <pre>{{ piform.value | json  }}</pre> -->
+            <div class="form-control-group">
+
+              <div class="col-md-12 ml-3 mr-3 mb-2">
+                <label class="piform col-sm-6 pl-0 pb-2">Vendor Name<span class="astrick">*</span></label>
+                <select class="form-control piform" formControlName="vendor">
+                  <option>Select vendor</option>
+                  <option *ngFor="let item of vendorlist" value="{{item.id}}">{{item.name}}</option>
+                </select>
+              </div>
+
+              <div class="col-md-12 ml-3 mr-3 mb-2">
+                <label class="piform col-sm-6 pl-0 pb-2">Base Cost</label>
+                <input name="cost" placeholder="Enter Cost"
+                class="form-control d-inline-block"
+                formControlName="cost" (change)="this.calculateAmount()"/>
+              </div>
+
+              <div class="col-md-12 ml-3 mr-3 mb-2">
+                <label class="piform col-sm-6 pl-0 pb-2">Tax Value(in %age)</label>
+                <input name="cost" placeholder="Enter Cost"
+                class="form-control d-inline-block"
+                formControlName="tax_value" (change)="this.calculateAmount()" />
+              </div>
+
+              <div class="col-md-12 ml-3 mr-3 mb-2">
+                <label class="piform col-sm-6 pl-0 pb-2">Total Cost</label>
+                <input name="cost" placeholder="Enter Cost"
+                class="form-control d-inline-block total_cost" disabled="true" />
+              </div>
+
+              <div class="col-md-12 ml-3 mr-3 mb-2">
+                <label class="piform col-sm-6 pl-0 pb-2">Upload File</label>
+                <input type="file" class="pi-file" (change) = "this.updateFile($event)" >
+              </div>
+
+              <div class="col-md-12 ml-3 mr-3 mb-2">
+                <label class="piform col-sm-6 pl-0 pb-2">Description</label>
+                <input name="description" placeholder="Enter Description"
+                class="form-control d-inline-block"
+                formControlName="description"/>
+              </div>
+
+            </div>
+            <div class="text-center">
+              <button (click)="uploadPi()" class="category-btn p-2 m-2 btn rounded" [disabled]="!this.piform.valid" >Upload</button>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade m-auto" id="alertModal" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="">
+        <div class="pull-right m-2">
+          <button type="button" class="close pull-right" data-dismiss="modal" id="closePiModal">&times;</button>
+        </div>
+      </div>
+      <div class="modal-body">
+        <div class="text-center">
+          <span *ngIf="!this.error_flag">Warning! PI PO value do not match</span>
+          <span *ngIf="this.error_flag">Vendor selected do not match. Please select same vendors.</span>
+        </div>
+        <div class="p-2 mt-3 text-center" *ngIf="!this.error_flag">
+          <button class="category-btn btn m-2" (click)="createPoPiMapping()">
+            Go Ahead Anyway
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="rk-ui-notification" *ngIf="successalert">
+    <span id="notificationMessageText">{{successMessage}}</span>
+    <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+<div class="rk-ui-notification err" *ngIf="erroralert">
+    <span id="notificationMessageText">{{errorMessage}}</span>
+    <a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>

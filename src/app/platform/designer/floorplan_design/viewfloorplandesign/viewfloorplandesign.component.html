@@ -1,0 +1,128 @@
+<div class="row title">
+  <h3>Dashboard / <span [routerLink]="['/projects/view/'+id]" routerLinkActive="active" [queryParams]="{customer_status: customer_status}" class="addCursor">Project</span> / <span [routerLink]="['/projects/'+id+'/floorplan/view/'+fpid]" routerLinkActive="active" [queryParams]="{customer_status: customer_status}"  class="addCursor">Floorplan</span> / <span>View Design</span></h3>
+</div>
+<div class="row bg-section justify-content-center">
+  <div class="col-12" *ngIf="erroralert">
+    <div class="alert-box grid-100" *ngIf="errorMessage">
+      <div class="alert alert-danger mt-3 text-center">
+        <a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a>
+        {{errorMessage}}
+      </div>
+    </div>
+  </div>
+  <div class="col-12" *ngIf="successalert">
+    <div class="alert-box grid-100" *ngIf="successMessage">
+      <div class="alert alert-success mt-3 text-center">
+        <a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+        {{successMessage}}
+      </div>
+    </div>
+  </div>
+  <div class="col-11">
+    <div class="row justify-content-center">
+      <div class="" *ngIf="design?.length == 0">
+        <div class="card-content pt-5 m-auto">No Designs available</div>
+      </div>
+      <div class="col-md-6" *ngFor="let item of design">
+        <div class="card">
+          <div class="card-header">
+            <h4 class="card-title"><strong>{{item.name}} </strong></h4>
+          </div>
+          <div class="card-content mb-3 px-2">
+            <p class="ml-3 mb-0">Design Details : {{ item.details}}</p>
+            <h6 class="ml-3">Status : {{item.status | ucwords}}</h6>
+            <h6 class="ml-3">Design Type : {{item.design_type | ucwords}}</h6>
+            <img src={{item.attachment_file}} *ngIf="item.attachment_file_content_type == 'image/png' || item.attachment_file_content_type == 'image/jpg' || item.attachment_file_content_type == 'image/jpeg' || item.attachment_file_content_type == 'image/svg' " class="img-thumbnail"/>
+            <a href="{{item.attachment_file}}" *ngIf="(item.attachment_file_content_type == 'image/png' || item.attachment_file_content_type == 'image/jpg' || item.attachment_file_content_type == 'image/jpeg' || item.attachment_file_content_type == 'image/svg') " download>Download Image <br></a>
+
+            <a href="{{item.attachment_file}}" *ngIf="!(item.attachment_file_content_type == 'image/png' || item.attachment_file_content_type == 'image/jpg' || item.attachment_file_content_type == 'image/jpeg' || item.attachment_file_content_type == 'image/svg' || item.attachment_file_content_type == null) ">Download  File <br></a>
+            <p *ngIf="(item.attachment_file == '/images/original/missing.png')" class="text-center no_design"><strong>No
+              Design uploaded</strong></p>
+            <button type="button" class="button button_emi mt-3 ml-2" rel="tooltip" data-placement="bottom" title="Edit"
+                    (click)="editDesign(item.id)" *ngIf="role && (role=='admin' || role=='designer' || role=='design_head') && item.status !='approved' ">Edit
+            </button>
+            <button type="button" class="button button_emi mt-3" rel="tooltip" data-placement="bottom" title="Remove"
+                    (click)="deleteDesignalert(item.id)" *ngIf="role && (role=='admin' || role=='designer' || role=='design_head') && item.status !='approved' ">Delete
+            </button>
+            <button type="button" class="button button_emi mt-3" title="Approve"
+                    (click)="designApproval(item.id,'approved')" *ngIf="role && (role=='admin' || role=='customer') && item.status != 'approved' ">
+              Approve
+            </button>
+            <button type="button" class="button button_emi mt-3" title="Disapprove"
+                    (click)="designApproval(item.id,'rejected')" *ngIf="role && (role=='admin' || role=='customer') && item.status != 'rejected' ">
+              Disapprove
+            </button>
+
+
+            <!-- <button type="button" class="button button_emi mt-3" title="Upload Initial BOQ" *ngIf="role && (role=='admin' || role=='designer') " [routerLink]="['/quotation/create/'+id+'/'+fpid+'/'+item.id]" routerLinkActive="active">
+              Upload BOQ
+              </button> -->
+            <!-- <button type="button" class="button button_emi mt-3 ml-2" title="Upload  BOQ"
+                    *ngIf="role && (role=='admin' || role=='designer' || role=='design_head') " [routerLink]="['/quotation/create']"
+                    [queryParams]="{ project_id:id, floorplan_pid:fpid, design_id: item.id }" routerLinkActive="active">
+              Upload BOQ
+            </button> -->
+            <!-- <button type="button" class="button button_emi mt-3" title="View  BOQ"
+                    *ngIf="role && (role=='admin' || role=='designer' || role=='customer' || role=='design_head') " (click)="getBOQList(id,fpid,item.id)">
+              View BOQ List
+            </button> -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal -->
+  <div class="modal fade" id="boqlistModal" role="dialog">
+    <div class="modal-dialog modal-lg">
+
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title text-center">BOQ List</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p *ngIf="boqs && boqs?.length == 0">No BOQ</p>
+          <table class="table table-hover" *ngIf="boqs && boqs?.length > 0">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Generation Date</th>
+                <th>Quotation Type</th>
+                <th>Expiration Date</th>
+                <th>Total Amount</th>
+                <th>Created By</th>
+                <th>Project</th>
+                <th class="text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of boqs">
+                <td>{{item.id}}</td>
+                <td>{{item.generation_date}}</td>
+                <td>{{item.quotation_type | ucwords}}</td>
+                <td>{{item.expiration_date}}</td>
+                <td>{{item.total_amount}}</td>
+                <td *ngIf="role != 'admin' ">{{item.user.roles[0] | ucwords}}</td>
+                <td *ngIf="role == 'admin' ">{{item.user.name | ucwords}}</td>
+                <td>{{item.project.name | ucwords}}</td>
+                <td>
+                  <div class="text-center fa_icons py-2">
+                    <!-- <a [routerLink]="['/quotation/edit/'+item.id]" routerLinkActive='active'><i class="fa fa-pencil" aria-hidden="true"></i></a><br/> -->
+                    <a [routerLink]="['/quotation/view/'+item.id]" routerLinkActive='active' data-dismiss="modal"><i class="fa fa-eye" aria-hidden="true"></i></a><br>
+                    <a (click) ="deleteQuotationWithId(item.id)"><i class="fa fa-trash" aria-hidden="true" data-dismiss="modal" *ngIf="role && (role=='admin' || role=='designer')"></i></a>
+                    <!-- <a [routerLink]="['/quotation/edit/'+item.id]" routerLinkActive='active'><i class="fa fa-pencil" aria-hidden="true" data-dismiss="modal" *ngIf="role && (role=='admin' || role=='designer')"></i></a> -->
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+
+    </div>
+  </div>

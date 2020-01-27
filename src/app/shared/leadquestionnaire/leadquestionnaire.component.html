@@ -1,0 +1,806 @@
+<!-- <p>
+  leadquestionnaire works!
+</p>
+<p>{{leadDetails | json}}</p> -->
+<div class="rk-ui-notification err" *ngIf="erroralert"  style="z-index: 10000;">
+  <span id="notificationMessageText">{{errorMessage}}</span>
+  <a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+<div class="rk-ui-notification" *ngIf="successalert"  style="z-index: 10000;">
+  <span id="notificationMessageText">{{successMessage}}</span>
+  <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+
+<form [formGroup]="leadquestionnaireForm">
+  <!-- <pre>{{ leadquestionnaireForm.value | json }}</pre> -->
+  
+  <div class="row justify-content-center" id="questionnaire-row">
+    <div class="col-12">
+      <div class="row">
+        <div class="customer-details"><span>Customer Details</span></div>
+        <div class="col-sm-6">
+          <div class="form-group">
+            <label class="customLabel">Customer Name<span class="text-danger">*</span></label>
+            <input type="text" class="form-control" formControlName="customer_name">
+          </div>
+        </div>
+        <div class="col-sm-6" [ngClass]="{'d-none':role=='designer'}">
+          <div class="form-group">
+            <label class="customLabel">Customer Phone No<span class="text-danger">*</span></label>
+            <input type="text" class="form-control" formControlName="phone">
+          </div>
+        </div>
+        
+        <div class="col-sm-6 ">
+          <div class="form-group">
+            <label class="customLabel">Pincode<span class="text-danger hideAsteriskIcon">*</span></label>
+            <input type="number" class="form-control" placeholder="Enter Pincode" formControlName="pincode">
+          </div>
+        </div>
+        <div class="col-sm-6  mt-2">
+        </div>
+        <div class="customer-details"><span>Property Details</span></div>
+        <!-- <div class="col-sm-6  mt-2">
+          <div class="form-group">
+            <label class="customLabel">Locality<span class="text-danger hideAsteriskIcon">*</span></label>
+            <textarea rows="1" class="form-control" formControlName="location"></textarea>  
+          </div>
+        </div> -->
+        <div class="col-sm-6 mt-2">
+            <label class="customLabel">City Name<span class="text-danger hideAsteriskIcon">*</span></label>
+            <div class="form-check">
+               
+                <ng-select  formControlName="city" class="filterSelect dissplay-chng1" (change) = "onchangeCity($event)"   >
+                  
+                  <ng-option value="" disabled>Enter City Name</ng-option>       
+                  <ng-option *ngFor="let city of citiesForQuestionnaire" [value]="city.name">{{city.name | replaceChar}}</ng-option>
+                  <ng-option value="Others" >Others</ng-option>
+                </ng-select>
+                
+                <div class="form-check" [ngClass]="{'d-block':(this.cityChangeValue == 'Others')}">
+                  <input type="text" id="citybuilding" formControlName="new_city_value"  class = "form-control mt-3" placeholder="Enter the City name">
+                </div>
+            </div>
+
+            <!-- <div class="form-check">
+              <label class="form-check-label lableSize labelColor mb-2 mr-4 capitalize" *ngFor="let city of citiesForQuestionnaire;">
+                <input class="form-check-input" type="radio" value="{{city.name}}" formControlName="city" (change)="onchangeCity(city.name)">
+                {{city.name | replaceChar}}
+              </label>
+              <label class="form-check-label lableSize labelColor mb-2 mr-4">
+                <input class="form-check-input" type="radio" value="Other" formControlName="city" (change)="onchangeCity('Other')">
+                Other <input type="text" name="city_others" class="ml-2" class="form-control d-none" style="margin-top: -10px; width: 72%;display: inline-block;" [(ngModel)]="city_others" [ngModelOptions]="{standalone: true}" id="cityOthersInput">
+              </label> 
+            </div> -->
+        </div>
+        
+        <div class="col-sm-6 mt-2">
+          <label class="customLabel">Society Name/Building<span class="text-danger hideAsteriskIcon">*</span></label>
+          <div class="form-check">
+            <ng-select formControlName="society" class="filterSelect dissplay-chng1" (keyup)="searchSociety($event)" (change) = "changebuilding($event)"  >
+                <!-- <ng-option value="" disabled>Choose</ng-option>           -->
+                <ng-option value="" disabled>Enter Society/Building Name</ng-option>       
+                <ng-option *ngFor="let society of societyList" [value]="society">Society: {{society.building_name}} / Locality: {{society.locality}}</ng-option>
+                <ng-option value="Others" >Others</ng-option>
+            </ng-select>
+            
+            <div class="form-check" [ngClass]="{'d-block':(this.vaale == 'Others')}">
+              <input type="text" id="societybuilding" formControlName="new_society_value"  class = "form-control mt-3" placeholder="Enter the society name">
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-6 mt-2">
+          <label class="customLabel">Locality<span class="text-danger hideAsteriskIcon">*</span></label>
+          <div class="form-check">
+            
+            <ng-select disabled formControlName="location" class="filterSelect dissplay-chng1" (change) = "changeLocality($event)"  >
+              <ng-option value="" disabled>Enter Location </ng-option>       
+              <ng-option value="Others" >Others</ng-option>
+            </ng-select>
+            
+            <div class="form-check" [ngClass]="{'d-block':(this.localityChangeValue == 'Others')}">
+              <input type="text" id="localitybuilding" formControlName="new_locality_value"  class = "form-control mt-3" placeholder="Enter the locality name">
+            </div>
+          </div>
+        </div>
+        
+        
+        <!-- <div class="col-sm-6 mt-2">
+          <div class="form-group">
+            <label class="customLabel">Project Name</label>
+            <input type="text" class="form-control" formControlName="project_name">
+          </div>
+        </div> -->
+        <div class="col-sm-6 mt-2">
+          <label class="customLabel">Project Type<span class="text-danger hideAsteriskIcon">*</span></label>
+          <div class="form-check">
+            <label class="form-check-label lableSize labelColor mr-4" >
+              <input class="form-check-input" type="radio" value="Residential" formControlName="project_type" (change)="onChangeOfProjType($event)">
+              Residential
+            </label>
+            <label class="form-check-label lableSize labelColor">
+              <input class="form-check-input" type="radio" value="Offices" formControlName="project_type" (change)="onChangeOfProjType($event)">
+              Offices
+            </label>
+          </div>
+        </div>
+        
+        <div *ngIf="localityWebData && localityWebData.bhk.length>0" class="mt-2 data-web">
+          
+          <h6>Data From Web</h6>
+          <div class="row">
+          <div class="col-sm-3" style="padding-top:0.7rem;">
+              <span  data-toggle="modal" data-target="#floorplanModal" data-backdrop="static" data-keyboard="false"  style="color:#D05C17;cursor: pointer">{{localityWebData.society}}</span>
+          </div>
+          <div class="col-sm-9">
+            <table class="table borderless table-design">
+              <thead>
+                <tr>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let data of localityWebData.bhk">
+                  <td>{{data.type}}</td>
+                  <td>{{data.area}} Sq Ft</td>
+                  <td>{{data.price}}</td>
+                  <td>{{data.possession || 'Ready to Move'}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
+
+        </div>
+        <div class="col-sm-6 mt-2">
+          <label class="customLabel">Call Back Day <span class="text-danger hideAsteriskIcon">*</span></label>
+          <div class="form-check">
+            <input [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1" placeholder="Enter Date" formControlName="call_back_day" class="form-control">
+            <owl-date-time #dt1 [pickerType]="'calendar'" [startView]="'month'"></owl-date-time> 
+          </div>
+        </div>
+        <div class="col-sm-6 mt-2">
+          <label class="customLabel">Call Back Time </label>
+          <div class="form-check">
+            <select formControlName="call_back_time" class="form-control">
+              <option value="" disabled>Choose</option>
+              <option value="{{cb}}" *ngFor="let cb of callbacktime">{{cb}}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="col-sm-12 mt-2" [ngClass]="{'d-none':(leadquestionnaireForm.controls['project_type'].value=='Offices')}">
+          <label class="customLabel">Type of Accommodation<span class="text-danger hideAsteriskIcon">*</span></label>
+          <div class="form-check">
+            <label class="form-check-label lableSize labelColor mb-2 mr-4" *ngFor="let at of accommodation_type">
+              <input class="form-check-input" type="radio" value="{{at}}" formControlName="accomodation_type">
+              {{at}}
+            </label>
+          </div>
+        </div>
+        <div class="col-sm-12 mt-2" [ngClass]="{'d-none':(leadquestionnaireForm.controls['project_type'].value=='Offices')}">
+          <label class="customLabel">Type of Home <span class="text-danger hideAsteriskIcon">*</span></label>
+          <div class="form-check">
+            <label class="form-check-label lableSize labelColor mb-2 mr-4" *ngFor="let hometype of home_type_arr">
+              <input class="form-check-input" type="radio" value="{{hometype}}" formControlName="home_type">
+              {{hometype}}
+            </label>
+          </div>
+        </div>
+        
+        <div class="col-sm-12 mt-2 d-none" [ngClass]="{'d-block':(leadquestionnaireForm.controls['project_type'].value=='Offices')}">
+          <label class="customLabel">Status of Property <span class="text-danger hideAsteriskIcon">*</span></label>
+          <div class="form-check">
+            <label class="form-check-label lableSize labelColor mb-2 mr-4" *ngFor="let spo of status_of_property_offices">
+              <input type="radio" class="form-check-input" value="{{spo}}" formControlName="status_of_property">
+              {{spo}}
+            </label>
+          </div>
+        </div>
+        
+        <div class="mt-2">
+          <div class="form-group col-sm-12">
+            <label>Purpose Of Property</label>
+            <div class="form-check">
+              <label class="form-check-label lableSize labelColor mb-2 mr-2"  *ngFor="let purpose of purpose_of_property">
+                <input class="form-check-input" type="radio" value="{{purpose}}" formControlName="purpose_of_property">
+                {{purpose}}
+              </label>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-sm-12  mt-2">
+          <label class="customLabel">Possession status<span class="text-danger hideAsteriskIcon">*</span></label>
+          <div class="form-check">
+            <label class="form-check-label lableSize labelColor mb-2 mr-4">
+              <input class="form-check-input" type="radio" value="Possession Taken" formControlName="possession_status" (click)="possesionStatusSelected('Possession Taken','updateQuestionnaire')">
+              Possession Taken
+            </label>
+            <label class="form-check-label lableSize labelColor mb-2 mr-4">
+              <input class="form-check-input" type="radio" value="Awaiting Possession" formControlName="possession_status" (click)="possesionStatusSelected('Awaiting Possession','updateQuestionnaire')">
+              Awaiting Possession (If Yes, please fill the date of possession below on "other")
+            </label>
+          </div>
+        </div>
+        <div class="col-sm-6 mt-2" id="possesiondateupdate" *ngIf="leadquestionnaireForm.controls['possession_status'].value=='Awaiting Possession'" (mouseleave)="taskChange()" (mouseenter)="taskChange()">
+          <label class="customLabel">Estimated month of Possession <span class="text-danger hideAsteriskIcon">*</span></label>
+          <!-- <select formControlName="possession_status_date" class="form-control">
+            <option value="" disabled>Choose</option>
+            <option value="{{est}}" *ngFor="let est of estimatedPossessionTime">{{est}}</option>
+          </select> -->
+          <input name="startDate" id="startDate" class="date-picker" (focus)="callChangeNew()"  formControlName="possession_status_date" placeholder="Choose A Month..." readonly="true" />
+
+        </div>
+        <div class="col-sm-6 mt-2 d-none" [ngClass]="{'d-block':(leadquestionnaireForm.controls['project_type'].value=='Offices')}">
+          <label class="customLabel">Project Commencement Date <span class="text-danger hideAsteriskIcon">*</span></label>
+          <div class="form-check">
+            <input [owlDateTime]="dt2" [owlDateTimeTrigger]="dt2" placeholder="Enter Date" formControlName="project_commencement_date" class="form-control">
+            <owl-date-time #dt2 [pickerType]="'calendar'"></owl-date-time> 
+          </div>
+        </div>
+        <div class="col-sm-6 mt-2" [ngClass]="{'d-none':(leadquestionnaireForm.controls['project_type'].value=='Offices')}">
+          <div class="form-group">
+            <label class="customLabel">Home Value(In Rs. Lacs)<span class="hideAsteriskIcon text-danger">*</span></label>
+            <select formControlName="home_value" class="form-control">
+              <option value="" disabled>Choose</option>
+              <option value="{{hv}}" *ngFor="let hv of home_value_arr">{{hv}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-sm-6 mt-2" [ngClass]="{'d-none':(leadquestionnaireForm.controls['project_type'].value=='Offices')}">
+          <div class="form-group">
+            <label class="customLabel">Budget Value(In Rs. Lacs)<span class="hideAsteriskIcon text-danger">*</span></label>
+            <select formControlName="budget_value" class="form-control">
+              <option value="" disabled>Choose</option>
+              <option value="{{bvh}}" *ngFor="let bvh of budget_value_home">{{bvh}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-sm-6 mt-2 d-none" [ngClass]="{'d-block':(leadquestionnaireForm.controls['project_type'].value=='Offices')}">
+          <div class="form-group">
+            <label class="customLabel">Budget Value(In Rs. Lacs)<span class="hideAsteriskIcon text-danger">*</span></label>
+            <select formControlName="budget_value" class="form-control">
+              <option value="" disabled>Choose</option>
+              <option value="{{bvh1}}" *ngFor="let bvh1 of budget_value_office">{{bvh1}}</option>
+            </select>
+          </div>
+        </div>
+      
+        <div class="col-sm-12 mt-2 d-none" [ngClass]="{'d-block':(leadquestionnaireForm.controls['project_type'].value=='Offices')}">
+          <div class="form-group">
+            <label class="customLabel">Type of Space<span class="text-danger hideAsteriskIcon">*</span></label>
+            <div class="form-check">
+              <label class="form-check-label lableSize labelColor mb-2 mr-4"  *ngFor="let tso of type_of_space_office">
+                <input class="form-check-input" type="radio" value="{{tso}}" formControlName="type_of_space">
+                {{tso}}
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-12 mt-2 d-none" [ngClass]="{'d-block':(leadquestionnaireForm.controls['project_type'].value=='Offices')}">
+          <div class="form-group">
+            <label class="customLabel">Address of Site<span class="text-danger hideAsteriskIcon">*</span></label>
+            <textarea formControlName="address_of_site" class="form-control"></textarea>
+          </div>
+        </div>
+        </div>
+        <div class="row"> 
+        <div class="col-sm-6 mt-2 d-none" [ngClass]="{'d-block':(leadquestionnaireForm.controls['project_type'].value=='Offices')}">
+          <div class="form-group">
+            <label class="customLabel">Area of the Site (sq ft)<span class="text-danger hideAsteriskIcon">*</span></label>
+            <input type="number" name="" class="form-control" min="0" formControlName="area_of_site">
+          </div>
+        </div>
+        <div class="col-sm-6 mt-2 d-none" [ngClass]="{'d-block':(leadquestionnaireForm.controls['project_type'].value=='Residential')}">
+          <div class="form-group">
+            <label class="customLabel">Area of the Site (sq ft)<span class="text-danger hideAsteriskIcon">*</span></label>
+            <input type="number" name="" class="form-control" min="0" formControlName="area_of_site">
+          </div>
+        </div>
+        <div class="col-sm-6 mt-2 d-none" [ngClass]="{'d-block':(leadquestionnaireForm.controls['project_type'].value=='Offices')}">
+          <div class="form-group">
+            <label class="customLabel">Layout and Photographs of Site<span class="text-danger hideAsteriskIcon">*</span></label>
+            <div class="form-check">
+              <label class="form-check-label lableSize labelColor mb-2 mr-4">
+                <input class="form-check-input" type="radio" value="Yes" formControlName="layout_and_photographs_of_site"> Yes
+              </label>
+              <label class="form-check-label lableSize labelColor mb-2 mr-4">
+                <input class="form-check-input" type="radio" value="No" formControlName="layout_and_photographs_of_site"> No
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-12 mt-2 d-none" [ngClass]="{'d-block':(leadquestionnaireForm.controls['project_type'].value=='Offices' && leadquestionnaireForm.controls['layout_and_photographs_of_site'].value=='Yes')}">
+          <label class="customLabel">Upload Layouts and Photographs<span class="text-danger hideAsteriskIcon">*</span></label>
+          <div class="form-check">
+            <input type="file" name="layoutfiles" class="form-control ss-form-control" multiple="multiple" id = "fileupload" (change) = "attachFile($event)">
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-12 mt-2" *ngIf=" leadquestionnaireForm.controls['project_type'].value=='Offices' && leadquestionnaireForm.controls['layout_and_photographs_of_site'].value=='Yes' && userQuestionnaireDetails && userQuestionnaireDetails.length>0 && userQuestionnaireDetails[0].site_layouts && userQuestionnaireDetails[0].site_layouts.length>0">
+          <label class="customLabel">Uploaded Layouts and Photographs </label><br>
+          <div class="form-check d-inline-block" *ngFor="let imgurl of userQuestionnaireDetails[0].site_layouts; let k1=index;">
+            <a href="{{imgurl}}" target="_blank"  style="color: #007bff" class="addCursor mr-3">Image{{k1+1}} </a>
+          </div>
+        </div>
+ 
+        <!-- <div class="col-sm-6 mt-2">
+ 
+          <div class="form-group">
+           <label class="customLabel">Lead Generator</label>
+            <select formControlName="lead_generator" class="form-control">
+              <option value="" disabled>Choose</option>
+              <option value="{{leadgen}}" *ngFor="let leadgen of lead_generator_arr">{{leadgen}}</option>
+            </select>
+          </div>
+ 
+        </div>
+        <div class="col-sm-6 mt-2" style="display: none;">
+ 
+        </div> -->
+        <!-- <div class="col-sm-6 mt-2">
+ 
+          <div class="form-group">
+            <label class="customLabel">Lead Source</label>
+            <select formControlName="lead_source" class="form-control">
+              <option value="" disabled>Choose</option>
+              <option value="{{leadsc}}" *ngFor="let leadsc of lead_source_questionnaire_arr">{{leadsc}}</option>
+            </select>
+          </div>
+        </div> -->
+        <div class="col-sm-12 mt-2" [ngClass]="{'d-none':(leadquestionnaireForm.controls['project_type'].value=='Offices')}">
+          <div class="form-group">
+            <label class="customLabel">Do you have a home loan against the property?<span class="text-danger hideAsteriskIcon">*</span></label>
+            <div class="form-check">
+              <label class="form-check-label lableSize labelColor mb-2 mr-4"  *ngFor="let haveloan of have_homeloan_arr">
+                <input class="form-check-input" type="radio" value="{{haveloan}}" formControlName="have_homeloan">
+                {{haveloan}}
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-12 mt-2" [ngClass]="{'d-none':(leadquestionnaireForm.controls['project_type'].value && (leadquestionnaireForm.controls['project_type'].value=='Offices'||leadquestionnaireForm.controls['project_type'].value.length==0))}">
+          <div class="form-group">
+            <label class="customLabel">Do you have a floor plan?</label>
+            <div class="form-check">
+              <label class="form-check-label lableSize labelColor mb-2 mr-4">
+                <input class="form-check-input" type="radio" value="Yes" formControlName="have_floorplan" (click)="fpQuestionnaireSelected('yes')">
+                Yes
+              </label>
+              <label class="form-check-label lableSize labelColor mb-2 mr-4">
+                <input class="form-check-input" type="radio" value="No" formControlName="have_floorplan" (click)="fpQuestionnaireSelected('no')">
+                No
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-10 col-md-10 mt-2" *ngIf="leadquestionnaireForm.controls['lead_floorplan'].value != '/images/original/missing.png' && leadquestionnaireForm.controls['have_floorplan'].value=='Yes' && userQuestionnaireDetails && userQuestionnaireDetails.length!=0" [ngClass]="{'d-none':(leadquestionnaireForm.controls['project_type'].value && (leadquestionnaireForm.controls['project_type'].value=='Offices'||leadquestionnaireForm.controls['project_type'].value.length==0))}">
+          <label class="customLabel">Uploaded Floorplan</label>
+          <div class="form-check">
+            <a href="{{leadquestionnaireForm.controls['lead_floorplan'].value}}" target="_blank"  style="color: #007bff">View Floorplan </a>
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-12 mt-2" *ngIf="leadquestionnaireForm.controls['lead_floorplan'].value == '/images/original/missing.png' && leadquestionnaireForm.controls['have_floorplan'].value=='Yes' && userQuestionnaireDetails " [ngClass]="{'d-none':(leadquestionnaireForm.controls['project_type'].value && (leadquestionnaireForm.controls['project_type'].value=='Offices'||leadquestionnaireForm.controls['project_type'].value.length==0))}">
+          <label class="customLabel">Uploaded Floorplan</label>
+          <div class="form-check">
+            <span class="text-danger">Floorplan Not Available</span>
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-12 mt-2" id="floorplanQuestionnaire" [ngClass]="{'d-none':(leadquestionnaireForm.controls['project_type'].value && (leadquestionnaireForm.controls['project_type'].value=='Offices'||leadquestionnaireForm.controls['project_type'].value.length==0))}">
+          <label class="customLabel">Upload Floorplan</label>
+          <div class="form-check">
+            <input class="form-control ss-form-control" type="file" (change)="onQuestionnaireFloorplanChange($event)" name="floorplan_attachment_file" ngModel #floorplan_attachment_file="ngModel" [ngModelOptions]="{standalone: true}" id="floorplanupload_input">
+          </div>
+          <p id="extErrorMsg" class="text-danger d-none col-sm-10">Check File extension (File should be in proper image format).</p>
+            <p class="col-sm-10">Note* - Only Image, Doc and PDF files are allowed.  </p>
+        </div>
+ 
+        <div class="customer-details"><span>Scope Details</span></div>
+        
+        <div class="col-sm-12 mt-2" [ngClass]="{'d-none':(leadquestionnaireForm.controls['project_type'].value=='Offices')}">
+          <label class="customLabel">Scope of work <span class="text-danger hideAsteriskIcon">*</span></label>
+          <div class="form-check">
+            <label class="form-check-label lableSize labelColor mb-2 mr-4" *ngFor="let sw of scopeOfwork_home">
+              <input type="radio" class="form-check-input" value="{{sw}}" formControlName="scope_of_work">
+              {{sw}}
+            </label>
+          </div>
+        </div>
+        <div class="col-sm-12 mt-2 d-none" [ngClass]="{'d-block':(leadquestionnaireForm.controls['project_type'].value=='Offices')}">
+          <label class="customLabel">Scope of work <span class="text-danger hideAsteriskIcon">*</span></label>
+          <div class="form-check">
+            <label class="form-check-label lableSize labelColor mb-2 mr-4" *ngFor="let sw1 of scopeOfwork_office">
+              <input type="radio" class="form-check-input" value="{{sw1}}" formControlName="scope_of_work">
+              {{sw1}}
+            </label>
+          </div>
+        </div>
+         
+         <div class="budget-calculator">
+          <label class="customLabel text-dark font-weight-bold">Scope of Work/Budget Calculator</label><br>            
+          <div class="row">
+            <div class="col-sm-5">
+              <label class="customLabel mt-2">Item</label>
+              <input type="text" (keyup)="searchquestionarrieItem($event)"  [(ngModel)]="searchname" name="searchname" [ngModelOptions]="{standalone: true}" autocomplete="off" class="form-control " placeholder="Search By Name"><br>
+                <label [ngClass] = "{'d-none':(this.searchstatus == 'false')}" class=" alert alert-danger" id="notfound">Item not found, Please add custom item.<span>
+                <i style="font-size:12px" class="fa fa-remove color-crimson2 addCursor float-right" (click)="hide()"></i>
+                </span></label>
+                <br>
+                <ul *ngIf="searchList" class="ks-cboxtags" id="myUL">
+                  <li *ngFor="let item of searchList.slice(0,10);let i = index">
+                    <span *ngIf="leadItemscheckedListNames.includes(item.name.toLowerCase())">
+                      <input type="checkbox" id="{{item.name.split(' ')[0].toLowerCase() + '-' + item.price}}" (change)="isAllSelected($event)" value="{{item.name}}" checked> 
+                      <label for="{{item.name.split(' ')[0].toLowerCase() + '-' + item.price}}">{{item.name}}</label>
+                    </span>
+                    <span *ngIf="!leadItemscheckedListNames.includes(item.name.toLowerCase())">
+                        <input type="checkbox" id="{{item.name.split(' ')[0].toLowerCase() + '-' + item.price}}" (change)="isAllSelected($event)" value="{{item.name}}">
+                        <label for="{{item.name.split(' ')[0].toLowerCase() + '-' + item.price}}">{{item.name}}</label>
+                    </span>
+                  </li>
+                  <li data-toggle="tooltip" title="Search for additional items." *ngIf="searchList.length>10">
+                      <span>
+                          <input onclick="return false;" type="checkbox" id="more" value="More...">
+                          <label for="more">More...</label>
+                      </span>
+                  </li>
+                </ul>
+            </div>
+            
+            <div class="col-sm-7">
+              <table *ngIf="checkedList.length > 0" class="mt-2">
+                <tr>
+                  <th class="text-center text-design">Name</th>
+                  <th class="text-center text-design">Price</th>
+                  <th class="text-center text-design">Quantity</th>
+                  <th class="text-center text-design">Total</th>
+                  <th class="text-center text-design"></th>
+                </tr>
+                <tr class="input-design" *ngFor="let budgetdata of checkedList" cellspacing="10">
+                  <td><input type="text" class="form-control" value="{{budgetdata.name}}" readonly/></td>
+                  <td>
+                    <input type="text" class="form-control" value="{{budgetdata.price}}" readonly/>
+                  </td>
+                  <td>
+                    <input type="number" min="1" class="form-control text-center" value="{{budgetdata.quantity}}" (change)="valuechange(budgetdata)" [(ngModel)] = "budgetdata.quantity" [ngModelOptions]="{standalone: true}">
+                  </td>
+                  <td>
+                    <input type="text" class="form-control text-center" value="{{budgetdata.quantity * budgetdata.price}}" readonly/>
+                  </td>
+                  <td>
+                      <i style="font-size:15px" class="fa addCursor" (click)="removequestionaireitesm(budgetdata)">&#xf00d;</i>
+                  </td> 
+                </tr>
+              </table>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-5">
+              <button (click)="showAddOtherItem()" id="addMoreLeadItemBtn" class="form-control color-crimson float-right addCursor">+ Add new</button>
+              <input type="text" placeholder="Enter the custom item" id="otherLeadItem" class="form-control hide" name="name">
+              <button (click)="SaveOtherLeadItem($event)" id="submitOtherLeadBtn" class="form-control color-crimson hide mt-1 addCursor">Add Custom Item</button>
+            </div>
+            <div class="col-sm-3">
+                
+            </div>
+            <div class="col-sm-4">
+                <p style="text-align: end" *ngIf="checkedList.length > 0" >Total: <i class="fas fa-rupee-sign total-cost-text"></i> {{this.totalBudget}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+        <div class="row" (mouseleave)="workChange()" (mouseenter)="workChange()">
+          <div class="col-sm-6 mt-2">
+            <label class="customLabel">When would you like us to start work?<span class="text-danger hideAsteriskIcon">*</span></label>
+            <input name="startDateNewpro" id="startDateNewpro" (focus)="DateForWorkStart()" formControlName="intended_date" placeholder="Choose A Month..." readonly="true"/> 
+          </div> 
+          <!-- <div class="col-sm-6 mt-2" >
+            <label class="customLabel">When would you like us to start work?<span class="text-danger hideAsteriskIcon">*</span></label>
+            <div class="form-check">
+              <input [owlDateTime]="dt5" [owlDateTimeTrigger]="dt5" placeholder="Enter Date" formControlName="intended_date" class="form-control" (dateTimeChange)="onChange($event)">
+              <owl-date-time #dt5 [pickerType]="'calendar'" ></owl-date-time> 
+            </div>
+          </div> -->
+          <div class="col-sm-6 mt-2"></div>
+         
+
+          <div class="col-sm-12 mt-2">
+            <div class="form-group">
+              <label class="customLabel">Would you like to visit our EC ?</label>
+              <div class="form-check">
+                <label class="form-check-label lableSize labelColor mb-2 mr-4">
+                  <input class="form-check-input" type="radio" [value]="true" formControlName="visit_ec" (click)="ec(true)">
+                  Yes
+                </label>
+                <label class="form-check-label lableSize labelColor mb-2 mr-4">
+                  <input class="form-check-input" type="radio" [value]="false" formControlName="visit_ec" (click)="ec(false)">
+                  No
+                </label>
+              </div>
+            </div>
+          </div>
+  
+          <ng-container *ngIf="this.selectstatus">
+              <div class="col-sm-6 mt-2">
+                <div class="form-check">
+                  <!-- <input id="dt6" [min]="selectedMoment" [owlDateTime]="dt6" [owlDateTimeTrigger]="dt6" placeholder="Enter Date ( Date should be greater than current date )" formControlName="visit_ec_date" class="form-control"> -->
+                  <input id="dt6" [owlDateTime]="dt6" [owlDateTimeTrigger]="dt6" placeholder="Enter Date ( Date should be greater than the current date )" formControlName="visit_ec_date" class="form-control">
+                  <owl-date-time #dt6 [pickerType]="'calendar'" [startView]="'month'"></owl-date-time> 
+                </div>
+              </div>
+          </ng-container>
+  
+          <div class="col-sm-12 mt-2">
+            <div class="form-group">
+              <label class="customLabel">Do you need Site Measurement ?</label>
+              <div class="form-check">
+                <label class="form-check-label lableSize labelColor mb-2 mr-4">
+                  <input class="form-check-input" type="radio" [value]="true" formControlName="site_measurement_required" (click)="sitemeasurement(true)">
+                  Yes
+                </label>
+                <label class="form-check-label lableSize labelColor mb-2 mr-4">
+                  <input class="form-check-input" type="radio" [value]="false" formControlName="site_measurement_required" (click)="sitemeasurement(false)">
+                  No
+                </label>
+              </div>
+            </div>
+          </div>
+      
+       
+        <ng-container *ngIf="this.selectstatusforsite">
+          <div class="col-sm-6 mt-2">
+              <div class="form-check">
+                <!-- <input id="mes" [min]="selectedMoment" [owlDateTime]="mes" [owlDateTimeTrigger]="mes" placeholder="Enter Date (Date should be greater than current date)" formControlName="site_measurement_date" class="form-control"> -->
+                <input id="mes" [owlDateTime]="mes" [owlDateTimeTrigger]="mes" placeholder="Enter Date ( Date should be greater than the current date )" formControlName="site_measurement_date" class="form-control">
+                <owl-date-time #mes [pickerType]="'calendar'"></owl-date-time> 
+              </div>
+          </div>
+          <div class="col-sm-6 mt-2"></div>
+        </ng-container>
+        </div>
+
+        <!-- <div class="col-sm-6 mt-2">
+            <div class="form-group">
+              <label class="customLabel">When is a good time for our designer to call ?</label>
+              <div class="form-check">
+                <label style="width:100%" class="lableSize labelColor mb-2 mr-4">
+                  <input id="designer_call" [min]="selectedMoment" [owlDateTime]="designer_call" [owlDateTimeTrigger]="designer_call" placeholder="Enter Date (Date should be greater than current date)" formControlName="good_time_to_call" class="form-control">
+                  
+                  <owl-date-time #designer_call [pickerType]="'both'" [startView]="'month'"></owl-date-time> 
+                </label>
+              </div>
+            </div>
+        </div> -->
+
+        <div class="col-sm-6 mt-2"></div>
+        <div class="row">
+        <div style="padding:0" class="col-sm-12 col-md-12 mt-2 ml-0" *ngIf="!((role=='designer') && (path == '/lead/'+leadId+'/detailed-info'))">
+          <div class="form-group col-md-12">
+              <label style="display:block" class="customLabel">Any Alternate Contact ?</label>
+              <button type="button" class="btn btn-pink addCursor" *ngIf="!hideAlternateNumberButton" (click)="addAlternateNumberForm()">Add Alternate Number</button>
+              <span class="font-weight-bold ml-0 pl-0" *ngIf="hideAlternateNumberButton">Alternate Number:</span>
+          </div>
+
+          <div *ngIf="showAlternateForm">
+            <form [formGroup]="alternateNumberMasterForm">
+              <div formArrayName="alternate_contacts" *ngFor="let item of alternateNumberMasterForm.get('alternate_contacts')['controls']; let i = index;">
+                <div class="row" [formGroupName]="i">
+                  <div class="col-12 mb-1 form-group">
+                    <div class="col-12">
+                        <label>Alternate Number: {{i+1}}</label>
+                        <span class="pull-right addCursor d-block" (click)="removeAlternateNumber(i)"><i class="fa fa-minus-circle minus-icon"></i></span>    
+                    </div>
+                    <div class="col-6 d-inline-block mb-1">
+                     <span class="col-12 mb-1 pl-0">Name: </span> <input class="col-12 mb-1 d-inline-block form-control" type="text" formControlName="name" placeholder="Name">
+                    </div>
+                    <div class="col-6 d-inline-block mb-1">
+                      <span class="col-12 mb-1 pl-0">Relation:</span> <input class="col-12 mb-1 d-inline-block form-control" type="text" formControlName="relation" placeholder="Relation">
+                    </div>
+                    <div class="col-6 d-inline-block mb-1">
+                      <span class="col-12 mb-1 pl-0">
+                          Contact: 
+                      </span>
+                      <input class="col-12 mb-1 form-control" type="text" formControlName="contact" placeholder="Contact">
+                    </div>
+                  </div>
+                </div>
+                <br>
+              </div>
+            </form>
+          </div>
+        </div>
+        
+        <div class="col-sm-12 col-md-12 mt-2">
+          <div class="form-group">
+            <label class="customLabel">Additional Comments</label>
+            <div class="form-check">
+              <textarea rows="8" class="form-control" formControlName="additional_comments"></textarea>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-sm-12 col-md-6 mt-2" [ngClass]="{'d-none':(role!='community_manager' && role
+        !='designer')}">
+          <div class="form-group">
+            <label class="customLabel">CM Comments</label>
+            <div class="form-check">
+              <textarea rows="2" class="form-control" formControlName="cm_comments"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-6 mt-2" [ngClass]="{'d-none':(role!='community_manager' && role
+        !='designer')}">
+          <div class="form-group">
+            <label class="customLabel">Designer Comments</label>
+            <div class="form-check">
+              <textarea rows="2" class="form-control" formControlName="designer_comments"></textarea>
+            </div>
+          </div>
+        </div>
+        <ng-container *ngIf="( role
+          =='cs_agent')">
+          <!-- //V:It will show when Awaiting Possession selected and intended date not selected // -->
+          <div class="col-md-6 p-0" *ngIf="this.leadquestionnaireForm.controls['possession_status'].value=='Awaiting Possession'" style="min-width: 100%">
+            <div class="col-md-6 p-0" *ngIf="this.leadquestionnaireForm.controls['intended_date'].value==''" style="min-width: 100%">
+              <div class="col-sm-6 col-md-6 mt-2" id="normalStat">
+                <div class="form-group">
+                  <label class="customLabel">Change Status</label>
+                  <select class="form-control" formControlName="lead_status" (change)="setLeadStatus2($event.target.value)">
+                    <option value="qualified">Qualified</option>
+                    <option value="follow_up">Follow Up</option>
+                    <option value="lost">Lost</option>
+                    <option value="not_contactable">Not Contactable</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-sm-6 col-md-6 mt-2 d-none" id="delyed">
+                <div class="form-group">
+                  <label class="customLabel">Change Status</label>
+                  <select class="form-control" formControlName="lead_status" (change)="setLeadStatus2($event.target.value)">
+                    <option value="" >Select Status</option>
+                    <option value="delayed_possession">Delayed Possession</option>
+                   <!--  <option value="delayed_project">Delayed Project</option> -->
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- //V:It will show when Awaiting Possession not selected and intended date selected // -->
+          <div class="col-md-6 p-0" *ngIf="this.leadquestionnaireForm.controls['intended_date'].value
+          !=''" style="min-width: 100%">
+            <div class="col-md-6 p-0" *ngIf="this.leadquestionnaireForm.controls['possession_status'].value !='Awaiting Possession'" style="min-width: 100%">
+              <div class="col-sm-6 col-md-6 mt-2" id="normalStat1">
+                <div class="form-group">
+                  <label class="customLabel">Change Status</label>
+                  <select class="form-control" formControlName="lead_status" (change)="setLeadStatus2($event.target.value)">
+                    <option value="qualified">Qualified</option>
+                    <option value="follow_up">Follow Up</option>
+                    <option value="lost">Lost</option>
+                    <option value="not_contactable">Not Contactable</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-sm-6 col-md-6 mt-2 d-none" id="delyed1">
+                <div class="form-group">
+                  <label class="customLabel">Change Status</label>
+                  <select class="form-control" formControlName="lead_status" (change)="setLeadStatus2($event.target.value)">
+                    <option value="" >Select Status</option>
+                    <option value="delayed_project">Delayed Project</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- //V:It will show when Awaiting Possession selected and intended date selected (both selected)// -->
+          <div class="col-md-6 p-0" *ngIf="this.leadquestionnaireForm.controls['intended_date'].value
+          !=''" style="min-width: 100%">
+            <div class="col-md-6 p-0" *ngIf="this.leadquestionnaireForm.controls['possession_status'].value =='Awaiting Possession'" style="min-width: 100%">
+              <div class="col-sm-6 col-md-6 mt-2" id="normalStat1">
+                <div class="form-group">
+                  <label class="customLabel">Change Status</label>
+                  <select class="form-control" formControlName="lead_status" (change)="setLeadStatus2($event.target.value)">
+                    <option value="qualified">Qualified</option>
+                    <option value="follow_up">Follow Up</option>
+                    <option value="lost">Lost</option>
+                    <option value="not_contactable">Not Contactable</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-sm-6 col-md-6 mt-2 d-none" id="delyed1">
+                <div class="form-group">
+                  <label class="customLabel">Change Status</label>
+                  <select class="form-control" formControlName="lead_status" (change)="setLeadStatus2($event.target.value)">
+                    <option value="" >Select Status</option>
+                    <option value="delayed_possession">Delayed Possession</option>
+                    <option value="delayed_project">Delayed Project</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- //V:It will show when Awaiting Possession  and intended date both not selected// -->
+          <div class="col-md-6 p-0" *ngIf="this.leadquestionnaireForm.controls['intended_date'].value==''" style="min-width: 100%">
+            <div class="col-md-6 p-0" *ngIf="this.leadquestionnaireForm.controls['possession_status'].value !='Awaiting Possession'" style="min-width: 100%">
+              <div class="col-md-6" id="normalStat2">
+                <label>Change Status</label>
+                <select class="form-control" (change)="setLeadStatus($event.target.value)" formControlName="lead_status" id="chnagestatusDropDown">
+                  <option value="" disabled>Select Status</option>
+                  <option value="qualified">Qualified</option>
+                  <option value="follow_up">Follow Up</option>
+                  <option value="lost">Lost</option>
+                  <option value="not_contactable">Not Contactable</option>
+                 </select>
+              </div>
+            </div>
+          </div>
+         <!--  V:end here -->
+          <div class="col-sm-6 col-md-6 mt-2 d-none" [ngClass]="{'d-block':(leadquestionnaireForm.controls['lead_status'].value=='follow_up')}">
+            <div class="form-group">
+              <label class="customLabel">Followup Time <span class="text-danger">*</span></label>
+              <input [owlDateTime]="dt3" [owlDateTimeTrigger]="dt3" placeholder="Enter Date and Time" formControlName="follow_up_time" class="form-control">
+              <owl-date-time #dt3></owl-date-time> 
+            </div>
+          </div>
+          <div class="col-sm-6 col-md-6 mt-2 d-none" [ngClass]="{'d-block':(leadquestionnaireForm.controls['lead_status'].value=='follow_up')}">
+            <div class="form-group">
+              <label class="customLabel">Followup Remark <span class="text-danger">*</span></label>
+              <input class="form-control" type="text" formControlName="remark">
+            </div>
+          </div>
+          <div class="col-sm-6 col-md-6 mt-2 d-none" [ngClass]="{'d-block':(leadquestionnaireForm.controls['lead_status'].value=='lost')}">
+            <div class="form-group">
+              <label class="customLabel">Reason for Lost<span class="text-danger">*</span></label>
+              <select class="form-control" id="lost_reason" formControlName="lost_reason" (change)="reasonForLostDropdownChange1($event.target.value)">
+                <option value="" disabled>Select Reason</option>
+                <option *ngFor="let reason of lostReasonsArr" value="{{reason}}">{{reason | replaceChar}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-sm-6 col-md-6 mt-2 d-none" id="addleadFormlostremark" [ngClass]="{'d-block':(leadquestionnaireForm.controls['lead_status'].value=='lost' && (leadquestionnaireForm.controls['lost_reason'].value=='low_budget'||leadquestionnaireForm.controls['lost_reason'].value=='non_serviceable_area'||leadquestionnaireForm.controls['lost_reason'].value=='out_of_scope'||leadquestionnaireForm.controls['lost_reason'].value=='general_inquiry/not_interested'||leadquestionnaireForm.controls['lost_reason'].value=='language_barrier'||leadquestionnaireForm.controls['lost_reason'].value=='already_done_with_other_vendor'||leadquestionnaireForm.controls['lost_reason'].value=='others'))}">
+            <div class="form-group" *ngIf="leadquestionnaireForm.controls['lead_status'].value=='lost'">
+              <label class="customLabel">Remarks <span class="text-danger">*</span></label>
+              <textarea class="form-control" rows="2" formControlName="lost_remark"></textarea>
+            </div>
+          </div>
+        </ng-container>
+        <div class="col-sm-12 col-md-12 mb-3">
+          <button class="cancle ml-3 mt-3 pull-right addCursor rk-btnCancel" data-dismiss="modal" aria-label="Close" (click)="userQuestionnaireDetails=undefined; closeModal();this.localityWebData=null; " [ngClass]="{'d-none':(role=='community_manager' || role =='designer' || role=='cs_agent')}">Cancel</button>
+
+          <button [disabled]="leadquestionnaireForm.invalid  || (leadquestionnaireForm.valid && leadquestionnaireForm.controls['location'].value=='Others' && (!leadquestionnaireForm.controls['new_locality_value'].value)) || (leadquestionnaireForm.valid && leadquestionnaireForm.controls['society'].value=='Others' && (!leadquestionnaireForm.controls['new_society_value'].value)) || (leadquestionnaireForm.valid && leadquestionnaireForm.controls['city'].value=='Others' && (!leadquestionnaireForm.controls['new_city_value'].value)) "  class="mt-3 rk-interalBtnColor pull-right addCursor d-none" type="submit" *ngIf="userQuestionnaireDetails && userQuestionnaireDetails.length >0" (click)="updateRecordNotesQuestionnaire(_leadDetails.id,leadquestionnaireForm.value);" [ngClass]="{'d-block':role!='cs_agent'}">Update</button>
+
+          <button class="rk-interalBtnColor pull-right addCursor mt-3 am-chng d-none" type="submit" [disabled]="leadquestionnaireForm.invalid  || (leadquestionnaireForm.valid && leadquestionnaireForm.controls['location'].value=='Others' && (!leadquestionnaireForm.controls['new_locality_value'].value)) || (leadquestionnaireForm.valid && leadquestionnaireForm.controls['society'].value=='Others' && (!leadquestionnaireForm.controls['new_society_value'].value)) || (leadquestionnaireForm.valid && leadquestionnaireForm.controls['city'].value=='Others' && (!leadquestionnaireForm.controls['new_city_value'].value)) " *ngIf="userQuestionnaireDetails && userQuestionnaireDetails.length ==0 " (click)="updateRecordNotesQuestionnaire(_leadDetails.id,leadquestionnaireForm.value);" [ngClass]="{'d-block':role!='cs_agent'}">Submit</button>
+
+          <button class="rk-interalBtnColor pull-right addCursor mt-3 am-chng d-none" type="submit" [disabled]="leadquestionnaireForm.invalid  || (leadquestionnaireForm.valid && leadquestionnaireForm.controls['location'].value=='Others' && (!leadquestionnaireForm.controls['new_locality_value'].value)) || (leadquestionnaireForm.valid && leadquestionnaireForm.controls['society'].value=='Others' && (!leadquestionnaireForm.controls['new_society_value'].value)) || (leadquestionnaireForm.valid && leadquestionnaireForm.controls['city'].value=='Others' && (!leadquestionnaireForm.controls['new_city_value'].value)) " *ngIf="userQuestionnaireDetails && userQuestionnaireDetails.length ==0 " (click)="addLeadQuestionnaire(leadquestionnaireForm.value);" [ngClass]="{'d-block':(role=='cs_agent' && _leadDetails && _leadDetails['questionnaire_type']=='add_lead')}">Submit</button>
+        </div>
+      </div>
+     </div>
+  </div>
+</form>
+
+<div id="floorplanModal" class="modal" role="dialog">
+  <div class="modal-dialog floorplan-positionn">
+    <!-- Modal content-->
+    <div style="margin-top:100%;border: 3px solid #6F0000;" class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title">List of floorplans present:</h6>
+        <button (click)="closeFloorplanModal()" type="button" class="close" ><i class="fa fa-close"></i></button>
+      </div>
+      <div class="modal-body floorplan-design">
+        <table *ngIf="localityWebData" class="table">
+          <thead>
+            <tr>
+              <th style="text-align:center">#</th>
+              <th style="text-align:center">Floorplan</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let floorplan of localityWebData.floorplan;let i=index">
+              <td style="text-align:center">{{i+1}}</td>
+              <td style="text-align:center;"><a style="color:#6F0000;" href="{{floorplan}}" target="_blank" download>Floorplan-{{i+1}}</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,8 @@
+.btn-chng{
+    display: none;
+    width: 87px;
+}
+
+.card-chng:hover .btn-chng {
+    display: block;
+}

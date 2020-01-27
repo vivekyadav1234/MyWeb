@@ -1,0 +1,564 @@
+<div class="col-12" *ngIf="erroralert">
+    <div class="alert-box grid-100" *ngIf="errorMessage">
+        <div class="alert alert-danger mt-3 text-center">
+            <a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a> {{errorMessage}}
+        </div>
+    </div>
+</div>
+<div class="col-12" *ngIf="successalert">
+    <div class="alert-box grid-100" *ngIf="successMessage">
+        <div class="alert alert-success mt-3 text-center">
+            <a class="close link" data-dismiss="alert" (click)="successalert=false">×</a> {{successMessage}}
+        </div>
+    </div>
+</div>
+<form [formGroup]="requirementForm">
+	<div class="form-group">
+		<div class="col-md-12 mt-4">
+	    <label class="customLabel"><strong>Budget of the Project</strong></label>
+	    <input type="text" class="form-control" formControlName="budget" placeholder="">
+		</div>
+		<div class="col-md-8 mt-4">
+			<label class="customLabel"><strong>Service</strong></label>
+			<div class="form-group">
+				<input type="checkbox" class="form-check-input ml-3" value="false_ceiling" (click) ="updateService($event)" [checked]="requirementForm.value.service.split(',').includes('false_ceiling') ">
+				<label class="form-check-label pl-5 pr-4">False Ceiling</label>
+			</div>
+			<div class="form-group">
+				<input type="checkbox" class="form-check-input ml-3" value="painting" (click) ="updateService($event)" [checked]="requirementForm.value.service.split(',').includes('painting') ">
+				<label class="form-check-label pl-5 pr-4">Painting</label>
+			</div>
+			<div class="form-group">
+				<input type="checkbox" class="form-check-input ml-3" value="flooring" (click) ="updateService($event)" [checked]="requirementForm.value.service.split(',').includes('flooring') ">
+				<label class="form-check-label pl-5 pr-4">Flooring</label>
+			</div>
+			<div class="form-group">
+				<input type="checkbox" class="form-check-input ml-3" value="dado_tiling" (click) ="updateService($event)" [checked]="requirementForm.value.service.split(',').includes('dado_tiling') ">
+				<label class="form-check-label pl-5 pr-4">Dado Tiling</label>
+			</div>
+			<div class="form-group">
+				<input type="checkbox" class="form-check-input ml-3" value="electrical_point" (click) ="updateService($event)" [checked]="requirementForm.value.service.split(',').includes('electrical_point') ">
+				<label class="form-check-label pl-5 pr-4">Electrical Point</label>
+			</div>
+		</div>
+		<div class="col-md-8 mt-4">
+			<label class="customLabel"><strong>Color Preference</strong></label>
+			<input type="text" class="form-control" formControlName="color_preference" placeholder="">
+		</div>
+		<div class="row form-group m-0 ml-3 mr-3 mt-4" *ngFor="let sheet of requirementForm.get('requirement_sheets_attributes')['controls']; let i=index " [formGroup] = "sheet" style="border: 1px solid #e8e8e8;">
+
+			<div class="col-sm-12 pt-2 pb-2" style="background-color: #efefef;">
+				<div class="row m-0">
+					<div class="col-sm-6" style="font-size: 19px;font-weight: 600;color: #8f0521;">
+						{{this.requirementForm.value.requirement_sheets_attributes[i].space_type | replaceChar}}
+					</div>
+					<div class="col-sm-6 text-right">
+						<button type="button" class="btn btn-pink" (click)="requirementForm.get('requirement_sheets_attributes').removeAt(i)">Delete Section</button>
+					</div>
+				</div>
+				
+			</div>
+
+			<div class="col-md-8 mt-4">
+				<label class="customLabel"><strong>Space name</strong></label>
+				<input type="text" class="form-control" formControlName="space_name" placeholder="">
+			</div>
+
+			<div class="row form-group m-0 pb-3" *ngFor="let qna of requirementForm.get('requirement_sheets_attributes')['controls'][i].get('requirement_space_q_and_as_attributes').controls; let j=index" [formGroup]="qna" style="width: 100%;">
+
+				<div class="col-md-8 mt-4">
+					<label class="customLabel"><strong>{{this.requirementForm.value.requirement_sheets_attributes[i].requirement_space_q_and_as_attributes[j].question | replaceChar}}</strong></label>
+
+					<!-- type data -->
+					<div class="type-data form-check form-check-inline w-100" *ngIf="this.requirementForm.value.requirement_sheets_attributes[i].requirement_space_q_and_as_attributes[j].question == 'type'">
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="module">
+							<label class="form-check-label pl-5 pr-4">Module</label>
+						</div>
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="semi_module">
+							<label class="form-check-label pl-5 pr-4">Semi Module</label>
+						</div>
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="civil">
+							<label class="form-check-label pl-5 pr-4">Civil</label>
+						</div>
+					</div>
+
+					<!-- shape data -->
+					<div class="type-data form-check form-check-inline w-100" *ngIf="this.requirementForm.value.requirement_sheets_attributes[i].requirement_space_q_and_as_attributes[j].question == 'shape'">
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="l_shaped">
+							<label class="form-check-label pl-5 pr-4">L Shaped</label>
+						</div>
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="u_shaped">
+							<label class="form-check-label pl-5 pr-4">U Shaped</label>
+						</div>
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="parallel">
+							<label class="form-check-label pl-5 pr-4">Parallel</label>
+						</div>
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="island">
+							<label class="form-check-label pl-5 pr-4">Island</label>
+						</div>
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="straight">
+							<label class="form-check-label pl-5 pr-4">Straight</label>
+						</div>
+						
+					</div>
+
+					<!-- Accessories data -->
+					<div class="type-data form-check form-check-inline w-100" *ngIf="this.requirementForm.value.requirement_sheets_attributes[i].requirement_space_q_and_as_attributes[j].question == 'accessories'">
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="economy">
+							<label class="form-check-label pl-5 pr-4">Economy</label>
+						</div>
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="standard">
+							<label class="form-check-label pl-5 pr-4">Standard</label>
+						</div>
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="premium">
+							<label class="form-check-label pl-5 pr-4">Premium</label>
+						</div>
+					</div>
+
+					<!-- Appliances data -->
+					<div class="type-data form-check form-check-inline w-100" *ngIf="this.requirementForm.value.requirement_sheets_attributes[i].requirement_space_q_and_as_attributes[j].question == 'appliance'">
+						<div class="form-group">
+							<input type="checkbox" class="form-check-input ml-3" value="chimney" (click) = "changeAppliances($event,i,j)" [checked]="requirementForm.value.requirement_sheets_attributes[i].requirement_space_q_and_as_attributes[j].answer.split(',').includes('chimney') ">
+							<label class="form-check-label pl-5 pr-4">Chimney</label>
+						</div>
+						<div class="form-group">
+							<input type="checkbox" class="form-check-input ml-3" value="hob" (click) = "changeAppliances($event,i,j)" [checked]="requirementForm.value.requirement_sheets_attributes[i].requirement_space_q_and_as_attributes[j].answer.split(',').includes('hob') ">
+							<label class="form-check-label pl-5 pr-4">Hob</label>
+						</div>
+					</div>
+
+					<!-- Core Material data -->
+					<div class="type-data form-check form-check-inline w-100" *ngIf="this.requirementForm.value.requirement_sheets_attributes[i].requirement_space_q_and_as_attributes[j].question == 'core_material'">
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="bwp_ply">
+							<label class="form-check-label pl-5 pr-4">BWP Ply</label>
+						</div>
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="bwr_ply">
+							<label class="form-check-label pl-5 pr-4">BWR Ply</label>
+						</div>
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="mr_ply">
+							<label class="form-check-label pl-5 pr-4">MR Ply</label>
+						</div>
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="mdf">
+							<label class="form-check-label pl-5 pr-4">MDF</label>
+						</div>
+					</div>
+
+					<!-- Shutter Finish data -->
+					<div class="type-data form-check form-check-inline w-100" *ngIf="this.requirementForm.value.requirement_sheets_attributes[i].requirement_space_q_and_as_attributes[j].question == 'shutter_finish'">
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="laminate_finish_matte">
+							<label class="form-check-label pl-5 pr-4">Laminate Finish Matte</label>
+						</div>
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="laminate_finish_glossy">
+							<label class="form-check-label pl-5 pr-4">Laminate Finish Glossy</label>
+						</div>
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="pu_finish">
+							<label class="form-check-label pl-5 pr-4">PU Finish</label>
+						</div>
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="membrane_finish">
+							<label class="form-check-label pl-5 pr-4">Membrane Finish</label>
+						</div>
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="veneer">
+							<label class="form-check-label pl-5 pr-4">Veneer</label>
+						</div>
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="acrylic">
+							<label class="form-check-label pl-5 pr-4">Acrylic</label>
+						</div>
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="back_painted_glass">
+							<label class="form-check-label pl-5 pr-4">Back Painted Glass</label>
+						</div>
+					</div>
+
+					<!-- Kitchen Platform Removal data -->
+					<div class="type-data form-check form-check-inline w-100" *ngIf="this.requirementForm.value.requirement_sheets_attributes[i].requirement_space_q_and_as_attributes[j].question == 'kitchen_platform_removal'">
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="yes">
+							<label class="form-check-label pl-5 pr-4">Yes</label>
+						</div>
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="no">
+							<label class="form-check-label pl-5 pr-4">No</label>
+						</div>
+					</div>
+
+					<!-- Tiles Removal Removal data -->
+					<div class="type-data form-check form-check-inline w-100" *ngIf="this.requirementForm.value.requirement_sheets_attributes[i].requirement_space_q_and_as_attributes[j].question == 'tiles_removal'">
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="yes">
+							<label class="form-check-label pl-5 pr-4">Yes</label>
+						</div>
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="no">
+							<label class="form-check-label pl-5 pr-4">No</label>
+						</div>
+					</div>
+
+					<!-- Plumbing Lines data -->
+					<div class="type-data form-check form-check-inline w-100" *ngIf="this.requirementForm.value.requirement_sheets_attributes[i].requirement_space_q_and_as_attributes[j].question == 'plumbing_lines'">
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="yes">
+							<label class="form-check-label pl-5 pr-4">Yes</label>
+						</div>
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="no">
+							<label class="form-check-label pl-5 pr-4">No</label>
+						</div>
+					</div>
+
+					<!-- Electrical Point Shifting data -->
+					<div class="type-data form-check form-check-inline w-100" *ngIf="this.requirementForm.value.requirement_sheets_attributes[i].requirement_space_q_and_as_attributes[j].question == 'electrical_point_shifting'">
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="yes">
+							<label class="form-check-label pl-5 pr-4">Yes</label>
+						</div>
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="no">
+							<label class="form-check-label pl-5 pr-4">No</label>
+						</div>
+					</div>
+
+					<!-- Cooking data -->
+					<div class="type-data form-check form-check-inline w-100" *ngIf="this.requirementForm.value.requirement_sheets_attributes[i].requirement_space_q_and_as_attributes[j].question == 'cooking'">
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="veg">
+							<label class="form-check-label pl-5 pr-4">Veg</label>
+						</div>
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="non_veg">
+							<label class="form-check-label pl-5 pr-4">Non-Veg</label>
+						</div>
+					</div>
+
+					<!-- Eating Area data -->
+					<div class="type-data form-check form-check-inline w-100" *ngIf="this.requirementForm.value.requirement_sheets_attributes[i].requirement_space_q_and_as_attributes[j].question == 'eating_area'">
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="kitchen_area">
+							<label class="form-check-label pl-5 pr-4">Kitchen Area</label>
+						</div>
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="dining_table">
+							<label class="form-check-label pl-5 pr-4">Dining Table</label>
+						</div>
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="counter_space">
+							<label class="form-check-label pl-5 pr-4">Counter Space</label>
+						</div>
+					</div>
+
+					<!-- WR Hinged data -->
+					<div class="type-data form-check form-check-inline w-100" *ngIf="this.requirementForm.value.requirement_sheets_attributes[i].requirement_space_q_and_as_attributes[j].question == 'wr_hinged'">
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="yes">
+							<label class="form-check-label pl-5 pr-4">Yes</label>
+						</div>
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="no">
+							<label class="form-check-label pl-5 pr-4">No</label>
+						</div>
+					</div>
+
+					<!-- WR Sliding data -->
+					<div class="type-data form-check form-check-inline w-100" *ngIf="this.requirementForm.value.requirement_sheets_attributes[i].requirement_space_q_and_as_attributes[j].question == 'wr_sliding'">
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="yes">
+							<label class="form-check-label pl-5 pr-4">Yes</label>
+						</div>
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="no">
+							<label class="form-check-label pl-5 pr-4">No</label>
+						</div>
+					</div>
+
+					<!-- Bed data -->
+					<div class="type-data form-check form-check-inline w-100" *ngIf="this.requirementForm.value.requirement_sheets_attributes[i].requirement_space_q_and_as_attributes[j].question == 'bed'">
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="king_size">
+							<label class="form-check-label pl-5 pr-4">King Size</label>
+						</div>
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="queen_size">
+							<label class="form-check-label pl-5 pr-4">Queen Size</label>
+						</div>
+					</div>
+
+					<!-- Mirror data -->
+					<div class="type-data form-check form-check-inline w-100" *ngIf="this.requirementForm.value.requirement_sheets_attributes[i].requirement_space_q_and_as_attributes[j].question == 'mirror'">
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="yes">
+							<label class="form-check-label pl-5 pr-4">Yes</label>
+						</div>
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="no">
+							<label class="form-check-label pl-5 pr-4">No</label>
+						</div>
+					</div>
+
+					<!-- Dresser data -->
+					<div class="type-data form-check form-check-inline w-100" *ngIf="this.requirementForm.value.requirement_sheets_attributes[i].requirement_space_q_and_as_attributes[j].question == 'dresser'">
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="yes">
+							<label class="form-check-label pl-5 pr-4">Yes</label>
+						</div>
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="no">
+							<label class="form-check-label pl-5 pr-4">No</label>
+						</div>
+					</div>
+
+					<!-- Side Table data -->
+					<div class="type-data form-check form-check-inline w-100" *ngIf="this.requirementForm.value.requirement_sheets_attributes[i].requirement_space_q_and_as_attributes[j].question == 'side_table'">
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="yes">
+							<label class="form-check-label pl-5 pr-4">Yes</label>
+						</div>
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="no">
+							<label class="form-check-label pl-5 pr-4">No</label>
+						</div>
+					</div>
+
+					<!-- Study Table data -->
+					<div class="type-data form-check form-check-inline w-100" *ngIf="this.requirementForm.value.requirement_sheets_attributes[i].requirement_space_q_and_as_attributes[j].question == 'study_table'">
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="yes">
+							<label class="form-check-label pl-5 pr-4">Yes</label>
+						</div>
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="no">
+							<label class="form-check-label pl-5 pr-4">No</label>
+						</div>
+					</div>
+
+					<!-- Book Rack data -->
+					<div class="type-data form-check form-check-inline w-100" *ngIf="this.requirementForm.value.requirement_sheets_attributes[i].requirement_space_q_and_as_attributes[j].question == 'book_rack'">
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="yes">
+							<label class="form-check-label pl-5 pr-4">Yes</label>
+						</div>
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="no">
+							<label class="form-check-label pl-5 pr-4">No</label>
+						</div>
+					</div>
+
+					<!-- Entertainment Unit data -->
+					<div class="type-data form-check form-check-inline w-100" *ngIf="this.requirementForm.value.requirement_sheets_attributes[i].requirement_space_q_and_as_attributes[j].question == 'entertainment_unit'">
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="yes">
+							<label class="form-check-label pl-5 pr-4">Yes</label>
+						</div>
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="no">
+							<label class="form-check-label pl-5 pr-4">No</label>
+						</div>
+					</div>
+
+					<!-- Bunk Bed data -->
+					<div class="type-data form-check form-check-inline w-100" *ngIf="this.requirementForm.value.requirement_sheets_attributes[i].requirement_space_q_and_as_attributes[j].question == 'bunk_bed'">
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="yes">
+							<label class="form-check-label pl-5 pr-4">Yes</label>
+						</div>
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="no">
+							<label class="form-check-label pl-5 pr-4">No</label>
+						</div>
+					</div>
+
+					<!-- Shoe Rack data -->
+					<div class="type-data form-check form-check-inline w-100" *ngIf="this.requirementForm.value.requirement_sheets_attributes[i].requirement_space_q_and_as_attributes[j].question == 'shoe_rack'">
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="yes">
+							<label class="form-check-label pl-5 pr-4">Yes</label>
+						</div>
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="no">
+							<label class="form-check-label pl-5 pr-4">No</label>
+						</div>
+					</div>
+
+					<!-- Crockery Unit data -->
+					<div class="type-data form-check form-check-inline w-100" *ngIf="this.requirementForm.value.requirement_sheets_attributes[i].requirement_space_q_and_as_attributes[j].question == 'crockery_unit'">
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="yes">
+							<label class="form-check-label pl-5 pr-4">Yes</label>
+						</div>
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="no">
+							<label class="form-check-label pl-5 pr-4">No</label>
+						</div>
+					</div>
+
+					<!-- Dining Table data -->
+					<div class="type-data form-check form-check-inline w-100" *ngIf="this.requirementForm.value.requirement_sheets_attributes[i].requirement_space_q_and_as_attributes[j].question == 'dining_table'">
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="4_seater">
+							<label class="form-check-label pl-5 pr-4">4 Seater</label>
+						</div>
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="6_seater">
+							<label class="form-check-label pl-5 pr-4">6 Seater</label>
+						</div>
+					</div>
+
+					<!-- Vanity unit data -->
+					<div class="type-data form-check form-check-inline w-100" *ngIf="this.requirementForm.value.requirement_sheets_attributes[i].requirement_space_q_and_as_attributes[j].question == 'vanity_unit'">
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="yes">
+							<label class="form-check-label pl-5 pr-4">Yes</label>
+						</div>
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="no">
+							<label class="form-check-label pl-5 pr-4">No</label>
+						</div>
+					</div>
+
+					<!-- Medicine box data -->
+					<div class="type-data form-check form-check-inline w-100" *ngIf="this.requirementForm.value.requirement_sheets_attributes[i].requirement_space_q_and_as_attributes[j].question == 'medicine_box'">
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="yes">
+							<label class="form-check-label pl-5 pr-4">Yes</label>
+						</div>
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="no">
+							<label class="form-check-label pl-5 pr-4">No</label>
+						</div>
+					</div>
+
+					<!-- Utility Area data -->
+					<div class="type-data form-check form-check-inline w-100" *ngIf="this.requirementForm.value.requirement_sheets_attributes[i].requirement_space_q_and_as_attributes[j].question == 'utility_area_/_sink_storage_area'">
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="yes">
+							<label class="form-check-label pl-5 pr-4">Yes</label>
+						</div>
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="no">
+							<label class="form-check-label pl-5 pr-4">No</label>
+						</div>
+					</div>
+
+					<!-- Console data -->
+					<div class="type-data form-check form-check-inline w-100" *ngIf="this.requirementForm.value.requirement_sheets_attributes[i].requirement_space_q_and_as_attributes[j].question == 'console'">
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="yes">
+							<label class="form-check-label pl-5 pr-4">Yes</label>
+						</div>
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="no">
+							<label class="form-check-label pl-5 pr-4">No</label>
+						</div>
+					</div>
+
+					<!-- Coffee table data -->
+					<div class="type-data form-check form-check-inline w-100" *ngIf="this.requirementForm.value.requirement_sheets_attributes[i].requirement_space_q_and_as_attributes[j].question == 'coffee_table'">
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="yes">
+							<label class="form-check-label pl-5 pr-4">Yes</label>
+						</div>
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="no">
+							<label class="form-check-label pl-5 pr-4">No</label>
+						</div>
+					</div>
+
+					<!-- Wall shelves data -->
+					<div class="type-data form-check form-check-inline w-100" *ngIf="this.requirementForm.value.requirement_sheets_attributes[i].requirement_space_q_and_as_attributes[j].question == 'wall_shelves'">
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="yes">
+							<label class="form-check-label pl-5 pr-4">Yes</label>
+						</div>
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="no">
+							<label class="form-check-label pl-5 pr-4">No</label>
+						</div>
+					</div>
+
+					<!-- Sofa data -->
+					<div class="type-data form-check form-check-inline w-100" *ngIf="this.requirementForm.value.requirement_sheets_attributes[i].requirement_space_q_and_as_attributes[j].question == 'sofa'">
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="yes">
+							<label class="form-check-label pl-5 pr-4">Yes</label>
+						</div>
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="no">
+							<label class="form-check-label pl-5 pr-4">No</label>
+						</div>
+					</div>
+
+					<!-- Wing Chairs data -->
+					<div class="type-data form-check form-check-inline w-100" *ngIf="this.requirementForm.value.requirement_sheets_attributes[i].requirement_space_q_and_as_attributes[j].question == 'wing_chairs_/_accent_chairs'">
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="yes">
+							<label class="form-check-label pl-5 pr-4">Yes</label>
+						</div>
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="no">
+							<label class="form-check-label pl-5 pr-4">No</label>
+						</div>
+					</div>
+
+					<!-- Curtains data -->
+					<div class="type-data form-check form-check-inline w-100" *ngIf="this.requirementForm.value.requirement_sheets_attributes[i].requirement_space_q_and_as_attributes[j].question == 'curtains'">
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="yes">
+							<label class="form-check-label pl-5 pr-4">Yes</label>
+						</div>
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="no">
+							<label class="form-check-label pl-5 pr-4">No</label>
+						</div>
+					</div>
+
+					<!-- Rugs data -->
+					<div class="type-data form-check form-check-inline w-100" *ngIf="this.requirementForm.value.requirement_sheets_attributes[i].requirement_space_q_and_as_attributes[j].question == 'rugs'">
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="yes">
+							<label class="form-check-label pl-5 pr-4">Yes</label>
+						</div>
+						<div class="form-group">
+							<input type="radio" class="form-check-input ml-3" formControlName="answer" value="no">
+							<label class="form-check-label pl-5 pr-4">No</label>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+		<div class="row m-0 mt-3 ml-3 mr-3 pt-2 pb-2" style="background-color: #EFEFEF;">
+			<div class="col-sm-12" style="display: inline-flex;">
+				<select class="form-control col-sm-4 mr-2" (change) = "selectSpace($event)">
+					<option value="kitchen">Kitchen</option>
+					<option value="bedroom">bedroom</option>
+					<option value="living_and_dining">Living And Dining</option>
+					<option value="kidsroom">Kids Room</option>
+					<option value="guestroom">Guest Room</option>
+					<option value="other_furnitures">Other Furnitures</option>
+				</select>
+				<button type="button" class="btn btn-pink" (click)="addSpace()">Add Space</button>
+			</div>
+		</div>
+
+	</div>
+	<button class="btn btn-pink float-right mb-3" value="submit" (click)="requirementFormSubmit()">Submit</button>
+</form>

@@ -1,0 +1,50 @@
+@media (max-width: 767px) {
+  .mb8{
+		margin-bottom: 8rem !important;
+  }
+}
+
+.filterHeading {
+  font-size: 14px
+}
+.checkbox:focus + label {
+  box-shadow: 0 0 6px 3px rgba(0, 0, 255, 0.5);
+}
+
+.label1 {
+  position: relative;
+  width: 3.4rem;
+  height: 2rem;
+  display: inline-block;
+  font-size: 0;
+  border-radius: 2rem;
+  -webkit-transition: background-color 0.2s ease-in-out;
+  transition: background-color 0.2s ease-in-out;
+  border: 1px solid;
+   background-color: red;
+}
+.label1::before {
+  content: '';
+	position: absolute;
+	top: 0.19rem;
+	left: 0.25rem;
+	height: 1.5rem;
+	width: 1.5rem;
+	background-color: lightgray;
+	border-radius: 50%;
+	-webkit-transform: translate3d(0, 0, 0);
+	transform: translate3d(0, 0, 0);
+	transition: -webkit-transform 0.2s ease-in-out;
+	-webkit-transition: -webkit-transform 0.2s ease-in-out;
+	transition: transform 0.2s ease-in-out;
+  transition: transform 0.2s ease-in-out, -webkit-transform 0.2s ease-in-out;
+}
+
+.checkbox:checked + .label1 {
+  border: 1px solid;
+  background-color: green;
+}
+.checkbox:checked + .label1::before {
+  -webkit-transform: translate3d(1.2rem, 0, 0);
+  transform: translate3d(1.2rem, 0, 0);
+}

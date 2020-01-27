@@ -1,0 +1,28 @@
+.task-cards .card.active,
+.task-cards .card.active .card-header,
+.task-cards .card.active .card-footer{
+	background-color:#8c031f!important;
+	color:white;
+}
+
+.task-cards .card-footer{
+	font-size: 18px;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.23;
+	word-wrap: break;
+}
+
+.task-cards .card{
+	margin-left: 10px;
+	margin-right: 10px;
+	background-color: white!important;
+	color: black;
+	width: 206px;
+	height: 76px;
+	box-shadow: 0 0 5px 0 rgba(189, 189, 189, 0.5);
+}
+
+.negMargin10{
+	margin-left: -10px !important;
+}

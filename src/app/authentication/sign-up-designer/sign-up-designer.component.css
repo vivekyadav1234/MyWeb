@@ -1,0 +1,87 @@
+/*.section1{
+  background-image: url('https://d2wtye2lnn1ee2.cloudfront.net/assets/v3/img/banner.jpg');
+  margin: -15px -30px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  min-height: 80vh;
+}
+
+.emi {
+	padding-top: 0px;
+}*/
+/*button.button_emi{
+	float: left;
+    margin: 10px;
+    width: 90%;
+}*/
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+
+.alert {
+  color:#000;
+}
+
+.error {
+  color: #ff4e4e;
+}
+.bgSection {
+    min-height: 35rem;
+}
+.uploadText{
+  color: #858e96;
+  padding-bottom: 3px;
+}
+#fileName{
+  white-space: nowrap;
+  width: 85%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+}
+label .cvSpan{
+  border: 1px solid #a5a5a5;
+  padding: 3px 6px;
+  border-radius: 60px;
+  float: right;
+  margin-top: -4px;
+}
+@media only screen and (max-width: 575px){
+
+  .card-header h4{
+  	font-size: 1.3rem;
+  }
+  button.button {
+    margin-top: 10px;
+    width: 94%;
+  }
+}
+
+.button_emi {
+  float: left;
+  margin: 15px 10px 30px 10px;
+  padding:11px;
+  width: 94%;
+  letter-spacing: 1px;
+}
+.formHeading {
+  font-family: Roboto;
+}
+ .field_with_errors {
+    border-bottom: 1px solid #e90000;
+  }
+  .field_with_errors::-webkit-input-placeholder {
+    color: #e90000;
+  }
+
+  .link {
+    cursor: pointer;
+  }
+  .form_div{
+    max-width: 23rem;
+    margin: 65px auto;
+  }
+

@@ -1,0 +1,279 @@
+<div class="row title">
+  <h3>Dashboard / Catalogue / <span>Sub-Section</span></h3>
+ <!--  <p class="add" data-toggle="tooltip" title="Create Sub Section" data-placement="left" [routerLink]="['/catalogue/'+catalogue.id+'/section/create']" routerLinkActive="active"><i class="fa fa-plus" aria-hidden="true"></i></p> -->
+
+</div>
+<div class="row body_height justify-content-center">
+  <div class="col-sm-6 col-md-4 col-lg-3">
+    <div>
+      <img src="../../assets/img/kitchen.png" class="img-fluid addCursor img-thumbnail" width="100%">
+      <div class="text-center">
+        <p class="mt-2 border-bottom">Loos Furniture</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-md-4 col-lg-3">
+    <div>
+      <img src="../../assets/img/kitchen.png" class="img-fluid addCursor img-thumbnail" width="100%">
+      <div class="text-center">
+        <p class="mt-2 border-bottom">Loos Furniture</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-md-4 col-lg-3">
+    <div>
+      <img src="../../assets/img/kitchen.png" class="img-fluid addCursor img-thumbnail" width="100%">
+      <div class="text-center">
+        <p class="mt-2 border-bottom">Loos Furniture</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-md-4 col-lg-3">
+    <div>
+      <img src="../../assets/img/kitchen.png" class="img-fluid addCursor img-thumbnail" width="100%">
+      <div class="text-center">
+        <p class="mt-2 border-bottom">Loos Furniture</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+<div class="col-12 table-responsive p-0">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th class="text-center">ID</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Contact</th>
+          <th>Pin Code</th>
+          <th class="text-center activeCol">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="text-center">22</td>
+          <td>Lead Name</td>
+          <td>Lead212@kdhkj.dssd</td>
+          <td>1234567890</td>
+          <td>67890</td>
+          <td>
+            <div class="text-center fa_icons py-2">
+              <a><i class="fa fa-refresh" aria-hidden="true"></i></a>
+              <a><i class="fa fa-trash" aria-hidden="true"></i></a>
+              <a><i class="fa fa-pencil" aria-hidden="true"></i></a>
+              <a><i class="fa fa-file-text" aria-hidden="true"></i></a>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+
+<div class="row">
+  <div class="col-6">
+    <div class="row body_height justify-content-center">
+      <div class="col-11 table-responsive">
+        <h4>Sub-section List</h4>
+        <table class="table table-hover">
+          <thead>
+          <tr>
+            <th>Section</th>
+            <th>Details</th>
+            <th>Immediate Relation</th>
+            <th class="text-center">Action</th>
+          </tr>
+          </thead>
+          <tbody>
+          <!-- <tr *ngFor="let catalogue of catalogues">
+            <td>
+              <a href = "/catalogue/{{catalogue.id}}/section">{{catalogue.name}}</a>
+            </td>
+            <td>
+            {{catalogue.description}}
+            </td>
+            <td></td>
+            <td>
+              <div class="text-center fa_icons py-2">
+                <a [routerLink]="['/catalogue/'+catalogue.id+'/view']" routerLinkActive="active" title="View/Add Sub-section"><i class="fa fa-eye" aria-hidden="true"></i></a><br>
+                <a [routerLink]="['/catalogue/'+catalogue.id+'/section/create']" routerLinkActive="active" title="Add Sub-section"><i class="fa fa-plus" aria-hidden="true"></i></a><br>
+                <a><i class="fa fa-pencil" aria-hidden="true"></i></a><br>
+                <a><i class="fa fa-trash" aria-hidden="true"></i></a>
+              </div>
+            </td>
+          </tr> -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="col-6">
+    <div class="row body_height justify-content-center">
+      <div class="col-11 table-responsive">
+        <h4>Products</h4>
+        <table class="table table-hover">
+          <thead>
+          <tr>
+            <th>Product Image</th>
+            <th>Product</th>
+            <th>Details</th>
+            <th>Price</th>
+            <th class="text-center">Action</th>
+          </tr>
+          </thead>
+          <tbody>
+         <!--  <tr *ngFor="let product of products">
+            <td>
+              <div class="img-container">
+                <img src={{product.attachment_file}} alt="No Image">
+              </div>
+            </td>
+            <td>
+              {{product.name}}
+            </td>
+            <td>
+              {{product.description}}
+            </td>
+            <td>
+              <small>&#x20B9;</small>{{product.price}}
+            </td>
+            <td>
+              <div class="text-center fa_icons py-2">
+                <a><i class="fa fa-pencil" aria-hidden="true"></i></a><br>
+                <a><i class="fa fa-trash" aria-hidden="true"></i></a>
+              </div>
+            </td>
+          </tr> -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<!--<div class="row">-->
+    <!--<div class="col-md-12">-->
+        <!--&lt;!&ndash;<div class="card" *ngIf="catalogues && catalogues.length > 0">&ndash;&gt;-->
+            <!--&lt;!&ndash;<div class="card-header card-header-icon" data-background-color="orange">&ndash;&gt;-->
+                <!--&lt;!&ndash;<i class="material-icons">assignment</i>&ndash;&gt;-->
+            <!--&lt;!&ndash;</div>&ndash;&gt;-->
+            <!--&lt;!&ndash;<div class="card-content">&ndash;&gt;-->
+                <!--&lt;!&ndash;<h4 class="card-title"> <a href = "/catalogue/list">Sub-section List</a> </h4>&ndash;&gt;-->
+                <!--&lt;!&ndash;&lt;!&ndash; <button class="btn pull-right" [routerLink]="['/catalogue/create']" routerLinkActive="active">Create Section</button> &ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;<div class="clearfix"></div>&ndash;&gt;-->
+                <!--&lt;!&ndash;<div class="table-responsive">&ndash;&gt;-->
+                    <!--&lt;!&ndash;<table class="table">&ndash;&gt;-->
+                        <!--&lt;!&ndash;<thead class="text-primary">&ndash;&gt;-->
+                            <!--&lt;!&ndash;<th class = "col-md-2">Section</th>&ndash;&gt;-->
+                            <!--&lt;!&ndash;<th>Details</th>&ndash;&gt;-->
+                            <!--&lt;!&ndash;<th>Immediate relation</th>&ndash;&gt;-->
+                            <!--&lt;!&ndash;<th class = "col-md-2 text-right">Actions</th>&ndash;&gt;-->
+                        <!--&lt;!&ndash;</thead>&ndash;&gt;-->
+                        <!--&lt;!&ndash;<tbody>&ndash;&gt;-->
+                            <!--&lt;!&ndash;<tr *ngFor="let catalogue of catalogues">&ndash;&gt;-->
+                                <!--&lt;!&ndash;<td><a href = "/catalogue/{{catalogue.id}}/section">{{catalogue.name}}</a></td>&ndash;&gt;-->
+                                <!--&lt;!&ndash;<td>{{catalogue.description}}</td>&ndash;&gt;-->
+                                <!--&lt;!&ndash;<td>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;&lt;!&ndash; <span> <strong>Parent Section: </strong> </span>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;<span *ngIf="!catalogue.parent"> Root</span>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;<span *ngFor="let parent of catalogue.parent"> <a [routerLink]="['/catalogue/'+parent.id+'/view']" routerLinkActive="active">{{parent.name}}</a>, </span>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;<br>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;<span> <strong>Sub-Section: </strong> </span>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;<span *ngIf="catalogue.children && catalogue.children.length < 1">No sub section</span>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;<span *ngFor="let child of catalogue.children"> <a [routerLink]="['/catalogue/'+child.id+'/view']" routerLinkActive="active">{{child.name}}</a>, </span>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;<br>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;<span> <strong>Products: </strong> </span>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;<span *ngIf="catalogue.product_list && catalogue.product_list.length < 1">No product</span>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;<span *ngFor="let product of catalogue.product_list"> {{product.name}}, </span> &ndash;&gt;&ndash;&gt;-->
+                                <!--&lt;!&ndash;</td>&ndash;&gt;-->
+                                <!--&lt;!&ndash;<td class="td-actions text-right">&ndash;&gt;-->
+                                    <!--&lt;!&ndash;&lt;!&ndash; <button class="btn" [routerLink]="['/catalogue/'+catalogue.id+'/view']" routerLinkActive="active">View</button> &ndash;&gt;&ndash;&gt;-->
+                                    <!--&lt;!&ndash;<button type="button" rel="tooltip" class="btn btn-info" [routerLink]="['/catalogue/'+catalogue.id+'/view']" routerLinkActive="active" title="View/Add Sub-section">&ndash;&gt;-->
+                                        <!--&lt;!&ndash;<i class="material-icons">description</i>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;</button>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;<button type="button" rel="tooltip" class="btn btn-success" [routerLink]="['/catalogue/'+catalogue.id+'/section/create']" routerLinkActive="active" title="Add Sub-section">&ndash;&gt;-->
+                                        <!--&lt;!&ndash;<i class="material-icons">add</i>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;</button>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;<button type="button" rel="tooltip" class="btn btn-info" disabled="true">&ndash;&gt;-->
+                                        <!--&lt;!&ndash;<i class="material-icons">edit</i>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;</button>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;<button type="button" rel="tooltip" class="btn btn-danger" disabled="true">&ndash;&gt;-->
+                                        <!--&lt;!&ndash;<i class="material-icons">close</i>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;</button>&ndash;&gt;-->
+                                <!--&lt;!&ndash;</td>&ndash;&gt;-->
+                            <!--&lt;!&ndash;</tr>&ndash;&gt;-->
+                        <!--&lt;!&ndash;</tbody>&ndash;&gt;-->
+                    <!--&lt;!&ndash;</table>&ndash;&gt;-->
+
+
+                <!--&lt;!&ndash;</div>&ndash;&gt;-->
+            <!--&lt;!&ndash;</div>&ndash;&gt;-->
+        <!--&lt;!&ndash;</div>&ndash;&gt;-->
+
+        <!--<div class="card" *ngIf=" products && products.length > 0">-->
+            <!--<div class="card-header card-header-icon" data-background-color="orange">-->
+                <!--<i class="material-icons">assignment</i>-->
+            <!--</div>-->
+            <!--<h4 class="card-title">Products</h4>-->
+            <!--<div class="card-content">-->
+                <!--<div class="table-responsive">-->
+                    <!--<table class="table table-shopping">-->
+                        <!--<thead>-->
+                            <!--<tr>-->
+                                <!--<th class="text-center col-md-2"></th>-->
+                                <!--<th class="col-md-2">Product</th>-->
+                                <!--<th class="">Detail</th>-->
+                                <!--<th class="col-md-2 text-right">Price</th>-->
+                                <!--<th class="col-md-2 text-right">Action</th>-->
+                            <!--</tr>-->
+                        <!--</thead>-->
+                        <!--<tbody>-->
+                            <!--<tr *ngFor="let product of products">-->
+                                <!--<td>-->
+                                    <!--<div class="img-container">-->
+                                        <!--<img src={{product.attachment_file}} alt="No Image">-->
+                                    <!--</div>-->
+                                <!--</td>-->
+                                <!--<td>-->
+                                  <!--{{product.name}}-->
+                                  <!--&lt;!&ndash; <br />-->
+                                  <!--<small>by Dolce&Gabbana</small> &ndash;&gt;-->
+                                <!--</td>-->
+
+                                <!--<td>-->
+                                    <!--{{product.description}}-->
+                                <!--</td>-->
+
+                                <!--<td class="col-md-2 text-right">-->
+                                    <!--<small>&#x20B9;</small>{{product.price}}-->
+                                <!--</td>-->
+
+                                <!--<td class="td-actions text-right">-->
+                                    <!--&lt;!&ndash; <button type="button" rel="tooltip" class="btn btn-info" [routerLink]="['/catalogue/'+catalogue.id+'/view']" routerLinkActive="active" title="View/Add Sub-section"> &ndash;&gt;-->
+                                        <!--&lt;!&ndash; <i class="material-icons">description</i>-->
+                                    <!--</button> &ndash;&gt;-->
+                                    <!--&lt;!&ndash; <button type="button" rel="tooltip" class="btn btn-success" [routerLink]="['/catalogue/'+catalogue.id+'/product/create']" routerLinkActive="active" title="Add Sub-section">-->
+                                        <!--<i class="material-icons">add</i>-->
+                                    <!--</button> &ndash;&gt;-->
+                                    <!--<button type="button" rel="tooltip" class="btn btn-info" disabled="true">-->
+                                        <!--<i class="material-icons">edit</i>-->
+                                    <!--</button>-->
+                                    <!--<button type="button" rel="tooltip" class="btn btn-danger" disabled="true">-->
+                                        <!--<i class="material-icons">close</i>-->
+                                    <!--</button>-->
+                                <!--</td>-->
+                            <!--</tr>-->
+                        <!--</tbody>-->
+                    <!--</table>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
+<!--</div>-->

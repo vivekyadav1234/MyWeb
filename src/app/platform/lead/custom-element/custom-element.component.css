@@ -1,0 +1,35 @@
+.addIcon{
+    color: darkred !important;
+    cursor: pointer;
+}
+label{
+	color: gray;
+    font-family: 'roboto';
+    font-weight: 300;
+}
+.iconBox{
+  display: inline-block;
+  border-radius: 60px;
+  padding: 0.5em 0.6em;
+  border: 1px solid black;
+}
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: gray;
+    opacity: 1;
+    font-weight: 200;
+    font-family: 'roboto';
+     /* Firefox */
+}
+.btn-pink{
+  margin-top: 30px;
+ margin-right: 65px;
+}
+.change-div{
+  padding: 25px;
+}
+.line-chng{
+  border-top: 1px solid #e2dbdb;
+  margin-left: 5px;
+  margin-right: 5px;
+  margin-top: 18px;
+}

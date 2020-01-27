@@ -1,0 +1,264 @@
+<div class="row justify-content-center bgDiv">
+	<div class="col-11">
+
+		<div class="headerBg mt-4 pl-5 pr-3">
+			<p class="active initialProposal pill-tab" (click) = "ActivateTab('initialProposal')">Initial Design Proposal</p>
+			<!-- <p class="finalProposal pill-tab" (click) = "ActivateTab('finalProposal')">Final Design Proposal</p> -->
+			<p class="meet pill-tab" (click) = "ActivateTab('meet')">Meet The Team</p>
+			<p class="calls pill-tab" (click) = "ActivateTab('calls')">Scheduled Calls</p>
+			<p class="files pill-tab" (click) = "ActivateTab('files')">Files</p>
+		</div>
+    <div *ngIf = "activeTab == 'initialProposal'">
+			<div class="proposalBoxBg" >
+				<div class="proposalBox mr-3 addCursor" id="proposal-{{obj.id}}" *ngFor="let obj of proposal_list" (click) = "showProposalDoc(obj.id)">
+					<div class="row">
+						<div class="col-3 text-center px-2">
+							<div class="proposalBoxImg">
+								<img class="img-fluid" src="../../../assets/img/customer/folder.png">
+							</div>
+						</div>
+						<div class="col-9 pl-0">
+							<div class="proposalBoxBody">
+								<h6 class="mb-0 hdr-chng capitalize">{{ obj.proposal_name  | replaceChar}}</h6>
+								<p class="mb-0">{{ obj.proposed_quotations.length + obj.proposesd_presentations.length }} Files</p>
+								<span class="mb-0">{{ obj.updated_at | date:"dd MMMM, y"}}</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>	
+
+		<div class="row mx-0 mainBody" *ngIf = "activeTab == 'initialProposal'">
+			<div class="col-7">
+				<div class="row">
+					<div class="col-md-6" *ngFor="let boq of proposal_boq_list">
+						<div class="card myCard mb-4">
+						  <a href="" [routerLink]= "['/customer/projects/'+project_id+'/boq/'+boq.quotation.id+'/proposalDoc/'+boq.proposed_doc_id]"  [queryParams]="{status: boq.is_approved}">	
+						   <img class="card-img-top px-2 pt-2" src="https://5.imimg.com/data5/CW/YW/MY-418425/sliding-door-wardrobe-500x500.jpeg" alt="Card image cap">
+						  </a> 
+						  <div class="card-body py-2">
+						    <div class="card-text mb-0">
+						    	<div class="row">
+						    		<div class="col-sm-2 p-0">
+						    			
+						    			<img src="../../../assets/img/customer/BOQ.png" class="img-fluid boq mr-3">
+						    		    
+						    		</div>
+						    		<div class="col-sm-8 p-0 pt-2">
+						    			{{boq.quotation.reference_number}}<br>
+						    			<span *ngIf="boq.is_approved == 'true' ">Remarks:{{ boq.remark }}</span>
+						    			<span *ngIf="boq.is_approved == 'false' ">Remarks:{{ boq.remark }}</span>
+						    		</div>
+						    		<div class="col-sm-2">
+						    			<span class="boq optionMenu" data-toggle="collapse" [attr.data-target]="'#menuOption'+boq.proposed_doc_id" *ngIf="boq.is_approved!=false && boq.is_approved!=true && boq.is_approved!='false' && boq.is_approved!='true'"><i class="fa fa-ellipsis-v"></i></span>
+						    			<span *ngIf="boq.is_approved"><i class="fa fa-check-circle" style="font-size: 37px;color: #53a019;"></i></span>
+						    			<span *ngIf="boq.is_approved == false || boq.is_approved =='false'"><i class="fa fa-times-circle" style="font-size: 37px;color: #a01919;"></i></span>
+						    		</div>
+						    	</div>
+						    </div>
+						    <div class="collapse myCollapse" id="menuOption{{boq.proposed_doc_id}}">
+						      <p class="pArrow"></p>
+						      <div class="card card-body optionDiv text-right py-2 px-3">
+						        <form [formGroup]="approvalForm">
+							        <input type="text" class="form-control mb-2" placeholder="Remarks" formControlName = "remark">
+							        <!-- <span class="approve" (click) = "boqApproval(boq.proposed_doc_id,'yes')" >Approve</span> -->
+							        <span class="approve" data-toggle="modal" data-target="#approvalModal" (click) = "setProposedDocId(boq.proposed_doc_id)">Approve</span>
+
+							        <span class="reject" (click) = "boqApproval(boq.proposed_doc_id,false)" >Reject</span>
+							      </form>
+						      </div>
+						    </div>
+						  </div>
+						</div>
+					</div>
+					<div class="col-md-6" *ngFor="let ppt of proposal_ppt_list">
+						<div class="card myCard mb-4">
+							<a href="" target="_blank" [routerLink]= "['/customer/projects/'+project_id+'/presentation/'+ppt.presentation.id]">
+						  	<img class="card-img-top px-2 pt-2 cursorPointer" src="https://5.imimg.com/data5/CW/YW/MY-418425/sliding-door-wardrobe-500x500.jpeg" alt="Card image cap">
+						  </a>
+						  <div class="card-body py-2">
+						    <div class="card-text mb-0">
+						    	<div class="row">
+						    		<div class="col-sm-2 p-0">
+						    			<img src="../../../assets/img/customer/ppt.png" class="img-fluid ppt mr-3">
+						    		</div>
+						    		<div class="col-sm-8 p-0 pt-2">
+						    			{{ppt.presentation.title}}
+						    		</div>
+						    		<div class="col-sm-2">
+						    			
+						    		</div>
+						    	</div>
+						    </div>
+
+						  </div>
+						</div>
+					</div>
+					<div class="col-md-12 not-found " *ngIf="proposal_ppt_list.length == 0 && proposal_boq_list.length==0 ">
+			            <div class="boq-img">
+			              <img src="../../../assets/img/customer/DESIGNPROPOSAL.png" style="height: 250px;width: 300px">
+			            </div>
+			            <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">No Design Proposal Yet!!<br><span style="font-size: 20px;text-align: center;color: dimgray">You will soon start to see once your Designer submits initial Design !!</span></p> 
+			           <!--  <span style="font-size: 14px;text-align: center;color: dimgray">You will soon start to see once your Designer submits initial Design !!</span> -->
+
+			        </div> 
+				</div>
+			</div>
+			<div class="col-5">
+				<form [formGroup]="cForm" (ngSubmit)="schedule(cForm.value)">
+					<div class="row justify-content-end pr-3">
+						<div class="col-11 callDiv px-0">
+							<div>
+								<p class="schedule">Call Schedule to Designer</p>
+							</div>
+							<div class="row justify-content-center scheduleForm">
+								<div class="col-11">
+									<div class="form-group">
+										<label>Select date</label>
+										<input type="date" formControlName="date" class="form-control" id="txtDate" (change) = "disableDate()" >
+										<div class="alert" *ngIf="!cForm.controls['date'].valid && cForm.controls['date'].touched">This is required</div>
+									</div>
+									<div class="form-group">
+										<label>Pick a time</label>
+										<input type="time" formControlName="time" class="form-control">
+										<div class="alert" *ngIf="!cForm.controls['time'].valid && cForm.controls['time'].touched">This is required</div>
+									</div>
+									<div class="form-group">
+										<label>Any questions you'd like us to get started on?</label>
+										<input type="text" formControlName="description" class="form-control">
+										<div class="alert" *ngIf="!cForm.controls['description'].valid && cForm.controls['description'].touched">This is required</div>
+									</div>
+								</div>
+							</div>
+							<input type="submit" class="form-control callSubmit mt-3" value="Call Schedule" [disabled]="!cForm.valid">
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+
+	</div>
+</div>
+
+<div class="modal fade scheduledModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content myModalContent">
+      <div class="modal-header myModalHeader">
+        <div class="closeButton" data-dismiss="modal" aria-label="Close">
+          <span class="modalCloseSpan" aria-hidden="true">&times;</span>
+        </div>
+      </div>
+      <div class="modal-body">
+        <div class="container-fluid">
+          <div class="row justify-content-center">
+          	<div class="col-md-7">
+          		<div class="text-center innerScheduledModal mt-4">
+          			<h4>Your call has been scheduled.</h4>
+          			<img class="my-4" src="../../../assets/img/customer/missing.png">
+          			<h5 class="designername">VIKRANT</h5>
+          			<p>Designer</p>
+          			<div class="text-left m-auto d-inline-block col-sm-7 text-center">
+	          			<span>Date: </span>
+	          			<span class="meetingdate"></span>
+          			</div>
+          			<span class="para mt-4 mb-3">You will receive an email with the call confirmation number. Please follow instruction in the email to cancel or reschedule.</span>
+          		</div>
+          	</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Approval Modal -->
+<div class="modal fade" id="approvalModal" tabindex="-1" role="dialog" aria-labelledby="approvalModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="border-bottom: 1px solid #460110;">
+        <h5 class="modal-title" id="approvalModalLabel">Terms of Use</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row justify-content-center">
+          <div class="col-12 col-md-11 col-lg-10">
+            <div class="termsofuseDiv">
+              <p>These Terms and Conditions of Use (the “Terms of Use”) apply to the company – Singularity Furniture Private Limited (Arrivae)
+              web site located at www.Arrivae.com, and all associated sites linked to www.Arrivae.com by Arrivae, its subsidiaries and
+              affiliates, including Arrivae sites around the world (collectively, the “Site”). The Site is the property of Arrivae Inc.
+              (“Arrivae”) and its licensors. BY USING THE SITE, YOU AGREE TO THESE TERMS OF USE; IF YOU DO NOT AGREE, DO NOT USE THE SITE.</p>
+              <h6 class="pt-2">Arrivae reserves the right, at its sole discretion, to change, modify, add or remove portions of these Terms of Use, at any
+              time. It is your responsibility to check these Terms of Use periodically for changes. Your continued use of the Site following
+              the posting of changes will mean that you accept and agree to the changes. As long as you comply with these Terms of Use,
+              Arrivae grants you a personal, non-exclusive, non-transferable, limited privilege to enter and use the Site.</h6>
+              <h3 class="my-3 pt-4">Content</h3>
+              <p>All text, graphics, user interfaces, visual interfaces, photographs, trademarks, logos, sounds, music, artwork and computer
+              code (collectively, “Content”), including but not limited to the design, structure, selection, coordination, expression,
+              “look and feel” and arrangement of such Content, contained on the Site is owned, controlled or licensed by or to Arrivae,
+              and is protected by trade dress, copyright, patent and trademark laws, and various other intellectual property rights and
+              unfair competition laws.</p>
+              <p>Except as expressly provided in these Terms of Use, no part of the Site and no Content may be copied, reproduced, republished,
+              uploaded, posted, publicly displayed, encoded, translated, transmitted or distributed in any way (including “mirroring”)
+              to any other computer, server, Web site or other medium for publication or distribution or for any commercial enterprise,
+              without Arrivae’s express prior written consent.</p>
+              <p>You may use information on Arrivae products and services (such as data sheets, knowledge base articles, and similar materials)
+              purposely made available by Arrivae for downloading from the Site, provided that you (1) not remove any proprietary notice
+              language in all copies of such documents, (2) use such information only for your personal, non-commercial informational purpose
+              and do not copy or post such information on any networked computer or broadcast it in any media, (3) make no modifications
+              to any such information, and (4) not make any additional representations or warranties relating to such documents.</p>
+              <h3 class="my-3 pt-4">Your Use of the Site</h3>
+              <p>You may not attempt to gain unauthorized access to any portion or feature of the Site, or any other systems or networks connected
+              to the Site or to any Arrivae server, or to any of the services offered on or through the Site, by hacking, password “mining”
+              or any other illegitimate means.</p>
+              <p>You may not probe, scan or test the vulnerability of the Site or any network connected to the Site, nor breach the security
+              or authentication measures on the Site or any network connected to the Site. You may not reverse look-up, trace or seek to
+              trace any information on any other user of or visitor to the Site, or any other customer of Arrivae, including any Arrivae
+              account not owned by you, to its source, or exploit the Site or any service or information made available or offered by or
+              through the Site, in any way where the purpose is to reveal any information, including but not limited to personal identification
+              or information, other than your own information, as provided for by the Site.</p>
+              <p>You agree that you will not take any action that imposes an unreasonable or disproportionately large load on the infrastructure
+              of the Site or Arrivae’s systems or networks, or any systems or networks connected to the Site or to Arrivae.</p>
+              <p>You agree not to use any device, software or routine to interfere or attempt to interfere with the proper working of the
+              Site or any transaction being conducted on the Site, or with any other person’s use of the Site.</p>
+              <p>You may not use the Site or any Content for any purpose that is unlawful or prohibited by these Terms of Use, or to solicit
+              the performance of any illegal activity or other activity which infringes the rights of Arrivae or others.</p>
+              <h3 class="my-3 pt-4">Accounts, Passwords and Security</h3>
+              <p>Certain features or services offered on or through the Site may require you to open an account (including setting up an account
+              and password). You are entirely responsible for maintaining the confidentiality of the information you hold for your account,
+              including your password, and for any and all activity that occurs under your account as a result of your failing to keep
+              this information secure and confidential. You agree to notify Arrivae immediately of any unauthorized use of your account
+              or password, or any other breach of security. You may be held liable for losses incurred by Arrivae or any other user of
+              or visitor to the Site due to someone else using your username, password or account as a result of your failing to keep your
+              account information secure and confidential.</p>
+              <p>You may not use anyone else’s username, password or account at any time without the express permission and consent of the
+              holder of that username password or account. Arrivae cannot and will not be liable for any loss or damage arising from your
+              failure to comply with these obligations.</p>
+              <h3 class="my-3 pt-4">Violation of These Terms of Use</h3>
+              <p>You agree that Arrivae may, in its sole discretion and without prior notice, terminate your access to the Site and/or block
+              your future access to the Site if we determine that you have violated these Terms of Use or other agreements or guidelines
+              which may be associated with your use of the Site. You also agree that any violation by you of these Terms of Use will constitute
+              an unlawful and unfair business practice, and will cause irreparable harm to Arrivae, for which monetary damages would be
+              inadequate, and you consent to Arrivae obtaining any injunctive or equitable relief that Arrivae deems necessary or appropriate
+              in such circumstances. These remedies are in addition to any other remedies Arrivae may have at law or in equity.</p>
+              <p>If Arrivae does take any legal action against you as a result of your violation of these Terms of Use, Arrivae will be entitled
+              to recover from you, and you agree to pay, all reasonable attorneys’ fees and costs of such action, in addition to any other
+              relief granted to Arrivae. You agree that Arrivae will not be liable to you or to any third party for termination of your
+              access to the Site as a result of any violation of these Terms of Use.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-pink" (click) = "approveBoq()">Approve BOQ</button>
+      </div>
+    </div>
+  </div>
+</div>
+<app-final-design-proposal *ngIf = "activeTab == 'finalProposal'"></app-final-design-proposal>
+<!-- <app-meet *ngIf = "activeTab == 'meet'" [team]='team'></app-meet> -->
+<app-scheduled-calls *ngIf = "activeTab == 'calls'" [scheduledEvents]='scheduledEvents'></app-scheduled-calls>
+<app-shared-files *ngIf = "activeTab == 'files'" [sharedFiles]='sharedFiles'></app-shared-files>

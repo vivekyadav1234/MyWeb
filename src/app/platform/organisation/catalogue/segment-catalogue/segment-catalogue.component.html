@@ -1,0 +1,64 @@
+ <div class="Product-bg">
+  <div>
+    <div class="row container-set container-set-change">
+      <div class="col-6">
+        <div class="ss-searchbox">
+          <i class="fa fa-search float-right"></i>
+          <input class="form-control" type="text" placeholder="Search by SKU" (keydown.enter)="newSearchFilter($event.target.value)">
+        </div>
+      </div>
+    </div>
+  </div>
+ 
+	<div class="container cardPoss">
+
+    <div class="mb-1">
+
+      <!-- Catalogue breadcrumb -->
+      <small class="Living-room-seating cursor-pointer" [routerLink]="['/catalogue']" (mouseover) = "$event.target.style.color='#922230'" >Catalogue</small>
+      
+      <!-- segment breadcrumb -->
+      <i class="fa fa-angle-right  cosTogg1" *ngIf="breadcrumb.segment"></i><small class="Sofa-Sets cursor-pointer" [routerLink]="['/catalogue','filter','segment',breadcrumb.segment.id]" [queryParams]="{segment: breadcrumb.segment.name}" (mouseover) = "$event.target.style.color='#922230'" *ngIf="breadcrumb.segment">{{breadcrumb.segment.name}}</small>
+      
+      <!-- category breadcrumb -->
+      <i class="fa fa-angle-right cosTogg1" *ngIf="breadcrumb.category"></i><small class="Hopefull-Sofa cursor-pointer" *ngIf="breadcrumb.category" [routerLink]="['/catalogue','filter','category',breadcrumb.category.id]" (mouseover) = "$event.target.style.color='#922230'">{{breadcrumb.category.name}}</small>
+      
+      <!-- subcategory breadcrumb -->
+      <i class="fa fa-angle-right cosTogg1" *ngIf="breadcrumb.subcategory"></i><small class="Hopefull-Sofa cursor-pointer" *ngIf="breadcrumb.subcategory" [routerLink]="['/catalogue/']" [queryParams]="{subcategory_ids: breadcrumb.subcategory.id}" (mouseover) = "$event.target.style.color='#922230'">{{breadcrumb.subcategory.name}}</small>
+
+      <!-- product breadcrumb -->
+      <i class="fa fa-angle-right cosTogg1" *ngIf="breadcrumb.product"></i><small class="Hopefull-Sofa cursor-pointer" *ngIf="breadcrumb.product">{{breadcrumb.product.name}}</small>
+
+
+    </div>
+
+		<div class="row">
+			<div class="col-6 mb-4" *ngFor="let product of products_array | paginate: { itemsPerPage: per_page, currentPage: current_page, totalItems: total_page  }">
+        <ng-container *ngIf="catalogue_type == 'segment'">
+          <div class="card xzoom text-center" style="display: block;" [routerLink]="['/catalogue','filter','category',product.id]">
+          	 
+             <img class="card-img-top" src="{{product.highlight_image}}" onerror="this.src='./assets/img/no_image.svg'" style="max-height: 235px; width: auto;">
+             <div class="card-footer">
+               <p class="text-center contPoss">{{product.category_name}}</p>
+               <p class="text-center contPossi">{{product.number_products}} Product | From: ₹ {{product.starting_price}}</p>
+               </div>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="catalogue_type == 'category'">
+          <div class="card xzoom text-center" style="display: block;" [routerLink]="['/catalogue']" [queryParams]="{subcategory_ids: product.id}">
+             
+             <img class="card-img-top" src="{{product.highlight_image}}" onerror="this.src='./assets/img/no_image.svg'" style="max-height: 235px; width: auto;">
+             <div class="card-footer">
+               <p class="text-center contPoss">{{product.subcategory_name}}</p>
+               <p class="text-center contPossi">{{product.number_products}} Product | From: ₹ {{product.starting_price}}</p>
+               </div>
+          </div>
+        </ng-container>
+			</div>
+      <div class="col-md-12 text-center" *ngIf="products_array && products_array.length >0">
+        <pagination-controls autoHide="true" (pageChange)="current_page = filterNewProducts($event)"></pagination-controls>
+      </div>
+		</div>
+	</div>
+</div>

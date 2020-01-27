@@ -1,0 +1,47 @@
+<div class="row ss-top-menu">
+  <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+    <span class="ss-text-light" style="vertical-align: -webkit-baseline-middle;">Dashboard <i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;">BOQs</span>
+
+    <button class="bt-boq btn btn-pink mr-2 p-2 pull-right" type="button" data-toggle="modal" data-target="#inviteChampionModal" *ngIf = "is_champion=='true'" (click)="referralinvitechampions.getChampionList()">Invite Level 2 & Level 3 User</button>
+  </div>
+</div>
+<div class="row body_height justify-content-center table-body">
+  <div class="col-12 not-found text-center" *ngIf="quotations_list && quotations_list.length==0 ">
+    <div class="boq-img">
+      <img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+    </div>
+    <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing to show...</p> 
+  </div>
+  <div class="col-12" *ngIf="quotations_list && quotations_list.length>0">
+   
+    <div class="tableDiv">
+      <table class="table">
+        <thead class="ss-thead">
+          <tr>
+            <th class="firstTh" style="min-width: 1rem;">#</th>
+            <th style="min-width: 12rem;">LEAD NAME</th>
+            <th style="min-width: 12rem;">BOQ reference no </th>
+            <th style="min-width: 12rem;">PROJECT NAME</th>
+            <th style="min-width: 12rem;">PROJECT ID</th>
+            <!-- <th style="min-width: 12rem;">COMMUNITY MANAGER</th> -->
+          </tr>
+        </thead>
+        <tbody class="ss-tbody">
+          <tr *ngFor="let obj of quotations_list; let i = index" [attr.data-index]="i">
+            <td style="min-width: 1rem;">{{i+1}}</td>
+            <td style="min-width: 1rem;" class="capitalize">{{ obj.lead_name }}</td>
+            <td  class="capitalize">
+              <a class="addCursor ss-link" href="" [routerLink]="['/quotations/'+obj.id+'/created_purchase_orders']">{{ obj.reference_number }}</a>
+            </td>
+            <td style="min-width: 1rem;">{{ obj.project_details.name }}</td>
+            <td style="min-width: 1rem;">{{ obj.project_details.id }}</td>
+            <!-- <td style="min-width: 1rem;" class="capitalize">{{obj.designer.name}}</td> -->
+            <!-- <td style="min-width: 1rem;" class="capitalize">{{obj.community_manager.name}}<br><span class="email-chng">({{ obj.community_manager.email }})</span></td> -->
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+</div>

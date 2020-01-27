@@ -1,0 +1,100 @@
+<div class="row ss-top-menu">
+  <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-xs-3">
+    <span class="ss-text-light addCursor" routerLink="/">Dashboard <i class="rightArrow fa fa-angle-right"></i></span>
+      <span class="ss-text-dark">Leads <i class="rightArrow fa fa-angle-right"></i></span> <span class="capitalize ss-text-dark">Escalated</span>
+    </div>
+    <div class="col-xl-5 col-lg-5 col-md-5 col-sm-5 col-xs-5">
+      <div class="ss-searchbox">
+          <i class="fa fa-search"></i>
+          <input class="form-control" type="text" placeholder="Type name, status, role to search..." #search (keyup)="0">
+      </div>
+    </div>
+</div>
+<div class="rk-ui-notification" *ngIf="successalert">
+  <span id="notificationMessageText">{{successMessage}}</span>
+  <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+<div class="rk-firstRow row">
+  <div class="col-12" *ngIf="erroralert">
+    <div class="alert-box grid-100" *ngIf="errorMessage">
+      <div class="alert alert-danger mt-3 text-center">
+        <a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a>
+        {{errorMessage}}
+      </div>
+    </div>
+  </div>
+  <!-- <div class="col-12" *ngIf="successalert">
+    <div class="alert-box grid-100" *ngIf="successMessage">
+      <div class="alert alert-success mt-3 text-center">
+        <a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+        {{successMessage}}
+      </div>
+    </div>
+  </div> -->
+</div>
+<div class="container-set">
+  <div class="row">
+      <div class="col-md-12">
+        <div class="tableDiv table-responsive">
+          <p class="text-center" *ngIf="escalatedLeads &&  escalatedLeads.length==0 ">No Leads</p>
+          <table class="table" *ngIf="escalatedLeads &&  escalatedLeads.length>0">
+            <thead>
+              <tr>
+                <th class="text-center firstTh">#</th>
+                <th (click)="sort('id')">Lead ID <i class="fa ml-2" [ngClass]="{'fa-sort': column != 'id', 'fa-sort-asc': (column == 'id' && !isDesc), 'fa-sort-desc': (column == 'id' && isDesc) }" aria-hidden="true"></i></th>
+                <th (click)="sort('name')">Name <i class="fa ml-2" [ngClass]="{'fa-sort': column != 'name', 'fa-sort-asc': (column == 'name' && !isDesc), 'fa-sort-desc': (column == 'name' && isDesc) }" aria-hidden="true"></i></th>
+                <th (click)="sort('lead_status')">Status <i class="fa ml-2" [ngClass]="{'fa-sort': column != 'lead_status', 'fa-sort-asc': (column == 'lead_status' && !isDesc), 'fa-sort-desc': (column == 'lead_status' && isDesc) }" aria-hidden="true"></i></th>
+                <th>Role</th>
+                <th>Contact</th>
+                <th>Last Status Update </th>
+                <th>Acquisition Date</th>
+                <th>Assigned CS Agent</th>
+                <th class="lastTh">Assign CS Agent</th>
+                <!-- <th class="lastTh"> Follow Up Date</th> -->
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngIf="(escalatedLeads | category: search.value).length==0">
+                <td colspan="8" class="text-center">No Match</td>
+              </tr>
+              <tr *ngFor="let data of escalatedLeads | category: search.value | sort: {property: column, direction: direction}; let i = index; " [attr.data-index]="i" id="filteredLeadRow{{i}}">
+                <td class="text-center">{{i+1}}</td>
+                  <td>{{data.id}}</td>
+                  <td class="capitalize"><span *ngIf="data.name!=null && data.name!='null' ">{{data.name}}</span><span *ngIf="data.name==null  || data.name=='null'">Unnamed</span></td>
+                  <td class="capitalize">
+                  <ng-container *ngIf="(data.lead_status !='follow_up')">{{data.lead_status | replaceChar}} 
+
+                  </ng-container>
+                  <ng-container *ngIf="(data.lead_status =='follow_up')"> 
+                    <a data-trigger="hover" title="Remarks" [attr.data-content] ="data.remark" class="pop" (mouseenter)="openpopup($event)">{{data.lead_status | replaceChar}}</a>
+                    <p class="time-chng">{{data.event_scheduled_time | date:'dd/MM/yyyy - h:mm a'}}</p>
+                  </ng-container>  
+                  </td>
+                  <td class="capitalize">{{data.lead_type}}</td>
+                  <td>{{data.contact}}</td>
+                <td>{{data.status_updated_at | date:'dd MMM, y , h:mm a'}}</td>
+                <td>{{data.created_at | date:'dd MMM, y , h:mm a'}}</td>
+                <td *ngIf="data.agent==null">Not Assigned</td>
+                <td *ngIf="data.agent!=null">{{data.agent.uid}}</td>
+                <td id="lastTdEditForm">
+                  <select class="form-control" style="width: 70%; display: inline-block;" (change)="onDropdownChange(data.id,$event.target.value,i)" id="assigndropdown{{data.id}}">
+                    <option value="">Assign CS Agent</option>
+                    <option *ngFor="let agent of csagentsArr" value="{{agent.id}}">{{agent.name}} - {{agent.email}}</option>
+                  </select>
+                  <img src="assets/v3/img/sendbutton1.svg" class="ml-1 sendIcon" (click)="assignLeadToAgent(data.id,i)">
+                </td>
+                  <!-- <td>sdxfcgvhbjndfcgvhbjndcfvghbjn</td> -->
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+  </div>
+</div>
+
+
+
+
+
+
+

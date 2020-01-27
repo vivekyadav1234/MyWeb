@@ -1,0 +1,26 @@
+.footer{
+    text-align: right;
+    padding: 5px 0;
+    background-color: #fff;
+}
+.footer a{
+    margin: 0 5px;
+}
+.footer a i{
+    color: #000;
+}
+.footer p{
+	margin: 0;
+    color: #a0a0a0;
+}
+
+
+
+
+
+
+@media (max-width: 767px) {
+	.footer{
+    text-align: center;
+  }
+}

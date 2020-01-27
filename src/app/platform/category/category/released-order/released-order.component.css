@@ -1,0 +1,64 @@
+.tableheadColor{
+	color: #707070 !important;
+}
+
+.modify-PO{
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.27;
+  color: #8d0528;
+}
+
+input[type=checkbox]:before {
+  font-family: "FontAwesome";
+  content: "\f00c";
+  font-size: 13px;
+  color: transparent !important;
+  background: white;
+  display: block;
+  width: 17px;
+  height: 17px;
+  border: 1px solid #a5a5a5;
+  margin-right: 7px;
+  border-radius: 3px;
+  box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+}
+input[type=checkbox]:checked:before {
+
+  color: black !important;
+  margin-top: -0.2rem;
+  content: "\f00c";
+}
+input[type=checkbox] {
+  -moz-appearance:none;
+  -webkit-appearance:none;
+  -o-appearance:none;
+  outline: none;
+  content: none;  
+}
+
+.poTableHead{
+  background-color: #8d0528;
+  color: white;
+}
+
+.leftBorder{
+	border-top-left-radius: 5px !important;
+  border-bottom-left-radius: 5px;
+}
+
+.rightBorder{
+	border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.pop{
+  position: unset;
+  font-size: 11px;
+}
+
+.recivedPoInput{
+  border: 1px solid #c9c9c9;
+  border-radius: 4px;
+  width: 5rem;
+}

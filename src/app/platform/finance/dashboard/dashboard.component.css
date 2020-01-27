@@ -1,0 +1,208 @@
+.table td{
+    padding: 1rem 0.75rem;
+    vertical-align: middle;
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.7);
+    border: none;
+}
+.minWidthForTd{
+  min-width: 185px;
+}
+.table th {
+    padding: .9rem;
+    vertical-align: middle;
+    border: none;
+    font-size: 12px;
+    text-transform: uppercase;
+    color: #9E9FA0;
+    background-color: #ECF0F1 !important
+}
+.table{
+  border-collapse: separate;
+  border-spacing: 0 5px;
+}
+.tableDiv tbody{
+  background-color: #fff;
+}
+.tableDiv{
+  overflow-x:scroll;
+}
+
+.tableDiv tbody tr{
+  box-shadow: 1px 1px 7px 0px #dadada;
+  border-radius: 5px;
+}
+.firstTh{
+  border-radius: 5px 0 0 0;
+}
+.lastTh{
+  border-radius: 0px 5px 0 0;
+}
+.downloadBtn{
+    border: 1px solid #8F0020;
+    padding: 5px 10px;
+    margin-top: 4px;
+    color: #8F0020 !important;
+}
+.downloadBtn:hover{
+    color: #fff !important;
+    background-color: #8F0020;
+}
+.expanded-col{
+    display: none;
+}
+.selectChnage{
+    border-radius: 1px;
+    width: 21%;
+    color: #D3D3D3;
+    display: inline;
+    height: 100%;
+    border: 1px solid #D3D3D3;
+}
+.tabs-chng{
+   border-bottom: 1px solid #a09c9c;
+   width: 265%;
+}
+.addCursor.active{
+  border-bottom: 3px solid darkred !important;
+}
+.chng{
+  font-weight: 400;
+  font-size: 15px;
+
+}
+
+.nav-link.active.active{
+  background:#ECF0F1;
+  border-color: #ECF0F1;
+}
+.text-underline{
+  margin-left: 2rem;
+}
+.text-format{
+  margin-left: 2rem;
+  color: #756e6e;
+  line-height: 2em;
+  font-family: 'roboto';
+}
+.row-format{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  right: 0;
+  margin-right: 0px;
+}
+.col-format{
+  border-left: 3px solid #edf0f1;
+  border-radius: 0;
+  margin-bottom: 0;
+}
+
+.modal-open .modal.modal-center {
+    display: flex!important;
+    align-items: center!important;
+}
+    .modal-dialog {
+        flex-grow: 1;
+    }
+
+.modal-top{
+  top:30% !important;
+}
+.completed{
+  background: #beeedd;
+}
+.rejected{
+  background: #F7C8CF;
+}
+.completed,.rejected{
+  text-align: center;
+  font-weight: 500;
+  font-size: 16px;
+}
+.title-chnage{
+    margin-left: 7rem;
+    font-size: 21px;
+    font-family: 'roboto';
+    color: #505050;
+}
+.cheque-mode{
+  display: none;
+}
+.neft-mode{
+  display: none;
+  color: #504949;
+}
+.select{
+  font-family: 'roboto';
+  color: #505050;
+}
+.ng-select {
+    position: relative;
+    display: inline-block;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    width: 21%;
+    margin-bottom: 10px !important;
+    margin-top: 10px !important;
+}
+.ng-select .ng-select-container{
+  border-radius: 0px !important;
+}
+.text-for-chng{
+  color: darkred;
+  font-weight: bold;
+}
+.form-control-change{
+  position: relative;
+  display: inline-block;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  width: 100%;
+  margin-bottom: 10px !important;
+  margin-top: 10px !important;
+  font-size: 15px;
+  font-family: 'roboto';
+
+}
+.form-check{
+  display: inline-block;
+  margin-bottom: 0;
+  position: relative;
+}
+.ng-select-cnhg{
+  width: 40% !important
+}
+.cursor-img{
+    background-image: url(/assets/img/finance/angle-arrow-down.png);
+    background-repeat: no-repeat;
+    padding: 7px;
+}
+.cursor-img.active{
+    background-image: url(/assets/img/finance/up-arrow.png);
+}
+.arrivae-color{
+  color:#8F0020;
+  padding:2px;
+}
+.payment-content{
+  width:800px;
+  margin-top:10%;
+}
+
+.payment-content td{
+  text-align: center
+}
+.payment-content th{
+  text-align: center
+}
+.payment-color{
+  color:#8F0020 !important;
+}
+
+
+
+
+
+

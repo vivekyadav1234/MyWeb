@@ -1,0 +1,144 @@
+<div class="title_nav" id="logoContainer">
+    <div class="brand">
+        <div class="text-center" *ngIf="this.url.includes( 'arrivae') || this.url.indexOf('arrivae') !== -1 ">
+          <a class="" href="/"><img src="/assets/img/Logo resized.svg" style="width: 151px;margin-top:1%; margin-bottom: 1%"></a>
+        </div>
+        <div class="text-center" *ngIf="this.url.includes( 'polkahouse') || this.url.indexOf('polkahouse') !== -1 ">
+          <a class="" [routerLink]="['/']"><img src="../../../assets/img/logo polka1.png" width="200px"></a>
+        </div>
+        <a *ngIf="this.url == 'http://localhost:4200'" class="navbar-brand" href="/"><img src="/assets/img/Logo resized.svg" style="width: 151px;margin-top:1%; margin-bottom: 2%"></a>
+    </div>
+</div> 
+<div class="row bgSection" id="main">
+
+    <!-- <div class="col-12 positionAbsolute" *ngIf="erroralert">
+      <div class="alert-box grid-100" *ngIf="errorMessage">
+        <div class="alert alert-danger mt-3 text-center">
+          <a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a>
+          {{errorMessage}}
+        </div>
+      </div>
+    </div>
+    <div class="col-12" *ngIf="successalert">
+      <div class="alert-box grid-100" *ngIf="successMessage">
+        <div class="alert alert-success mt-3 text-center">
+          <a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+          {{successMessage}}
+        </div>
+      </div>
+    </div> -->
+
+
+<div class="rk-ui-notification" *ngIf="successalert">
+<span id="notificationMessageText">{{successMessage}}</span>
+<a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+<div class="rk-ui-notification err" *ngIf="erroralert">
+<span id="notificationMessageText">{{errorMessage}}</span>
+<a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+
+    <div class="col-sm-12 mt-4">
+      <div class="form_div">
+        <!-- <form [formGroup]="loginForm" (ngSubmit)="submit(loginForm.value)">
+          <div class="loginFormContainer">
+            <div class="text-center" data-background-color="orange">
+              <h2 class="mb-5 formHeading">Log In</h2>
+              <app-error-label [control]="loginForm" [submitted]="submitted"></app-error-label>
+            </div>
+            <div class="">
+              <app-input-field [attribute]="'email'"
+                               [type]="'email'"
+                               [placeholder]="'Email Address'"
+                               [icon]="'email'"
+                               [control]="loginForm.controls['email']"
+                               [submitted]="submitted" id="email">
+              </app-input-field>
+              <small class="text-danger ml-3" *ngIf="showvalidEmailMsg">Please enter email.</small>
+              <app-input-field [attribute]="'password'"
+                               [type]="'password'"
+                               [placeholder]="'Password'"
+                               [icon]="'lock_outline'"
+                               [control]="loginForm.controls['password']"
+                               [submitted]="submitted" id="password">
+              </app-input-field>
+              <small class="text-danger ml-3" *ngIf="showvalidPasswordMsg">Please enter password.</small>
+            </div>
+            <button type="submit" class="button button_emi">LOG IN</button>
+          </div>
+          <a data-toggle="modal" data-target="#forgotpasswordModal" class="forgot">Forgot Password</a>
+        </form> -->
+        <form [formGroup]="form" (ngSubmit)="submit(form.value)" class="pt-2">
+            <div class="loginFormContainer" *ngIf="!loginOTP">
+                <div class="text-center" data-background-color="orange">
+                    <h2 class="mb-5 formHeading">Log In</h2>
+                    <app-error-label [control]="form" [submitted]="submitted"></app-error-label>
+                </div>
+                <div class="">
+                    <div class="form-group">
+                        <input class="form-control" formControlName="email" type="email" name="email" placeholder="Email">
+                        <div class="alert error" *ngIf="!form.controls['email'].valid && form.controls['email'].touched">
+                            Email is required
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <input class="form-control" formControlName="password" type="password" name="password" placeholder="Password">
+                        <div class="alert error" *ngIf="!form.controls['password'].valid && form.controls['password'].touched">
+                            Password is required
+                        </div>
+                    </div>
+                </div>
+              <button type="submit" class="button button_emi">LOG IN</button>
+            </div>
+            <form [formGroup]="otpLoginForm" class="pt-2">
+            <div class="loginOtpContainer" *ngIf="loginOTP">
+              <div class="text-center" data-background-color="orange">
+                <h2 class="mb-5 formHeading">Log In</h2>
+                <app-error-label [control]="form" [submitted]="submitted"></app-error-label>
+              </div>
+              <div class="form-group">
+                <div *ngIf="!otpField">
+                <input class="form-control" formControlName="email" type="email" name="email" placeholder="Enter Email">
+                </div>
+                
+                <div *ngIf="otpField">
+                <input class="form-control" formControlName="otp" type="text" name="otpField" placeholder="Enter OTP">
+                </div>
+              </div>
+              <button type="submit" (click) = "showOTPField()" class="button button_emi" *ngIf="!otpField">Send OTP</button>
+
+              <button type="submit" (click) = "confirmOTP()" class="button button_emi" *ngIf="otpField">Confirm OTP</button>
+            </div>
+          </form>
+            <a (click) = "showOTPForm()" class="loginOTP" *ngIf="!loginOTP">Login with OTP</a>
+            <a (click) = "showOTPField()" class="loginOTP" *ngIf="otpField">Resend OTP</a>
+            <a data-toggle="modal" data-target="#forgotpasswordModal" class="forgot" *ngIf="!loginOTP">Forgot Password</a>
+      </form>
+      </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="forgotpasswordModal" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="text-center">Forgot Password</h4>
+        <button type="button" class="close addCursor" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form class="viewProfileForm" (ngSubmit)="onForgotPasswdSubmit(forgotPasswordForm.value); forgotPasswordForm.reset()" #forgotPasswordForm="ngForm">
+          <div class="row justify-content-center">
+            <div class="col-12">
+              <div class="form-group">
+                <input type="email" class="form-control" placeholder="Enter Email"  id="email" required name="email" #email="ngModel" ngModel>
+                <button class="button mt-3 pull-right" type="submit"  [disabled]="!forgotPasswordForm.valid">Submit</button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

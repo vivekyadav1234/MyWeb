@@ -1,0 +1,13 @@
+{
+  "projects": {
+    "default": "arrivae",
+    "qa": "arrivae-qa",
+    "production": "arrivae",
+    "product": "arrivae-product",
+    "uat-product": "arrivae-uat-product",
+    "qa-product": "arrivae-qa-product",
+    "uat": "arrivae-uat-product",
+    "arrivae-product": "arrivae-product",
+    "prod": "arrivae-product"
+  }
+}

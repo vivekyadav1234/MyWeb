@@ -1,0 +1,20 @@
+.custom-nav{
+	padding-left: 3.5rem!important;
+    padding-right: 5.5rem!important;
+    background-color: #ffffff !important;
+}
+
+.custom-nav .border-left-2px{
+	border-left: 2px solid #E6E6E6;
+}
+
+.custom-nav .nav-link{
+	color: #21252A;
+}
+
+.custom-nav .avatar{
+	border: 1px solid #E6E6E6;
+	padding: 5px 7px;
+    border-radius: 60px;
+    margin-right: 0.5rem;
+}

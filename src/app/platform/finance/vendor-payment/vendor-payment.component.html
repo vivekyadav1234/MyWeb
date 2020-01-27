@@ -1,0 +1,592 @@
+<div class="row ss-top-menu">
+	<div class="col-xl-12 col-lg-12 col-md-12 col-sm-9 col-xs-9">
+		<span class="ss-text-light">Dashboard <i class="rightArrow fa fa-angle-right"></i></span>
+    <span class="ss-text-dark">Vendor Collection</span> 
+    	  
+
+	</div>
+</div>
+
+<div class="rk-ui-notification err" *ngIf="erroralert"  style="z-index: 10000;">
+	<span id="notificationMessageText">{{errorMessage}}</span>
+	<a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+<div class="rk-ui-notification" *ngIf="successalert"  style="z-index: 10000;">
+	<span id="notificationMessageText">{{successMessage}}</span>
+	<a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+<div class="row px-4 mt-4">
+  <div class="col-md-8">
+    <div class="row">
+      <div class="col-md-11 bg-white rounded-left">
+        <span class="text-secondary">Filter By:</span>&nbsp;&nbsp;&nbsp;
+
+        <ng-select  (change)="filterColumDropdownChange1($event)"  id="filter1dropdown" placeholder="Select Vendor" style="width:17%" >
+              <ng-option value="{{ item.id }}" *ngFor="let item of leadList">{{ item.name }}</ng-option>
+              
+              
+        </ng-select>
+        
+        <ng-select  (change)="filterColumDropdownChange2($event)"  id="filter1dropdown" placeholder="Ageing" style="width:17%" >
+          <ng-option value="{{ data.id }}" *ngFor="let data of ageing">{{ data.name }}</ng-option>
+              
+              
+        </ng-select>
+        <div class="form-check">
+          <input [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1" placeholder="Enter From Date" class="form-control form-control-change" (dateTimeChange)="takeFromDate($event)">
+            <owl-date-time #dt1 [pickerType]="'calendar'"></owl-date-time> 
+        </div>
+        <div class="form-check">
+          <input [owlDateTime]="dt2" [owlDateTimeTrigger]="dt2" placeholder="Enter To Date" class="form-control form-control-change" (dateTimeChange)="takeToDate($event)">
+            <owl-date-time #dt2 [pickerType]="'calendar'" ></owl-date-time> 
+        </div>  
+            
+            
+      </div>
+      <div class="col-md-1 bg-white rounded-right">
+        <img src="assets/img/dashboard/submit.png" class="ml-1 my-3 sendIcon filterRowIcon cursor-pointer" (click)="filterData()">
+        
+      </div>
+    </div>
+    
+    
+  </div>
+  <div class="col-md-2">
+    <div class="mb-2">
+      
+    </div>
+    
+  </div>
+  <div class="col-md-2 bg-white rounded cursor-pointer">
+    
+    
+  </div>
+  
+</div>
+
+<div class="row mt-3 px-4">
+  <div id="navcontainer navcontainer-chnage" class="nav-chnage">
+    
+    <ul class="nav nav-tabs tabs-chng" id="myTab" role="tablist" >
+      <li class="nav-item nav-items">
+        <a class="nav-link active addCursor text-center mr-3" (click)="selectSet('pending')" [ngClass]="{'active': selectedState == 'pending'}">Pending Request<span class="text-muted">({{ pending_request}})</span></a>
+      </li>
+      <li class="nav-item nav-items">
+        <a class="nav-link  addCursor text-center mr-3" (click)="selectSet('completed')" [ngClass]="{'active': selectedState == 'completed'}" >Completed Request<span class="text-muted">({{ completed_request}})</span></a>
+      </li>
+
+    </ul>
+  </div>
+  
+</div>
+
+<div class="row mt-4 px-3">
+  <div class="col-12" *ngIf="paymentList && paymentList.length > 0">
+    <div class="tableDiv project-table">
+
+      <table class="table">
+        <thead class="ss-thead">
+          <tr>
+            <th class="firstTh"></th>
+            <th>Lead ID</th>
+            <th>Client</th>
+            <th>BOQ#</th>
+            <th>Vendor</th>
+            <th>Amount Requested</th>
+            <th>Payment Date</th>
+            <th class="lastTh">Payments</th>
+          </tr>
+        </thead>
+        <!-- <pre>
+          {{boq_list | json}}
+        </pre> -->
+        <tbody class="ss-tbody" *ngFor="let obj of paymentList | paginate: { itemsPerPage: per_page, currentPage: current_page, totalItems: total_page}; let i = index"
+          [attr.data-index]="i">
+          <tr class="addCursor" (click)="toggleRow(obj,i);">
+            <td ><div class="cursor-img" [ngClass]="{'active': selectedArrow == i}"></div></td>
+            <td class="capitalize">{{ obj.attributes.performa_invoice.attributes.client_details.id}}</td>
+            <td class="capitalize">{{obj.attributes.performa_invoice.attributes.client_details.name }}
+            </td>
+            <td>{{ obj.attributes.performa_invoice.attributes.quotation_details.reference_number}}</td>
+            <td class="capitalize"><a href="" class="link" data-target="#vendorModal" data-toggle="modal" (click)="getVendorDetails(obj.attributes.performa_invoice.attributes.vendor_datails.id)">{{ obj.attributes.performa_invoice.attributes.vendor_datails.name }}</a></td>
+            <td class="text-center">{{ obj.attributes.amount}}</td>
+            <td class="capitalize">
+             {{ obj.attributes.created_at  | date:'dd/MM/yyyy - h:mm a'}}
+
+            </td>
+            <td class="p-0" style="position: relative;" *ngIf="selectedState == 'pending'">
+              <div class="row p-0 row-format">
+                <div class="col-6 p-0 text-center col-format">
+                  <img src="./assets/img/finance/path.png" style="margin-top: 28%" data-target="#approveModal" data-toggle="modal" (click)="takePaymentDetail(obj.attributes.id,'approved')">
+                  
+                </div>
+                <div class="col-6 p-0 text-center  col-format">
+                  <img src="./assets/img/finance/close.png" style="margin-top: 28%" data-target="#rejectPaymentModal" data-toggle="modal" (click)="takePaymentDetail(obj.attributes.id,'rejected')">
+                  
+                </div>
+              
+              </div>
+            </td>
+            <td class="p-0 completed" *ngIf="selectedState == 'completed' && obj.attributes.payment_status == 'approved' ">
+              Approved
+              
+            </td>
+            <td class="p-0 rejected" *ngIf="selectedState == 'completed' && obj.attributes.payment_status == 'rejected' ">
+              Rejected
+              
+            </td>
+          </tr>
+          <tr class="expanded-col expanded-col-{{obj.id}}">
+            <td colspan="8" style="padding: 0.3rem 0.75rem;">
+              <div class="row p-0 justify-content-center">
+                
+                <div class="col-md-11 p-0 bg-green">
+                  <div class="row p-0">
+                    <span class="text-underline"><u>Details</u></span>
+                    
+                  </div>
+                  <div class="row p-0">
+                    <div class="col-md-4 p-0" *ngIf="obj.attributes.performa_invoice.attributes.purchase_orders">
+                      <span class="text-format">Purchase Order: <span class="text-for-chng ml-1" ><a class="text-for-chng cursor-pointer" (click)="getPOPdfForPreview(obj.attributes.performa_invoice.attributes.purchase_orders.id)"  data-toggle="modal"
+                  data-target="#poPreviewModal"> {{ obj.attributes.performa_invoice.attributes.purchase_orders.reference_no }}</a></span></span><br>
+                  <span class="text-format">Address: <strong>{{ obj.attributes.performa_invoice.attributes.project_address }}</strong></span>
+                      <!-- <span class="text-format">Purchase Invoice:<a class="text-for-chng ml-5 cursor-pointer" href="{{ obj.attributes.performa_invoice.attributes.pi_upload }}" target="_blank"  *ngIf=" obj.attributes.performa_invoice.attributes.pi_upload != '/images/original/missing.png'">{{ obj.attributes.performa_invoice.attributes.reference_no }}</a>
+                      <a class="text-for-chng ml-5 cursor-pointer" (click)="showAlertmsg()" *ngIf=" obj.attributes.performa_invoice.attributes.pi_upload == '/images/original/missing.png'">{{ obj.attributes.performa_invoice.attributes.reference_no }}</a>  
+
+                      </span> -->
+                    </div>
+                    <div class="col-md-3 p-0">
+                      <span class="text-format">Ageing: <strong>{{ obj.attributes.created_at | timeAgo }}</strong></span><br>
+                       <span class="text-format">History: <a (click)="getHistory(obj.attributes.performa_invoice.id)" class="text-primary cursor-pointer">View All</a></span><br>
+                      
+                      
+                    </div>
+                    <div class="col-md-4 p-0">
+                      <span class="text-format">Uploaded Invoice: <strong><a data-target="#viewUploadedInvoiceFile" data-toggle="modal" (click)="sendUploadedInvoiceFile(obj.attributes.performa_invoice.attributes.invoice_files)" *ngIf="obj.attributes.performa_invoice.attributes.invoice_files.length > 0" class="cursor-pointer text-primary">
+                        View Files</a></strong></span>
+                        <span class="text-mute" *ngIf="obj.attributes.performa_invoice.attributes.invoice_files.length == 0"><strong>Files Uploaded..</strong> 
+                      </span><br>
+                      <span class="text-format">Request From: <strong>{{ obj.attributes.request_form.name}}</strong></span>
+                      
+                    </div>
+
+                    <div class="col-md-4 p-0">
+                        <span class="text-format">Community manager: <strong>{{ obj.attributes.performa_invoice.attributes.quotation_details.cm }}</strong></span>
+                      </div>
+
+                      <div class="col-md-3 p-0">
+                        <span class="text-format">Designer: <strong>{{ obj.attributes.performa_invoice.attributes.quotation_details.desinger }}</strong></span>
+                      </div>
+                      
+                  </div>
+                  
+                </div>
+              </div>      
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="text-center" *ngIf="leadList && leadList.length >0">
+      <pagination-controls (pageChange)="current_page = getVendorPaymentList($event,this.clientId,this.FromDate,this.ToDate,this.ageingVal)"></pagination-controls>
+    </div>
+  </div>
+  <div class="col-12 text-center bg-white" *ngIf="paymentList && paymentList.length == 0">
+    <div class="boq-img mt-5">
+      <img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+    </div>
+    <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing To Show....
+    
+  </div>
+  
+</div> 
+<!-- Approve modal starts here -->
+<div class="modal fade modal-center modal-top" id="approveModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog  modal-width" role="document">
+    <div class="modal-content modal-content-chng">
+      <div class="row">
+        <div class="col-md-12 mt-2">
+          <div class="btn-chnges m-3">
+             <span class="text-muted-col pull-right cursor-pointer" data-dismiss="modal"><img src="./assets/img/finance/cancel.png" (click)="closeDiv()"></span>
+            
+          </div>  
+        </div>
+        
+      </div>
+      <div class="modal-header header-chng">
+        <span class="modal-title title-chnage" id="exampleModalLabel">Enter Transaction Details</span>
+      </div>
+      <div class="modal-body">
+        <div class="row justify-content-center">
+          <div class="col-md-10"> 
+            <label class="neft-mode">Enter Transaction Reference Number</label>
+            <input type="text" class="form-control mb-2" id = "transaction_number">
+              
+          </div>
+          
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 text-center">
+          <button type="button" class="btn btn-primary btn-pink my-4" (click)="savePayment()">Submit</button>
+        </div>  
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- /.modal -->
+
+
+<!-- Reject modal starts here -->
+<div class="modal fade modal-center modal-top" id="rejectPaymentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog  modal-width" role="document">
+    <div class="modal-content modal-content-chng">
+      <div class="row">
+        <div class="col-md-12 mt-2">
+          <div class="btn-chnges m-3">
+            <span class="text-muted-col pull-right cursor-pointer" data-dismiss="modal"><img src="./assets/img/finance/cancel.png" (click)="closeDiv()"></span>
+          </div>  
+        </div>
+        
+      </div>
+      <div class="modal-header header-chng">
+        <span class="modal-title title-chnage" id="exampleModalLabel">Enter Remarks  Details</span>
+      </div>
+      <div class="modal-body">
+        <div class="row justify-content-center">
+          <div class="col-md-10">
+            <label class="text-muted">Enter Remark</label>
+              <input type="text" class="form-control mb-2" id="remarks" placeholder="Enter Remarks...">
+            
+            
+          </div>
+          
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 text-center">
+          <button type="button" class="btn btn-primary btn-pink my-4" (click)="rejectPayment()">Submit</button>
+        </div>  
+
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /.modal -->
+
+<!-- PURCHASE ORDER MODAL STARTS FROM HERE -->
+<div class="modal fade modal-top" id="POModal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content modal-content-change">
+    
+      
+      <!-- Modal body -->
+      <div class="modal-body">
+        <div class="row" *ngIf="po_detail">
+          <div class="col-md-12 mt-2">
+            <span class="text-muted-col pull-right cursor-pointer" data-dismiss="modal"><img src="./assets/img/finance/cancel.png" (click)="closeDiv()"></span>
+            
+          </div>
+          
+          <div class="col-md-12 text-center mb-3">
+            <span class="text-muted-col">{{ po_detail.attributes.reference_no}}</span>
+            
+          </div>
+          <div class="col-md-12 text-center my-2">
+            <span class="text-muted-col">Vendor Name:<strong>{{ po_detail.attributes.vendor_name }}</strong></span>
+            
+          </div>
+          <div class="col-12">
+            <span class="pull-left text-muted ml-5">BOQ:<strong class="ml-1">{{ po_detail.attributes.quotation_reference_number }}</strong></span>
+            
+          </div>
+          
+        </div>
+
+        <div class="row justify-content-center"  *ngIf="po_detail">
+          <div class="col-md-11" *ngIf="job_elem_list && job_elem_list.length > 0">
+            <table class="table table-borderless">
+              <thead>
+                <tr>
+                  <th scope="col">Sr.No</th>
+                  <th scope="col">Job Element</th>
+                  <th scope="col">Quantity</th>
+                  <th scope="col">Rate</th>
+                  <th scope="col">UOM</th>
+                  <th scope="col">Tax Type</th>
+                  <th scope="col">Tax%</th>
+                  <th scope="col">Final Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr  *ngFor="let item of job_elem_list;let i =index">
+                  <td>{{ i+1 }}</td>
+                  <td>{{ item.job_element_name }}</td>
+                  <td>{{ item.quantity }}</td>
+                  <td>{{ item.rate }}</td>
+                  <td>{{ item.uom }}</td>
+                  <td>{{ item.tax_type }}</td>
+                  <td>{{ item.tax_percent }}</td>
+                  <td>{{ item.amount }}</td>
+                </tr>
+              </tbody>
+            </table>
+            
+          </div>
+          <div class="col-md-11 text-center bg-white" *ngIf="job_elem_list && job_elem_list.length == 0">
+            <div class="boq-img mt-5">
+              <img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+            </div>
+            <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing To Show....
+            
+          </div>
+          
+        </div>
+        <div class="row justify-content-center"  *ngIf="po_detail">
+          <div class="col-sm-8">
+            <div class="row my-3">
+              <div class="col-sm-6">
+                <span class="text-format-po">Shipping Address:</span><br>
+                <span>{{ po_detail.attributes.shipping_address}}</span>
+
+                
+              </div>
+              <div class="col-sm-6">
+                <span class="text-format-po">Delivery Date:<strong class="po-chng">{{ po_detail.attributes.created_at | date:'dd/MM/yyyy - h:mm a'}}</strong></span><br>
+                <span class="text-format-po">Created at:<strong class="po-chng">{{ po_detail.attributes.created_at |  date:'dd/MM/yyyy - h:mm a' }}</strong></span>
+                
+              </div>
+              
+            </div>
+            
+          </div>
+          
+        </div>
+      </div>     
+    </div>
+  </div>
+</div>
+
+<!-- ENDS HERE -->
+<!-- Vendor Details MODAL STARTS FROM HERE -->
+<div class="modal fade modal-top" id="vendorModal">
+  <div class="modal-dialog modal-lg modal-lg-chng">
+    <div class="modal-content modal-content-change">
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="text-all">
+              <div class="row">
+                <div class="col-md-6">
+                   <span class="pull-left ml-3 my-2 vendor-detail" (click)="closeDiv()">Vendor Details</span>
+                </div>
+                <div class="col-md-6">
+                  <span class="pull-right cursor-pointer"><img src="./assets/img/finance/cancel.png" (click)="closeDiv()"></span>
+                  
+                </div>
+                 
+              </div>
+
+               
+            </div>
+            <div class="row justify-content-center mt-3" *ngIf="vendor_detail">
+              <div class="col-sm-10">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <span class="text-vendor">Name:<strong class="text-vendor-col">{{ vendor_detail.name }}</strong></span><br>
+                    <span class="text-vendor">Person Name:<strong class="text-vendor-col">{{ vendor_detail.contact_person }}</strong></span>  
+                  </div>
+                  <div class="col-sm-4">
+                    <span class="text-vendor">Contact:<strong class="text-vendor-col">{{ vendor_detail.contact_number}}</strong></span><br>
+                    <span class="text-vendor">Email:<strong class="text-vendor-col">{{ vendor_detail.email }}</strong></span>
+                      
+                  </div>
+                  <div class="col-sm-4">
+                    <span class="text-vendor">Address:<strong class="text-vendor-col">{{ vendor_detail.address }}</strong></span><br>
+                    
+                      
+                  </div>
+                  
+                </div>
+                
+              </div>
+                
+            </div>
+            
+          </div>
+          <div class="col-md-12">
+            <div class="text-all">
+              <div class="row">
+                <div class="col-md-6">
+                   <span class="pull-left ml-3 my-2 vendor-detail">Bank Details</span>
+                </div>
+                <div class="col-md-6">
+                  <span class="pull-right"></span>
+                  
+                </div>
+                 
+              </div>
+
+               
+            </div>
+            <div class="row justify-content-center mt-3" *ngIf="vendor_detail">
+              <div class="col-sm-10">
+                <div class="row">
+                  <div class="col-sm-4">
+                    <span class="text-vendor">Pan Card:<strong class="text-vendor-col">{{ vendor_detail.pan_no }}</strong></span><br>
+                    <span class="text-vendor">GST Reg. Number:<strong class="text-vendor-col">{{ vendor_detail.gst_reg_no }}</strong></span>  
+                  </div>
+                  <div class="col-sm-5">
+                    <span class="text-vendor">Acoount Holder Name:<strong class="text-vendor-col">{{ vendor_detail.account_holder}}</strong></span><br>
+                    <span class="text-vendor">Account Number:<strong class="text-vendor-col">{{ vendor_detail.account_number }}</strong></span>
+                      
+                  </div>
+                  <div class="col-sm-3">
+                    <span class="text-vendor">Bank Name:<strong class="text-vendor-col">{{ vendor_detail.bank_name }}</strong></span><br>
+                    <span class="text-vendor">IFSC Code:<strong class="text-vendor-col">{{ vendor_detail.ifsc_code }}</strong></span>
+                      
+                  </div>
+                  
+                </div>
+                
+              </div>
+                
+            </div>
+            
+          </div>
+          
+        </div>
+      </div> 
+    </div>
+  </div>
+</div>
+
+<!-- ENDS HERE -->
+<!-- History Modal starts here -->
+<div class="modal fade modal-top" id="HistoryModal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content modal-content-change">
+    
+      
+      <!-- Modal body -->
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12 mt-2">
+            <span class="text-muted-col pull-right cursor-pointer" data-dismiss="modal"><img src="./assets/img/finance/cancel.png" (click)="closeDiv()"></span>
+            
+          </div>
+          
+          <div class="col-md-12 text-center mb-3">
+            <span class="text-muted-col">View History</span>
+            
+          </div>
+          
+        </div>
+        <div class="row justify-content-center">
+          <div class="col-md-11" *ngIf="history_detail && history_detail.length > 0">
+            <table class="table table-borderless">
+              <thead>
+                <tr>
+                  <th scope="col">MILESTONE</th>
+                  <th scope="col">DATE OF RAISING REQUEST</th>
+                  <th scope="col">% OF AMT RELEASED</th>
+                  <th scope="col">VALUE OF AMT RELEASED</th>
+                  <th scope="col">STATUS</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let history of history_detail" class="text-center">
+                  <td>{{history.description}}</td>
+                  <td>{{history.created_at | date: 'd/M/yy'}}</td>
+                  <td>{{history.percentage}} %</td>
+                  <td>{{history.value_amount_released}}</td>
+                  <td>{{history.payment_status}}</td>
+                </tr>
+                
+              </tbody>
+            </table>
+            
+          </div>
+          <div class="col-md-11 text-center bg-white" *ngIf="history_detail && history_detail.length == 0">
+            <div class="boq-img mt-5">
+              <img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+            </div>
+            <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing To Show....
+            
+          </div>
+          
+        </div>
+      </div>     
+    </div>
+  </div>
+</div>
+<!-- Ends here -->
+<div class="modal" id="poPreviewModal">
+  <div class="modal-dialog modal-lg" style="max-width:890px">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Preview PO</h4>
+        <button type="button" class="close" data-dismiss="modal" (click)="deletePOPreviewPdf(po_preview_pdf_url_without_base_url)">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div *ngIf="isLoaded" style="text-align: center;">
+            <button class="btn btn-pink" (click)="prevPage()" [disabled]="page === 1">Prev</button>
+              <span>{{ page }} / {{ totalPages }}</span>
+            <button class="btn btn-pink" (click)="nextPage()" [disabled]="page === totalPages">Next</button>
+        </div>
+        <iframe *ngIf="po_preview_pdf_url" [src]="po_preview_pdf_url | safePipe:'resourceUrl'" width = "850" height = "600">
+       </iframe>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- view uploade file modal -->
+<div class="modal fade modal-top" id="viewUploadedInvoiceFile">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content modal-content-change">        
+      <!-- Modal body -->
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12 mt-2">
+            <span class="text-muted-col pull-right cursor-pointer" data-dismiss="modal"><img src="./assets/img/finance/cancel.png" (click)="closeDiv()"></span>
+            
+          </div>
+          
+          <div class="col-md-12 text-center mb-3">
+            <span class="text-muted-col text-bold">View Files</span>
+            
+          </div>
+          
+        </div>
+        <div class="row justify-content-center">
+          <div class="col-md-11">
+            <table class="table table-borderless">
+              <thead>
+                <tr>
+                  <th scope="col">FILE NAME</th>
+                  <th scope="col">TAX INVOCE</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let invoice of invoice_files_list">
+                  <td><a href="{{ invoice.url }}" target="_blank" download="" class="cursor-pointer"><strong>{{invoice.name}}</strong></a></td>
+                  <td class="capitalize">{{invoice.tax_invoice}}</td>
+                </tr>
+                
+              </tbody>
+            </table>
+            
+          </div>          
+        </div>
+      </div>     
+    </div>
+  </div>
+</div>

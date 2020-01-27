@@ -1,0 +1,594 @@
+<div class="row marginTop">
+  <div class="col-12 text-center">
+    <h3>Price Configurator</h3>
+  </div>
+</div>
+<div class="row justify-content-center my-2">
+  <div class="col-sm-11 col-lg-10">
+    <div class="row">
+      <div class="col-sm-12 col-lg-7">
+        <div class="divHight">
+          <h5 class="subTitle">What's your home decor personality ?</h5>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row body_height justify-content-center">
+  <div class="col-sm-11 col-lg-10">
+    <div class="row" id="price">
+      <div class=" col-sm-12 col-md-7 col-lg-7">
+        <div class="row justify-content-center">
+          <div class="col-11 py-2 questionBg">
+            <div class="qDiv">
+              <h6 class="mt-0 mb-4">Q1. Is the prepared food fried or non-fried?</h6>
+              <div class="row">
+                <div class="col-6 pr-0">
+                  <div class="imgDiv addCursor" id="question1_1" (click)="onDropdownChange('food','non_fried'); addClass('question1_1','question1_2')">
+                    <div class="row">
+                      <div class="col-4">
+                        <img class="imagesSize" src="../../assets/img/Icons/1/non-fried.png">
+                      </div>
+                      <div class="col-8">
+                        <p class="option">Non-Fried</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-6 pl-0">
+                  <div class="imgDiv addCursor" id="question1_2" (click)="onDropdownChange('food','fried'); addClass('question1_2','question1_1')">
+                    <div class="row">
+                      <div class="col-4">
+                        <img class="imagesSize" src="../../assets/img/Icons/1/fried.png">
+                      </div>
+                      <div class="col-8">
+                        <p class="option">Fried</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="qDiv">
+              <h6 class="mt-5 mb-4">Q2. Which type of food do you prepare generally?</h6>
+              <div class="row">
+                <div class="col-6 pr-0">
+                  <div class="imgDiv addCursor" id="question2_1" (click)="onDropdownChange('food_type','half_prepared_food'); addClass('question2_1','question2_2')">
+                    <div class="row">
+                      <div class="col-4">
+                        <img class="imagesSize" src="../../assets/img/Icons/2/half prepared.png">
+                      </div>
+                      <div class="col-8">
+                        <p class="option">Half prepared</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-6 pl-0">
+                  <div class="imgDiv addCursor" id="question2_2" (click)="onDropdownChange('food_type','fresh_vegetables'); addClass('question2_2','question2_1')">
+                    <div class="row">
+                      <div class="col-4">
+                        <img class="imagesSize" src="../../assets/img/Icons/2/fresh vegetables.png">
+                      </div>
+                      <div class="col-8">
+                        <p class="option">Fresh Vegetables</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="qDiv">
+              <h6 class="mt-5 mb-4">Q3. What type of food does your family have?</h6>
+              <div class="row">
+                <div class="col-6 pr-0">
+                  <div class="imgDiv addCursor" id="question3_1" (click)="onDropdownChange('food_option','more_roti'); addClass('question3_1','question3_2')">
+                    <div class="row">
+                      <div class="col-4">
+                        <img class="imagesSize" src="../../assets/img/Icons/3/roti.png">
+                      </div>
+                      <div class="col-8">
+                        <p class="option">More Roti</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-6 pl-0">
+                  <div class="imgDiv addCursor" id="question3_2" (click)="onDropdownChange('food_option','more_rice'); addClass('question3_2','question3_1')">
+                    <div class="row">
+                      <div class="col-4">
+                        <img class="imagesSize" src="../../assets/img/Icons/3/rice.png">
+                      </div>
+                      <div class="col-8">
+                        <p class="option">More Rice</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="qDiv">
+              <h6 class="mt-5 mb-4">Q4. How many members are there in your family?</h6>
+              <div class="row">
+                <div class="col-12">
+                  <select class="form-control" id="family_size" name="family_size" (change)="onDropdownChange($event.target.id,$event.target.value)">
+                     <option value="">Select</option>
+                     <option value="1">1</option>
+                     <option value="2">2</option>
+                     <option value="3">3</option>
+                     <option value="4">4</option>
+                     <option value="5">5</option>
+                     <option value="6">6</option>
+                     <option value="7">7</option>
+                     <option value="8">8</option>
+                     <option value="9">9</option>
+                     <option value="10">10</option>
+                   </select>
+                </div>
+              </div>
+            </div>
+            <div class="qDiv">
+              <h6 class="mt-5 mb-4">Q5. How often do you use the utensils?</h6>
+              <div class="row">
+                <div class="col-6 pr-0">
+                  <div class="imgDiv addCursor" id="question5_1" (click)="onDropdownChange('utensil_used','less'); addClass('question5_1','question5_2')">
+                    <div class="row">
+                      <div class="col-4">
+                        <img class="imagesSize" src="../../assets/img/Icons/5/less.png">
+                      </div>
+                      <div class="col-8">
+                        <p class="option">Less</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-6 pl-0">
+                  <div class="imgDiv addCursor" id="question5_2" (click)="onDropdownChange('utensil_used','more'); addClass('question5_2','question5_1')">
+                    <div class="row">
+                      <div class="col-4">
+                        <img class="imagesSize" src="../../assets/img/Icons/5/more.png">
+                      </div>
+                      <div class="col-8">
+                        <p class="option">More</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="qDiv">
+              <h6 class="mt-5 mb-4">Q6. How often do you clean the vegetables?</h6>
+              <div class="row">
+                <div class="col-6 pr-0">
+                  <div class="imgDiv addCursor" id="question6_1" (click)="onDropdownChange('vegetable_cleaning','less'); addClass('question6_1','question6_2')">
+                    <div class="row">
+                      <div class="col-4">
+                        <img class="imagesSize" src="../../assets/img/Icons/6/less.png">
+                      </div>
+                      <div class="col-8">
+                        <p class="option">Less</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-6 pl-0">
+                  <div class="imgDiv addCursor" id="question6_2" (click)="onDropdownChange('vegetable_cleaning','more'); addClass('question6_2','question6_1')">
+                    <div class="row">
+                      <div class="col-4">
+                        <img class="imagesSize" src="../../assets/img/Icons/6/more.png">
+                      </div>
+                      <div class="col-8">
+                        <p class="option">More</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="qDiv">
+              <h6 class="mt-5 mb-4">Q7. How frequent do you clean utensils?</h6>
+              <div class="row">
+                <div class="col-12">
+                   <select class="form-control" id="cleaning_frequency" name="cleaning_frequency" (change)="onDropdownChange($event.target.id,$event.target.value)">
+                     <option value="">Select</option>
+                     <option value="1">1</option>
+                     <option value="2">2</option>
+                     <option value="3">3</option>
+                     <option value="4">4</option>
+                     <option value="5">5</option>
+                     <option value="6">6</option>
+                     <option value="7">7</option>
+                     <option value="8">8</option>
+                     <option value="9">9</option>
+                     <option value="10">10</option>
+                   </select>
+                </div>
+              </div>
+            </div>
+            <div class="qDiv">
+              <h6 class="mt-5 mb-4">Q8. How much storage is required for utensils?</h6>
+              <div class="row">
+                <div class="col-6 pr-0">
+                  <div class="imgDiv addCursor" id="question8_1" (click)="onDropdownChange('storage_utensils','less'); addClass('question8_1','question8_2')">
+                    <div class="row">
+                      <div class="col-4">
+                        <img class="imagesSize" src="../../assets/img/Icons/8/less.png">
+                      </div>
+                      <div class="col-8">
+                        <p class="option">Less</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-6 pl-0">
+                  <div class="imgDiv addCursor" id="question8_2" (click)="onDropdownChange('storage_utensils','more'); addClass('question8_2','question8_1')">
+                    <div class="row">
+                      <div class="col-4">
+                        <img class="imagesSize" src="../../assets/img/Icons/8/more.png">
+                      </div>
+                      <div class="col-8">
+                        <p class="option">More</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="qDiv">
+              <h6 class="mt-5 mb-4">Q9. What type of food do you cook more often?</h6>
+              <div class="row">
+                <div class="col-6 pr-0">
+                  <div class="imgDiv addCursor" id="question9_1" (click)="onDropdownChange('kind_of_food','veg'); addClass('question9_1','question9_2')">
+                    <div class="row">
+                      <div class="col-4">
+                        <img class="imagesSize" src="../../assets/img/Icons/9/veg.png">
+                      </div>
+                      <div class="col-8">
+                        <p class="option">Veg</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-6 pl-0">
+                  <div class="imgDiv addCursor" id="question9_2" (click)="onDropdownChange('kind_of_food','non_veg'); addClass('question9_2','question9_1')">
+                    <div class="row">
+                      <div class="col-4">
+                        <img class="imagesSize" src="../../assets/img/Icons/9/non veg.png">
+                      </div>
+                      <div class="col-8">
+                        <p class="option">Non-Veg</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="qDiv">
+              <h6 class="mt-5 mb-4">Q10. How big or wide utensils do you use?</h6>
+              <div class="row">
+                <div class="col-6 pr-0">
+                  <div class="imgDiv addCursor" id="question10_1" (click)="onDropdownChange('size_of_utensils','less'); addClass('question10_1','question10_2')">
+                    <div class="row">
+                      <div class="col-4">
+                        <img class="imagesSize" src="../../assets/img/Icons/10/less uten.png">
+                      </div>
+                      <div class="col-8">
+                        <p class="option">Less</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-6 pl-0">
+                  <div class="imgDiv addCursor" id="question10_2" (click)="onDropdownChange('size_of_utensils','more'); addClass('question10_2','question10_1')">
+                    <div class="row">
+                      <div class="col-4">
+                        <img class="imagesSize" src="../../assets/img/Icons/10/more uten.png">
+                      </div>
+                      <div class="col-8">
+                        <p class="option">More</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="qDiv">
+              <h6 class="mt-5 mb-4">Q11. Do you cook yourself or have a maid?</h6>
+              <div class="row">
+                <div class="col-6 pr-0">
+                  <div class="imgDiv addCursor" id="question11_1"  (click)="onDropdownChange('habit','enjoy_cooking'); addClass('question11_1','question11_2')">
+                    <div class="row">
+                      <div class="col-4">
+                        <img class="imagesSize" src="../../assets/img/Icons/11/self.png">
+                      </div>
+                      <div class="col-8">
+                        <p class="option">Enjoy Cooking</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-6 pl-0">
+                  <div class="imgDiv addCursor" id="question11_2"  (click)="onDropdownChange('habit','maid_for_cooking'); addClass('question11_2','question11_1')">
+                    <div class="row">
+                      <div class="col-4">
+                        <img class="imagesSize" src="../../assets/img/Icons/11/maid.png">
+                      </div>
+                      <div class="col-8">
+                        <p class="option">Maid For Cooking</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="qDiv">
+              <h6 class="mt-5 mb-4">Q12. What type of kitchen will you prefer? *</h6>
+              <div class="row">
+                <div class="col-12">
+                   <select class="form-control" id="kitchen_type" name="kitchen_type" (change)="onDropdownChange($event.target.id,$event.target.value)">
+                     <option value="">Select</option>
+                     <option value="parallel">Parallel</option>
+                     <option value="l_type">L Type Kitchen</option>
+                     <option value="straight">Straight Line Kitchen</option>
+                     <option value="u_type">U Type Kitchen</option>
+                   </select>
+                </div>
+              </div>
+            </div>
+            <div class="qDiv">
+              <h6 class="mt-5 mb-4">Q13. What finish type will you prefer for your kitchen? *</h6>
+              <div class="row">
+                <div class="col-12">
+                   <select class="form-control" id="finish_type" name="finish_type" (change)="onDropdownChange($event.target.id,$event.target.value)">
+                     <option value="">Select</option>
+                     <option value="pu_finish_calibrated_ply">PU finish on Ply (calibrated ply)</option>
+                     <option value="back_painted_with_pu_finish_for_opencarcas">Back painted Glass on ply + PU finish on Ply for open carcass (calibrated ply)</option>
+                     <option value="laminated_finish_melamine">Laminated finish on (Melamine calibrated ply)</option>
+                     <option value="pvc_foil_mdf">PVC Foil on MDF</option>
+                     <option value="pu_finish_calibrated_ply_for_wall">PU finish on Calibrate d Ply for wall</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- <div class="text-center" *ngIf="priceConfiguratorId && kitchen_type && finish_type">
+            <button class="button mb-3" (click)="showImages()">Submit</button>
+          </div> -->
+          <div class="text-center" *ngIf="priceConfiguratorId && kitchen_type && finish_type">
+            <button (click)="fetchDesigns(priceConfiguratorId)" class="button mb-3">Submit</button>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-12 col-md-5 col-lg-5">
+        <div class="card estimatedPriceBlock divHight" id="priceBox">
+<!--           <div class="card-header">
+          Estimated Price
+          <span class="priceSpan pull-right" *ngIf="responseObj">{{responseObj.total_price }}</span>
+          </div>
+          <div class="card-body bodyHight">
+            <p *ngIf="food_type && responseObj">Platform - {{responseObj.price_configurator.platform}} - {{responseObj.platform_price}} RS/-</p>
+            <p *ngIf="responseObj && family_size && kind_of_food && size_of_utensils && cleaning_frequency ">Preparation Area - {{responseObj.price_configurator.preparation_area}}</p>
+            <p *ngIf="food && food_option && family_size && responseObj">Hob - {{responseObj.price_configurator.hob}} - {{responseObj.hob_price}} RS/-</p>
+            <p *ngIf="food && food_option && family_size && responseObj">Chimney Size - {{responseObj.price_configurator.chimney}} - {{responseObj.chimney_price}} RS/-</p>
+            <p *ngIf="food && food_option && family_size && responseObj">Chimney Type - {{responseObj.price_configurator.chimney_type | ucwords}}</p>
+            <p *ngIf="utensil_used && family_size && vegetable_cleaning && cleaning_frequency && storage_utensils && responseObj">Sink - {{responseObj.price_configurator.sink}}</p>
+            <p *ngIf="kind_of_food && responseObj">Dustbin - {{responseObj.price_configurator.dustbin}}</p>
+            <p *ngIf="size_of_utensils && responseObj && cleaning_frequency">Drain Board - {{responseObj.price_configurator.drain_board}}</p>
+            <p *ngIf="size_of_utensils && utensil_used && family_size && kind_of_food && vegetable_cleaning && cleaning_frequency && storage_utensils && food_type && food && food_option && responseObj">Civil Work Price - {{responseObj.civil_work_price}}</p>
+            <p *ngIf="utensil_used && size_of_utensils && family_size && kind_of_food && vegetable_cleaning && cleaning_frequency && storage_utensils && food_type && food && food_option && responseObj"> Tile Price - {{responseObj.tile_price}}</p>
+            <p *ngIf="habit && responseObj">Light - {{responseObj.price_configurator.light | replaceChar| ucwords}}</p>
+            <p *ngIf="utensil_used && family_size && vegetable_cleaning && cleaning_frequency && storage_utensils && responseObj">Bowl Type - {{responseObj.price_configurator.bowl_type | replaceChar | ucwords }}</p>
+          </div> -->
+          <table class="table table-striped mb-0">
+            <thead>
+              <tr>
+                <th scope="col">Estimated Price</th>
+                <th scope="col" *ngIf="responseObj" class="priceSpan text-right"> {{responseObj.total_price }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngIf="food_type && responseObj">
+                <td>Platform</td>
+                <td>{{responseObj.price_configurator.platform}} - <span class="priceSpan"></span> {{responseObj.platform_price}}</td>
+              </tr>
+              <tr *ngIf="responseObj && family_size && kind_of_food && size_of_utensils && cleaning_frequency ">
+                <td>Preparation Area</td>
+                <td>{{responseObj.price_configurator.preparation_area}}</td>
+              </tr>
+              <tr *ngIf="food && food_option && family_size && responseObj">
+                <td>Hob</td>
+                <td>{{responseObj.price_configurator.hob}} - <span class="priceSpan"></span> {{responseObj.hob_price}}</td>
+              </tr>
+              <tr *ngIf="food && food_option && family_size && responseObj">
+                <td>Chimney Size</td>
+                <td>{{responseObj.price_configurator.chimney}} - <span class="priceSpan"></span> {{responseObj.chimney_price}}</td>
+              </tr>
+              <tr *ngIf="food && food_option && family_size && responseObj">
+                <td>Chimney Type</td>
+                <td>{{responseObj.price_configurator.chimney_type | ucwords}}</td>
+              </tr>
+              <tr *ngIf="utensil_used && family_size && vegetable_cleaning && cleaning_frequency && storage_utensils && responseObj">
+                <td>Sink</td>
+                <td>{{responseObj.price_configurator.sink}}</td>
+              </tr>
+              <tr *ngIf="kind_of_food && responseObj">
+                <td>Dustbin</td>
+                <td>{{responseObj.price_configurator.dustbin}}</td>
+              </tr>
+              <tr *ngIf="size_of_utensils && responseObj && cleaning_frequency">
+                <td>Drain Board</td>
+                <td>{{responseObj.price_configurator.drain_board}}</td>
+              </tr>
+              <tr *ngIf="size_of_utensils && utensil_used && family_size && kind_of_food && vegetable_cleaning && cleaning_frequency && storage_utensils && food_type && food && food_option && responseObj">
+                <td>Civil Work Price</td>
+                <td>{{responseObj.civil_work_price}}</td>
+              </tr>
+              <tr *ngIf="utensil_used && size_of_utensils && family_size && kind_of_food && vegetable_cleaning && cleaning_frequency && storage_utensils && food_type && food && food_option && responseObj">
+                <td>Tile Price</td>
+                <td>{{responseObj.tile_price}}</td>
+              </tr>
+              <tr *ngIf="habit && responseObj">
+                <td>Light</td>
+                <td>{{responseObj.price_configurator.light | replaceChar| ucwords}}</td>
+              </tr>
+              <tr *ngIf="utensil_used && family_size && vegetable_cleaning && cleaning_frequency && storage_utensils && responseObj">
+                <td>Bowl Type</td>
+                <td>{{responseObj.price_configurator.bowl_type | replaceChar | ucwords }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <!--start carousel-->
+        <div id="carouselExampleIndicators" class="carousel slide my-3" data-ride="carousel" *ngIf="designImageURL && designImageURL.length >=0">
+          <!-- Indicators -->
+          <ol class="carousel-indicators">
+              <li data-target="#myCarousel" *ngFor="let x of designImageURL;let i = index" [attr.data-slide-to]="i" [ngClass]="i == 0 ? 'active' : ''"></li>
+          </ol>
+          <!-- Wrapper for slides -->
+          <div class="carousel-inner">
+            <ng-container *ngFor="let j of designImageURL; let k = index ">
+              <div class="carousel-item " [ngClass]="k == 0 ? 'item active' : 'item'">
+                <!-- <img class="d-block w-100" src="{{j}}"> -->
+                <div class="price_slider" [ngStyle]="{'background-image': 'url(' + j + ')'}"></div>
+              </div>
+            </ng-container>
+          </div>
+          <!-- Left and right controls -->
+          <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+          </a>
+          <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+          </a>
+        </div>
+      </div>
+      <!--end carousel-->
+
+      <!-- <div class="col-md-5 mt-5">
+         <form (ngSubmit)=" createOnboardForm.reset()" #createOnboardForm="ngForm" class="form-horizontal">
+             <div class="form-group label-floating">
+               <label for="food">Is the prepared food fried or non-fried? </label>
+               <select class="form-control" id="food" name="food" (change)="onDropdownChange($event.target.id,$event.target.value)">
+                 <option value="">Select</option>
+                 <option value="fried"> Fried </option>
+                 <option value="non_fried">Non-fried</option>
+               </select>
+             </div>
+
+             <div>
+               <label for="food_type">Which type of food do you prepare generally?</label>
+               <select class="form-control" id="food_type" name="food_type"  (change)="onDropdownChange($event.target.id,$event.target.value)">
+                  <option value="">Select</option>
+                  <option value="half_prepared_food"> Half prepared food </option>
+                 <option value="fresh_vegetables">Fresh vegetables</option>
+               </select>
+             </div>
+
+             <div>
+               <label for="food_option">What type of food does your family have? </label>
+               <select class="form-control" id="<font></font>od_option" name="food_option"  (change)="onDropdownChange($event.target.id,$event.target.value)">
+                 <option value="">Select</option>
+                 <option value="more_roti"> More Roti </option>
+                 <option value="more_rice">More Rice</option>
+               </select>
+             </div>
+
+             <div>
+               <label for="family_size">How many members are there in your family? </label>
+               <select class="form-control" id="family_size" name="family_size" (change)="onDropdownChange($event.target.id,$event.target.value)">
+                 <option value="">Select</option>
+                 <option value="1">1</option>
+                 <option value="2">2</option>
+                 <option value="3">3</option>
+                 <option value="4">4</option>
+                 <option value="5">5</option>
+                 <option value="6">6</option>
+                 <option value="7">7</option>
+                 <option value="8">8</option>
+                 <option value="9">9</option>
+                 <option value="10">10</option>
+               </select>
+             </div>
+
+             <div>
+               <label for="utensil_used">How often do you use the utensils? </label>
+               <select class="form-control" id="utensil_used" name="utensil_used"  (change)="onDropdownChange($event.target.id,$event.target.value)">
+                 <option value="">Select</option>
+                 <option value="less"> Less </option>
+                 <option value="more">More</option>
+               </select>
+             </div>
+
+             <div>
+               <label for="vegetable_cleaning">How often do you clean the vegetables? </label>
+               <select class="form-control" id="vegetable_cleaning" name="vegetable_cleaning"  (change)="onDropdownChange($event.target.id,$event.target.value)">
+                 <option value="">Select</option>
+                 <option value="less"> Less </option>
+                 <option value="more">More</option>
+               </select>
+             </div>
+
+             <div>
+               <label for="cleaning_frequency">How frequent do you clean utensils? </label>
+               <select class="form-control" id="cleaning_frequency" name="cleaning_frequency"  (change)="onDropdownChange($event.target.id,$event.target.value)">
+                 <option value="">Select</option>
+                 <option value="1"> 1 </option>
+                 <option value="2">2</option>
+                 <option value="3"> 3 </option>
+                 <option value="4">4</option>
+                 <option value="5"> 5 </option>
+                 <option value="6">6</option>
+                 <option value="7"> 7 </option>
+                 <option value="8">8</option>
+                 <option value="9"> 9 </option>
+                 <option value="10">10</option>
+               </select>
+             </div>
+
+             <div>
+               <label for="storage_utensils">How much storage is required for utensils? </label>
+               <select class="form-control" id="storage_utensils" name="storage_utensils" (change)="onDropdownChange($event.target.id,$event.target.value)">
+                 <option value="">Select</option>
+                 <option value="less"> Less </option>
+                 <option value="more">More</option>
+               </select>
+             </div>
+
+             <div>
+               <label for="kind_of_food">What type of food do you cook more often?</label>
+               <select class="form-control" id="kind_of_food" name="kind_of_food"  (change)="onDropdownChange($event.target.id,$event.target.value)">
+                 <option value="">Select</option>
+                 <option value="veg"> Veg </option>
+                 <option value="non_veg">Non-veg</option>
+               </select>
+             </div>
+
+             <div>
+               <label for="size_of_utensils">How big or wide utensils do you use? </label>
+               <select class="form-control" id="size_of_utensils" name="size_of_utensils"  (change)="onDropdownChange($event.target.id,$event.target.value)">
+                 <option value="">Select</option>
+                 <option value="less"> Less </option>
+                 <option value="more">More</option>
+               </select>
+             </div>
+
+             <div>
+               <label for="habit">Do you cook yourself or have a maid? </label>
+               <select class="form-control" id="habit" name="habit"  (change)="onDropdownChange($event.target.id,$event.target.value)">
+                 <option value="">Select</option>
+                 <option value="enjoy_cooking"> Enjoy cooking </option>
+                 <option value="maid_for_cooking">Maid for cooking</option>
+               </select>
+             </div> -->
+
+             <!-- <button type="button" class="mt10 btn btn-info" [disabled]="!createOnboardForm.valid" (click)="flagVar=true">Next</button> -->
+         <!-- </form> -->
+         <br>
+      <!-- </div> -->
+    </div>
+  </div>
+</div>
+

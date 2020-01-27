@@ -1,0 +1,151 @@
+.bt-boq{
+  border-color: #93001E;
+  color: #93001E;
+  font-size: 13px;
+  cursor: pointer;
+  width: 160px;
+}
+.Cbody{
+    padding: 15px;
+}
+.card:hover{
+  box-shadow: 0 0 15px 2px #e0e0e0;
+}
+.card-body p{
+	color: gray;
+	line-height: 1rem;
+}
+.card-body p{
+	color: #4a4747;
+    line-height: 0.5rem;
+    font-size: 14px;
+    font-family: 'roboto';
+}
+.card-body span{
+	color: #9e9a9a;
+
+}
+.hdng-chng{
+	color: #4a4747;
+    font-weight: 400;
+    font-family: 'roboto';
+}
+.optionMenu{
+  float: right;
+  padding: 5px 10px 3px 10px;
+  margin-top: 3px;
+  border-radius: 50px;
+  border: 1px solid #dedede;
+  color: #5a5a5a;
+  cursor: pointer;
+}
+.pArrow{
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: #fff;
+  -ms-transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+  transform: rotate(45deg);
+  right: 28px;
+  margin-top: -5px;
+  border: 1px solid #ccc;
+}
+/*  Design For Model Change*/
+.modal-header-chng{
+ background-image: url("../../../../assets/img/customer/image7.png");
+ height: 130px;
+}
+.modal-title-change{
+  color: white;
+
+}
+.iconbox{
+  border-radius: 50%;
+  background: white;
+  width: 24px;
+  height: 25px;
+  opacity: 0.7;
+}
+.close-icon{
+  float: center;
+  font-size: 24px;
+  font-weight: 400;
+  padding-right: 5px;
+}
+.modal-body-change{
+  background: white;
+  padding-left: 44px;
+  padding-right: 44px;
+}
+.an-textColor{
+  color: #212529;
+  font-weight: 400;
+  font-size: 16px;
+  margin-left: 10px;
+}
+.footer-chng{
+  border-top:none;
+}
+.footer-chng{
+  border-top: 1px solid #e2dbdb;
+  /* line-height: 1rem; */
+  margin-top: 3rem;
+}
+.boq-img{
+  text-align: center;
+}
+.dropdown-menu{
+    font-size: 14px;
+    position: absolute;
+    transform: translate3d(228px, 263px, 0px) !important;
+    top: 0px;
+    left: 0px;
+    will-change: transform;
+}
+.dropdown-menu p{
+    background-color: #fff;
+    height: 1rem;
+    width: 1rem;
+    transform: rotate(45deg);
+    position: absolute;
+    top: -8px;
+    left: 45%;
+    border-left: 1px solid #ccc;
+    border-top: 1px solid #ccc;
+}
+textarea{
+  line-height: 14px;
+}
+.paraChange{
+  color: #888;
+  font-size: 14px;
+  font-style: italic;
+  height: 1.8rem;
+  overflow: scroll;
+  line-height: 14px;
+}
+
+.card-body p{
+  line-height: 14px;
+}
+h6{
+  color: #4c4848;
+}
+::-webkit-scrollbar { 
+    display: none; 
+}
+.card-img-top{
+  width: auto;
+  max-width: 100%;
+  height: 15rem;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+
+
+
+
+/*--------*/
+

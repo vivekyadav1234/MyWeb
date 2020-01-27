@@ -1,0 +1,299 @@
+.filterBtn {
+    background: #af0010;
+    color: #fff;
+    padding: 0px 11px;
+    border-radius: 4px;
+    border: none;
+    vertical-align: top;
+}
+.ss-text-light
+{
+  vertical-align: -webkit-baseline-middle;
+  cursor: pointer;
+}
+.ss-text-dark{
+    vertical-align: -webkit-baseline-middle;
+}
+.table td{
+    padding: 0.7rem 0.75rem;
+    vertical-align: middle;
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.7);
+    border: none;
+}
+.minWidthForTd{
+  min-width: 185px;
+}
+.table th {
+    padding: .9rem;
+    vertical-align: middle;
+    border: none;
+    font-size: 12px;
+    text-transform: uppercase;
+    color: #fff;
+    background-color: #5A5A5A;
+}
+.table{
+  border-collapse: separate;
+  border-spacing: 0 5px;
+}
+.tableDiv tbody{
+  background-color: #fff;
+}
+.tableDiv{
+  overflow-x:scroll;
+}
+
+.tableDiv tbody tr{
+  box-shadow: 1px 1px 7px 0px #dadada;
+  border-radius: 5px;
+}
+.firstTh{
+  border-radius: 5px 0 0 0;
+}
+.lastTh{
+  border-radius: 0px 5px 0 0;
+}
+
+.custom-class-dropdown .c-btn{
+    font-size:12px;
+    font-weight: bold;
+}
+/*.selected-list[_ngcontent-c7] .c-btn[_ngcontent-c7]{
+    font-size: 10px;
+}*/
+.custom-class-dropdown .dropdown-list{
+    width: auto;
+    font-size: 12px;
+}
+.filterRow{
+  background-color: #fff;
+}
+.filterRow .col-sm-11 {
+  padding: 10px 10px;
+}
+.filterRow .col-sm-11 .row{
+  margin-left: 0px; margin-right: 0px;
+}
+.filterRow .row .col-sm-1{
+  padding: 10px 10px 0px 0px;
+   border-left: 1px solid #d3d3d3;
+}
+.sendIcon{
+  height: 25px;
+  margin-top: -3px;
+}
+.inputBorder {
+    border-color: red;
+}
+.modalTitle{
+    padding: 10px 18px;
+    position: relative;
+    bottom: -17px;
+    background: #fff;
+    color: #848484;
+    font-size: 16px;
+    font-weight: normal;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+#leadDetailsModal .modal-header, #questionnaireModal .modal-header, #exampleModal .modal-header
+, #logModal .modal-header{
+     background: #F4f4f4;
+    padding-top: 0px;
+}
+#leadDetailsModal label, #questionnaireModal label, #exampleModal label,
+#logModal label{
+    color: #848484;
+}
+#leadDetailsModal .form-control, #questionnaireModal .form-control, #exampleModal .form-control{
+    font-size: 13px;
+}
+#editLeadModal .modal-header{
+     background: #F4f4f4;
+    padding-top: 0px;
+}
+#editLeadModal label{
+    color: #848484;
+}
+#editLeadModal .form-control{
+    font-size: 13px;
+}
+.modal{
+     padding-top: 39px;
+}
+.rk-interalBtnColor{
+    width: 142px;
+}
+ .labelColor{
+    color: #515151 !important;
+}
+.lableSize{
+    font-size: 14px;
+}
+
+/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
+.chnglink{
+  color:#6a6ad0 !important;
+}
+.chnglink:hover{
+  text-decoration:underline;
+}
+.am-chng{
+  border-radius: 2px;
+}
+.rk-btnCancel{
+  background-color: white;
+}
+.btn-outline-primary:hover{
+  background-color:#8C031F;
+  border-color: #8C031F;
+}
+
+
+.leadDetailsMainDiv{
+  background-color: #fff;
+  margin-top: 1.8rem;
+}
+.borderBottom{
+  border-bottom: 1px solid #f1f1f1;
+}
+.customRow{
+  background-color: #fff;
+  height: 3.7rem;
+}
+.customRow img{
+  border-radius: 50px;
+  width: 62%;
+  margin-top: 13px;
+  box-shadow: 0 0 0px 2px #ccc;
+}
+.vPara{
+  font-size: 18px;
+  color: #000;
+}
+.vDate{
+  font-size: 10px;
+}
+.cusDownArrow{
+  float: right;
+  margin-top: -8px;
+  font-size: 18px;
+  margin-right: 10px;
+}
+.vColor{
+  color: #888;
+  font-weight: 100;
+}
+.vColor1{
+  color: #5a5a5a;
+  font-weight: 100;
+}
+.fontSize14{
+  font-size: 14px;
+}
+.dropdownButton{
+  padding: 5px 12px;
+  width: 10rem;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  outline: none;
+  color: #515151;
+  text-align: left;
+}
+.dropdownButton.dropdownButton1{
+  width: 14rem;
+}
+.dropdown-item.dropdown-item1{
+  padding: 0px 10px;
+}
+.dropdown-toggle1::after{
+  float: right;
+  margin-top: 10px;
+}
+.myFluit{
+  border-radius: 50px;
+  width: 1.5rem;
+  box-shadow: 0 0 0px 2px #ccc;
+}
+.dropdownMenu.show{
+  width: 14rem;
+  border: 1px solid #e8e8e8;
+}
+#logModal .modal-dialog{
+  max-width: 82%;
+  left:113px;
+}
+
+.filterRowIcon{
+      height: 38px;
+    position: relative;
+    left: -7px;
+    top: 3px;
+    cursor: pointer;
+}
+.ss-searchbox{
+  padding: 7px 10px 7px 10px;
+  margin-left: 10px;
+}
+.ss-searchbox i{
+  font-size: 13px;
+}
+.ss-searchbox input{
+      padding: 0 0.5rem;
+}
+
+/*  @@@@@@@@@@@@@@@@@@@*/
+
+.tabs-chng{
+  border-bottom: none;
+}
+.itm-chng{
+  width: 87px;
+  font-size: 12px;
+}
+.filterRow{
+  box-shadow: 0 0 10px #bbb4b4;
+  border-radius: 5px;
+  min-height: 55px;
+}
+
+.frm-chng{
+  border: 1px solid rgba(241, 237, 237, 0.15);
+  font-size: 0.8rem;
+  margin-top: -3px;
+  width: 108%;
+  cursor: pointer;
+}
+
+.frm-chng::-webkit-input-placeholder { /* Chrome */
+  color: black;
+  font-size: 16px;
+  font-family:  "Roboto";
+  font-weight: bold;
+}
+.frm-chng:-ms-input-placeholder { /* IE 10+ */
+  color: black;
+}
+.frm-chng::-moz-placeholder { /* Firefox 19+ */
+  color: black;
+  opacity: 1;
+}
+.frm-chng:-moz-placeholder { /* Firefox 4 - 18 */
+  color: black;
+  opacity: 1;
+}
+.fromDate,.toDate{
+  display: none;
+}
+
+input.frm-chng::placeholder{ 
+  font-family:fontAwesome; 
+  font-size:12px; 
+  color: black;
+   }
+
+input.frm-chng{ 
+  font-family:  "Roboto";
+ }

@@ -1,0 +1,262 @@
+<div class="row ss-top-menu">
+  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6 pt-2">
+    <span class="ss-text-light addCursor" routerLink="/">Dashboard</span>
+    <span><i class="rightArrow fa fa-angle-right"></i></span>
+    <span class="ss-text-dark">ACTIONABLES</span>
+    <span><i class="rightArrow fa fa-angle-right"></i></span>
+    <span class="ss-text-dark">{{paramsActivated}}</span>
+  </div>
+</div>
+
+<div class="row">
+    <div class="col-12" *ngIf="successalert">
+      <div class="alert-box grid-100" *ngIf="successMessage">
+        <div class="alert alert-success mt-3 text-center">
+            <a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+            {{successMessage}}
+          </div>
+      </div>
+    </div>
+    <div class="col-12" *ngIf="erroralert">
+      <div class="alert-box grid-100" *ngIf="errorMessage">
+        <div class="alert alert-success mt-3 text-center">
+            <a class="close link" data-dismiss="alert"  (click)="erroralert=false">×</a>
+            {{errorMessage}}
+          </div>
+      </div>
+    </div>
+</div>
+
+<!-- {{actionableList | json}} -->
+
+<div class="row mt-4">
+  <div class="col-md-12">
+    <div class="tableDiv table-responsive">
+      <p class="text-center" *ngIf="actionableList &&  actionableList.length==0 ">No Leads</p>
+      <table class="table" *ngIf="actionableList &&  actionableList.length>0">
+        <thead>
+          <tr>
+            <th class="text-center firstTh">#</th>
+             <th>
+              NAME
+              <i class="fa ml-2 fa-sort" *ngIf="column != 'name'" (click)="sortFunc(actionableList,{property: 'name', direction: '1'})"></i><i class="fa ml-2 fa-sort-asc" *ngIf="column == 'name' && direction=='1' " (click)="sortFunc(actionableList,{property: 'name', direction: '-1'})"></i><i class="fa ml-2 fa-sort-desc" *ngIf="column == 'name' && direction=='-1' " (click)="sortFunc(actionableList,{property: 'name', direction: '1'})"></i>
+            </th>
+            <th>
+              LEAD ID
+              <i class="fa ml-2 fa-sort" *ngIf="column != 'id'" (click)="sortFunc(actionableList,{property: 'id', direction: '1'})"></i><i class="fa ml-2 fa-sort-asc" *ngIf="column == 'id' && direction=='1' " (click)="sortFunc(actionableList,{property: 'id', direction: '-1'})"></i><i class="fa ml-2 fa-sort-desc" *ngIf="column == 'id' && direction=='-1' " (click)="sortFunc(actionableList,{property: 'id', direction: '1'})"></i>
+            </th>
+            <th>CURRENT STATUS</th>
+            <th>CHANGE STATUS</th>
+            <th class="lastTh"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of actionableList | paginate: { itemsPerPage: per_page, currentPage: current_page, totalItems: total_page  }; let i = index; " [attr.data-index]="i" id="filteredLeadRow{{i}}">
+            <td class="text-center">{{((current_page-1) * per_page) + (i+1)}}</td>
+              <td>
+                <span class="ss-link cursor-pointer" routerLink="/lead/{{data.id}}/activity-logs">{{data.name}}</span></td>
+              <td *ngIf="data.lead_details">{{data.lead_details.id}}</td>
+              <td *ngIf="data.project_details" class="capitalize">
+                <span *ngIf="(data.project_details.status!='follow_up' && data.project_details.status!='lost' &&  data.project_details.status!='on_hold')">{{data.project_details.status | replaceChar}}</span>
+                <ng-container *ngIf="(data.project_details.status=='follow_up')">
+                    <a class="pop" (mouseenter)="openpopup($event,data.lead_details.id)" data-trigger="hover" title="Remarks" [attr.data-content] ="data.project_details.remarks " id="pop_{{data.lead_details.id}}">{{data.project_details.status | replaceChar}}</a>
+                    <p class="time-chng">{{data.event_scheduled_at.follow_up_time | date:'dd/MM/yyyy - h:mm a'}}</p>
+                </ng-container>
+                <ng-container *ngIf="(data.project_details.status=='on_hold')">
+                    <a data-trigger="hover" title="Remarks" [attr.data-content] ="data.project_details.remarks" class="pop" (mouseenter)="openpopup($event)">{{data.project_details.status | replaceChar}}</a>
+                    <p class="time-chng">{{data.event_scheduled_at.on_hold_time | date:'dd/MM/yyyy - h:mm a'}}</p>
+                </ng-container>
+                <ng-container *ngIf="(data.project_details.status=='lost')">
+                    <a data-trigger="hover" title="Remarks" [attr.data-content] ="data.project_details.reason_for_lost | replaceChar" class="pop" (mouseenter)="openpopup($event)" id="pop_{{data.lead_details.id}}">{{data.project_details.status }}
+                    </a>
+                    <!-- <p>(Reason - {{data.project_details.reason_for_lost}})</p> -->
+                </ng-container>
+                
+              </td>
+              <td>
+                <ng-container *ngIf="['escalated_calls','escalated_meetings'].includes(project_status) == false  && data.project_details.status == 'qualified'">
+                  <select (change) = "onStatusChange(data.project_details.user_id,data.project_details.id,$event.target.value)" class="custom-select">
+                    <option>Change Status</option>
+                    <option value="lost" [selected]="data.project_details.status === 'lost'">Lost</option>
+                    <option value="not_contactable" [selected]="data.project_details.status === 'not_contactable'">Not Contactable</option>
+                    <option value="follow_up" [selected]="data.project_details.status === 'follow_up'">Follow Up</option>
+                    <option value="wip" [selected]="data.project_details.status === 'wip'">WIP</option>
+                  </select>
+                </ng-container> 
+                 <ng-container *ngIf="['escalated_calls','escalated_meetings'].includes(project_status) == true  && data.project_details.status == 'qualified'">
+                  <select (change) = "onStatusChange(data.project_details.user_id,data.project_details.id,$event.target.value)" class="custom-select">
+                    <option>Change Status</option>
+                    <option value="lost" [selected]="data.project_details.status === 'lost'">Lost</option>
+                    <option value="not_contactable" [selected]="data.project_details.status === 'not_contactable'">Not Contactable</option>
+                    <option value="follow_up" [selected]="data.project_details.status === 'follow_up'">Follow Up</option>
+                    <option value="wip" [selected]="data.project_details.status === 'wip'">WIP</option>
+                  </select>
+                </ng-container> 
+                <ng-container *ngIf="['escalated_calls','escalated_meetings'].includes(project_status) && data.project_details.status != 'qualified'">
+                  <select (change) = "onStatusChange(data.project_details.user_id,data.project_details.id,$event.target.value)" class="custom-select">
+                    <option>Change Status</option>
+                    <option value="on_hold" *ngIf="data.project_details.status == 'wip'">On Hold</option>
+                    <option value="inactive" *ngIf="data.project_details.status == 'wip'">In Active</option>
+                    <option value="active" *ngIf="data.project_details.status != 'wip'">Active</option>
+                    
+                  </select>
+
+                </ng-container> 
+              </td>
+              <td>
+                <!-- <img src="assets/img/dashboard/doc.png"> -->
+                <i class="fa fa-phone cursor-pointer" (click)="callToLead(data.lead_details.contact)" style="    font-size: 1.5rem; color: #8F0020;"></i>
+                
+              </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="text-center" *ngIf="actionableList && actionableList.length >0">
+        <pagination-controls autoHide="true" (pageChange)="current_page = nextPage($event)"></pagination-controls>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Status modal -->
+<div class="modal fade" id="statusModal" tabindex="-1" role="dialog" aria-labelledby="SmsModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document" style="width: 55rem;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5>Follow-up Details</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <img class="close" data-dismiss="modal" src="https://www.homepolish.com/assets/close-ee1bfd7a4473933b6dd934b2c284dc856361b63581c8f43b8cdc1abe07c91765.svg">
+    </button>
+      </div>
+      <div class="modal-body">
+
+        <div class="form-group row">
+          <label for="example-text-input" class="col-2 col-form-label">Callback Date</label>
+          <div class="col-10">
+            <input type="datetime-local" name="followup-details" id="followup-details" class="form-control">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="example-text-input" class="col-2 col-form-label">Remarks </label>
+          <div class="col-10">
+            <textarea rows="1" name="followup_remarks" id="followup_remarks" class="form-control"></textarea>
+            <!-- <input type="da" name="followup-details" id="followup-details" class="form-control"> -->
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <input type="button" id="followup-button" value="Update" class="btn btn-pink" (click) = "onCallbackChange('follow_up')" >
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Status modal end -->
+
+<div class="modal fade" id="loststatusModal" tabindex="-1" role="dialog" aria-labelledby="SmsModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document" style="width: 55rem;">
+    <form [formGroup]="statusChangeForm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5>Lost Details</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <img class="close" data-dismiss="modal" src="https://www.homepolish.com/assets/close-ee1bfd7a4473933b6dd934b2c284dc856361b63581c8f43b8cdc1abe07c91765.svg">
+          </button>
+        </div>
+        <div class="modal-body">
+
+          <div class="form-group row">
+            <label for="example-text-input" class="col-3 col-form-label">Reason for Lost <span class="text-danger">*</span></label>
+            <div class="col-9">
+              <select class="form-control" id="lost_reason" formControlName="reson_for_lost" (change)="reasonForLostDropdownChange($event.target.value)">
+                <option value="" disabled>Select Reason</option>
+                <option value="not_in_scope">Not in Scope</option>
+                <option value="low_budget">Low Budget</option>
+                <option value="out_of_area">Out of Area</option>
+                <option value="not_interested">Not Interested</option>
+                <option value="already_done_with_other_vendor">Already done with Other Vendor</option>
+                <option value="others">Others </option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row d-none" id="lostRemarkRow">
+            <label for="example-text-input" class="col-3 col-form-label">Remarks <span class="text-danger">*</span> </label>
+            <div class="col-9">
+              <textarea rows="1" name="lost_remarks" id="lost_remarks" class="form-control" formControlName="lost_remarks"></textarea>
+            </div>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <input type="button" id="lost-button" value="Update" class="btn btn-pink addCursor" (click) = "onCallbackChange('lost')" [disabled]="!statusChangeForm.valid">
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- For Inaactive Remark -->
+<div class="modal fade" id="statusModal2" tabindex="-1" role="dialog" aria-labelledby="SmsModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document" style="width: 55rem;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5>Inactive Reamrks Deatils</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <img class="close" data-dismiss="modal" src="https://www.homepolish.com/assets/close-ee1bfd7a4473933b6dd934b2c284dc856361b63581c8f43b8cdc1abe07c91765.svg">
+    </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group row">
+                    <label for="example-text-input" class="col-2 col-form-label">Remarks </label>
+                    <div class="col-10">
+                        <textarea rows="1" name="followup_remarks" id="inactive_remarks" class="form-control"></textarea>
+                        <!-- <input type="da" name="followup-details" id="followup-details" class="form-control"> -->
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="modal-footer">
+                <input type="button" id="followup-button" value="Update" class="btn btn-pink" (click)="onCallbackChange2()">
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end modal -->
+
+
+<!-- Status modal -->
+<div class="modal fade" id="statusModal1" tabindex="-1" role="dialog" aria-labelledby="SmsModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document" style="width: 55rem;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5>On Hold Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <img class="close" data-dismiss="modal" src="https://www.homepolish.com/assets/close-ee1bfd7a4473933b6dd934b2c284dc856361b63581c8f43b8cdc1abe07c91765.svg">
+    </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="form-group row" >
+                    <label for="example-text-input" class="col-2 col-form-label">Reopening Date</label>
+                    <div class="col-10">
+                        <input type="datetime-local" name="onhold-details" id="onhold-details" class="form-control" (change) = "disableDate1($event)">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="example-text-input" class="col-2 col-form-label">Remarks </label>
+                    <div class="col-10">
+                        <textarea rows="1" name="on_hold_remark" id="on_hold_remark" class="form-control"></textarea>
+                        <!-- <input type="da" name="followup-details" id="followup-details" class="form-control"> -->
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="modal-footer">
+                <input type="button" id="followup-button" value="Update" class="btn btn-pink" (click)="onCallbackChange1()">
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Status modal end -->

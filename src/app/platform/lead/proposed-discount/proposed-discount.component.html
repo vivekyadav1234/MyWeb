@@ -1,0 +1,96 @@
+<div class="row ss-top-menu">
+  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6">
+    <span class="ss-text-light ss-link" style="vertical-align: -webkit-baseline-middle;" [routerLink]="['/']">Dashboard</span> 
+    <span style="vertical-align: -webkit-baseline-middle;"><i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-text-light ss-link" style="vertical-align: -webkit-baseline-middle;" [routerLink]="['/community_manager/leads']" [queryParams]="{lead_status: lead_status}" >Lead</span>
+    <span style="vertical-align: -webkit-baseline-middle;"><i class="rightArrow fa fa-angle-right"></i> </span>
+   <!--  <span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;" *ngIf="lead_details.user_reference">{{lead_details.user_reference.name}}</span> -->
+  </div>
+</div>
+  
+<div class="container-fluid container-set">
+  <div class="row" style="padding: 16px">
+     <div class="col-md-12" *ngIf="discountBoq_list && discountBoq_list.length>0">
+      <div class="tableDiv ">
+        <div class="table-responsive">
+          <table class="table ">
+            <thead class="thead-dark">
+              <tr>
+                <th scope="col" class="firstTh">#</th>
+                <th scope="col">REFERENCE NUMBER</th>
+                <th scope="col">PROPOSAL NAME</th>
+                <th scope="col">STATUS</th>
+                <th scope="col">PRICE</th>
+                <th scope="col">PERCENT DISCOUNT</th>
+                <th scope="col">FINAL AMOUNT</th>
+                <th></th>
+                <th></th>
+
+                 <th></th>
+                <th class="lastTh"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr  *ngFor="let boq of discountBoq_list; let i = index; " [attr.data-index]="i" class="box-list">
+                <td>{{ i +1 }}</td>
+                <td>{{boq.proposed_quotations.quotation.reference_number}}</td>
+                <td>{{boq.proposed_quotations.proposal_name | replaceChar }}</td>
+                <td>{{ boq.proposed_quotations.quotation.status }}</td>
+                <td>{{ boq.proposed_quotations.quotation.net_amount }}</td>
+                <td><input type="number"  min="0"  max="99" onkeypress="return event.charCode >= 48" class="discountInput form-control" value="{{boq.proposed_quotations.discount_value}}" id="boq_{{boq.proposed_quotations.proposed_doc_id}}" (input)="onInputDiscount($event.target.id,boq,i)"></td>
+                <td>{{ final_amt[i] }}</td>
+                
+                <td >
+                  <div class="row">
+                    <div class="col-md-6">
+                      <button type="button" class="btn btn-primary btn-sm btn-success" (click)="approveDiscountProposal('accepted',boq.proposed_quotations.proposed_doc_id)">Approve</button>
+                    </div>
+                    <div class="col-md-6">
+                      <button type="button" class="btn btn-primary btn-sm btn-danger" (click)="approveDiscountProposal('rejected',boq.proposed_quotations.proposed_doc_id)">Reject</button>
+                    </div>
+                    
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>  
+        </div>
+      </div>
+      
+             
+      <div class="text-right">
+   
+    </div>
+     <div class="tableDiv" *ngIf="ppt_value && ppt_value.length>0" >
+          <div class="table-responsive">
+            <table class="table ">
+              <thead class="thead-dark">
+                <tr>
+                  <th>#</th>
+                  <th>TITLE</th>
+                  <th>UPDATED AT</th>
+                  
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let obj of ppt_value;let i = index" [attr.data-index]="i">
+
+                  <td>{{ i+1 }}</td>
+                  <td><a (click)="modalhide()">{{ obj.title }}</a></td>
+                  <td>{{ obj.updated_at | date:"dd MMMM, y @ h:mma"}}</td>
+
+
+                  
+                </tr>
+              </tbody>
+            </table>
+             
+          </div>  
+        
+     </div>  
+    
+    
+  </div>
+  
+</div>

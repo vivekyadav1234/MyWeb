@@ -1,0 +1,496 @@
+<div class="sideNav">
+  <div class="logo">
+    <a href="#"><img src="../../../assets/img/Logo resized.svg" width="100%"></a>
+  </div>
+  <ul class="pt-1" id="menu" *ngIf=" isLoggedIn()">
+    <li class="active" *ngIf=" role && (projectAccess.length>0) && (projectAccess.indexOf(role) > -1) ">
+      <div class="sprite-icon dashboard-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/']" routerLinkActive = "active" (click)="addClass($event)"> Dashboard</a>
+    </li>
+    <li class="active" *ngIf="isLoggedIn()&& role && (role=='community_manager')" [ngClass]="{'activeMenu':(window.location.pathname=='/community_manager')}">
+      <div class="sprite-icon dashboard-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/community_manager']" routerLinkActive = "active" (click)="addClass($event)"[ngClass]="{'activeSubMenuLinkColor':(window.location.pathname=='/community_manager')}"> Dashboard</a>
+    </li>
+     <li class="active" *ngIf=" isLoggedIn() &&  role &&   (role=='admin' || role=='category_head')" [ngClass]="{'activeMenu':(window.location.pathname=='/category/manage_master_data')}">
+      <div class="sprite-icon dashboard-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/category/manage_master_data']" routerLinkActive = "active" (click)="addClass($event)" [ngClass]="{'activeSubMenuLinkColor':(window.location.pathname=='/category/manage_master_data')}"> Manage Data</a>
+    </li>
+    <li class="active" *ngIf=" isLoggedIn() &&  role &&  (categoryDataAccess.length>0) && (categoryDataAccess.indexOf(role) > -1)"[ngClass]="{'activeMenu':(window.location.pathname=='/category/tasks')}">
+        <div class="sprite-icon tasks-icon pull-left ml-2"></div>
+        <a class="col-9 pl-1" [routerLink]="['/tasks']" routerLinkActive="active" (click)="addClass($event)" [ngClass]="{'activeSubMenuLinkColor':(window.location.pathname=='/category/tasks')}">Tasks</a>
+    </li>
+    <li class="active" *ngIf="isLoggedIn() && role && (cm_variable_margin_access.length>0) && (cm_variable_margin_access.indexOf(role) > -1) " [ngClass]="{'activeMenu':(window.location.pathname=='/cm-variable-margins')}">
+      <div class="sprite-icon dashboard-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/cm-variable-margins']" routerLinkActive = "active" (click)="addClass($event)" [ngClass]="{'activeSubMenuLinkColor':(window.location.pathname=='/cm-variable-margins')}"> CM Variable Margins Data</a>
+    </li>
+    <li class="active" *ngIf=" isLoggedIn() &&  role &&  (admin_metric_access.length>0) && (admin_metric_access.indexOf(role) > -1)">
+      <div class="sprite-icon dashboard-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" (click)="addClass($event)" [routerLink]="['/lead-metrics']" routerLinkActive = "active"> Metrics</a><br>
+      <div class="ml-2 mt-3 submenu-container d-none">
+        <a class="col-9 pl-1 d-block text-left mt-2 ml-4 addCursor submenu-title" (click)="activeSubmenu($event)" [routerLink]="['/lead-metrics']" [ngClass]="{'activeSubMenuLinkColor':(window.location.pathname=='/lead-metrics')}"> Lead Metrics</a>
+        <a class="col-9 pl-1 d-block text-left mt-3 ml-4 addCursor submenu-title" (click)="activeSubmenu($event)" [routerLink]="['/community-metrics']">Community Metrics</a>
+        <a class="col-9 pl-1 d-block text-left mt-3 ml-4 addCursor submenu-title" (click)="activeSubmenu($event)" [routerLink]="['/cm-and-designer-metrics']"> CM and Designer Metrics</a>
+        <a class="col-9 pl-1 d-block text-left mt-3 ml-4 addCursor submenu-title" (click)="activeSubmenu($event)" [routerLink]="['/mkw-businesshead-metrics']"> MKW Business Head Metrics</a>
+      </div>
+    </li>
+    <li class="active" *ngIf=" role && role=='cs_agent' ">
+      <div class="sprite-icon dashboard-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/csagent']" routerLinkActive = "active" (click)="addClass($event)"> Dashboard</a>
+    </li>
+    <li class="active" *ngIf=" role && role=='finance' ">
+      <div class="sprite-icon dashboard-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/finance']" routerLinkActive = "active" (click)="addClass($event)"> Client Collection</a>
+    </li>
+    <li class="active" *ngIf=" role && role=='finance' ">
+      <div class="sprite-icon dashboard-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/finance/vendor-payment']" routerLinkActive = "active" (click)="addClass($event)">Vendor Payment</a>
+    </li>
+   <!--  <li class="active" *ngIf=" role && role=='finance' ">
+      <div class="sprite-icon dashboard-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/finance/create-invoice']" routerLinkActive = "active" (click)="addClass($event)">Create Invoice</a>
+    </li> -->
+    <ng-container>
+      <li  *ngIf=" role && role=='finance' " data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseOne">
+        <div class="sprite-icon pull-left ml-2"><img src="assets/v3/img/Campaign.svg"></div>
+        <a class="col-9 pl-1" (click)="addClass($event)">Ledger</a>
+      </li>
+      <div id="collapseTwo" class="collapse rk-collapseDiv" aria-labelledby="headingOne" data-parent="#accordion">
+        <div class="pt-2 pb-3">
+          <li class="rk-form-fontsize rk-activeSubMenuLink pb-0 m-0 ml-4" (click)="changeSubMenuCss($event)"><a class="col-12" [routerLink]="['/finance/client-ledger']" routerLinkActive="active">Client Ledger</a></li>
+          <li class="rk-form-fontsize rk-activeSubMenuLink pb-0 m-0 ml-4" (click)="changeSubMenuCss($event)"><a class="col-12" [routerLink]="['/finance/vendor-ledger']" routerLinkActive="active">Vendor Ledger</a></li>
+        </div>
+      </div>
+    </ng-container>
+
+    <li class="active" *ngIf=" role && role=='finance' ">
+      <div class="sprite-icon dashboard-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/finance/client-invoice']" routerLinkActive = "active" (click)="addClass($event)">Client Invoice</a>
+    </li>
+
+    <li class="active" *ngIf=" role && role=='sales_manager' ">
+      <div class="sprite-icon dashboard-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/salesmanager/dashboard']" routerLinkActive = "active" (click)="addClass($event)"> Dashboard</a>
+    </li>
+    <li class="active" *ngIf=" role && role=='sales_manager' ">
+      <div class="sprite-icon dashboard-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/salesmanager/sales/sales-leads']" routerLinkActive = "active" (click)="addClass($event)"> Lead Management</a>
+    </li>
+    <li class="active" *ngIf=" role && role=='sales_manager' ">
+      <div class="sprite-icon dashboard-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/salesmanager/referrer-list']" routerLinkActive = "active" (click)="addClass($event)">Referrers</a>
+    </li>
+    <li class="active" *ngIf=" role && role=='sitesupervisor' ">
+      <div class="sprite-icon dashboard-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/sitesupervisor/dashboard']" routerLinkActive = "active" (click)="addClass($event)"> Dashboard</a>
+    </li>
+    <li class="active" *ngIf=" role && role=='order_manager' ">
+      <div class="sprite-icon dashboard-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/order_manager/dashboard']" routerLinkActive = "active" (click)="addClass($event)"> Dashboard</a>
+    </li>
+    
+    <li class="active" *ngIf=" isLoggedIn() &&  role &&  role=='admin'">
+      <div class="sprite-icon dashboard-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/cm-data-migration']" routerLinkActive = "active" (click)="addClass($event)"> Migrate CM Data</a>
+    </li>
+     <li class="active" *ngIf=" isLoggedIn() &&  role &&  role=='admin'">
+      <div class="sprite-icon dashboard-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/sales-mapping']" routerLinkActive = "active" (click)="addClass($event)"> Referrers</a>
+    </li>
+    <!-- <li class="active" *ngIf=" isLoggedIn() &&  role &&  (categoryDataAccess.length>0) && (categoryDataAccess.indexOf(role) > -1)">
+      <div class="sprite-icon dashboard-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/category/projects']" routerLinkActive = "active" (click)="addClass($event)">Projects</a>
+    </li> -->
+    <li class="active" *ngIf=" isLoggedIn() &&  role &&  (categoryDataAccess.length>0) && (categoryDataAccess.indexOf(role) > -1)">
+      <div class="sprite-icon dashboard-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/category/vendors']" routerLinkActive = "active" (click)="addClass($event)">Vendor</a>
+    </li>
+
+    <li class="active" *ngIf=" isLoggedIn() &&  role &&  (categoryDataAccess.length>0) && (categoryDataAccess.indexOf(role) > -1)">
+      <div class="sprite-icon dashboard-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/category/master_vendor_products']" routerLinkActive = "active" (click)="addClass($event)">Vendor Products</a>
+    </li>
+
+    <!-- <li class="active" *ngIf=" isLoggedIn() &&  role &&  (categoryDataAccess.length>0) && (categoryDataAccess.indexOf(role) > -1)">
+      <div class="sprite-icon dashboard-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/category/shop_drawing']" routerLinkActive = "active" (click)="addClass($event)">Furniture Drawings</a>
+    </li> -->
+
+    <li class="active" *ngIf=" isLoggedIn() &&  role &&  (categoryDataAccess.length>0) && (categoryDataAccess.indexOf(role) > -1)">
+      <div class="sprite-icon dashboard-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/category/purchase_order']" routerLinkActive = "active" (click)="addClass($event)">Bulk PO</a>
+    </li>
+    <li class="active" *ngIf=" isLoggedIn() &&  role &&  (categoryDataAccess.length>0) && (categoryDataAccess.indexOf(role) > -1)">
+      <div class="sprite-icon dashboard-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/category/project-po']" routerLinkActive = "active" (click)="addClass($event)">Project PO</a>
+    </li>
+    <li class="active" *ngIf=" isLoggedIn() &&  role &&  (categoryDataAccess.length>0) && (categoryDataAccess.indexOf(role) > -1)">
+      <div class="sprite-icon dashboard-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/category/office-po']" routerLinkActive = "active" (click)="addClass($event)">Office PO</a>
+    </li>
+    <li class="active" *ngIf=" isLoggedIn() &&  role &&  (categoryDataAccess.length>0) && (categoryDataAccess.indexOf(role) > -1)">
+      <div class="sprite-icon dashboard-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1"  [routerLink]="['/category/maintenance-po']" routerLinkActive = "active" (click)="addClass($event)">Maintenance PO</a>
+    </li>
+
+    <li class="active" *ngIf=" role && role=='broker' ">
+      <div class="sprite-icon dashboard-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/broker']" routerLinkActive = "active" (click)="addClass($event)"> Dashboard</a></li>
+    <li class="active" *ngIf="role && role=='broker' ">
+      <div class="sprite-icon leadmgmt-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/broker/leads']" routerLinkActive = "active" (click)="addClass($event)"> Lead Mgmt</a>
+    </li>
+    <li class="active" *ngIf=" role && role=='cad' ">
+      <div class="sprite-icon dashboard-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/cad/dashboard']" routerLinkActive = "active" (click)="addClass($event)"> Dashboard</a>
+    </li>
+    <!-- <li class="active" *ngIf=" role && role=='business_head'">
+      <div class="sprite-icon dashboard-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/business_head/dashboard']" routerLinkActive = "active" (click)="addClass($event)"> Dashboard</a>
+    </li>  -->
+    
+    <li class="active" *ngIf="isLoggedIn() && (role=='admin' || role=='business_head')" [ngClass]="{'activeMenu':(window.location.pathname=='/change-boq-value')}">
+        <div class="sprite-icon dashboard-icon pull-left ml-2"></div>
+        <a class="col-9 pl-1" [routerLink]="['/change-boq-value']" routerLinkActive = "active" (click)="addClass($event)"> Change Boq Value</a>
+    </li>
+    <li class="active" *ngIf="isLoggedIn() && (role=='admin' || role=='business_head')" [ngClass]="{'activeMenu':(window.location.pathname=='/aws-dashboard')}">
+        <div class="sprite-icon dashboard-icon pull-left ml-2"></div>
+        <a class="col-9 pl-1" [routerLink]="['/aws-dashboard']" routerLinkActive = "active" (click)="addClass($event)"> AWS Statistics</a>
+    </li>
+    <li class="active" *ngIf="isLoggedIn() && (role=='admin' || role=='business_head' || role=='designer' || role=='community_manager')" [ngClass]="{'activeMenu':(window.location.pathname=='/training-material')}">
+        <div class="sprite-icon dashboard-icon pull-left ml-2"></div>
+        <a class="col-9 pl-1" [routerLink]="['/training-material']" routerLinkActive = "active" (click)="addClass($event)"> Training Material</a>
+    </li> 
+    <li class="active" *ngIf="role=='business_head' ||role=='designer' || role=='city_gm'|| role =='community_manager'" [ngClass]="{'activeMenu':(window.location.pathname=='/general-manager/gm-dashboard')}">
+    <div class="sprite-icon dashboard-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/general-manager/gm-dashboard']" routerLinkActive = "active" (click)="addClass($event)"[ngClass]="{'activeSubMenuLinkColor':(window.location.pathname=='/general-manager/gm-dashboard')}">GM Dashboard</a>
+    </li> 
+    <!-- this is duplicate of GM dashboard for DM dashboard and for navigation naming DM dashboard -->
+    <li class="active" *ngIf="role=='design_manager'" [ngClass]="{'activeMenu':(window.location.pathname=='/general-manager/gm-dashboard')}">
+    <div class="sprite-icon dashboard-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/general-manager/gm-dashboard']" routerLinkActive = "active" (click)="addClass($event)" [ngClass]="{'activeSubMenuLinkColor':(window.location.pathname=='/general-manager/gm-dashboard')}">DM Dashboard</a>
+    </li> 
+    <!-- this is duplicate of cm dashboard for another role and navigation position arrengement -->
+    <li class="active" *ngIf="isLoggedIn()&& role && (role=='city_gm' || role=='business_head' || role=='design_manager')" [ngClass]="{'activeMenu':(window.location.pathname=='/community_manager')}">
+      <div class="sprite-icon dashboard-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/community_manager']" routerLinkActive = "active" (click)="addClass($event)"[ngClass]="{'activeSubMenuLinkColor':(window.location.pathname=='/community_manager')}">CM Dashboard</a>
+    </li>
+    <li class="active" *ngIf="isLoggedIn() && (role=='city_gm' || role=='business_head' || role=='community_manager' || role=='design_manager')" [ngClass]="{'activeMenu':(window.location.pathname=='/community_manager/wip')}">
+      <div class="sprite-icon designerlist-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/community_manager/wip']" routerLinkActive = "active" (click)="addClass($event)" [ngClass]="{'activeSubMenuLinkColor':(window.location.pathname=='/community_manager/wip')}"> Wip</a>
+    </li>
+
+    <li class="active" *ngIf=" role && (role=='community_manager') ">
+      <div class="sprite-icon designerlist-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/community_manager/actionable']" routerLinkActive = "active" (click)="addClass($event)"> Actionable</a>
+    </li>
+
+    <li class="active" *ngIf=" isLoggedIn() && (role=='community_manager') ">
+      <div class="sprite-icon designerlist-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/community_manager/deadlines']" routerLinkActive = "active" (click)="addClass($event)"> Deadlines</a>
+    </li>
+    <li *ngIf="(portfolioAccess.length>0) && (portfolioAccess.indexOf(role) > -1) ">
+      <div class="sprite-icon portfolio-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/organisation/portfolio']" routerLinkActive="active" (click)="addClass($event)"> Portfolio</a>
+    </li>
+    <li *ngIf="(emi_calculator_access.length>0) && (emi_calculator_access.indexOf(role) > -1) ">
+      <div class="sprite-icon portfolio-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/emicalculator']" routerLinkActive="active" (click)="addClass($event)"> EMI Calculator</a>
+    </li>
+    
+    <li *ngIf="(role=='designer' || role =='community_manager') ">
+      <div class="sprite-icon brokermgmt-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/tasks/task-list']" routerLinkActive="active" (click)="addClass($event)"> Tasks List</a>
+    </li>
+    <li *ngIf="(testimonialAccess.length>0) && (testimonialAccess.indexOf(role) > -1) ">
+      <div class="sprite-icon portfolio-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/testimonial']" routerLinkActive="active" (click)="addClass($event)"> Testimonial</a>
+    </li>
+    <li *ngIf=" (catalogueMgmtAccess.length>0) && (catalogueMgmtAccess.indexOf(role) > -1) " [ngClass]="{'activeMenu':(window.location.pathname=='/catalogue')}">
+      <div class="sprite-icon catalogue-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/catalogue/sections']" routerLinkActive="active" (click)="addClass($event)" *ngIf="role!='designer' && role!='catalog_viewer' && role!='community_manager' && role!='category' && role!='category_head' && role!='category_panel' && role!='category_non_panel' && role!='category_services'"> Catalogue</a>
+      <a class="col-9 pl-1" [routerLink]="['/catalogue']" routerLinkActive="active" (click)="addClass($event)" *ngIf="role=='designer' || role=='catalog_viewer'|| role =='community_manager' || role=='category'|| role=='category_head' || role=='category_panel'|| role=='category_non_panel' || role=='category_services'"> Catalogue</a>
+    </li>
+    <li *ngIf="(global_preset_access.length>0) && (global_preset_access.indexOf(role) > -1)">
+      <div class="sprite-icon designerportfolio-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/set_global_variable_preset']" routerLinkActive="active" (click)="addClass($event)">Global Configuration Presets</a>
+    </li>
+    <li *ngIf="(global_preset_access.length>0) && (global_preset_access.indexOf(role) > -1)">
+      <div class="sprite-icon designerportfolio-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/mkw_layouts/list']" routerLinkActive="active" (click)="addClass($event)">MKW Layouts</a>
+    </li>
+    <!-- <li class="active" *ngIf=" isLoggedIn() &&  role &&  (categoryDataAccess.length>0) && (categoryDataAccess.indexOf(role) > -1)">
+        <div class="sprite-icon tasks-icon pull-left ml-2"></div>
+        <a class="col-9 pl-1" [routerLink]="['/tasks']" routerLinkActive="active" (click)="addClass($event)">Tasks</a>
+    </li> -->
+    <li *ngIf="(userMgmtAccess.length>0) && (userMgmtAccess.indexOf(role) > -1) ">
+      <div class="sprite-icon usermgmt-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/user-roles/listusers']" routerLinkActive="active"  (click)="addClass($event)"> User Mgmt</a>
+    </li>
+    <li *ngIf="(brokerMgmtAccess.length>0) && (brokerMgmtAccess.indexOf(role) > -1) ">
+      <div class="sprite-icon brokermgmt-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/brokermanagement']" routerLinkActive="active"  (click)="addClass($event)"> Broker Mgmt</a>
+    </li>
+    <li *ngIf="(role=='admin' || role=='design_head')">
+      <div class="sprite-icon projectmgmt-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/projects/assigndesigner']" routerLinkActive="active"  (click)="addClass($event)"> Project Mgmt</a>
+    </li>
+    <li *ngIf="(leadMgmtAccess.length>0) && (leadMgmtAccess.indexOf(role) > -1) ">
+      <div class="sprite-icon leadmgmt-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/leads']" (click)="addClass($event)">Lead Mgmt</a>
+    </li>
+     <li *ngIf="(leadMgmtAccess.length>0) && (leadMgmtAccess.indexOf(role) > -1) ">
+      <div class="sprite-icon designermgmt-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/designermanagement']" routerLinkActive="active" (click)="addClass($event)">Designer Mgmt</a>
+    </li>
+    <li class="active" *ngIf="role && role=='lead_head' ">
+      <div class="sprite-icon leadmgmt-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/lead-priority-list']" routerLinkActive = "active" (click)="addClass($event)"> Lead Priority</a>
+    </li>
+     <li *ngIf="(leadMgmtAccess.length>0) && (leadMgmtAccess.indexOf(role) > -1) ">
+      <div class="sprite-icon designermgmt-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/sitesupervisor-management']" routerLinkActive="active" (click)="addClass($event)">SiteSupervisor</a>
+    </li>
+
+    <li *ngIf="(leadMgmtAccess.length>0) && (leadMgmtAccess.indexOf(role) > -1) ">
+      <div class="sprite-icon escalatedlead-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/lead/escalated-leads']" routerLinkActive="active" (click)="addClass($event)">Escalated </a>
+    </li>
+    <li *ngIf="role == 'customer'">
+      <div class="sprite-icon priceconfig-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/priceconfigurator']" routerLinkActive="active"  (click)="addClass($event)">Price Configurator</a>
+    </li>
+    <li *ngIf="(designerPortfolioAccess.length>0) && (designerPortfolioAccess.indexOf(role) > -1) ">
+      <div class="sprite-icon designerportfolio-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/designer-portfolios/list']" routerLinkActive="active" (click)="addClass($event)"> Designer Portfolio</a>
+    </li>
+    <li *ngIf="(role == 'designer') || (role=='community_manager') || (role=='sitesupervisor') ">
+      <div class="sprite-icon smslogs-icon pull-left ml-2"></div>
+      <a  class="col-9 pl-1" [routerLink]="['/calendar/view']" routerLinkActive="active"  (click)="addClass($event)">Calendar</a>
+    </li>
+
+    <li *ngIf="(role=='community_manager') ">
+      <div class="sprite-icon designerportfolio-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/community_manager/site-request']" routerLinkActive="active" (click)="addClass($event)"> Site Request</a>
+    </li>
+    <li *ngIf="(role=='community_manager') ">
+      <div class="sprite-icon designerportfolio-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/community_manager/payments']" routerLinkActive="active" (click)="addClass($event)"> Payments</a>
+    </li>
+    <li *ngIf="(role=='community_manager') ">
+      <div class="sprite-icon designerportfolio-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/community_manager/designer-list']" routerLinkActive="active" (click)="addClass($event)">Designers</a>
+    </li>
+
+    <li *ngIf="role == 'designer' ">
+      <div class="sprite-icon smslogs-icon pull-left ml-2"></div>
+      <a  class="col-9 pl-1" [routerLink]="['/designer/actionable']" routerLinkActive="active"  (click)="addClass($event)">Actionable</a>
+    </li>
+    <li *ngIf="role == 'designer' ">
+      <div class="sprite-icon smslogs-icon pull-left ml-2"></div>
+        <a  class="pl-1" [routerLink]="['/designer/questionnaire/'+userDetailService.current_user()?.id]" routerLinkActive="active"  (click)="addClass($event); closeNav()">Questionnaire</a>
+    </li>
+    <li *ngIf="role == 'designer' ">
+      <div class="sprite-icon smslogs-icon pull-left ml-2"></div>
+      <a  class="col-9 pl-1" [routerLink]="['/designer/deadlines']" routerLinkActive="active"  (click)="addClass($event)">Deadlines</a>
+    </li>
+    <li *ngIf="role == 'designer' ">
+      <div class="sprite-icon smslogs-icon pull-left ml-2"></div>
+      <a  class="col-9 pl-1" [routerLink]="['/designer/designer-wip-dashboard']" routerLinkActive="active"  (click)="addClass($event)">WIP</a>
+    </li>
+    <li class="active" *ngIf=" role && role=='referral' ">
+      <div class="sprite-icon dashboard-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/referral/dashboard']" routerLinkActive = "active" (click)="addClass($event)"> Dashboard</a>
+    </li>
+    <li class="active" *ngIf="role && role=='referral' ">
+      <div class="sprite-icon leadmgmt-icon pull-left ml-2"></div>
+      <a class="col-9 pl-1" [routerLink]="['/referral/leads']" routerLinkActive = "active" (click)="addClass($event)"> Lead Mgmt</a>
+    </li>
+    <li *ngIf="(csagentlistAccess.length>0) && (csagentlistAccess.indexOf(role) > -1) ">
+      <div class="sprite-icon pull-left ml-2"><img src="assets/v3/img/cs_Agent.svg"></div>
+      <a  class="col-9 pl-1" [routerLink]="['/csagent_list']" routerLinkActive="active"  (click)="addClass($event)">CS Agents</a>
+    </li>
+
+    <li *ngIf="role == 'admin' ">
+      <div class="sprite-icon pull-left ml-2"><img src="assets/v3/img/cs_Agent.svg"></div>
+      <a  class="col-9 pl-1" [routerLink]="['/tagging/cm-mapping']" routerLinkActive="active"  (click)="addClass($event)">CM Mapping</a>
+    </li>
+    <li *ngIf="role == 'admin' ">
+      <div class="sprite-icon pull-left ml-2"><img src="assets/v3/img/cs_Agent.svg"></div>
+      <a  class="col-9 pl-1" [routerLink]="['/mediaengagement/list']" routerLinkActive="active"  (click)="addClass($event)">Media Engagement</a>
+    </li>
+    <ng-container>
+      <li *ngIf="(csagentlistAccess.length>0) && (csagentlistAccess.indexOf(role) > -1) " data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+        <div class="sprite-icon pull-left ml-2"><img src="assets/v3/img/Campaign.svg"></div>
+        <a class="col-9 pl-1" (click)="addClass($event)">Campaigns</a>
+      </li>
+      <div id="collapseOne" class="collapse rk-collapseDiv" aria-labelledby="headingOne" data-parent="#accordion">
+        <div class="pt-2 pb-3">
+          <li class="rk-form-fontsize rk-activeSubMenuLink pb-0 m-0 ml-4" (click)="changeSubMenuCss($event)"><a class="col-12" [routerLink]="['/lead_priorities/list']" routerLinkActive="active">Lead Priorities</a></li>
+          <li class="rk-form-fontsize rk-activeSubMenuLink pb-0 m-0 ml-4" (click)="changeSubMenuCss($event)"><a class="col-12" [routerLink]="['/lead_campaigns/list']" routerLinkActive="active">Lead Campaigns</a></li>
+        </div>
+      </div>
+    </ng-container>
+    <li *ngIf="(leadMgmtAccess.length>0) && (leadMgmtAccess.indexOf(role) > -1) ">
+      <div class="sprite-icon pull-left ml-2"><img src="assets/v3/img/cs_Agent.svg"></div>
+      <a  class="col-9 pl-1" [routerLink]="['/cm_list']" routerLinkActive="active"  (click)="addClass($event)">Community Manager</a>
+    </li>
+    <li *ngIf="role=='admin'">
+      <div class="sprite-icon pull-left ml-2"><img src="assets/v3/img/Campaign.svg"></div>
+      <a class="col-9 pl-1" (click)="addClass($event)" [routerLink]="['/user-mapping/upload']" routerLinkActive="active">User Mapping</a>
+      <!-- <a class="col-9" [routerLink]="['/lead_campaigns/list']" routerLinkActive="active"  (click)="addClass($event)">Campaigns</a> -->
+    </li>
+ 
+     
+   <!--  <li *ngIf="(csagentlistAccess.length>0) && (csagentlistAccess.indexOf(role) > -1) ">
+      <div class="sprite-icon smslogs-icon pull-left ml-2"></div>
+      <a class="col-9" [routerLink]="['/lead_priorities/list']" routerLinkActive="active"  (click)="addClass($event)">Lead Priorities</a>
+    </li> -->
+  </ul>
+  <div class="profileImg addCursor" data-toggle="collapse" href="#collapseExample">
+    <ng-container *ngIf="(profile && (profile.avatar != '/images/original/missing.png')); else no_profile">
+      <img src="{{profile.avatar}}" style="height: 50px;" id="imgsidenav">
+    </ng-container>
+    <ng-template #no_profile>
+      <img src="assets/v3/img/profile.jpeg" id="imgsidenav1">
+    </ng-template>
+    <div class="profileDetail">
+      <h6 *ngIf="profile; else no_profile_name" id="profilename1heading">{{profile.name | ucwords}}</h6>
+      <ng-template #no_profile_name>
+        <h6 id="profilename2heading">{{userDetailService.current_user()?.name | ucwords}}</h6>
+      </ng-template>
+      <p>{{role | replaceChar | uppercase}}</p>
+    </div>
+  </div>
+</div>
+<div class="collapse adminDiv" id="collapseExample">
+  <div class="card card-body">
+    <ul *ngIf="isLoggedIn() &&  role">
+      <li class="nav-item dropdown design">
+            <a class="dropdown-item light" [routerLink]="['/profile/view/'+userDetailService.current_user()?.id]" routerLinkActive="active"  *ngIf="(profileAccess.length>0) && (profileAccess.indexOf(role) > -1) ">View Profile</a>
+            <a class="dropdown-item light" [routerLink]="['/changepassword/'+userDetailService.current_user()?.email]" routerLinkActive="active">Change Password</a>
+            <a class="dropdown-item light" [routerLink]="['/logout']" (click) = "logOut()">Logout</a>
+        </li>
+    </ul>
+  </div>
+</div>
+
+
+
+
+
+
+
+<div class="mobLogo py-3 text-center">
+  <span class="menuBtn" (click)="openNav()">&#9776;</span>
+  <a href="#"><img src="../../../assets/img/mainLogo.svg" class="img-fluid"></a>
+</div>
+<div class="mySideNavDiv" id="mySideNavDiv">
+  <div id="mySidenav" class="sidenav">
+    <a href="javascript:void(0)" class="closebtn" (click)="closeNav()">&times;</a>
+    <ul class="pt-1" id="menu" *ngIf=" isLoggedIn()">
+      <li class="active" *ngIf=" role && (projectAccess.length>0) && (projectAccess.indexOf(role) > -1) ">
+        <a class="pl-1" [routerLink]="['/']" routerLinkActive = "active" (click)="addClass($event); closeNav()"> Dashboard</a>
+      </li>
+      <li class="active" *ngIf=" role && role=='cs_agent' ">
+        <a class="pl-1" [routerLink]="['/csagent']" routerLinkActive = "active" (click)="addClass($event); closeNav()"> Dashboard</a>
+      </li>
+      <li class="active" *ngIf=" role && role=='broker' ">
+        <a class="pl-1" [routerLink]="['/broker']" routerLinkActive = "active" (click)="addClass($event); closeNav()"> Dashboard</a></li>
+      <li class="active" *ngIf="role && role=='broker' ">
+        <a class="pl-1" [routerLink]="['/broker/leads']" routerLinkActive = "active" (click)="addClass($event); closeNav()"> Lead Mgmt</a>
+      </li>
+      <li class="active" *ngIf=" role && role=='community_manager' ">
+        <a class="pl-1" [routerLink]="['/community_manager']" routerLinkActive = "active" (click)="addClass($event); closeNav()"> Dashboard</a>
+      </li>
+      <li class="active" *ngIf=" role && (role=='community_manager') ">
+        <a class="pl-1" [routerLink]="['/community_manager/wip']" routerLinkActive = "active" (click)="addClass($event); closeNav()"> Wip</a>
+      </li>
+      <li class="active" *ngIf=" role && (role=='community_manager') ">
+        <a class="pl-1" [routerLink]="['/community_manager/actionable']" routerLinkActive = "active" (click)="addClass($event); closeNav()"> Actionable</a>
+      </li>
+      <li class="active" *ngIf=" isLoggedIn() && (role=='community_manager') ">
+        <a class="pl-1" [routerLink]="['/community_manager/deadlines']" routerLinkActive = "active" (click)="addClass($event); closeNav()"> Deadlines</a>
+      </li>
+      <li *ngIf="(portfolioAccess.length>0) && (portfolioAccess.indexOf(role) > -1) ">
+        <a class="pl-1" [routerLink]="['/organisation/portfolio']" routerLinkActive="active" (click)="addClass($event); closeNav()"> Portfolio</a>
+      </li>
+      <li *ngIf="(testimonialAccess.length>0) && (testimonialAccess.indexOf(role) > -1) ">
+        <a class="pl-1" [routerLink]="['/testimonial']" routerLinkActive="active" (click)="addClass($event); closeNav()"> Testimonial</a>
+      </li>
+      <li *ngIf=" (catalogueMgmtAccess.length>0) && (catalogueMgmtAccess.indexOf(role) > -1) ">
+        <a class="pl-1" [routerLink]="['/catalogue/sections']" routerLinkActive="active" (click)="addClass($event); closeNav()"> Catalogue</a>
+      </li>
+      <li *ngIf="(userMgmtAccess.length>0) && (userMgmtAccess.indexOf(role) > -1) ">
+        <a class="pl-1" [routerLink]="['/user-roles/listusers']" routerLinkActive="active"  (click)="addClass($event); closeNav()"> User Mgmt</a>
+      </li>
+      <li *ngIf="(brokerMgmtAccess.length>0) && (brokerMgmtAccess.indexOf(role) > -1) ">
+        <a class="pl-1" [routerLink]="['/brokermanagement']" routerLinkActive="active"  (click)="addClass($event); closeNav()"> Broker Mgmt</a>
+      </li>
+      <li *ngIf="(role=='admin' || role=='design_head')">
+        <a class="pl-1" [routerLink]="['/projects/assigndesigner']" routerLinkActive="active"  (click)="addClass($event); closeNav()"> Project Mgmt</a>
+      </li>
+      <li *ngIf="(leadMgmtAccess.length>0) && (leadMgmtAccess.indexOf(role) > -1) ">
+        <a class="pl-1" [routerLink]="['/leads']" (click)="addClass($event); closeNav()">Lead Mgmt</a>
+      </li>
+      <li *ngIf="(leadMgmtAccess.length>0) && (leadMgmtAccess.indexOf(role) > -1) ">
+        <a class="pl-1" [routerLink]="['/designermanagement']" routerLinkActive="active" (click)="addClass($event); closeNav()">Designer Mgmt</a>
+      </li>
+       <li *ngIf="(leadMgmtAccess.length>0) && (leadMgmtAccess.indexOf(role) > -1) ">
+        <a class="pl-1" [routerLink]="['/lead/escalated-leads']" routerLinkActive="active" (click)="addClass($event); closeNav()"> Escalated Lead</a>
+      </li>
+      <li *ngIf="role == 'customer'">
+        <a class="pl-1" [routerLink]="['/priceconfigurator']" routerLinkActive="active"  (click)="addClass($event); closeNav()">Price Configurator</a>
+      </li>
+      <li *ngIf="(designerPortfolioAccess.length>0) && (designerPortfolioAccess.indexOf(role) > -1) ">
+        <a class="pl-1" [routerLink]="['/designer-portfolios/list']" routerLinkActive="active" (click)="addClass($event); closeNav()"> Designer Portfolio</a>
+      </li>
+      <li *ngIf="(role == 'designer') || (role=='community_manager') ">
+        <a  class="pl-1" [routerLink]="['/calendar/view']" routerLinkActive="active"  (click)="addClass($event); closeNav()">Calendar</a>
+      </li>
+      <li *ngIf="role == 'designer' ">
+        <a  class="pl-1" [routerLink]="['/designer/deadlines']" routerLinkActive="active"  (click)="addClass($event); closeNav()">Deadlines</a>
+      </li>
+      <li *ngIf="role == 'designer' ">
+        <a  class="pl-1" [routerLink]="['/designer/wip']" routerLinkActive="active"  (click)="addClass($event); closeNav()">WIP</a>
+      </li>
+      
+      <li *ngIf="(csagentlistAccess.length>0) && (csagentlistAccess.indexOf(role) > -1) ">
+        <a  class="pl-1" [routerLink]="['/csagent_list']" routerLinkActive="active"  (click)="addClass($event); closeNav()">CS Agents</a>
+      </li>
+      <li *ngIf="(csagentlistAccess.length>0) && (csagentlistAccess.indexOf(role) > -1) " data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+        <a class="pl-1" (click)="addClass($event); closeNav()">Campaigns</a>
+      </li>
+
+      <li *ngIf="(role=='admin')">
+        <a class="pl-1" [routerLink]="['/user-mapping/upload']" routerLinkActive="active"  (click)="addClass($event); closeNav()"> User Mapping</a>
+      </li>
+
+      <div id="collapseOne" class="collapse rk-collapseDiv" aria-labelledby="headingOne" data-parent="#accordion">
+        <div class="pt-2 pb-3">
+          <li class="rk-form-fontsize rk-activeSubMenuLink pb-0 m-0 ml-4" (click)="changeSubMenuCss($event)"><a class="col-12" [routerLink]="['/lead_priorities/list']" routerLinkActive="active">Lead Priorities</a></li>
+          <li class="rk-form-fontsize rk-activeSubMenuLink pb-0 m-0 ml-4" (click)="changeSubMenuCss($event)"><a class="col-12" [routerLink]="['/lead_campaigns/list']" routerLinkActive="active">Lead Campaigns</a></li>
+        </div>
+      </div>
+    </ul>
+    <div class="addCursor profileDetailDiv" data-toggle="collapse" href="#profileDetails">
+      <div class="profileDetail">
+        <h6 *ngIf="profile; else no_profile_name">{{profile.name | ucwords}}</h6>
+        <ng-template #no_profile_name>
+          <h6>{{userDetailService.current_user()?.name | ucwords}}</h6>
+        </ng-template>
+        <p>{{role | replaceChar | uppercase}}</p>
+      </div>
+    </div>
+    <div class="collapse" id="profileDetails">
+      <div class="card card-body">
+        <ul *ngIf="isLoggedIn() &&  role">
+          <li class="nav-item dropdown design">
+                <a class="dropdown-item light" (click)="closeNav()" [routerLink]="['/profile/view/'+userDetailService.current_user()?.id]" routerLinkActive="active"  *ngIf="(profileAccess.length>0) && (profileAccess.indexOf(role) > -1) ">View Profile</a>
+                <a class="dropdown-item light" (click)="closeNav()" [routerLink]="['/changepassword/'+userDetailService.current_user()?.email]" routerLinkActive="active">Change Password</a>
+                <a class="dropdown-item light" [routerLink]="['/logout']" (click) = "logOut()">Logout</a>
+            </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

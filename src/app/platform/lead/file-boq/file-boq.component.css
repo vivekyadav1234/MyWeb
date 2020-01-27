@@ -1,0 +1,117 @@
+.inc-side-panel {
+    border-right: 1px solid #ecf0f1;
+    min-height: 450px;
+}
+
+.inc-side-panel ul {
+    list-style: none;
+    padding-left: 1rem;
+    font-size: 14px;
+}
+
+.inc-link {}
+
+.inc-link.active {
+    color: #8F003E;
+}
+
+.right-section {
+    display: none;
+}
+
+.floorplan-section {
+    display: block;
+}
+
+.table td {
+    padding: 0.7rem 0.75rem;
+    vertical-align: middle;
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.7);
+    border: none;
+}
+
+.minWidthForTd {
+    min-width: 185px;
+}
+
+.table th {
+    padding: .9rem;
+    vertical-align: middle;
+    border: none;
+    font-size: 12px;
+    text-transform: uppercase;
+    color: #fff;
+    background-color: #5A5A5A;
+}
+
+.table {
+    border-collapse: separate;
+    border-spacing: 0 5px;
+}
+
+.tableDiv tbody {
+    background-color: #fff;
+}
+
+.tableDiv {
+    overflow-x: scroll;
+}
+
+.tableDiv tbody tr {
+    box-shadow: 1px 1px 7px 0px #dadada;
+    border-radius: 5px;
+}
+
+.firstTh {
+    border-radius: 5px 0 0 0;
+}
+
+.lastTh {
+    border-radius: 0px 5px 0 0;
+}
+
+@media (max-width: 767px) {
+    .inc-side-panel {
+        min-height: auto;
+        border-bottom: 1px solid #ccc;
+    }
+}
+.trash-card{
+    font-size: 19px;
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    color: #ffffff;
+    background-color: #8f0521;
+    padding: 5px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.img:hover{
+    background: black;
+}
+/*card shadow*/
+
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  transition: 0.3s;
+  width: 100%;
+  border: 0px solid rgba(0,0,0,.125)!important;
+  background-color: black!important;
+}
+
+.card:hover {
+  box-shadow: 9px 18px 28px 9px rgba(1,1,1,0.2);
+}
+.card-block{
+ background-color: whitesmoke!important;
+}
+.card:hover .card-text{
+    border-bottom: 1px solid #8F0020!important;
+}
+ 
+ 
+ 
+
+  

@@ -1,0 +1,116 @@
+<div class="rk-ui-notification err" *ngIf="erroralert"  style="z-index: 10000;">
+  <span id="notificationMessageText">{{errorMessage}}</span>
+  <a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+<div class="rk-ui-notification" *ngIf="successalert"  style="z-index: 10000;">
+  <span id="notificationMessageText">{{successMessage}}</span>
+  <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+
+
+<!-- Invite Champion Modal -->
+<form [formGroup]="inviteChampionForm" class="form-horizontal" enctype="multipart/form-data" id="addLeadForm">
+	<div class="row mx-2">
+	  <div class="col-sm-10 col-md-6 mb-2">
+			<div class="form-group">
+			  <label class="text-left">Name <span>*</span></label>
+			  <input type="text" class="form-control" name="name" placeholder="Enter Champion Name" formControlName="name">
+			  <div *ngIf="inviteChampionForm.controls['name'].errors && !inviteChampionForm.controls['name'].pristine" class="text-danger">
+				  <div [hidden]="!inviteChampionForm.controls['name'].errors.required">Name is required.</div>
+			  </div>
+			</div>
+	  </div>
+	  <div class="col-sm-10 col-md-6 mb-2">
+			<div class="form-group">
+			  <label class="text-left">Email<span>*</span></label>
+			  <input type="text" class="form-control" name="email" placeholder="Enter Champion Email" formControlName="email">
+			  <div *ngIf="inviteChampionForm.controls['email'].errors && !inviteChampionForm.controls['email'].pristine" class="text-danger">
+				  <div [hidden]="!inviteChampionForm.controls['email'].errors.required">Email is required.</div>
+				  <div [hidden]="inviteChampionForm.controls['email'].valid">Enter valid email.</div>
+			  </div>
+			</div>
+	  </div>
+	  <div class="col-sm-10 col-md-6 mb-2">
+			<div class="form-group">
+			  <label class="text-left"> Contact <span>*</span></label>
+			  <input type="number" class="form-control" name="contact" placeholder="Enter Champion Contact" formControlName="contact" required min="0" (keydown)="numberCheck($event)">
+			  <div *ngIf="inviteChampionForm.controls['contact'].errors && !inviteChampionForm.controls['contact'].pristine" class="text-danger">
+				<div [hidden]="!inviteChampionForm.controls['contact'].errors.required">Contact is required.</div>
+			  </div>
+			</div>
+	  </div>
+	  <div class="col-sm-10 col-md-6 mb-2">
+		  <div class="form-group">
+			  <label class="text-left">Select User Level <span>*</span></label>
+			  <select formControlName="champion_level" class="form-control capitalize" (change)="getChampionListByLevel()">
+				<option value="" disabled>Select</option>
+				<option value="2">2</option>
+				<option value="3">3</option>
+			  </select>
+			  <div *ngIf="inviteChampionForm.controls['champion_level'].errors && !inviteChampionForm.controls['champion_level'].pristine" class="text-danger">
+				  <div [hidden]="!inviteChampionForm.controls['champion_level'].errors.required">User Level is required.</div>
+				</div>
+			</div>
+	  </div>
+	  <div class="col-sm-10 col-md-6 mb-2">
+			<div class="form-group">
+				<label class="text-left">Select Level 1 User</label>
+				<!-- <select (change)="getChildChampionDetailsByLevel()" [disabled] formControlName="parent_id" class="form-control capitalize">
+				<option value="" disabled>Select</option>
+				<option value="{{champion.id}}" *ngFor="let champion of champion_user" selected>{{champion.email}}</option>
+				</select> -->
+
+				<input class="form-control capitalize" type="text" name="" value="{{currentUserName}}({{currentUserEmail}})" disabled="true">
+			</div>
+		</div>
+
+		<div class="col-sm-10 col-md-6" *ngIf= "showChildDropdown">
+		  <div class="form-group">
+				<label class="text-left">Select Level-2 Referal Type <span class="astric">*</span></label>
+				<select class="form-control capitalize" id="level2ReferalType" formControlName="selectedLevel2Referal" (change)="onChangeLevel2ReferalType($event.target.value)">
+				  <option value="null">Select</option>
+				  <option value="dealer">Dealer</option>
+				  <option value="non_display_referral">Non-Display Referral</option>
+				  <option value="display_dealer_referral">Display Dealer Referral</option>
+				  <option value="employee_referral">Employee Referral</option>
+				  <option value="client_referral">Client Referral</option>
+				  <option value="design_partner_referral">Design Partner Referral</option>
+				  <option value="other">Other</option>
+				</select>
+		  </div>
+		</div>
+
+		<div class="col-sm-10 col-md-6 mb-2" *ngIf="showLevel2User">
+		  <div class="form-group">
+				<label class="text-left">Select Level 2 User</label>
+				<select [disabled]="child_champion_user && child_champion_user.length <= 0" id="level2Dropdown" class="form-control capitalize" [(ngModel)]="parent_id" formControlName="selectedLevel2Referalpatner">
+				  <option value="" disabled>Select</option>
+				  <option value="{{champion.id}}" *ngFor="let champion of level2_champion_user">{{champion.email}}</option>
+				</select>
+		  </div>
+		</div>
+
+		<div class="col-sm-10 col-md-6" *ngIf= "showReferralType">
+		  <div class="form-group">
+				<label class="text-left">Referrer User Type <span class="astric">*</span></label>
+				<select formControlName="user_type" class="form-control capitalize">
+				  <option value="null">Select</option>
+				  <option value="dealer">Dealer</option>
+				  <option value="non_display_referral">Non-Display Dealer Referral</option>
+				  <option value="display_dealer_referral">Display Dealer Referral</option>
+				  <option value="employee_referral">Employee Referral</option>
+				  <option value="client_referral">Client Referral</option>
+				  <option value="design_partner_referral">Design Partner Referral</option>
+				  <option value="other">Other</option>
+				</select>
+		  </div>
+		</div>
+
+		<div class="col-sm-12 mt-3 text-right">
+			<div class="mt-3">
+				<button class="btn btn-pink addCursor" [disabled]="!inviteChampionForm.valid" (click)="inviteChampionFormSubmit(inviteChampionForm.value);inviteChampionForm.reset();">Submit</button>
+				<button class="cancle ml-3 addCursor rk-btnCancel" (click)="inviteChampionForm.reset();" data-dismiss="modal">Cancel</button>
+			</div>
+		</div>
+	</div>
+</form>

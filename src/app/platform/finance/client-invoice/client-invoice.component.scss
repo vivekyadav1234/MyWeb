@@ -1,0 +1,198 @@
+.fa{
+    cursor: pointer;
+}
+
+td{
+    vertical-align: middle;
+}
+.arrivae-color{
+    color:#A20025;
+}
+
+button:focus {outline:0;}
+
+table thead th{
+    vertical-align: inherit;
+}
+
+tr{
+    font-size:14px;
+
+    th,td{
+        text-align: center;
+    }
+    th{
+        font-weight: 500;
+    }
+
+    td{
+        font-weight:300;
+    }
+}
+
+collapsible-table-row{
+    font-size:14px;
+
+    th,td{
+        text-align: center;
+    }
+    th{
+        font-weight: 500;
+    }
+
+    td{
+        font-weight:300;
+    }
+}
+
+.btn-arrivae{
+    background-color:#A20025;
+    color:white;
+    cursor: pointer;
+}
+
+.table{
+    background-color:white;
+    margin-top:1rem;
+}
+
+#collapse1{
+    background-color:white;
+}
+
+.btn-invoice{
+    background-color:transparent;
+    color:black;
+    margin:0.5rem;
+    cursor:pointer;
+}
+
+.btn-invoice:hover:active , .active{
+    border-bottom: 2px solid #A20025;
+    margin: 0.5rem;
+}
+
+.payment-history-icon{
+    font-weight:bolder;
+    font-size:18px;
+    cursor:pointer;
+}
+
+.donwload-icon{
+    font-weight:bolder;
+    font-size:18px;
+    cursor:pointer;
+    color:#A20025;
+}
+
+.borderless td, .borderless th {
+    border: none;
+}
+
+.modal-dialog{
+    max-width:85%;
+}
+
+#payment-details,#view-invoices{
+    font-size:13px;
+}
+
+.search-box{
+    width:80%;
+    display: inline-block;
+}
+
+.search-container{
+    float:right;
+}
+
+.invoice-modal-header{
+    display:inline;
+
+    button{
+        float:right;
+    }
+   
+}
+
+.invoice-types{
+    border-bottom:2px solid #e9ecef
+}
+
+.badge{
+    color:white;
+    background-color:#A20025;
+    border-radius:100%;
+    margin-left:0.40rem;
+}
+
+.pagination-size{
+    font-size:1rem;
+}
+
+.highlight{
+    font-weight: 400;
+    color:#A20025;
+    // padding:0.25rem;
+}
+
+.accordion-row{
+    cursor: pointer;
+}
+
+.border-design{
+    box-shadow: inset 0px 0px 4px #979090;
+}
+
+.overflow-invoice{
+    overflow:auto;
+}
+
+.vertical-align-middle{
+    vertical-align: middle;
+    cursor:pointer;
+}
+
+.capitalize{
+    text-transform: capitalize
+}
+
+.align-image{
+    text-align: center;
+}
+
+.complete-width{
+    width:100%;
+
+    td{
+        width:33%;
+    }
+}
+
+a{
+    cursor: pointer;
+}
+
+.form-check{
+    display: inline-block;
+    margin-bottom: 0;
+    position: relative;
+}
+
+.form-control-change{
+
+position: relative;
+display: inline-block;
+-webkit-box-sizing: border-box;
+box-sizing: border-box;
+width: 100%;
+margin-bottom: 10px !important;
+margin-top: 10px !important;
+font-size: 15px;
+font-family: 'roboto';
+
+}
+
+.display-inline{
+    display: inline;
+}

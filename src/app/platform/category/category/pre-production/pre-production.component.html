@@ -1,0 +1,103 @@
+<div class="rk-ui-notification" *ngIf="successalert">
+    <span id="notificationMessageText">{{successMessage}}</span>
+    <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+<div class="rk-ui-notification err" *ngIf="erroralert">
+    <span id="notificationMessageText">{{errorMessage}}</span>
+    <a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+
+<div class="row">
+  <div class="col-12 text-center mb-4">
+    <a type=" " class="btn Kit-btn shadow-sm">Modular Kitchen</a>
+    <a type=" " class="btn Kit-btn shadow-sm">Modular Wardrobe</a>
+    <a type=" " class="btn Kit-btn shadow-sm">Panel Furniture</a>
+    <a type=" " class="btn Kit-btn shadow-sm">Non Panel Furniture</a>
+    <a type=" " class="btn Kit-btn shadow-sm">Civil Kitchen</a>
+    <a type=" " class="btn Kit-btn shadow-sm">Services</a>
+  </div>
+</div>
+<div class="row">
+  <div class="col-12 not-found" *ngIf="boq_list && boq_list.length==0 ">
+    <div class="boq-img text-center">
+      <img src="../../../assets/img/desktop.png"/>
+    </div>
+    <p class="nothing-to-show pb-4">Nothing to show...</p>
+  </div>
+
+  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" *ngIf="boq_list && boq_list.length>0">
+    <div class="tableDiv">
+      <table class="table">
+        <thead>
+          <tr> 
+            <th class="tbnb firstTh">Lead ID</th>
+            <th class="tbnb">Client</th>
+            <th class="tbnb"> Designer + CM</th>
+            <th class="tbnb">BOQ Number</th>
+            <th class="tbnb">  % Payment</th>
+            <th class="tbnb lastTh"> Date of 50% Payment</th>
+          </tr>
+        </thead>
+        <tbody  *ngFor="let obj of boq_list | paginate: { itemsPerPage: per_page, currentPage: current_page, totalItems: total_page  }; let i = index"[attr.data-index]="i">
+          <tr class="addCursor" (click)="toggleRow(obj);">       
+            <td class="tbnb">{{ obj.lead_details.id }}</td>
+            <td class="tbnb">{{ obj.lead_details.name }}
+              <div class="text-left">
+                <span style="display: flex;font-weight: 400;"> Address&nbsp;:&nbsp;<span class="pl-1 addCursor" data-toggle="tooltip" title="{{obj.project_address}}" style="width: 157px;vertical-align: bottom;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">{{obj.project_address}}</span></span>
+              </div>
+            </td>
+            <td class="tbnb">{{ obj.designer_details.name }}<br>{{ obj.cm_details.name }}</td>
+            <!-- <td class="tbnb"><a class="text-primary" (click)="downloadBoq(obj.id,obj.project_id)">{{obj.reference_number}}</a></td> -->
+            <td class="tbnb text-primary"  data-toggle="modal" data-target="#exampleModal">{{obj.reference_number}}</td>
+            <td class="tbnb">{{obj.total_payment_percentage}}</td>
+            <td class="tbnb">{{obj.date_of_last_50_percent_payment }}</td>
+            <td class="tbnb"[ngClass]="{'active': selectedArrow == i}"><i class="fa fa-angle-down"style="font-size: 25px;"></i></td>
+          </tr>
+          <tr class="bg-col" *ngIf="obj.id == rowSelected">
+            <td colspan="8">
+              <div class="row mx-0">
+                <div class="w-100 p-1">
+                  <app-sli-creation [line_item] = 'obj'></app-sli-creation>
+                </div>
+              </div>
+            </td>
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Download BOQ</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <a class="addCursor downloadBtn mr-2" (click)="downloadBoq(obj.id,obj.project_id)">Download a PDF version</a>
+                    <a class="addCursor downloadBtn mr-3" (click)="downloadExcelReport(obj.id,obj.project_id)">Download a Excel version</a>
+                   
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                 
+                  </div>
+                </div>
+              </div>
+            </div>
+          </tr>
+        </tbody>
+      </table>
+      <div class="text-center" *ngIf="boq_list && boq_list.length >0">
+        <pagination-controls autoHide="true" (pageChange)="current_page = getBOQList($event)"></pagination-controls>
+      </div>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" *ngIf="!boq_list">
+    <div class="boq-img text-center">
+      <img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+      </div>
+      <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing to show...</p>
+
+  </div>
+</div>  
+  
+
+

@@ -1,0 +1,1696 @@
+<div class="container-fluid" *ngIf="payment_history_list.length > 0">
+  <div class="row justify-content-md-center">
+    <div class="col-sm-10 mt-4 mb-4 p-2" style="background-color: #ddefff; border: 1px solid #badcfb;">
+      <div class="row">
+        <div class="col-sm-8">
+          <p class="mt-2" *ngIf="total_amount">Amount to be paid is INR {{(quotation.total_amount*10)/100}}. Kindly pay the amount to proceed further.</p>
+        </div>
+        <div class="col-sm-4">
+          <strong>Account Details:</strong>
+          <br>
+          <span>Name:</span> <span> Singularity Furniture Private Limited</span>
+          <span>A/C Number:</span> <span> xxxx xxxxx xxxx xxxxx</span>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container-fluid" *ngIf="proposal_status != 'yes' && proposal_status != 'no'">
+   <div class="col-12 mt-2 mb-1" >
+    <div class="pull-right" *ngIf="proposal_status ==undefined">
+       <button class="btn  btn-sm  pull-right bt-boq" type="button" data-toggle="modal" data-target="#myProposal">Action</button>
+    </div>
+
+  </div>
+</div>
+
+<div id="navcontainer">
+  <ul class="nav nav-tabs tabs-chng" id="myTab" role="tablist" *ngIf="selectedSections">
+    <li class="nav-item nav-items" *ngFor="let sec of selectedSections" >
+      <a class="nav-link addCursor text-center mr-3" [ngClass]="{'active': selectedsectionName == sec}" (click)="changeSectionTab(sec)">{{sec | replaceChar | uppercase}}</a>
+    </li>
+  </ul>
+</div>
+
+<div class="modal fade" id="selectedGlobalVarModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Selected Global Variables</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Category</th>
+                        <th>Type</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <!-- Modlar wardrobe-->
+                <tbody *ngIf="globalVarArr && boqConfigMWVal && boqConfigMWVal.category=='wardrobe' ">
+                    <tr>
+                        <td>1</td>
+                        <td>Core Material</td>
+                        <td>
+                           <span class="editRowSpan capitalize">{{boqConfigMWVal.core_material.name}}</span>
+                           <select class="form-control d-none editRowInput" [(ngModel)]="core_material_globalVar_MW">
+                                <option value="">Select</option>
+                                <option *ngFor="let coremat of globalVarArr.core_material" value="{{coremat.name}}">{{coremat.name}}</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Shutter Material</td>
+                        <td>
+                           <span class="editRowSpan capitalize">{{boqConfigMWVal.shutter_material.name}}</span>
+                           <select class="form-control d-none editRowInput" [(ngModel)]="shutter_material_globalVar_MW" (change)="listofShutterFinishes(shutter_material_globalVar_MW)">
+                               <option value="">Select</option>
+                                <option *ngFor="let shuttermat of globalVarArr.shutter_material" value="{{shuttermat.name}}">{{shuttermat.name}}</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Shutter Finish</td>
+                        <td>
+                            <span class="editRowSpan capitalize">{{boqConfigMWVal.shutter_finish.name}}</span>
+                            <select class="form-control d-none editRowInput" [(ngModel)]="shutter_finish_globalVar_MW" (change)="listofShutterFinishShades(shutter_finish_globalVar_MW)">
+                                <!-- <option>{{shutter_finish_globalVar_MW}}</option> -->
+                                <option value="">Select</option>
+                                <option *ngFor="let shutterfin of globalVarArr.shutter_finish" value="{{shutterfin.name}}">{{shutterfin.name}}</option>
+                                <!--
+                                <option *ngFor="let shutterfin of globalVarArr.shutter_finish" value="{{shutterfin.name}}">{{shutterfin.name}}</option> -->
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td> Shutter Shade Code</td>
+                        <td>
+                           <span class="editRowSpan capitalize">{{boqConfigMWVal.shutter_shade_code.code}}</span>
+                           <select class="form-control d-none editRowInput" [(ngModel)]="shutter_shade_code_globalVar_MW" (change)="setImageModal($event.target.value,'shadeCode',globalVarArr.category)">
+                                <option value="">Select</option>
+                                <option *ngFor="let shuttershadecode of globalVarArr.shutter_shade_code" value="{{shuttershadecode.code}}" [selected]="shutter_shade_code_globalVar_MW==shuttershadecode.code">{{shuttershadecode.code}}</option>
+                            </select>
+                            <img src="{{boqConfigMWVal.shutter_shade_code.shade_image}}" class="my-1 editRowSpan" alt=" No Image" height="60px" width="100px" *ngIf="boqConfigMWVal.shutter_shade_code.shade_image" onerror="this.src='./assets/img/no_image.svg'" />
+                            <img src="{{shadeImgMW}}" class="my-1 editRowInput" alt=" No Image" height="60px" width="100px" *ngIf="shadeImgMW" onerror="this.src='./assets/img/no_image.svg'" />
+                        </td>
+                    </tr>
+                    <tr>
+                       <td>5</td>
+                       <td>Shutter Handle Code</td>
+                       <td>
+                           <span class="editRowSpan capitalize">{{boqConfigMWVal.shutter_handle_code}}</span>
+                           <select class="form-control d-none editRowInput" [(ngModel)]="shutter_handle_code_globalVar_MW">
+                                <option value="">Select</option>
+                                <option *ngFor="let shc of globalVarArr.shutter_handle_code" value="{{shc.code}}">{{shc.code}}</option>
+                            </select>
+                       </td>
+                    </tr>
+                    <tr>
+                       <td>6</td>
+                       <td>Drawer Handle Code</td>
+                       <td>
+                           <span class="editRowSpan capitalize">{{boqConfigMWVal.door_handle_code}}</span>
+                           <select class="form-control d-none editRowInput" [(ngModel)]="door_handle_code_globalVar_MW">
+                                <option value="">Select</option>
+                                <option *ngFor="let dhc of globalVarArr.door_handle_code" value="{{dhc.code}}">{{dhc.code}}</option>
+                            </select>
+                       </td>
+                    </tr>
+                    <tr>
+                       <td>7</td>
+                       <td>Hardware Brand</td>
+                       <td>
+                           <span class="editRowSpan capitalize">{{boqConfigMWVal.brand.name}}</span>
+                           <select class="form-control d-none editRowInput" [(ngModel)]="hardware_brand_globalVar_MW">
+                                <option value="">Select</option>
+                                <option *ngFor="let hb of globalVarArr.hardware_brand" value="{{hb.id}}">{{hb.name}}</option>
+                            </select>
+                       </td>
+                    </tr>
+                    <tr>
+                       <td>8</td>
+                       <td> Hinge Type</td>
+                       <td>
+                           <span class="editRowSpan capitalize">{{boqConfigMWVal.hinge_type}}</span>
+                           <select class="form-control d-none editRowInput" [(ngModel)]="hinge_type_globalVar_MW">
+                                <option value="">Select</option>
+                                <option *ngFor="let ht of globalVarArr.hinge_type" value="{{ht}}">{{ht | uppercase}} <span *ngIf="ht=='soft'"> - CLOSE</span></option>
+                            </select>
+                       </td>
+                    </tr>
+                    <tr>
+                       <td>9</td>
+                       <td> Channel Type</td>
+                       <td>
+                           <span class="editRowSpan capitalize">{{boqConfigMWVal.channel_type}}</span>
+                           <select class="form-control d-none editRowInput" [(ngModel)]="channel_type_globalVar_MW">
+                                <option value="">Select</option>
+                                <option *ngFor="let ct of globalVarArr.channel_type" value="{{ct}}">{{ct | uppercase}} <span *ngIf="ct=='soft'"> - CLOSE</span></option>
+                            </select>
+                       </td>
+                    </tr>
+                    <tr>
+                       <td>10</td>
+                       <td> Edge Banding Shade</td>
+                       <td>
+                           <span class="editRowSpan capitalize">{{boqConfigMWVal.edge_banding_shade_code.code}}</span>
+                           <select class="form-control d-none editRowInput" [(ngModel)]="edgebanding_shade_code_globalVar_MW" (change)="setImageModal($event.target.value,'edgebandingShadeCode',globalVarArr.category)">
+                                <option value="">Select</option>
+                                <option *ngFor="let ebsc of globalVarArr.edge_banding_shade_code" value="{{ebsc.code}}" [selected]="edgebanding_shade_code_globalVar_MW==ebsc.code">{{ebsc.code}}</option>
+                            </select>
+                            <img src="{{boqConfigMWVal.edge_banding_shade_code.shade_image}}" class="my-1 editRowSpan" alt=" No Image" height="60px" width="100px" *ngIf="boqConfigMWVal.edge_banding_shade_code.shade_image" onerror="this.src='./assets/img/no_image.svg'" />
+                            <img src="{{edgebandingImgMW}}" class="my-1 editRowInput" alt=" No Image" height="60px" width="100px" *ngIf="edgebandingImgMW" onerror="this.src='./assets/img/no_image.svg'" />
+                       </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="row editRowInput d-none" *ngIf="globalVarArr && boqConfigMWVal && boqConfigMWVal.category=='wardrobe' ">
+                <div class="col-sm-12 text-right">
+                    <button class=" rk-btnCancel my-2" (click)="cancelEditGlobalVarRow('',boqConfigMWVal.category)">Cancel</button>
+                    <button class="pull-right rk-interalBtnColor mr-2 my-2" (click)="updateGlobalVar('',boqConfigMWVal.id,boqConfigMWVal.category)">Save</button>
+                    <button class="pull-right rk-interalBtnColor mr-2 my-2" (click)="updateAndApplyBoqGlobalConfig('',boqConfigMWVal.id,boqConfigMWVal.category)">Save and Apply</button>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container-fluid container-set mb-3">
+  <div class="row rowContainer" style="padding: 16px;" id="globalVarRowForMW">
+    <div class="col-md-12" *ngIf="quotations">
+      <h6 class="mb-3 borderbottom pt-3 pb-3"><span class="mr-3">BOQ : {{quotations.reference_number}}</span><span class="pull-right">Total - &#8377; {{quotations.total_amount}}</span></h6>
+      <div class="col-md-12 borderbottom pt-1 pb-2 mb-3 addCursor" id="selectedGlobalVarLink"   data-toggle="modal" data-target="#selectedGlobalVarModal" style="color: #8c031f;">Selected Global Variable</div>
+      <div class="col-md-12 borderbottom pt-3 pb-3" *ngIf="editBtnFlag">
+        <div class="row" >
+            <div class="col-md-3"><span>Enter Space</span></div>
+            <div class="col-md-6">
+                <form [formGroup]="addSpaceMWForm">
+                    <select class="form-control" style="width: 70%; display: inline-block;" formControlName="space">
+                        <option value="">Select</option>
+                        <option *ngFor="let space of availableSpaces" value="{{space}}">{{space}}</option>
+                    </select>
+                    <img src="./assets/img/dashboard/submit.png" (click)="createSpace(addSpaceMWForm.value,'wardrobe')">
+                </form>
+            </div>
+        </div>
+      </div>
+      <div id="accordion">
+        <div class="card mb-2" *ngFor="let selSpace of quotations.spaces; let k=index; ">
+          <div class="card-header" id="spaceCard{{k}}">
+              <h5 class="mb-0">
+                  <button class="btn btn-link addCursor" data-toggle="collapse" [attr.data-target]=" '#collapseSpaceCard'+k" aria-expanded="true" aria-controls="collapseOne">
+                  {{selSpace}}
+                  </button>
+                  <ng-container *ngFor="let key1 of Object.keys(quotations.space_amounts_wardrobe); let n =index; "><!-- <span *ngIf="key1==selSpace" style="font-size: 14px;" class="pull-right">Total - &#8377; {{quotations.space_amounts_wardrobe[key1]}}</span> --></ng-container>
+              </h5>
+              <div class="pull-right col-md-12 text-right mt-2" *ngIf="editBtnFlag">
+                <label class="text-left mr-2">Upload KDMax Excel</label>
+                <input type="file" class="form-control" (change)="onChange($event)" name="attachment_file" ngModel #attachment_file="ngModel" style="display:inline-block;width: 30%;">
+                <button (click)="uploadKdMaxExcel(selSpace,'wardrobe',k)" [disabled]="basefile==undefined" class="cartBtn">Upload</button>
+                <div class="col-md-12 d-none mt-2 text-left" id="kdmax_errorblock{{k}}">
+                    <div class="alert alert-danger" >
+                        <a class="close rk-linknotification mr-3 mt-1" (click)="closeKdmax_errorblock(k)">×</a>
+                        <ng-container *ngFor=" let err of this.quotations.errors">
+                            <span><strong>Code - </strong> {{err.code}}</span><br>
+                            <span><strong>Message - </strong> {{err.message}}</span><br>
+                            <p style=" padding-top: 10px;border-bottom: 1px solid #f5c6cb;"></p>
+                        </ng-container>
+                    </div>
+                </div>
+              </div>
+          </div>
+          <div id="collapseSpaceCard{{k}}" class="collapse" [attr.aria-labelledby]="'spaceCard'+k" data-parent="#accordion">
+            <div class="card-body">
+              <div id="addModuleFormRow{{k}}" class="d-none">
+                <h5 class="">Add Module</h5>
+                <form [formGroup]="addModuleForm">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <select class="form-control" (change)="getModuleOfModuleType($event.target.value)" formControlName="module_type">
+                               <option value="">Choose Type</option>
+                               <option *ngFor="let mt of moduletypesArr" value="{{mt | json}}">{{mt.name}}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-control" formControlName="module">
+                               <option value="">Choose Modules</option>
+                               <option *ngFor="let mod of modulesArr" value="{{mod.id}}">{{mod.code}}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <input type="number" name="" class="form-control" placeholder="Enter Quantity" formControlName="qty" min="0">
+                        </div>
+                        <div class="col-md-2">
+                            <button [disabled]="!addModuleForm.valid" (click)="addModule(addModuleForm.value,selSpace,'wardrobe',k)" class="rk-interalBtnColor">ADD</button>
+                        </div>
+                    </div>
+                </form>
+              </div>
+              <ng-container *ngFor="let key of Object.keys(quotations.modular_jobs_wardrobe); let m =index; ">
+                <div *ngIf="key==selSpace" class="tableDiv mt-3">
+                  <button class="rk-interalBtnColor pull-right" (click)="setCombineModuleData(quotations.modular_jobs_wardrobe[key])" *ngIf="(quotations.modular_jobs_wardrobe[key].length>=2) && editBtnFlag" data-toggle="modal" data-target="#combinedmodulesModal">Combine Module</button>
+                  <table class="table">
+                      <thead class="thead-dark">
+                          <tr>
+                              <th class="firstTh">#</th>
+                              <th>Type</th>
+                              <th>Module</th>
+                              <th>Quantity</th>
+                              <!-- <th>Price</th> -->
+                              <th>Image</th>
+                              <th class="lastTh"> customization</th>
+                              <th class="lastTh" *ngIf="editBtnFlag"></th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <ng-container *ngFor="let mod of quotations.modular_jobs_wardrobe[key]; let k=index; ">
+                              <tr *ngIf="!mod.combined">
+                                  <td>{{k+1}}</td>
+                                  <td>{{mod.module_type}}</td>
+                                  <td>{{mod.code}}</td>
+                                  <td>
+                                      <span class="moduleLineItemSpan{{k}}">{{mod.quantity}}</span>
+                                      <input type="number" name="" class="form-control d-none moduleLineItemInput{{k}}" [(ngModel)]="editModuleLineQty">
+                                  </td>
+                                  <!-- <td>{{mod.amount}}</td> -->
+                                  <td>
+                                      <img src="{{mod.module_image_url}}" *ngIf="mod.module_image_url" style="width: 100px;" onerror="this.src='./assets/img/no_image.svg';" alt="Missing Image">
+                                  </td>
+                                  <td>
+                                      <img src="assets/v3/img/gear.svg" (click)="getCustomizationOfModule(mod.id)" data-toggle="modal" data-target="#customizationModal">
+                                  </td>
+                                  <td *ngIf="editBtnFlag">
+                                      <button class="d-none moduleLineItemInput{{k}} rk-interalBtnColor mx-2 editRowButton" (click)="updateModule(k,mod,'wardrobe')">Update</button>
+                                      <button class="d-none moduleLineItemInput{{k}} rk-btnCancel addCursor" (click)="cancelModuleLineItem(k,mod)">Cancel</button>
+                                      <i class="ion-android-more-vertical  ss-3-dot-drop moduleLineItemSpan{{k}}" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"></i>
+                                      <div class="dropdown-menu pt-2 pb-2" style="font-size: 14px;">
+                                          <a class="dropdown-item addCursor" (click)="editmoduleLineItem(k,mod)">Edit</a>
+                                          <a class="dropdown-item addCursor" (click)="moduleDelete(mod.id,mod.space,mod.category)">Delete</a>
+                                      </div>
+                                  </td>
+                              </tr>
+                              <tr id="package{{k}}" class="accordion-toggle addCursor" data-toggle="collapse" data-parent="#OrderPackages" [attr.data-target]="'.packageDetails'+k" *ngIf="mod.combined" (click)="showAccordion(k)" style="font-weight: normal;">
+                                  <td>{{k+1}}</td>
+                                  <td>Combined</td>
+                                  <td>{{mod.name}}</td>
+                                  <td>{{mod.quantity}}</td>
+                                  <!-- <td>{{mod.amount}}</td> -->
+                                  <td>
+                                      <img src="{{mod.module_image_url}}" *ngIf="mod.module_image_url" style="width: 100px;" onerror="this.src='./assets/img/no_image.svg';" alt="Missing Image">
+                                  </td>
+                                  <td></td>
+                                  <td *ngIf="editBtnFlag">
+                                      <i class="ion-android-more-vertical  ss-3-dot-drop moduleLineItemSpan{{k}}" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"></i>
+                                      <i class="fa fa-angle-up pull-right"></i>
+                                      <div class="dropdown-menu pt-2 pb-2" style="font-size: 14px;">
+                                          <a class="dropdown-item addCursor" (click)="show_EditCombModModal(k,mod); setCombineModuleData(quotations.modular_jobs_wardrobe[key])" data-toggle="modal" data-target="#editCombineModuleModal">Edit</a>
+                                          <a class="dropdown-item addCursor" (click)="moduleDelete(mod.id,mod.space,mod.category,true)">Remove Combination</a>
+                                      </div>
+                                  </td>
+                              </tr>
+                              <tr class="d-none combmoduleAccordionRow{{k}}" id="combmoduleAccordionRow{{k}}" *ngIf="mod.combined">
+                                  <td colspan="7" class="hiddenRow" style="border: 1px solid #eceaea;border-radius: 5px;">
+                                      <div class="accordion-body collapse packageDetails{{k}}" id="accordion_{{k}}">
+                                          <table class="table">
+                                              <tr *ngFor="let cmod of mod.included_modules; let m=index; ">
+                                                  <td>{{m+1}}</td>
+                                                  <td>{{cmod.module_type}}</td>
+                                                  <td>{{cmod.code}}</td>
+                                                  <td>
+                                                      <span class="moduleLineItemSpan{{k}}{{m}}">{{cmod.quantity}}</span>
+                                                      <input type="number" name="" class="form-control d-none moduleLineItemInput{{k}}{{m}}" [(ngModel)]="editModuleLineQty">
+                                                  </td>
+                                                  <!-- <td>{{cmod.amount}}</td> -->
+                                                  <td>
+                                                      <img src="{{cmod.module_image_url}}" *ngIf="cmod.module_image_url" style="width: 100px;" onerror="this.src='./assets/img/no_image.svg';" alt="Missing Image">
+                                                  </td>
+                                                  <td>
+                                                      <img src="assets/v3/img/gear.svg" (click)="getCustomizationOfModule(cmod.id)" data-toggle="modal" data-target="#customizationModal">
+                                                  </td>
+                                                  <td *ngIf="editBtnFlag">
+                                                      <button class="d-none moduleLineItemInput{{k}}{{m}} rk-interalBtnColor mx-2 editRowButton" (click)="updateModule(k,cmod,'wardrobe')">Update</button>
+                                                      <button class="d-none moduleLineItemInput{{k}}{{m}} rk-btnCancel addCursor" (click)="cancelCombineModuleLineItem(k,mod,m)">Cancel</button>
+                                                      <i class="ion-android-more-vertical  ss-3-dot-drop moduleLineItemSpan{{k}}{{m}}" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"></i>
+                                                      <div class="dropdown-menu pt-2 pb-2" style="font-size: 14px;">
+                                                          <a class="dropdown-item addCursor" (click)="editCombinemoduleLineItem(k,cmod,m)">Edit</a>
+                                                          <a class="dropdown-item addCursor" (click)="moduleDelete(cmod.id,cmod.space,cmod.category)">Delete</a>
+                                                      </div>
+                                                  </td>
+                                              </tr>
+
+                                          </table>
+                                      </div>
+                                  </td>
+                              </tr>
+                          </ng-container>
+                      </tbody>
+                  </table>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-12 pt-3 pb-3 text-right" *ngIf="editBtnFlag">
+        <button class="mr-1 addCursor cartBtn" (click)="updateQuotation()">Update Quotation </button>
+    </div>
+  </div>
+  <!--Kitchen starts-->
+  <div class="row d-none rowContainer" style="padding: 16px;" id="globalVarRowForMK">
+    <div class="col-md-12" *ngIf="quotations">
+      <h6 class="mb-3 borderbottom pt-3 pb-3"><span class="mr-3">BOQ : {{quotations.reference_number}}</span><span class="pull-right">Total - &#8377; {{quotations.total_amount}}</span></h6>
+      <div class="col-md-12 borderbottom pt-1 pb-2 mb-3 addCursor" id="selectedGlobalVarLink"   data-toggle="modal" data-target="#selectedGlobalVarModalMK" style="color: #8c031f;">Selected Global Variable</div>
+      <div class="col-md-12 borderbottom pt-3 pb-3"  *ngIf="quotations && quotations.countertop_cost!=0 && quotations.countertop_cost!=null">
+          <span class="addCursor" style="color: #8c031f;">Countertop -</span> <span class="capitalize" style="font-size: 14px;">{{quotations.countertop_details.countertop | replaceChar}} - &#8377; {{quotations.countertop_details.price}}</span>
+          <span class="addCursor ml-4" style="color: #8c031f;" *ngIf="quotations.countertop_details.countertop_width">Countertop Length - </span><span style="font-size: 14px;" *ngIf="quotations.countertop_details.countertop_width">{{quotations.countertop_details.countertop_width}} mm</span>
+            <button style="padding: 2px 6px;" (click)="showCountertopLengthForm()" class="rk-interalBtnColor addCursor ml-3" id="countertopLenChangeBtn" *ngIf="editBtnFlag">Change Length</button>
+            <form class="d-none mt-4" id="countertopLengthForm">
+                <h6>Change Counter Top Length</h6>
+                <input type="number" name="countertoplength" [(ngModel)]="countertop_width_globalVar_MK" placeholder="Enter Length" class="form-control d-inline" style="width: 25%" min="0">
+                <button class="cartBtn" (click)="changeCountertopLenSubmit(countertop_width_globalVar_MK)" [disabled]="countertop_width_globalVar_MK==undefined || countertop_width_globalVar_MK==''">Change</button>
+                <button class="rk-btnCancel" (click)="hideCountertopLengthForm()">Cancel</button>
+            </form>
+      </div>
+      <div class="col-md-12 borderbottom pt-3 pb-3" *ngIf="editBtnFlag">
+        <div class="row" >
+            <div class="col-md-3"><span>Enter Space</span></div>
+            <div class="col-md-6">
+                <form [formGroup]="addSpaceMWForm">
+                    <select class="form-control" style="width: 70%; display: inline-block;" formControlName="space">
+                        <option value="">Select</option>
+                        <option *ngFor="let space of availableSpaces" value="{{space}}">{{space}}</option>
+                    </select>
+                    <img src="./assets/img/dashboard/submit.png" (click)="createSpace(addSpaceMWForm.value,'kitchen')">
+                </form>
+            </div>
+        </div>
+      </div>
+      <div id="accordion">
+        <div class="card mb-2" *ngFor="let selSpaceMk of quotations.spaces_kitchen; let k1=index; ">
+          <div class="card-header" id="spaceCardMk{{k1}}">
+              <h5 class="mb-0">
+                  <button class="btn btn-link addCursor" data-toggle="collapse" [attr.data-target]=" '#collapseSpaceCardMk'+k1" aria-expanded="true" aria-controls="collapsetwo">
+                  {{selSpaceMk}}
+                  </button>
+                  <ng-container *ngFor="let key2 of Object.keys(quotations.space_amounts_kitchen); let n =index; "><!-- <span *ngIf="key2==selSpaceMk" style="font-size: 14px;" class="pull-right">Total - &#8377; {{quotations.space_amounts_kitchen[key2]}}</span> --></ng-container>
+              </h5>
+              <div class="pull-right col-md-12 text-right" *ngIf="editBtnFlag">
+                <button [attr.data-target]=" '#collapseSpaceCardMk'+k1" aria-expanded="true" aria-controls="collapseOne" (click)="displayAddModuleForm(k1,'kitchen')">Add Module</button>
+                <button [attr.data-target]=" '#collapseSpaceCardMk'+k1" aria-expanded="true" aria-controls="collapseOne" (click)="displayAddApplianceForm(k1,'kitchen')">Add Appliance</button>
+                <button (click)="spaceDelete(selSpaceMk,'kitchen')">Delete Space</button>
+              </div>
+              <div class="pull-right col-md-12 text-right mt-2" *ngIf="editBtnFlag">
+                <label class="text-left mr-2">Upload KDMax Excel</label>
+                <input type="file" class="form-control" (change)="onChange($event)" name="attachment_file" ngModel #attachment_file="ngModel" style="display:inline-block;width: 30%;">
+                <button (click)="uploadKdMaxExcel(selSpaceMk,'kitchen',k1)" [disabled]="basefile==undefined" class="cartBtn">Upload</button>
+                <div class="col-md-12 d-none mt-2 text-left" id="kdmax_errorblock{{k1}}">
+                    <div class="alert alert-danger" >
+                        <a class="close rk-linknotification mr-3 mt-1" (click)="closeKdmax_errorblock(k1)">×</a>
+                        <ng-container *ngFor=" let err of this.quotations.errors">
+                            <span><strong>Code - </strong> {{err.code}}</span><br>
+                            <span><strong>Message - </strong> {{err.message}}</span><br>
+                            <p style=" padding-top: 10px;border-bottom: 1px solid #f5c6cb;"></p>
+                        </ng-container>
+                    </div>
+                </div>
+              </div>
+          </div>
+          <div id="collapseSpaceCardMk{{k1}}" class="collapse" [attr.aria-labelledby]="'spaceCardMk'+k1" data-parent="#accordionMk">
+            <div class="card-body">
+              <div id="addModuleFormRowMk{{k1}}" class="d-none">
+                <h5 class="">Add Module</h5>
+                <form [formGroup]="addModuleFormMk">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <select class="form-control" (change)="getModuletypeOfKitchenCat($event.target.value)" formControlName="kitchen_category">
+                               <option value="">Choose Kitchen Category</option>
+                               <option *ngFor="let kc of kitchenCatArr" value="{{kc | json}}">{{kc.name}}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-control" (change)="getModuleOfModuleType($event.target.value)" formControlName="module_type">
+                               <option value="">Choose Type</option>
+                               <option *ngFor="let mt of moduletypesArr" value="{{mt | json}}">{{mt.name}}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-control" formControlName="module">
+                               <option value="">Choose Modules</option>
+                               <option *ngFor="let mod of modulesArr" value="{{mod.id}}">{{mod.code}} ({{mod.dimensions}})</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+              </div>
+              <div id="addApplianceFormRowMk{{k1}}" class="d-none">
+                <h5 class="">Add Appliance</h5>
+                <form [formGroup]="addApplianceFormMk">
+                  <div class="row">
+                    <div class="col-md-3">
+                        <select class="form-control" (change)="getApplianceOfModuleType($event.target.value)" formControlName="module_type_id">
+                           <option value="">Choose Appliance Type</option>
+                           <option *ngFor="let kat of kitchenApplianceTypesArr" value="{{kat.id}}">{{kat.name}}</option>
+                        </select>
+                    </div>
+                  </div>
+                </form>
+              </div><br>
+              <p>Added Modules :</p>
+              <ng-container *ngFor="let key of Object.keys(quotations.modular_jobs_kitchen); let m1 =index; ">
+                <div *ngIf="key==selSpaceMk" class="tableDiv mt-3">
+                  <table class="table">
+                      <thead class="thead-dark">
+                          <tr>
+                              <th class="firstTh">#</th>
+                              <th>Kitchen Category</th>
+                              <th>Type</th>
+                              <th>Module</th>
+                              <th>Quantity</th>
+                              <!-- <th>Price</th> -->
+                              <th>Width</th>
+                              <th>Image</th>
+                              <th class="lastTh">customization</th>
+                              <th class="lastTh" *ngIf="editBtnFlag"></th>
+                              <!-- <th class="lastTh">Global Configuration</th> -->
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <tr *ngFor="let mod of quotations.modular_jobs_kitchen[key]; let k=index; ">
+                              <td>{{k+1}}</td>
+                              <td>{{mod.kitchen_category_name}}</td>
+                              <td>{{mod.module_type}}</td>
+                              <td>{{mod.code}} ({{mod.dimensions}})</td>
+                              <td>
+                                  <span class="moduleLineItemSpan{{k}}">{{mod.quantity}}</span>
+                                  <input type="number" name="" class="form-control d-none moduleLineItemInput{{k}}" [(ngModel)]="editModuleLineQty">
+                              </td>
+                              <!-- <td>{{mod.amount}}</td> -->
+                              <td>
+                                  <span class="moduleLineItemSpan{{k}}"><ng-container *ngIf="mod.custom_shelf_unit_width">{{mod.custom_shelf_unit_width}} mm</ng-container><ng-container *ngIf="!mod.custom_shelf_unit_width">NA</ng-container></span>
+                                  <input type="number" name="" class="form-control d-none moduleLineItemInput{{k}}" [(ngModel)]="editModuleLineWidth">
+                              </td>
+                              <td>
+                                  <img src="{{mod.module_image_url}}" *ngIf="mod.module_image_url" style="width: 100px;" onerror="this.src='./assets/img/no_image.svg';" alt="Missing Image">
+                              </td>
+                              <td>
+                                <img src="assets/v3/img/gear.svg" (click)="getCustomizationOfModule(mod.id)" data-toggle="modal" data-target="#customizationModalMk" class="addCursor">
+                              </td>
+                              <td *ngIf="editBtnFlag">
+                                <button class="d-none moduleLineItemInput{{k}} rk-interalBtnColor mx-2 editRowButton" (click)="updateModule(k,mod,'kitchen')">Update</button>
+                                <button class="d-none moduleLineItemInput{{k}} rk-btnCancel addCursor" (click)="cancelModuleLineItem(k,mod)">Cancel</button>
+                                <i class="ion-android-more-vertical  ss-3-dot-drop moduleLineItemSpan{{k}}" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"></i>
+                                <div class="dropdown-menu pt-2 pb-2" style="font-size: 14px;">
+                                    <a class="dropdown-item addCursor" (click)="editmoduleLineItem(k,mod)">Edit</a>
+                                    <a class="dropdown-item addCursor" (click)="moduleDelete(mod.id,mod.space,mod.category)">Delete</a>
+                                </div>
+                            </td>
+                          </tr>
+                      </tbody>
+                  </table>
+                </div>
+              </ng-container>
+              <p *ngIf="Object.keys(quotations.appliance_jobs).length>0">Added Appliances :</p>
+              <ng-container *ngFor="let key6 of Object.keys(quotations.appliance_jobs); let m6 =index; ">
+                <div *ngIf="key6==selSpaceMk" class="tableDiv mt-3">
+                    <table class="table">
+                      <thead class="thead-dark">
+                          <tr>
+                              <th class="firstTh">#</th>
+                              <th>Appliance Type</th>
+                              <th>Appliance</th>
+                              <th>Make</th>
+                              <th>Vendor Sku</th>
+                              <th>Quantity</th>
+                              <!-- <th>Price</th> -->
+                              <th class="lastTh">Image</th>
+                              <th class="lastTh" *ngIf="editBtnFlag"></th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let appjob of quotations.appliance_jobs[key6]; let k=index; ">
+                          <td>{{k+1}}</td>
+                          <td>{{appjob.subcategory}}</td>
+                          <td>{{appjob.name}}</td>
+                          <td>{{appjob.make}}</td>
+                          <td>{{appjob.vendor_sku}}</td>
+                          <td>
+                              <span class="applianceLineItemSpan{{k}}">{{appjob.quantity}}</span>
+                              <input type="number" name="" class="form-control d-none applianceLineItemInput{{k}}" [(ngModel)]="editApplianceLineQty">
+                          </td>
+                          <!-- <td>{{appjob.amount}}</td> -->
+                          <td>
+                              <img src="{{appjob.image_url}}" *ngIf="appjob.image_url" style="width: 100px;" onerror="this.src='./assets/img/no_image.svg';" alt="Missing Image">
+                          </td>
+                          <td *ngIf="editBtnFlag">
+                              <button class="d-none applianceLineItemInput{{k}} rk-interalBtnColor mx-2 editRowButton" (click)="updateAppliance(k,appjob,'kitchen')">Update</button>
+                              <button class="d-none applianceLineItemInput{{k}} rk-btnCancel addCursor" (click)="cancelApplianceLineItem(k,appjob)">Cancel</button>
+                              <i class="ion-android-more-vertical  ss-3-dot-drop applianceLineItemSpan{{k}}" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"></i>
+                              <div class="dropdown-menu pt-2 pb-2" style="font-size: 14px;">
+                                  <a class="dropdown-item addCursor" (click)="editApplianceLineItem(k,appjob)">Edit</a>
+                                  <a class="dropdown-item addCursor" (click)="applianceDelete(appjob.id,appjob.space)">Delete</a>
+                              </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                  </table>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-12 pt-3 pb-3 text-right" *ngIf="editBtnFlag">
+        <button class="mr-1 addCursor cartBtn" (click)="updateQuotation()">Update Quotation </button>
+    </div>
+  </div>
+  <!--Kitchen ends-->
+  <div class="modal fade" id="selectedGlobalVarModalMK" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Selected Global Variables</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row" *ngIf="editBtnFlag">
+            <div class="col-sm-12">
+                <button _ngcontent-c6="" class="rk-interalBtnColor addCursor pull-right my-2 mr-2 editRowSpan" (click)="editGlobalVarRow('',boqConfigMKVal)" *ngIf="globalVarArr && boqConfigMKVal && boqConfigMKVal.category=='kitchen' ">Update Global Variables</button>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Category</th>
+                        <th>Type</th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <!--Modular kitchen-->
+                <tbody *ngIf="globalVarArr && boqConfigMKVal && boqConfigMKVal.category=='kitchen' ">
+                    <tr>
+                        <td>1</td>
+                        <td>Type Of Kitchen</td>
+                        <td>
+                           <span class="editRowSpan capitalize">
+                                <ng-container *ngIf="boqConfigMKVal.civil_kitchen">Civil Kitchen</ng-container>
+                                <ng-container *ngIf="!boqConfigMKVal.civil_kitchen">Modular Kitchen</ng-container>
+                            </span>
+                           <select class="form-control d-none editRowInput" [(ngModel)]="typeofkitchen_globalVar_MK">
+                                <option value="">Select</option>
+                                <option value="true">Civil Kitchen</option>
+                                <option value="false">Modular Kitchen</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr [ngClass]="(typeofkitchen_globalVar_MK===true || typeofkitchen_globalVar_MK==='true')?'d-print-table-cell':'d-none'">
+                        <td>2</td>
+                        <td>Depth(in mm)</td>
+                        <td>
+                            <span class="editRowSpan capitalize" *ngIf="boqConfigMKVal.civil_kitchen_parameters">
+                               {{ boqConfigMKVal.civil_kitchen_parameters.depth}}
+                            </span>
+                            <input type="number" name="" class="form-control d-none editRowInput" [(ngModel)]="depthofcivilKit_globalVar_MK">
+                        </td>
+                    </tr>
+                    <tr [ngClass]="(typeofkitchen_globalVar_MK===true || typeofkitchen_globalVar_MK==='true')?'d-print-table-cell':'d-none'">
+                        <td>3</td>
+                        <td>Drawer 1 Height in mm(D1)</td>
+                        <td>
+                           <span class="editRowSpan capitalize" *ngIf="boqConfigMKVal.civil_kitchen_parameters">
+                               {{ boqConfigMKVal.civil_kitchen_parameters.drawer_height_1}}
+                            </span>
+                            <input type="number" name="" class="form-control d-none editRowInput" [(ngModel)]="drawerheight1ofcivilKit_globalVar_MK">
+                        </td>
+                    </tr>
+                    <tr [ngClass]="(typeofkitchen_globalVar_MK===true || typeofkitchen_globalVar_MK==='true')?'d-print-table-cell':'d-none'">
+                        <td>4</td>
+                        <td>Drawer 2 Height in mm(D2)</td>
+                        <td>
+                           <span class="editRowSpan capitalize" *ngIf="boqConfigMKVal.civil_kitchen_parameters">
+                               {{ boqConfigMKVal.civil_kitchen_parameters.drawer_height_2}}
+                            </span>
+                            <input type="number" name="" class="form-control d-none editRowInput" [(ngModel)]="drawerheight2ofcivilKit_globalVar_MK">
+                        </td>
+                    </tr>
+                    <tr [ngClass]="(typeofkitchen_globalVar_MK===true || typeofkitchen_globalVar_MK==='true')?'d-print-table-cell':'d-none'">
+                        <td>5</td>
+                        <td>Drawer 3 Height in mm(D3)</td>
+                        <td>
+                           <span class="editRowSpan capitalize" *ngIf="boqConfigMKVal.civil_kitchen_parameters">
+                               {{ boqConfigMKVal.civil_kitchen_parameters.drawer_height_3}}
+                            </span>
+                            <input type="number" name="" class="form-control d-none editRowInput" [(ngModel)]="drawerheight3ofcivilKit_globalVar_MK">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td *ngIf="typeofkitchen_globalVar_MK==true || typeofkitchen_globalVar_MK==='true'">6</td>
+                        <td *ngIf="typeofkitchen_globalVar_MK==false || typeofkitchen_globalVar_MK==='false'">2</td>
+                        <td>Core Material</td>
+                        <td>
+                           <span class="editRowSpan capitalize">{{boqConfigMKVal.core_material.name}}</span>
+                           <select class="form-control d-none editRowInput" [(ngModel)]="core_material_globalVar_MK">
+                                <option value="">Select</option>
+                                <option *ngFor="let coremat of globalVarArr.core_material" value="{{coremat.name}}">{{coremat.name}}</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td *ngIf="typeofkitchen_globalVar_MK==true || typeofkitchen_globalVar_MK==='true'">7</td>
+                        <td *ngIf="typeofkitchen_globalVar_MK==false || typeofkitchen_globalVar_MK==='false'">3</td>
+                        <td>Shutter Material</td>
+                        <td>
+                           <span class="editRowSpan capitalize">{{boqConfigMKVal.shutter_material.name}}</span>
+                           <select class="form-control d-none editRowInput" [(ngModel)]="shutter_material_globalVar_MK" (change)="listofShutterFinishes(shutter_material_globalVar_MK)">
+                               <option value="">Select</option>
+                                <option *ngFor="let shuttermat of globalVarArr.shutter_material" value="{{shuttermat.name}}">{{shuttermat.name}}</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td *ngIf="typeofkitchen_globalVar_MK==true || typeofkitchen_globalVar_MK==='true'">8</td>
+                        <td *ngIf="typeofkitchen_globalVar_MK==false || typeofkitchen_globalVar_MK==='false'">4</td>
+                        <td>Shutter Finish</td>
+                        <td>
+                            <span class="editRowSpan capitalize">{{boqConfigMKVal.shutter_finish.name}}</span>
+                            <select class="form-control d-none editRowInput" [(ngModel)]="shutter_finish_globalVar_MK" (change)="listofShutterFinishShades(shutter_finish_globalVar_MK); getHandleList(shutter_finish_globalVar_MK);">
+                               <option value="">Select</option>
+                                <option *ngFor="let shutterfin of globalVarArr.shutter_finish" value="{{shutterfin.name}}">{{shutterfin.name}}</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td *ngIf="typeofkitchen_globalVar_MK==true || typeofkitchen_globalVar_MK==='true'">9</td>
+                        <td *ngIf="typeofkitchen_globalVar_MK==false || typeofkitchen_globalVar_MK==='false'">5</td>
+                        <td> Shutter Shade Code</td>
+                        <td>
+                           <span class="editRowSpan capitalize" *ngIf="!boqConfigMKVal.custom_shutter_shade_code">{{boqConfigMKVal.shutter_shade_code.code}}</span>
+                           <span class="editRowSpan capitalize" *ngIf="boqConfigMKVal.custom_shutter_shade_code">{{boqConfigMKVal.shutter_shade_code}}</span>
+                           <select class="form-control d-none editRowInput" [(ngModel)]="shutter_shade_code_globalVar_MK" (change)="setImageModal($event.target.value,'shadeCode',globalVarArr.category)">
+                                <option value="">Select</option>
+                                <option value="customshadecode">Custom shade code</option>
+                                <option *ngFor="let shuttershadecode of globalVarArr.shutter_shade_code" value="{{shuttershadecode.code}}">{{shuttershadecode.code}}</option>
+                            </select>
+                            <input type="text" name="" class="form-control d-none editRowInput my-1" [(ngModel)]="shutter_custshade_code_globalVar_MK" placeholder="Enter custom shade code" [disabled]="shutter_shade_code_globalVar_MK!='customshadecode'">
+                            <img src="{{boqConfigMKVal.shutter_shade_code.shade_image}}" class="my-1 editRowSpan" alt=" No Image" height="60px" width="100px" *ngIf="!boqConfigMKVal.custom_shutter_shade_code && boqConfigMKVal.shutter_shade_code.shade_image" onerror="this.src='./assets/img/no_image.svg'" />
+                            <img src="{{shadeImg}}" class="my-1 editRowInput" alt=" No Image" height="60px" width="100px" *ngIf="shadeImg" onerror="this.src='./assets/img/no_image.svg'" />
+                        </td>
+                    </tr>
+                    <tr>
+                       <td *ngIf="typeofkitchen_globalVar_MK==true || typeofkitchen_globalVar_MK==='true'">10</td>
+                        <td *ngIf="typeofkitchen_globalVar_MK==false || typeofkitchen_globalVar_MK==='false'">6</td>
+                       <td> Handle Code</td>
+                       <td>
+                           <span class="editRowSpan capitalize">{{boqConfigMKVal.door_handle_code}}</span>
+                           <select class="form-control d-none editRowInput" [(ngModel)]="door_handle_code_globalVar_MK">
+                                <option value="">Select</option>
+                                <option *ngFor="let dhc of handlelistForKitchen" value="{{dhc.code}}">{{dhc.code}}</option>
+                            </select>
+                       </td>
+                    </tr>
+                    <tr>
+                       <td *ngIf="typeofkitchen_globalVar_MK==true || typeofkitchen_globalVar_MK==='true'">11</td>
+                       <td *ngIf="typeofkitchen_globalVar_MK==false || typeofkitchen_globalVar_MK==='false'">7</td>
+                       <td>Hardware Brand</td>
+                       <td>
+                           <span class="editRowSpan capitalize">{{boqConfigMKVal.brand.name}}</span>
+                           <select class="form-control d-none editRowInput" [(ngModel)]="hardware_brand_globalVar_MK">
+                                <option value="">Select</option>
+                                <option *ngFor="let hb of globalVarArr.hardware_brand" value="{{hb.id}}">{{hb.name}}</option>
+                            </select>
+                       </td>
+                    </tr>
+                    <tr>
+                       <td *ngIf="typeofkitchen_globalVar_MK==true || typeofkitchen_globalVar_MK==='true'">12</td>
+                       <td *ngIf="typeofkitchen_globalVar_MK==false || typeofkitchen_globalVar_MK==='false'">8</td>
+                       <td> Hinge Type</td>
+                       <td>
+                           <span class="editRowSpan capitalize">{{boqConfigMKVal.hinge_type}}</span>
+                           <select class="form-control d-none editRowInput" [(ngModel)]="hinge_type_globalVar_MK">
+                                <option value="">Select</option>
+                                <option *ngFor="let ht of globalVarArr.hinge_type" value="{{ht}}">{{ht | uppercase}} <span *ngIf="ht=='soft'"> - CLOSE</span></option>
+                            </select>
+                       </td>
+                    </tr>
+                    <tr>
+                        <td *ngIf="typeofkitchen_globalVar_MK==true || typeofkitchen_globalVar_MK==='true'">13</td>
+                       <td *ngIf="typeofkitchen_globalVar_MK==false || typeofkitchen_globalVar_MK==='false'">9</td>
+                       <td> Channel Type</td>
+                       <td>
+                           <span class="editRowSpan capitalize">{{boqConfigMKVal.channel_type}}</span>
+                           <select class="form-control d-none editRowInput" [(ngModel)]="channel_type_globalVar_MK">
+                                <option value="">Select</option>
+                                <option *ngFor="let ct of globalVarArr.channel_type" value="{{ct}}">{{ct | uppercase}} <span *ngIf="ct=='soft'"> - CLOSE</span></option>
+                            </select>
+                       </td>
+                    </tr>
+                    <tr>
+                       <td *ngIf="typeofkitchen_globalVar_MK==true || typeofkitchen_globalVar_MK==='true'">14</td>
+                       <td *ngIf="typeofkitchen_globalVar_MK==false || typeofkitchen_globalVar_MK==='false'">10</td>
+                       <td> Skirting Config Type</td>
+                       <td>
+                           <span class="editRowSpan capitalize">{{boqConfigMKVal.skirting_config_type}}</span>
+                            <select class="form-control d-none editRowInput" [(ngModel)]="skirting_con_type_globalVar_MK" (change)="listofSkirtingHeights(skirting_con_type_globalVar_MK)">
+                                <option value="">Select</option>
+                                <option *ngFor="let sct of globalVarArr.skirting_config_type" value="{{sct.skirting_type}}">{{sct.skirting_type | uppercase}}</option>
+                            </select>
+                       </td>
+                    </tr>
+                    <tr>
+                       <td *ngIf="typeofkitchen_globalVar_MK==true || typeofkitchen_globalVar_MK==='true'">15</td>
+                       <td *ngIf="typeofkitchen_globalVar_MK==false || typeofkitchen_globalVar_MK==='false'">11</td>
+                       <td> Skirting Config Height</td>
+                       <td>
+                           <span class="editRowSpan capitalize">{{boqConfigMKVal.skirting_config_height}}</span>
+                            <select class="form-control d-none editRowInput" [(ngModel)]="skirting_con_height_globalVar_MK">
+                                <option value="">Select</option>
+                                <option *ngFor="let sch of globalVarArr.skirting_config_height" value="{{sch.skirting_height}}">{{sch.skirting_height}}</option>
+                            </select>
+                       </td>
+                    </tr>
+                    <tr>
+                       <td *ngIf="typeofkitchen_globalVar_MK==true || typeofkitchen_globalVar_MK==='true'">16</td>
+                       <td *ngIf="typeofkitchen_globalVar_MK==false || typeofkitchen_globalVar_MK==='false'">12</td>
+                       <td> Edge Banding Shade</td>
+                       <td>
+                           <span class="editRowSpan capitalize" *ngIf="!boqConfigMKVal.custom_edge_banding_shade_code">{{boqConfigMKVal.edge_banding_shade_code.code}}</span>
+                           <span class="editRowSpan capitalize" *ngIf="boqConfigMKVal.custom_edge_banding_shade_code">{{boqConfigMKVal.edge_banding_shade_code}}</span>
+                           <select class="form-control d-none editRowInput" [(ngModel)]="edgebanding_shade_code_globalVar_MK" (change)="setImageModal($event.target.value,'edgebandingShadeCode',globalVarArr.category)">
+                                <option value="">Select</option>
+                                <option value="customedgebanshadecode">Custom edge banding shade code</option>
+                                <option *ngFor="let ebsc of globalVarArr.edge_banding_shade_code" value="{{ebsc.code}}" [selected]="edgebanding_shade_code_globalVar_MK==ebsc.code">{{ebsc.code}}</option>
+                            </select>
+                            <input type="text" name="" class="form-control d-none editRowInput my-1" [(ngModel)]="edgebanding_custshade_code_globalVar_MK" placeholder="Enter custom edge banding shade code" [disabled]="edgebanding_shade_code_globalVar_MK!='customedgebanshadecode'">
+
+                            <img src="{{boqConfigMKVal.edge_banding_shade_code.shade_image}}" class="my-1 editRowSpan" alt=" No Image" height="60px" width="100px" *ngIf="!boqConfigMKVal.custom_edge_banding_shade_code && boqConfigMKVal.edge_banding_shade_code.shade_image" onerror="this.src='./assets/img/no_image.svg'" />
+                            <img src="{{edgebandingImg}}" class="my-1 editRowInput" alt=" No Image" height="60px" width="100px" *ngIf="edgebandingImg" onerror="this.src='./assets/img/no_image.svg'" />
+                       </td>
+                    </tr>
+                    <tr>
+                        <td *ngIf="typeofkitchen_globalVar_MK==true || typeofkitchen_globalVar_MK==='true'">17</td>
+                       <td *ngIf="typeofkitchen_globalVar_MK==false || typeofkitchen_globalVar_MK==='false'">13</td>
+                       <td> Countertop</td>
+                       <td>
+                           <span class="editRowSpan capitalize">{{boqConfigMKVal.countertop | replaceChar}}</span>
+                           <select class="form-control d-none editRowInput" [(ngModel)]="countertop_globalVar_MK">
+                                <option value="">Select</option>
+                                <option *ngFor="let count_top of globalVarArr.countertop" value="{{count_top}}" [selected]="countertop_globalVar_MK==count_top">{{count_top | replaceChar}}</option>
+                            </select>
+                       </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="row editRowInput d-none" *ngIf="globalVarArr && boqConfigMKVal && boqConfigMKVal.category=='kitchen' ">
+                <div class="col-sm-12 text-right">
+                    <button class=" rk-btnCancel my-2" (click)="cancelEditGlobalVarRow('',boqConfigMKVal.category)">Cancel</button>
+                    <button class="pull-right rk-interalBtnColor mr-2 my-2" (click)="updateGlobalVar('',boqConfigMKVal.id,boqConfigMKVal.category)">Save</button>
+                    <button class="pull-right rk-interalBtnColor mr-2 my-2" (click)="updateAndApplyBoqGlobalConfig('',boqConfigMKVal.id,boqConfigMKVal.category)">Save and Apply</button>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <!--Loose furniture start-->
+  <div class="row d-none rowContainer" style="padding: 16px" id="globalVarRowForLF">
+    <div class="col-md-12">
+      <h6 class="mb-3 borderbottom pt-3 pb-3" *ngIf="quotations"><span class="mr-3">BOQ : {{quotations.reference_number}}</span><span class="pull-right">Total - &#8377; {{quotations.total_amount}}</span></h6>
+    </div>
+    <div class="col-md-12 borderbottom pt-3 pb-3" *ngIf="editBtnFlag">
+        <div class="row">
+            <div class="col-md-3"><span>Enter Space</span></div>
+            <div class="col-md-6">
+                <form [formGroup]="addSpaceMWForm">
+                    <select class="form-control" style="width: 70%; display: inline-block;" formControlName="space">
+                        <option value="">Select</option>
+                        <option *ngFor="let space of availableSpaces" value="{{space}}">{{space}}</option>
+                    </select>
+                    <img src="./assets/img/dashboard/submit.png" (click)="createSpace(addSpaceMWForm.value,'loose_furniture')">
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 pt-3 pb-3" *ngIf="selectedSpacesArrLf && selectedSpacesArrLf.length>0">
+        <div id="accordionLf">
+            <div class="card mb-2" *ngFor="let selSpaceLf of selectedSpacesArrLf; let k2=index; ">
+                <div class="card-header" id="spaceCardLf{{k2}}">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link fontsize1 addCursor" data-toggle="collapse" [attr.data-target]=" '#collapseSpaceCardLf'+k2" aria-expanded="true" aria-controls="collapseOne" >
+                        {{selSpaceLf}}
+                        </button>
+                        <ng-container></ng-container>
+                    </h5>
+
+                    <div class=" col-md-12 text-right" *ngIf="editBtnFlag">
+                        <button [attr.data-target]=" '#collapseSpaceCardLf'+k2" aria-expanded="true" aria-controls="collapseOne" (click)="getCatalogueProducts('all','all',selSpaceLf); getSections();"><span data-toggle="modal" data-target="#addProductModal">Add Product</span></button>
+                        <button (click)="spaceDelete(selSpaceLf,'loose_furniture')">Delete Space</button>
+                    </div>
+                </div>
+
+                <div id="collapseSpaceCardLf{{k2}}" class="collapse" [attr.aria-labelledby]="'spaceCardLf'+k2" data-parent="#accordionLf">
+                    <div class="card-body">
+                        <div class="col-md-12 mt-2 text-center"  *ngIf="editBtnFlag && boqProducts && boqProducts.length==0 ">
+                          No product has been added.
+                        </div>
+                        <div class="" *ngIf="boqProducts && boqProducts.length>0">
+                            <div class="tableDiv ">
+                                <div class="">
+                                  <table class="table ">
+                                    <thead class="thead-dark">
+                                      <tr>
+                                        <th scope="col" class="firstTh">#</th>
+                                        <th scope="col">NAME</th>
+                                        <!-- <th scope="col">PRICE</th> -->
+                                        <th scope="col">QTY</th>
+                                        <!-- <th scope="col">TOTAL AMOUNT</th> -->
+                                        <th scope="col" class="lastTh">Product Image</th>
+                                        <th class="lastTh" *ngIf="editBtnFlag"></th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                        <ng-container *ngFor="let addedproduct of boqProducts; let i = index; " [attr.data-index]="i">
+                                            <tr class="box-list" *ngIf="addedproduct.space==selSpaceLf">
+                                                <td>{{ i +1 }}</td>
+                                                <td>{{addedproduct.name}}</td>
+                                                <!-- <td><i class="fa fa-inr mr-1"></i>{{addedproduct.rate}}</td> -->
+                                                <td>
+                                                  <input type="number" name="quantity{{i}}" min="1" class="quantityInput form-control" id="product_{{addedproduct.id}}" value="{{ addedproduct.quantity }}" (input)="onInputQuantity($event.target.id,addedproduct)" *ngIf="editBtnFlag">
+                                                  <span *ngIf="!editBtnFlag">{{ addedproduct.quantity }}</span>
+                                                </td>
+                                                <!-- <td><i class="fa fa-inr mr-1"></i>{{ addedproduct.quantity * addedproduct.rate}}</td> -->
+                                                <td class="text-left">
+                                                <img class="" src="{{addedproduct.image_urls[0]}}" alt="No Image" height="100px" width="100px">
+                                                </td>
+                                                <td *ngIf="editBtnFlag">
+                                                  <i class="fa fa-trash deleteRow addCursor" id="delete_row{{i}}" (click)="removeProductToBoqs(addedproduct.product_id,addedproduct.name)"></i>
+                                                </td>
+                                            </tr>
+                                       </ng-container>
+                                    </tbody>
+                                  </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 pt-3 pb-3 text-right" *ngIf="editBtnFlag">
+        <button class="mr-1 addCursor cartBtn" (click)="updateQuotation()">Update Quotation </button>
+    </div>
+  </div>
+  <!--Loose furniture ends-->
+
+  <!--Services start-->
+  <div class="row d-none rowContainer" style="padding: 16px" id="globalVarRowForSERV">
+    <div class="col-md-12">
+      <h6 class="mb-3 borderbottom pt-3 pb-3" *ngIf="quotations"><span class="mr-3">BOQ : {{quotations.reference_number}}</span><span class="pull-right">Total - &#8377; {{quotations.total_amount}}</span></h6>
+    </div>
+    <div class="col-md-12 borderbottom pt-3 pb-3" *ngIf="editBtnFlag">
+        <div class="row">
+            <div class="col-md-3"><span>Enter Space</span></div>
+            <div class="col-md-6">
+                <form [formGroup]="addSpaceMWForm">
+                    <select class="form-control" style="width: 70%; display: inline-block;" formControlName="space">
+                        <option value="">Select</option>
+                        <option *ngFor="let space of availableSpaces" value="{{space}}">{{space}}</option>
+                    </select>
+                    <img src="./assets/img/dashboard/submit.png" (click)="createSpace(addSpaceMWForm.value,'loose_furniture')">
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 pt-3 pb-3" *ngIf="selectedSpacesArrSERV && selectedSpacesArrSERV.length>0">
+        <div id="accordionSERV">
+            <div class="card mb-2" *ngFor="let selSpaceSERV of selectedSpacesArrSERV; let k2=index; ">
+                <div class="card-header" id="spaceCardSERV{{k2}}">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link fontsize1 addCursor" data-toggle="collapse" [attr.data-target]=" '#collapseSpaceCardSERV'+k2" aria-expanded="true" aria-controls="collapseOne" >
+                        {{selSpaceSERV}}
+                        </button>
+                        <!-- <ng-container><span style="font-size: 14px;" class="pull-right">Total - &#8377; <span id="spacesSERVTotal{{k2}}">{{getTotalOfSERVSpaces(selSpaceSERV,k2)}}</span></span></ng-container> -->
+                    </h5>
+
+                    <div class=" col-md-12 text-right" *ngIf="editBtnFlag">
+                        <button [attr.data-target]=" '#collapseSpaceCardSERV'+k2" aria-expanded="true" aria-controls="collapseOne" (click)="getCatalogueProducts('all','all',selSpaceSERV); getSections();"><span data-toggle="modal" data-target="#addProductModal">Add Product</span></button>
+                        <button (click)="spaceDelete(selSpaceSERV,'loose_furniture')">Delete Space</button>
+                    </div>
+                </div>
+
+                <div id="collapseSpaceCardSERV{{k2}}" class="collapse" [attr.aria-labelledby]="'spaceCardSERV'+k2" data-parent="#accordionSERV">
+                    <div class="card-body">
+                        <div class="col-md-12 mt-2 text-center"  *ngIf="editBtnFlag && boqServices_all && boqServices_all.length==0 ">
+                          No product has been added.
+                        </div>
+                        <div class="" *ngIf="boqServices_all && boqServices_all.length>0">
+                            <div class="tableDiv ">
+                                <div class="">
+                                  <table class="table ">
+                                    <thead class="thead-dark">
+                                      <tr>
+                                        <th scope="col" class="firstTh">#</th>
+                                        <th scope="col">ACTIVITY</th>
+                                        <!-- <th scope="col">BASE RATE</th> -->
+                                        <th scope="col">QTY</th>
+                                        <th scope="col" class="lastTh">UNIT</th>
+                                        <!-- <th scope="col">AMOUNT</th> -->
+                                        <!-- <th class=""></th> -->
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                        <ng-container *ngFor="let addedservice of boqServices_all; let i = index; " [attr.data-index]="i">
+                                            <tr class="box-list" *ngIf="addedservice.space==selSpaceSERV">
+                                                <td>{{ i+1 }}</td>
+                                                <td>{{addedservice.name}}</td>
+                                               <!--  <td>
+                                                  <span class="service-edit-mode-off service-edit-mode-off-{{i}}">{{addedservice.base_rate}}</span>
+
+                                                </td> -->
+
+                                                <td>
+                                                  <span class="service-edit-mode-off service-edit-mode-off-{{i}}">{{addedservice.quantity}}</span>
+
+                                                </td>
+                                                <td>{{addedservice.unit}}</td>
+                                                <!-- <td>{{calculatePrice1(addedservice.base_rate,addedservice.installation_rate)}}</td> -->
+
+                                            </tr>
+                                       </ng-container>
+                                    </tbody>
+                                  </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 pt-3 pb-3 text-right" *ngIf="editBtnFlag">
+        <button class="mr-1 addCursor cartBtn" (click)="updateQuotation()">Update Quotation </button>
+    </div>
+  </div>
+  <!--Services ends-->
+
+
+  <!-- customization for modular kitchen -->
+  <div class="modal fade" id="customizationModalMk" tabindex="-1" role="dialog" aria-labelledby="customizationModalMkLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Customize Elements</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" *ngIf="globalVarArr">
+        <form [formGroup]="customizationModule_MK_Form">
+            <div class="row">
+                <div class="col-md-6 mt-2">
+                    <label>Core Material</label>
+                    <input type="text" name="" class="form-control" formControlName="core_material" readonly *ngIf="!editBtnFlag">
+                    <select class="form-control" formControlName="core_material" *ngIf="editBtnFlag">
+                        <option value="">Select</option>
+                        <option *ngFor="let coremat of globalVarArr.core_material" value="{{coremat.name}}">{{coremat.name}}</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mt-2">
+                    <label>Shutter Material</label>
+                    <input type="text" name="" class="form-control" formControlName="shutter_material" readonly *ngIf="!editBtnFlag">
+                    <select class="form-control" formControlName="shutter_material" (change)="listofShutterFinishes($event.target.value)" *ngIf="editBtnFlag">
+                        <option value="">Select</option>
+                        <option *ngFor="let shuttermat of globalVarArr.shutter_material" value="{{shuttermat.name}}">{{shuttermat.name}}</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mt-2">
+                    <label>Shutter Finish</label>
+                    <input type="text" name="" class="form-control" formControlName="shutter_finish" readonly *ngIf="!editBtnFlag">
+                    <select class="form-control" formControlName="shutter_finish" (change)="listofShutterFinishShades($event.target.value); getHandleList($event.target.value,this.customizationModule_MK_details.product_module_id)" *ngIf="editBtnFlag">
+                        <option value="">Select</option>
+                        <option *ngFor="let shutterfinish of globalVarArr.shutter_finish" value="{{shutterfinish.name}}">{{shutterfinish.name}}</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mt-2">
+                    <label>Shutter Shade Code</label>
+                    <input type="text" name="" class="form-control" formControlName="shutter_shade_code" readonly *ngIf="!editBtnFlag">
+                    <select class="form-control" formControlName="shutter_shade_code" *ngIf="editBtnFlag" (change)="onchangeOfCustomizationShade($event.target.value,'shade','kitchen')">
+                        <option value="">Select</option>
+                        <option value="customshadecode">Custom shade code</option>
+                        <option *ngFor="let shuttershadecode of globalVarArr.shutter_shade_code" value="{{shuttershadecode.code}}">{{shuttershadecode.code}}</option>
+                    </select>
+                   <!--  <input type="text" name="" class="form-control my-1" formControlName="cust_shutter_shade_code" placeholder="Enter custom shade code" readonly *ngIf="!editBtnFlag">
+                    <input type="text" name="" class="form-control my-1" formControlName="cust_shutter_shade_code" placeholder="Enter custom shade code" *ngIf="editBtnFlag"> -->
+                </div>
+                <div class="col-md-6 mt-2">
+                    <label>Edge Banding Shade Code</label>
+                    <input type="text" name="" class="form-control" formControlName="edge_banding_shade_code" readonly *ngIf="!editBtnFlag">
+                    <select class="form-control" formControlName="edge_banding_shade_code" *ngIf="editBtnFlag" (change)="onchangeOfCustomizationShade($event.target.value,'edgeband','kitchen')">
+                        <option value="">Select</option>
+                        <option value="customedgebanshadecode">Custom edge banding shade code</option>
+                        <option *ngFor="let ebsc of globalVarArr.edge_banding_shade_code" value="{{ebsc.code}}">{{ebsc.code}}</option>
+                    </select>
+                   <!--  <input type="text" name="" class="form-control my-1" formControlName="cust_edge_banding_shade_code" placeholder="Enter custom edge banding shade code" readonly *ngIf="!editBtnFlag">
+                    <input type="text" name="" class="form-control my-1" formControlName="cust_edge_banding_shade_code" placeholder="Enter custom edge banding shade code" *ngIf="editBtnFlag"> -->
+                </div>
+                <div class="col-md-6 mt-2">
+                    <label>Drawer Handle Code</label>
+                    <input type="text" name="" class="form-control" formControlName="door_handle_code" readonly *ngIf="!editBtnFlag">
+                    <select class="form-control" formControlName="door_handle_code" *ngIf="editBtnFlag">
+                        <option value="">Select</option>
+                        <option *ngFor="let dhc of handlelistForKitchen" value="{{dhc.code}}">{{dhc.code}}</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mt-2">
+                    <label>Hinge Type</label>
+                    <input type="text" name="" class="form-control" formControlName="hinge_type" readonly *ngIf="!editBtnFlag">
+                    <select class="form-control" formControlName="hinge_type" *ngIf="editBtnFlag">
+                        <option value="">Select</option>
+                        <option *ngFor="let ht of globalVarArr.hinge_type" value="{{ht}}">{{ht | uppercase}} <span *ngIf="ht=='soft'"> - CLOSE</span></option>
+                    </select>
+                </div>
+                <div class="col-md-6 mt-2">
+                    <label>Channel Type</label>
+                    <input type="text" name="" class="form-control" formControlName="channel_type" readonly *ngIf="!editBtnFlag">
+                    <select class="form-control" formControlName="channel_type" *ngIf="editBtnFlag">
+                        <option value="">Select</option>
+                        <option *ngFor="let ct of globalVarArr.channel_type" value="{{ct}}">{{ct | uppercase}} <span *ngIf="ct=='soft'"> - CLOSE</span></option>
+                    </select>
+                </div>
+                <div class="col-md-6 mt-2">
+                    <label>Hardware Brand</label>
+                    <input type="text" name="" class="form-control" formControlName="hardware_brand" readonly *ngIf="!editBtnFlag">
+                    <select class="form-control" formControlName="hardware_brand" *ngIf="editBtnFlag">
+                        <option value="">Select</option>
+                        <option *ngFor="let hb of globalVarArr.hardware_brand" value="{{hb.id}}">{{hb.name}}</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mt-2">
+                    <label>Skirting Config Type</label>
+                    <input type="text" name="" class="form-control" formControlName="skirting_config_type" readonly *ngIf="!editBtnFlag">
+                    <select class="form-control" formControlName="skirting_config_type" (change)="listofSkirtingHeights($event.target.value)" *ngIf="editBtnFlag">
+                        <option value="">Select</option>
+                        <option *ngFor="let sct of globalVarArr.skirting_config_type" value="{{sct.skirting_type}}">{{sct.skirting_type | uppercase}}</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mt-2">
+                    <label>Skirting Config Height</label>
+                    <input type="text" name="" class="form-control" formControlName="skirting_config_height" readonly *ngIf="!editBtnFlag">
+                    <select class="form-control" formControlName="skirting_config_height" *ngIf="editBtnFlag">
+                        <option value="">Select</option>
+                        <option *ngFor="let sch of globalVarArr.skirting_config_height" value="{{sch.skirting_height}}">{{sch.skirting_height}}</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mt-2" *ngIf="customizationModule_MK_details">
+                    <label>Number Exposed Sites</label>
+                    <input type="number" name="" formControlName="number_exposed_sites" class="form-control" readonly *ngIf="!editBtnFlag">
+                    <select class="form-control" formControlName="number_exposed_sites" *ngIf="editBtnFlag">
+                      <option>Select</option>
+                      <option *ngFor="let item3 of customizationModule_MK_details.allowed_number_exposed_sites" value="{{item3}}">{{item3}}</option>
+                    </select>
+                </div>
+                <div class="col-md-12 mt-2" *ngIf="customizationModule_MK_details">
+                    <fieldset formArrayName="compulsory_addons" class="mx-3">
+                        <div class="form-group row fieldsetBorder"
+                           *ngFor = "let item2 of customizationModule_MK_Form.get('compulsory_addons')['controls']; let i=index "
+                           [formGroup]="item2">
+                            <div class="col-sm-4">
+                               <label [attr.for]="'compaddon-slot'+i">Slot *</label>
+                               <input type="text" name="" formControlName="slot"  class="form-control"
+                                 [attr.id]="'compaddon-slot'+i" readonly>
+                            </div>
+                            <div class="col-sm-4">
+                                <label [attr.for]="'compaddon'+i">Addon *</label>
+                                <textarea formControlName="name"  class="form-control"
+                                   [attr.id]="'compaddon'+i" readonly=""></textarea>
+                                <a data-toggle="modal" data-target="#addAddonModal" (click)="getAddonTags(); getCompulsoryAddons(customizationModule_MK_details.product_module_id,getformArray(customizationModule_MK_Form,'compulsory_addons').controls[i]['controls'].slot.value,i); openAddAddonModal('compaddon')" class="d-block addCursor link-color mt-2" *ngIf="editBtnFlag">Choose Addon</a>
+                            </div>
+                            <div class="col-sm-4">
+                              <label [attr.for]="'compaddon-quantity'+i">Quantity*</label>
+                              <input type="number" class="form-control"
+                                 [attr.id]="'compaddon-quantity'+i" formControlName="quantity" readonly>
+                            </div>
+                            <div class="col-sm-4">
+                                <label [attr.for]="'compaddon-image'+i">Image</label>
+                                <img src="http://{{getformArray(customizationModule_MK_Form,'compulsory_addons').controls[i]['controls'].image.value}}" height="100px" width="100px" onerror="this.src='./assets/img/no_image.svg'" style="display: block;" *ngIf="getformArray(customizationModule_MK_Form,'compulsory_addons').controls[i]['controls'].image.value!=''">
+                            </div>
+                            <!--Addon for addons-->
+                            <div class="col-sm-12 mt-3">
+                                <fieldset formArrayName="addons_for_addons">
+                                    <div class="form-group row"
+                                         *ngFor = "let item_2 of getformArray(customizationModule_MK_Form,'compulsory_addons').controls[i]['controls'].addons_for_addons.controls; let i9=index "
+                                         [formGroup]="item_2">
+                                        <div class="col-sm-4">
+                                            <label [attr.for]="'addonforaddon'+i9">Addon *</label>
+                                            <!-- <select formControlName="id"  class="form-control"
+                                               [attr.id]="'addonforaddon'+i9" (change)=" getBrandForAddon($event.target.value,'kitchen',i9,'addonforaddon');" *ngIf="editBtnFlag">
+                                                <option disabled value="">Select Add on</option>
+                                                <ng-container *ngFor="let addon_foraddon of listofAddonsForAddons[i]"><option  value="{{addon_foraddon.id}}">({{addon_foraddon.name}}) - ({{addon_foraddon.code}})</option></ng-container>
+                                            </select>
+                                            <select formControlName="id"  class="form-control"
+                                               [attr.id]="'addonforaddon'+i9" disabled readonly *ngIf="!editBtnFlag">
+                                                <option disabled value="">Select Add on</option>
+                                                <ng-container *ngFor="let addon_foraddon of listofAddonsForAddons[i]"><option  value="{{addon_foraddon.id}}">({{addon_foraddon.name}}) - ({{addon_foraddon.code}})</option></ng-container>
+                                            </select> -->
+                                            <textarea formControlName="name"  class="form-control"
+                                               [attr.id]="'addonforaddon'+i9" disabled readonly></textarea>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <label [attr.for]="'addonforaddon-quantity'+i9">Quantity*</label>
+                                            <input type="number" class="form-control"
+                                               [attr.id]="'addonforaddon-quantity'+i9" formControlName="quantity" *ngIf="editBtnFlag">
+                                            <input type="number" class="form-control"
+                                               [attr.id]="'addonforaddon-quantity'+i9" formControlName="quantity" readonly *ngIf="!editBtnFlag">
+
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <label [attr.for]="'addonforaddon-image'+i9">Image</label>
+                                            <img src="http://{{ getformArray(customizationModule_MK_Form,'compulsory_addons').controls[i]['controls'].addons_for_addons.controls[i9]['controls'].addon_image.value}}" height="80px" width="80px" onerror="this.src='./assets/img/no_image.svg'" style="display: block;" *ngIf="getformArray(customizationModule_MK_Form,'compulsory_addons').controls[i]['controls'].addons_for_addons.controls[i9]['controls'].addon_image.value!=''">
+                                        </div>
+                                        <div class="col-sm-1 py-1" *ngIf="editBtnFlag">
+                                            <i class="fa fa-minus nestedRemoveBtn" (click)="getformArray(customizationModule_MK_Form,'compulsory_addons').controls[i]['controls'].addons_for_addons.removeAt(i9)"></i>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+                            <div class="col-sm-12" *ngIf="editBtnFlag">
+                                <!-- <a (click)="addAddonForAddons(null,getformArray(customizationModule_MK_Form,'compulsory_addons').controls[i]['controls'],i)" class="mb-2 addCursor d-block" style="color: blue;"><i class="fa fa-plus"> </i> Add Optional Addons</a> -->
+                                <a (click)="getAddonTags(); getListofAddonsForAddons(getformArray(customizationModule_MK_Form,'compulsory_addons').controls[i]['controls'].id.value,getformArray(customizationModule_MK_Form,'compulsory_addons').controls[i]['controls'].slot.value,i); openAddAddonModal('addonforaddon');" class="mb-2 addCursor d-block" style="color: blue;" data-toggle="modal" data-target="#addAddonModal"><i class="fa fa-plus"> </i> Add Optional Addons</a>
+                            </div>
+                            <!--Addon for addons-->
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="col-md-12 mt-1" *ngIf="customizationModule_MK_details">
+                    <fieldset formArrayName="addons">
+                        <div class="form-group row"
+                             *ngFor = "let item of customizationModule_MK_Form.get('addons')['controls']; let i=index "
+                             [formGroup]="item">
+                          <div class="col-sm-4">
+                            <label [attr.for]="'addon'+i">Addon </label>
+                            <!-- <select class="form-control" [attr.id]="'addon'+i" formControlName="id" *ngIf="!editBtnFlag" disabled readonly>
+                                <option value="">Select</option>
+                                <option *ngFor="let item of customizationModule_MK_details.allowed_addons" value="{{item.id}}">{{item.name}} - {{item.code}}</option>
+                            </select>
+                            <select class="form-control" [attr.id]="'addon'+i" formControlName="id" *ngIf="editBtnFlag" (change)="customization_addon_dropdownChange($event.target.value,i,'MK')">
+                                <option value="">Select</option>
+                                <option *ngFor="let item of customizationModule_MK_details.allowed_addons" value="{{item.id}}">{{item.name}} - {{item.code}}</option>
+                            </select> -->
+                            <textarea class="form-control" [attr.id]="'addon'+i" formControlName="name" readonly></textarea>
+                          </div>
+                          <div class="col-sm-4">
+                            <label [attr.for]="'addon-quantity'+i">Quantity</label>
+                            <input type="number" class="form-control"
+                                   [attr.id]="'addon-quantity'+i" formControlName="quantity" *ngIf="!editBtnFlag" readonly>
+                            <input type="number" class="form-control"
+                                 [attr.id]="'addon-quantity'+i" formControlName="quantity"  *ngIf="editBtnFlag">
+                          </div>
+                          <div class="col-sm-3">
+                            <label [attr.for]="'addon-image'+i">Image</label>
+                            <img src="http://{{getformArray(customizationModule_MK_Form,'addons').controls[i]['controls'].image.value}}" height="100px" width="100px" onerror="this.src='./assets/img/no_image.svg'" style="display: block;" *ngIf="getformArray(customizationModule_MK_Form,'addons').controls[i]['controls'].image.value!=''">
+                          </div>
+                          <div class="col-sm-1 py-1">
+                            <i class="fa fa-minus nestedRemoveBtn" (click)="customizationModule_MK_Form.get('addons').removeAt(i)" *ngIf="editBtnFlag"></i>
+                          </div>
+                        </div>
+
+                    </fieldset>
+                    <a (click)="getAddonTags(); getOptionalAddons('kitchen');" class="mb-2" style="color: blue;" *ngIf="editBtnFlag" data-toggle="modal" data-target="#addoptionalAddonModal"><i class="fa fa-plus"> </i> Add Addons</a>
+                </div>
+                <!-- <pre>{{customizationModule_MK_Form.value | json}}</pre> -->
+                <div class="col-md-12">
+                    <button (click)="updateCustomization(customizationModule_MK_Form.value,'kitchen')" class="cartBtn pull-right" *ngIf="editBtnFlag">Update</button>
+                </div>
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+  <!--  ends -->
+  <!--Custom Elements-->
+  <div class="row d-none rowContainer" style="padding: 16px" id="globalVarRowForCustomElem">
+    <div class="col-md-12">
+      <h6 class="mb-3 borderbottom pt-3 pb-3" *ngIf="quotations"><span class="mr-3">BOQ : {{quotations.reference_number}}</span><span class="pull-right">Total - &#8377; {{quotations.total_amount}}</span></h6>
+    </div>
+      <div class="col-md-12 borderbottom pt-3 pb-3" *ngIf="editBtnFlag">
+          <div class="row">
+              <div class="col-md-3"><span>Enter Space</span></div>
+              <div class="col-md-6">
+                  <form [formGroup]="addSpaceMWForm">
+                      <select class="form-control" style="width: 70%; display: inline-block;" formControlName="space">
+                          <option value="">Select</option>
+                          <option *ngFor="let space of availableSpaces" value="{{space}}">{{space}}</option>
+                      </select>
+                      <img src="./assets/img/dashboard/submit.png" (click)="createSpace(addSpaceMWForm.value,'custom_elements')">
+                  </form>
+              </div>
+          </div>
+      </div>
+      <div class="col-md-12 pt-3 pb-3" *ngIf=" selectedSpacesArrCustomEle && selectedSpacesArrCustomEle.length>0">
+          <div id="accordionCE">
+              <div class="card mb-2" *ngFor="let selSpaceCE of selectedSpacesArrCustomEle; let k8=index; ">
+                  <div class="card-header" id="spaceCardCE{{k8}}">
+                      <h5 class="mb-0">
+                          <button class="btn btn-link fontsize1 addCursor" data-toggle="collapse" [attr.data-target]=" '#collapseSpaceCardCE'+k8" aria-expanded="true" aria-controls="collapsetwo">
+                          {{selSpaceCE}}
+                          </button>
+                          <ng-container *ngFor="let key4 of Object.keys(quotations.space_amounts_custom); let n1 =index; "><!-- <span *ngIf="key4==selSpaceCE" style="font-size: 14px;" class="pull-right">Total - &#8377; {{quotations.space_amounts_custom[key4]}}</span> --></ng-container>
+                      </h5>
+                  </div>
+
+                  <div id="collapseSpaceCardCE{{k8}}" class="collapse" [attr.aria-labelledby]="'spaceCardCE'+k8" data-parent="#accordionCE">
+                      <div class="card-body">
+                          <div id="addModuleFormRowCE{{k8}}" class="d-none">
+                              <h5 class="">Add Custom Elements</h5>
+                          </div>
+                          <ng-container *ngFor="let key of Object.keys(quotations.custom_jobs); let m1 =index; ">
+                              <div *ngIf="key==selSpaceCE" class="tableDiv mt-3">
+                                  <table class="table">
+                                      <thead class="thead-dark">
+                                          <tr>
+                                              <th class="firstTh">#</th>
+                                              <th>Name</th>
+                                              <th>Dimension</th>
+                                              <th>Core Material</th>
+                                              <th>Shutter Finish</th>
+                                              <th>Quantity</th>
+                                              <th>Price</th>
+                                              <th>Image</th>
+                                              <th class="lastTh" *ngIf="editBtnFlag"></th>
+                                          </tr>
+                                      </thead>
+                                      <tbody>
+                                          <tr *ngFor="let cj of quotations.custom_jobs[key]; let k=index; ">
+                                              <td>{{k+1}}</td>
+                                              <td>{{cj.name}}</td>
+                                              <td>{{cj.dimension}}</td>
+                                              <td>{{cj.core_material}} </td>
+                                              <td>{{cj.shutter_finish}} </td>
+                                              <td>
+                                                  <span class="customelemLineItemSpan{{k}}">{{cj.quantity}}</span>
+                                                  <input type="number" name="" class="form-control d-none customelemLineItemInput{{k}}" [(ngModel)]="editCustomElemLineQty" min="1">
+                                              </td>
+                                              <td>{{cj.amount}}</td>
+                                              <td>
+                                                  <img src="{{cj.photo}}" height="100px" width="100px" onerror="this.src='./assets/img/no_image.svg'" style="display: block;" *ngIf="cj.photo">
+                                              </td>
+                                              <td *ngIf="editBtnFlag">
+                                                  <button class="d-none customelemLineItemInput{{k}} rk-interalBtnColor mx-2 editRowButton" (click)="updateCustomElem(k,cj,'custom_elements')">Update</button>
+                                                  <button class="d-none customelemLineItemInput{{k}} rk-btnCancel addCursor" (click)="cancelCustomElemLineItem(k,cj)">Cancel</button>
+                                                  <i class="ion-android-more-vertical  ss-3-dot-drop customelemLineItemSpan{{k}}" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"></i>
+                                                  <div class="dropdown-menu pt-2 pb-2" style="font-size: 14px;">
+                                                      <a class="dropdown-item addCursor" (click)="editcustomelementLineItem(k,cj)">Edit</a>
+                                                      <a class="dropdown-item addCursor" (click)="customelementDelete(cj.id,cj.space)">Delete</a>
+                                                  </div>
+                                              </td>
+                                          </tr>
+                                      </tbody>
+                                  </table>
+                              </div>
+                          </ng-container>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+      <div class="col-md-12 pt-3 pb-3 text-right" *ngIf="editBtnFlag">
+        <button class="mr-1 addCursor cartBtn" (click)="updateQuotation()">Update Quotation </button>
+      </div>
+  </div>
+  <!--Custom Elements Ends-->
+</div>
+
+
+
+<div class="modal fade" id="globalModal" tabindex="-1" role="dialog" aria-labelledby="globalModalLable" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Global Variables</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" *ngIf="quotations">
+        <form *ngIf="globalVarMk && selectedsectionName=='modular_kitchen' ">
+          <div class="row">
+              <div class="col-md-6 mt-2">
+                  <label>Core Material</label>
+                  <input type="text" name="" class="form-control" disabled value="{{globalVarMk.core_material.name}}">
+              </div>
+              <div class="col-md-6 mt-2">
+                  <label>Shutter Material</label>
+                  <input type="text" name="" class="form-control" value="{{globalVarMk.shutter_material.name}}" disabled>
+              </div>
+              <div class="col-md-6 mt-2">
+                  <label>Shutter Finish</label>
+                  <input type="text" name="" class="form-control"  disabled value="{{globalVarMk.shutter_finish.name}}">
+              </div>
+              <div class="col-md-6 mt-2">
+                  <label>Shutter Shade Code</label>
+                  <input type="text" name="" class="form-control" disabled value="{{globalVarMk.shutter_shade_code.code}}">
+                  <img src="{{globalVarMk.shutter_shade_code.shade_image}}" class="my-1 editRowInput" alt=" No Image" height="60px" width="100px" *ngIf="globalVarMk.shutter_shade_code.shade_image" onerror="this.src='./assets/img/no_image.svg'" />
+              </div>
+              <div class="col-md-6 mt-2">
+                  <label> Handle Code</label>
+                  <input type="text" name="" class="form-control" disabled door_handle_code value="{{globalVarMk.door_handle_code}}">
+              </div>
+              <div class="col-md-6 mt-2">
+                  <label>Hinge Type</label>
+                  <input type="text" name="" class="form-control"  disabled value="{{globalVarMk.hinge_type}}">
+              </div>
+              <div class="col-md-6 mt-2">
+                  <label>Channel Type</label>
+                  <input type="text" name="" class="form-control" value="{{globalVarMk.channel_type}}" disabled>
+              </div>
+              <div class="col-md-6 mt-2">
+                <label>Hardware Brand</label>
+                <input type="text" name="" class="form-control"  disabled value="{{globalVarMk.brand.name}}">
+              </div>
+              <div class="col-md-6 mt-2">
+                <label>Skirting Config Type</label>
+                <input type="text" name="" class="form-control"  disabled value="{{globalVarMk.skirting_config_type}}">
+              </div>
+              <div class="col-md-6 mt-2">
+                <label>Skirting Config Height</label>
+                <input type="text" name="" class="form-control"  disabled value="{{globalVarMk.skirting_config_height}}">
+              </div>
+          </div>
+        </form>
+        <form *ngIf="globalVarMW && selectedsectionName=='modular_wardrobe'">
+          <div class="row">
+              <div class="col-md-6 mt-2">
+                  <label>Core Material</label>
+                  <input type="text" name="" class="form-control" disabled value="{{globalVarMW.core_material.name}}">
+              </div>
+              <div class="col-md-6 mt-2">
+                  <label>Shutter Material</label>
+                  <input type="text" name="" class="form-control" value="{{globalVarMW.shutter_material.name}}" disabled>
+              </div>
+              <div class="col-md-6 mt-2">
+                  <label>Shutter Finish</label>
+                  <input type="text" name="" class="form-control"  disabled value="{{globalVarMW.shutter_finish.name}}">
+              </div>
+              <div class="col-md-6 mt-2">
+                  <label>Shutter Shade Code</label>
+                  <input type="text" name="" class="form-control" disabled value="{{globalVarMW.shutter_shade_code.code}}">
+                  <img src="{{globalVarMW.shutter_shade_code.shade_image}}" class="my-1 editRowInput" alt=" No Image" height="60px" width="100px" *ngIf="globalVarMW.shutter_shade_code.shade_image" onerror="this.src='./assets/img/no_image.svg'" />
+              </div>
+              <div class="col-md-6 mt-2">
+                  <label>Shutter Handle Code</label>
+                  <input type="text" name="" class="form-control" disabled value="{{globalVarMW.shutter_handle_code}}">
+              </div>
+              <div class="col-md-6 mt-2">
+                  <label>Drawer Handle Code</label>
+                  <input type="text" name="" class="form-control" disabled door_handle_code value="{{globalVarMW.door_handle_code}}">
+              </div>
+              <div class="col-md-6 mt-2">
+                  <label>Hinge Type</label>
+                  <input type="text" name="" class="form-control"  disabled value="{{globalVarMW.hinge_type}}">
+              </div>
+              <div class="col-md-6 mt-2">
+                  <label>Channel Type</label>
+                  <input type="text" name="" class="form-control" value="{{globalVarMW.channel_type}}" disabled>
+              </div>
+              <div class="col-md-6 mt-2">
+                <label>Hardware Brand</label>
+                <input type="text" name="" class="form-control"  disabled value="{{globalVarMW.brand.name}}">
+              </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="customizationModal" tabindex="-1" role="dialog" aria-labelledby="customizationModalLable" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Customize Elements</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" *ngIf="customizationModule_MW_details">
+        <form [formGroup]="customizationModule_MW_Form">
+            <div class="row">
+                <div class="col-md-6 mt-2">
+                    <label>Core Material</label>
+                    <input type="text" name="" class="form-control" formControlName="core_material" readonly>
+                    <select class="form-control" formControlName="core_material" *ngIf="editBtnFlag">
+                        <option value="">Select</option>
+                        <option *ngFor="let coremat of globalVarArr.core_material" value="{{coremat.name}}">{{coremat.name}}</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mt-2">
+                    <label>Shutter Material</label>
+                    <input type="text" name="" class="form-control" formControlName="shutter_material" readonly *ngIf="!editBtnFlag">
+                    <select class="form-control" formControlName="shutter_material" *ngIf="editBtnFlag" (change)="listofShutterFinishes($event.target.value)">
+                        <option value="">Select</option>
+                        <option *ngFor="let shuttermat of globalVarArr.shutter_material" value="{{shuttermat.name}}">{{shuttermat.name}}</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mt-2">
+                    <label>Shutter Finish</label>
+                    <input type="text" name="" class="form-control" formControlName="shutter_finish" readonly *ngIf="!editBtnFlag">
+                    <select class="form-control" formControlName="shutter_finish" *ngIf="editBtnFlag" (change)="listofShutterFinishShades($event.target.value)">
+                        <option value="">Select</option>
+                        <option *ngFor="let shutterfinish of globalVarArr.shutter_finish" value="{{shutterfinish.name}}">{{shutterfinish.name}}</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mt-2">
+                    <label>Shutter Shade Code</label>
+                    <input type="text" name="" class="form-control" formControlName="shutter_shade_code" readonly *ngIf="!editBtnFlag">
+                    <select class="form-control" formControlName="shutter_shade_code" *ngIf="editBtnFlag">
+                        <option value="">Select</option>
+                        <option *ngFor="let shuttershadecode of globalVarArr.shutter_shade_code" value="{{shuttershadecode.code}}">{{shuttershadecode.code}}</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mt-2">
+                    <label>Shutter Handle Code</label>
+                    <input type="text" name="" class="form-control" formControlName="shutter_handle_code" readonly *ngIf="!editBtnFlag">
+                    <select class="form-control" formControlName="shutter_handle_code" *ngIf="editBtnFlag">
+                        <option value="">Select</option>
+                        <option *ngFor="let shc of globalVarArr.shutter_handle_code" value="{{shc.code}}">{{shc.code}}</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mt-2">
+                    <label>Drawer Handle Code</label>
+                    <input type="text" name="" class="form-control" formControlName="door_handle_code" readonly *ngIf="!editBtnFlag">
+                    <select class="form-control" formControlName="door_handle_code" *ngIf="editBtnFlag">
+                        <option value="">Select</option>
+                        <option *ngFor="let dhc of globalVarArr.door_handle_code" value="{{dhc.code}}">{{dhc.code}}</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mt-2">
+                    <label>Hinge Type</label>
+                    <input type="text" name="" class="form-control" formControlName="hinge_type" readonly *ngIf="!editBtnFlag">
+                    <select class="form-control" formControlName="hinge_type" *ngIf="editBtnFlag">
+                        <option value="">Select</option>
+                        <option *ngFor="let ht of globalVarArr.hinge_type" value="{{ht}}">{{ht | uppercase}} <span *ngIf="ht=='soft'"> - CLOSE</span></option>
+                    </select>
+                </div>
+                <div class="col-md-6 mt-2">
+                    <label>Channel Type</label>
+                    <input type="text" name="" class="form-control" formControlName="channel_type" readonly *ngIf="!editBtnFlag">
+                    <select class="form-control" formControlName="channel_type" *ngIf="editBtnFlag">
+                        <option value="">Select</option>
+                        <option *ngFor="let ct of globalVarArr.channel_type" value="{{ct}}">{{ct | uppercase}} <span *ngIf="ct=='soft'"> - CLOSE</span></option>
+                    </select>
+                </div>
+                <div class="col-md-6 mt-2">
+                    <label>Hardware Brand</label>
+                    <input type="text" name="" class="form-control" formControlName="hardware_brand" readonly *ngIf="!editBtnFlag">
+                    <select class="form-control" formControlName="hardware_brand" *ngIf="editBtnFlag">
+                        <option value="">Select</option>
+                        <option *ngFor="let hb of globalVarArr.hardware_brand" value="{{hb.id}}">{{hb.name}}</option>
+                    </select>
+                </div>
+                <div class="col-md-6 mt-2">
+                    <label>Number Exposed Sites</label>
+                    <input type="number" name="" formControlName="number_exposed_sites" class="form-control" readonly *ngIf="!editBtnFlag">
+                    <select class="form-control" formControlName="number_exposed_sites" *ngIf="editBtnFlag">
+                        <option>Select</option>
+                        <option *ngFor="let item3 of customizationModule_MW_details.allowed_number_exposed_sites" value="{{item3}}">{{item3}}</option>
+                    </select>
+                    <!-- <input type="number" name="" formControlName="number_exposed_sites" class="form-control"  *ngIf="editBtnFlag"> -->
+                </div>
+                <div class="col-md-12 mt-2">
+                  <fieldset formArrayName="addons">
+                      <div class="form-group row"
+                           *ngFor = "let item of customizationModule_MW_Form.get('addons')['controls']; let i=index "
+                           [formGroup]="item">
+                        <div class="col-sm-6">
+                          <label [attr.for]="'addon'+i">Addon </label>
+                          <input type="text" name="" class="form-control" formControlName="id" readonly *ngIf="!editBtnFlag">
+                          <select class="form-control" [attr.id]="'addon'+i" formControlName="id" *ngIf="editBtnFlag">
+                              <option>Select</option>
+                              <option *ngFor="let item of customizationModule_MW_details.allowed_addons" value="{{item.id}}">{{item.name}} - {{item.code}}</option>
+                          </select>
+                        </div>
+                        <div class="col-sm-5">
+                          <label [attr.for]="'addon-quantity'+i">Quantity</label>
+                          <input type="number" class="form-control"
+                                 [attr.id]="'addon-quantity'+i" formControlName="quantity" readonly *ngIf="!editBtnFlag">
+                          <input type="number" class="form-control"
+                                 [attr.id]="'addon-quantity'+i" formControlName="quantity"  *ngIf="editBtnFlag">
+                        </div>
+                        <div class="col-sm-1 py-1">
+                            <i class="fa fa-minus nestedRemoveBtn" (click)="customizationModule_MW_Form.get('addons').removeAt(i)" *ngIf="editBtnFlag"></i>
+                        </div>
+                      </div>
+                  </fieldset>
+                  <a (click)="addNestedAddons()" class="mb-2" style="color: blue;" *ngIf="editBtnFlag"><i class="fa fa-plus"> </i> Add Addons</a>
+                </div>
+                <div class="col-md-12">
+                    <button (click)="updateCustomization(customizationModule_MW_Form.value,'wardrobe')" class="cartBtn pull-right" *ngIf="editBtnFlag">Update</button>
+                </div>
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Status modal -->
+<div class="modal fade" id="myProposal" tabindex="-1" role="dialog" aria-labelledby="SmsModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document" style="width: 55rem;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5>Add Remark</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <img class="close" data-dismiss="modal" src="https://www.homepolish.com/assets/close-ee1bfd7a4473933b6dd934b2c284dc856361b63581c8f43b8cdc1abe07c91765.svg">
+    </button>
+      </div>
+      <div class="modal-body">
+
+
+        <div class="form-group row">
+          <label for="example-text-input" class="col-2 col-form-label">Remarks </label>
+          <div class="col-10">
+           <form [formGroup]="approvalForm">
+              <input type="text" class="form-control mb-2" placeholder="Remarks" formControlName = "remark">
+
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <span class="btn approve btn-success addCursor" data-toggle="modal" data-target="#approvalModal" (click) = "setProposedDocId(proposalDocId)">Approve</span>
+        
+        <!-- <input type="button"  value="Approve" class="btn btn-success" (click) = "boqApproval(proposalDocId,true)"  > -->
+        <input type="button" value="Reject" class="btn btn-danger addCursor" (click) = "boqApproval(proposalDocId,false)"  >
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Approval Modal -->
+<div class="modal fade" id="approvalModal" tabindex="-1" role="dialog" aria-labelledby="approvalModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="border-bottom: 1px solid #460110;">
+        <h5 class="modal-title" id="approvalModalLabel">Terms of Use</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row justify-content-center">
+          <div class="col-12 col-md-11 col-lg-10">
+            <div class="termsofuseDiv">
+              <p>These Terms and Conditions of Use (the “Terms of Use”) apply to the company – Singularity Furniture Private Limited (Arrivae)
+              web site located at www.Arrivae.com, and all associated sites linked to www.Arrivae.com by Arrivae, its subsidiaries and
+              affiliates, including Arrivae sites around the world (collectively, the “Site”). The Site is the property of Arrivae Inc.
+              (“Arrivae”) and its licensors. BY USING THE SITE, YOU AGREE TO THESE TERMS OF USE; IF YOU DO NOT AGREE, DO NOT USE THE SITE.</p>
+              <h6 class="pt-2">Arrivae reserves the right, at its sole discretion, to change, modify, add or remove portions of these Terms of Use, at any
+              time. It is your responsibility to check these Terms of Use periodically for changes. Your continued use of the Site following
+              the posting of changes will mean that you accept and agree to the changes. As long as you comply with these Terms of Use,
+              Arrivae grants you a personal, non-exclusive, non-transferable, limited privilege to enter and use the Site.</h6>
+              <h3 class="my-3 pt-4">Content</h3>
+              <p>All text, graphics, user interfaces, visual interfaces, photographs, trademarks, logos, sounds, music, artwork and computer
+              code (collectively, “Content”), including but not limited to the design, structure, selection, coordination, expression,
+              “look and feel” and arrangement of such Content, contained on the Site is owned, controlled or licensed by or to Arrivae,
+              and is protected by trade dress, copyright, patent and trademark laws, and various other intellectual property rights and
+              unfair competition laws.</p>
+              <p>Except as expressly provided in these Terms of Use, no part of the Site and no Content may be copied, reproduced, republished,
+              uploaded, posted, publicly displayed, encoded, translated, transmitted or distributed in any way (including “mirroring”)
+              to any other computer, server, Web site or other medium for publication or distribution or for any commercial enterprise,
+              without Arrivae’s express prior written consent.</p>
+              <p>You may use information on Arrivae products and services (such as data sheets, knowledge base articles, and similar materials)
+              purposely made available by Arrivae for downloading from the Site, provided that you (1) not remove any proprietary notice
+              language in all copies of such documents, (2) use such information only for your personal, non-commercial informational purpose
+              and do not copy or post such information on any networked computer or broadcast it in any media, (3) make no modifications
+              to any such information, and (4) not make any additional representations or warranties relating to such documents.</p>
+              <h3 class="my-3 pt-4">Your Use of the Site</h3>
+              <p>You may not attempt to gain unauthorized access to any portion or feature of the Site, or any other systems or networks connected
+              to the Site or to any Arrivae server, or to any of the services offered on or through the Site, by hacking, password “mining”
+              or any other illegitimate means.</p>
+              <p>You may not probe, scan or test the vulnerability of the Site or any network connected to the Site, nor breach the security
+              or authentication measures on the Site or any network connected to the Site. You may not reverse look-up, trace or seek to
+              trace any information on any other user of or visitor to the Site, or any other customer of Arrivae, including any Arrivae
+              account not owned by you, to its source, or exploit the Site or any service or information made available or offered by or
+              through the Site, in any way where the purpose is to reveal any information, including but not limited to personal identification
+              or information, other than your own information, as provided for by the Site.</p>
+              <p>You agree that you will not take any action that imposes an unreasonable or disproportionately large load on the infrastructure
+              of the Site or Arrivae’s systems or networks, or any systems or networks connected to the Site or to Arrivae.</p>
+              <p>You agree not to use any device, software or routine to interfere or attempt to interfere with the proper working of the
+              Site or any transaction being conducted on the Site, or with any other person’s use of the Site.</p>
+              <p>You may not use the Site or any Content for any purpose that is unlawful or prohibited by these Terms of Use, or to solicit
+              the performance of any illegal activity or other activity which infringes the rights of Arrivae or others.</p>
+              <h3 class="my-3 pt-4">Accounts, Passwords and Security</h3>
+              <p>Certain features or services offered on or through the Site may require you to open an account (including setting up an account
+              and password). You are entirely responsible for maintaining the confidentiality of the information you hold for your account,
+              including your password, and for any and all activity that occurs under your account as a result of your failing to keep
+              this information secure and confidential. You agree to notify Arrivae immediately of any unauthorized use of your account
+              or password, or any other breach of security. You may be held liable for losses incurred by Arrivae or any other user of
+              or visitor to the Site due to someone else using your username, password or account as a result of your failing to keep your
+              account information secure and confidential.</p>
+              <p>You may not use anyone else’s username, password or account at any time without the express permission and consent of the
+              holder of that username password or account. Arrivae cannot and will not be liable for any loss or damage arising from your
+              failure to comply with these obligations.</p>
+              <h3 class="my-3 pt-4">Violation of These Terms of Use</h3>
+              <p>You agree that Arrivae may, in its sole discretion and without prior notice, terminate your access to the Site and/or block
+              your future access to the Site if we determine that you have violated these Terms of Use or other agreements or guidelines
+              which may be associated with your use of the Site. You also agree that any violation by you of these Terms of Use will constitute
+              an unlawful and unfair business practice, and will cause irreparable harm to Arrivae, for which monetary damages would be
+              inadequate, and you consent to Arrivae obtaining any injunctive or equitable relief that Arrivae deems necessary or appropriate
+              in such circumstances. These remedies are in addition to any other remedies Arrivae may have at law or in equity.</p>
+              <p>If Arrivae does take any legal action against you as a result of your violation of these Terms of Use, Arrivae will be entitled
+              to recover from you, and you agree to pay, all reasonable attorneys’ fees and costs of such action, in addition to any other
+              relief granted to Arrivae. You agree that Arrivae will not be liable to you or to any third party for termination of your
+              access to the Site as a result of any violation of these Terms of Use.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-pink" (click) = "approveBoq()">Approve BOQ</button>
+      </div>
+    </div>
+  </div>
+</div>

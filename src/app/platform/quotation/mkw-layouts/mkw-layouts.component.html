@@ -1,0 +1,465 @@
+<div class="row ss-top-menu">
+	<div class="col-sm-12">
+		<span class="ss-text-dark"  style="vertical-align: -webkit-baseline-middle;">Dashboard <i class="rightArrow fa fa-angle-right"></i></span>
+		<span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;">MKW Layouts</span>
+	</div>
+</div>
+
+<div class="rk-ui-notification" *ngIf="successalert">
+	<span id="notificationMessageText">{{successMessage}}</span>
+	<a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+<div class="rk-ui-notification err" *ngIf="erroralert">
+	<span id="notificationMessageText">{{errorMessage}}</span>
+	<a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+
+<div id="navcontainer">
+  <ul class="nav nav-tabs tabs-chng" id="myTab" role="tablist">
+    <li class="nav-item nav-items">
+      <a class="nav-link addCursor text-center mr-3" [ngClass]="{'active': selectedTab == 'kitchen'}" (click)="changeSelectedTab('kitchen')">Kitchen</a>
+    </li>
+    <li class="nav-item nav-items">
+      <a class="nav-link addCursor text-center mr-3" [ngClass]="{'active': selectedTab == 'wardrobe'}" (click)="changeSelectedTab('wardrobe')">Wardrobe</a>
+    </li>
+    <li class="nav-item nav-items">
+      <a class="nav-link addCursor text-center mr-3" [ngClass]="{'active': selectedTab == 'shangpin'}" (click)="changeSelectedTab('shangpin')">Shangpin</a>
+    </li>
+  </ul>
+</div>
+
+<div class="container-set">
+	<div class="row mx-0">
+		<div class="col-md-12" *ngIf="layouts_list &&  layouts_list.length==0">
+      <div class="boq-img text-center">
+        <img src="assets/img/desktop.png" style="height: 250px;width: 300px">
+      </div>
+      <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing to show...</p>
+    </div>
+		<div class="col-md-12" *ngIf="layouts_list &&  layouts_list.length>0">
+      <collapsible-table [type]="'accordion'" bordered class="table mt-3" style="outline: none;">
+        <thead class="thead-dark">
+          <collapsible-table-row>
+            <th scope="col" class="firstTh">#</th>
+            <th scope="col"> Name</th>
+            <th scope="col">Created By</th>
+            <th class="minWidthForTd">Date</th>
+            <th scope="col">Remarks</th>
+            <th scope="lastTh" class="lastTh"></th> 
+          </collapsible-table-row>
+        </thead>  
+        <tbody style="background: white">
+          <ng-container *ngFor="let data of layouts_list | paginate: { itemsPerPage: per_page, currentPage: current_page, totalItems: total_page  } let i = index;" [attr.data-index]="i" >
+            <collapsible-table-row [detail]="detail1" (click)="getMkwLayoutDetail(data.id)">
+              <td style="min-width: 1rem;">{{((current_page-1) * per_page) + (i+1)}}</td>
+              <td class="capitalize"> {{data.name}}</td>
+              <td>{{data.created_by.name}} - {{data.created_by.email}}</td>
+              <td class="capitalize">{{data.created_at | date:'dd MMM, y , h:mm a'}}</td>
+              <td class="capitalize">{{data.remark}}</td>
+              <td class="capitalize"><i class="fa fa-trash addCursor" (click)="deleteMkwLayout(data.id)"></i></td>
+            </collapsible-table-row>
+            <collapsible-table-row-detail style="box-shadow: none;" #detail1>
+          		<div class="px-2 py-3 mx-0">
+                <div *ngIf="its_shangpin == false">
+                  <div class="row px-3" *ngIf="layoutDetail">
+                    <!--Modular jobs-->
+                    <div class="col-md-12 tableDiv" *ngIf="layoutDetail.modular_jobs.length>0">
+                      <h6 class="mt-3 px-3">Modules</h6>
+                      <table class="table px-3">
+                        <thead class="thead-dark">
+                          <tr>
+                            <th class="firstTh">#</th>
+                            <th [ngClass]="{'d-none':(selectedTab == 'wardrobe')}">Kitchen Category</th>
+                            <th>Type</th>
+                            <th>Module</th>
+                            <th class="text-center">Image</th>
+                            <th>Quantity</th>
+                            <th [ngClass]="{'d-none':(selectedTab == 'wardrobe')}">Width</th>
+                            <th class="lastTh"></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <ng-container *ngFor="let mod of layoutDetail.modular_jobs; let k=index; ">
+                            <tr *ngIf="(selectedTab=='kitchen') || (selectedTab == 'wardrobe' && !mod.combined)">
+                              <td>{{k+1}}</td>
+                              <td [ngClass]="{'d-none':(selectedTab == 'wardrobe')}">{{mod.kitchen_category_name}}</td>
+                              <td>{{mod.module_type}}</td>
+                              <td>{{mod.code}} ({{mod.dimensions}})</td>
+                              <td>
+                                <img src="{{mod.module_image_url}}" *ngIf="mod.module_image_url" style="width: 100px;" onerror="this.src='./assets/img/no_image.svg';" alt="Missing Image">
+                              </td>
+                              <td class="text-center">
+                                <span class="moduleLineItemSpan{{k}}">{{mod.quantity}}</span>
+                              </td>
+                              <td [ngClass]="{'d-none':(selectedTab == 'wardrobe')}">
+                                <span><ng-container *ngIf="mod.custom_shelf_unit_width">{{mod.custom_shelf_unit_width}} mm</ng-container><ng-container *ngIf="!mod.custom_shelf_unit_width">NA</ng-container></span>
+                              </td>
+                              <td>
+                                <img src="assets/v3/img/gear.svg" (click)="getCustomizationOfMKWlayout(mod.id,data.id)" class="addCursor">
+                              </td>
+                            </tr>
+                            <tr *ngIf="(selectedTab == 'wardrobe' && mod.combined)" class="accordion-toggle addCursor" data-toggle="collapse" data-parent="#OrderPackages" [attr.data-target]="'.packageDetails'+k" (click)="showAccordion(k)">
+                              <td>{{k+1}}</td>
+                              <td>Combined</td>
+                              <td class="capitalize">{{mod.name}}</td>
+                              <td>
+                                <img src="{{mod.module_image_url}}" *ngIf="mod.module_image_url" style="width: 100px;" onerror="this.src='./assets/img/no_image.svg';" alt="Missing Image">
+                              </td>
+                              <td class="text-center">
+                                <span class="moduleLineItemSpan{{k}}">{{mod.quantity}}</span>
+                              </td>
+                              <td></td>
+                            </tr>
+                            <tr class="d-none combmoduleAccordionRow{{k}}" id="combmoduleAccordionRow{{k}}" *ngIf="mod.combined">
+                              <td colspan="6" class="hiddenRow">
+                                <div class="accordion-body collapse packageDetails{{k}}" id="accordion_{{k}}">
+                                  <table class="table">
+                                    <tr *ngFor="let cmod of mod.included_modules; let m=index; ">
+                                      <td>{{m+1}}</td>
+                                      <td>{{cmod.module_type}}</td>
+                                      <td>{{cmod.code}}</td>
+                                      <td>
+                                        <img src="{{cmod.module_image_url}}" *ngIf="cmod.module_image_url" style="width: 100px;" onerror="this.src='./assets/img/no_image.svg';" alt="Missing Image">
+                                      </td>
+                                      <td>
+                                        <span class="moduleLineItemSpan{{k}}{{m}}">{{cmod.quantity}}</span>
+                                      </td>
+                                      <td>
+                                        <img src="assets/v3/img/gear.svg" (click)="getCustomizationOfMKWlayout(cmod.id,data.id)" class="addCursor">
+                                      </td>
+                                    </tr>
+                                  </table>
+                                </div>
+                              </td>
+                            </tr>
+                          </ng-container>
+                        </tbody>
+                      </table>
+                    </div>
+                    <!--Appliance job-->
+                    <div class="col-md-12 tableDiv" *ngIf="layoutDetail.appliance_jobs.length>0">
+                      <h6 class="mt-3 px-3">Appliances</h6>
+                      <table class="table px-3">
+                        <thead class="thead-dark">
+                          <tr>
+                            <th class="firstTh">#</th>
+                            <th>Appliance Type</th>
+                            <th>Appliance</th>
+                            <th>Make</th>
+                            <th>Vendor Sku</th>
+                            <th>Quantity</th>
+                            <th class="text-center lastTh">Image</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let appjob of layoutDetail.appliance_jobs; let k1=index; ">
+                            <td>{{k1+1}}</td>
+                            <td>{{appjob.subcategory}}</td>
+                            <td>{{appjob.name}}</td>
+                            <td>{{appjob.make}}</td>
+                            <td>{{appjob.vendor_sku}}</td>
+                            <td>{{appjob.quantity}}</td>
+                            <td>
+                              <img src="{{appjob.image_url}}" *ngIf="appjob.image_url" style="width: 100px;" onerror="this.src='./assets/img/no_image.svg';" alt="Missing Image">
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <!--Extras job-->
+                    <div class="col-md-12 tableDiv" *ngIf="layoutDetail.extra_jobs.length>0">
+                      <h6 class="mt-3 px-3">Extras</h6>
+                      <table class="table px-3">
+                        <thead class="thead-dark">
+                          <tr>
+                            <th class="firstTh">#</th>
+                            <th>Name</th>
+                            <th>Vendor Sku</th>
+                            <th>Make</th>
+                            <th>Specification </th>
+                            <th>Quantity</th>
+                            <th class="text-center lastTh">Image</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let extrajob of layoutDetail.extra_jobs; let k2=index; ">
+                            <td>{{k2+1}}</td>
+                            <td>{{extrajob.name}}</td>
+                            <td>{{extrajob.vendor_sku}}</td>
+                            <td>{{extrajob.make}}</td>
+                            <td>{{extrajob.specifications}}</td>
+                            <td>{{extrajob.quantity}}</td>
+                            <td>
+                              <img src="{{extrajob.image_url}}" *ngIf="extrajob.image_url" style="width: 100px;" onerror="this.src='./assets/img/no_image.svg';" alt="Missing Image">
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+
+                <!--For custom furniture-->
+                <div *ngIf="its_shangpin == true">
+                  <div class="ml-3 mt-3" *ngIf="cflayoutDetail && selectedTab == 'shangpin'">
+                    <!--Cabinet List-->
+                    <div *ngIf="cflayoutDetail.shangpin_jobs_cabinet.length>0">
+                      <p class="font-weight-bold">Cabinet List:</p>
+                      <div class="tableDiv mt-3">
+                        <table class="table">
+                          <thead class="thead-dark">
+                            <tr>
+                                <th class="firstTh">#</th>
+                                <th>ITEM</th>
+                                <th>MODEL NUMBER</th>
+                                <th>ACTUAL SIZE<br>(WxDxH)</th>
+                                <th>COLOR</th>
+                                <th>UNIT PRICE</th>
+                                <th>QUANTITY</th>
+                                <th>AMOUNT</th>
+                                <th class="lastTh"></th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                            <ng-container *ngFor="let addedproduct of cflayoutDetail.shangpin_jobs_cabinet; let k7=index;">
+                              <tr>
+                                <td>{{k7+1}}</td>
+                                  <td>{{addedproduct.cabinet_item}}</td>
+                                  <td>{{addedproduct.cabinet_model_no}}</td>
+                                  <td>{{addedproduct.cabinet_overall_size}}</td>
+              
+                                  <td>{{addedproduct.cabinet_color}}</td>
+                                  
+                                  <td>{{addedproduct.cabinet_price_factored | number: '.1-2'}}</td>
+                                  <td>{{addedproduct.cabinet_quantity}}</td>
+                                  <td>{{addedproduct.cabinet_amount_factored | number: '.1-2'}}</td>
+                              </tr>
+                            </ng-container>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+
+                    <!--Door List-->
+                    <div *ngIf="cflayoutDetail.shangpin_jobs_door.length>0">
+                      <p class="font-weight-bold">Door List:</p>
+                      <div class="tableDiv mt-3">
+                        <table class="table">
+                          <thead class="thead-dark">
+                            <tr>
+                              <th class="firstTh">#</th>
+                              <th>STYLE CODE</th>
+                              <th>OVERALL SIZE<br>(WxDxH)</th>
+                              <th>QUANTITY</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <ng-container *ngFor="let addedproduct of cflayoutDetail.shangpin_jobs_door; let k7=index;">
+                              <tr>
+                                <td>{{k7+1}}</td>
+                                <td>{{addedproduct.door_style_code}}</td>
+                                <td>{{addedproduct.door_overall_size}}</td>
+                                <td>{{addedproduct.door_quantity}}</td>
+                              </tr>
+                            </ng-container>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+
+                    <!--Accessory List-->
+                    <div *ngIf="cflayoutDetail.shangpin_jobs_accessory.length>0">
+                      <p class="font-weight-bold">Accessory List:</p>
+                      <div class="tableDiv mt-3">
+                        <table class="table">
+                          <thead class="thead-dark">
+                            <tr>
+                              <th class="firstTh">#</th>
+                              <th>STYLE CODE</th>
+                              <th>OVERALL SIZE<br>(WxDxH)</th>
+                              <th>QUANTITY</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <ng-container *ngFor="let addedproduct of cflayoutDetail.shangpin_jobs_accessory; let k7=index; ">
+                              <tr>
+                                <td>{{k7+1}}</td>
+                                <td>
+                                  <div *ngIf="addedproduct.accessory_code">{{addedproduct.accessory_code}}</div>
+                                          
+                                  <div *ngIf="addedproduct.accessory_model_no">{{addedproduct.accessory_model_no}}</div>
+                                </td>
+                                <td>{{addedproduct.accessory_overall_size}}</td>
+                                <td>{{addedproduct.accessory_quantity}}</td>
+                              </tr>
+                            </ng-container>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+
+                    <!--Sliding Door-->
+                      <div class="" *ngIf="cflayoutDetail.shangpin_jobs_sliding_door.length>0">
+                        <p class="font-weight-bold">Sliding Door:</p>
+                        <div  class="tableDiv mt-3 mb-2">
+                          <table class="table">
+                            <thead class="thead-dark">
+                              <tr>
+                                <th class="firstTh">#</th>
+                                <th>ITEM</th>
+                                <th>MODEL NUMBER</th>
+                                <th>ACTUAL SIZE<br>(WxDxH)</th>
+                                <th>COLOR</th>
+                                <th>UNIT PRICE</th>
+                                <th>QUANTITY</th>
+                                <th>AMOUNT</th>
+                                <th class="lastTh"></th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <ng-container *ngFor="let addedproduct of cflayoutDetail.shangpin_jobs_sliding_door; let k7=index;">
+                                <tr>
+                                  <td>{{k7+1}}</td>
+                                  <td>{{addedproduct.door_item}}</td>
+                                  <td>{{addedproduct.door_model_no}}</td>
+                                  <td>{{addedproduct.door_overall_size}}</td>
+                                  <td>{{addedproduct.Door_color}}</td>
+                                  <td>{{addedproduct.door_price_factored | number: '.1-2'}}</td>
+                                  <td>{{addedproduct.door_quantity}}</td>
+                                  <td>{{addedproduct.door_amount_factored | number: '.1-2'}}</td>
+                                  <td></td>
+                                </tr>
+                              </ng-container>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+
+                      <!--Wardrobe List-->
+                      <div class="" *ngIf="cflayoutDetail.shangpin_jobs_wardrobe.length>0">
+                        <p class="font-weight-bold">Wardrobe List:</p>
+                        <!-- <div class="tableDiv mt-3 mb-2">
+                          <ng-container *ngFor="let addedproduct of cflayoutDetail.shangpin_jobs_wardrobe; let k7=index;">
+                            <div class="d-flex mb-2 pl-2 slidingamountCard">
+                              <span>{{k7+1}}</span><span class="ml-2">Total Amount:{{addedproduct.amount_factored  | number: '.1-2'}}</span>
+                            </div>
+                          </ng-container>
+                        </div> -->
+                        <table class="table">
+                          <thead class="thead-dark">
+                            <tr>
+                              <th class="firstTh">#</th>
+                              <th>ITEM</th>
+                              <th>MODEL NUMBER</th>
+                              <th>ACTUAL SIZE<br>(WxDxH)</th>
+                              <th>COLOR</th>
+                              <th>UNIT PRICE</th>
+                              <th>QUANTITY</th>
+                              <th>AMOUNT</th>
+                              <th class="lastTh"></th>
+                            </tr>
+                          </thead>
+                          <ng-container *ngFor="let addedproduct of cflayoutDetail.shangpin_jobs_wardrobe; let k7=index;">
+                            <tr>
+                              <td>{{k7+1}}</td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td></td>
+                              <td>{{addedproduct.wardrobe_amount_factored | number: '.1-2'}}</td>
+                              <td></td>
+                            </tr>
+                          </ng-container>
+                        </table>
+                      </div>
+                  </div>
+                </div>
+	            </div>        
+            </collapsible-table-row-detail> 
+          </ng-container>
+        </tbody>     
+      </collapsible-table>
+      <div class="text-center" *ngIf="layouts_list && layouts_list.length >0">
+      	<pagination-controls autoHide="true" (pageChange)="current_page = getLayoutsList(selectedTab,$event)"></pagination-controls>
+      </div>
+		</div>
+	</div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="customizationModal" tabindex="-1" role="dialog" aria-labelledby="customizationModalMkLabel" aria-hidden="true"  data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title modalTitle" id="exampleModalLabel">Customize Elements</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" *ngIf="customizationDetails">
+        <div class="row">
+          <div class="col-md-12">
+            <label>Number Exposed Sites - </label>
+            <span>{{customizationDetails.number_exposed_sites}}</span>
+          </div>
+          <div class="col-md-12">
+            <fieldset *ngFor = "let item of customizationDetails.addons; let i=index ">
+              <div class="row mx-0 py-2 mb-2 addonrow" *ngIf="item.compulsory">
+                <div class="col-md-3">
+                  <label>Slot</label>
+                  <p class="rk-form-fontsize">{{item.slot}}</p>
+                </div>
+                <div class="col-md-3">
+                  <label>Addon</label>
+                  <p class="rk-form-fontsize">{{item.name}} - {{item.code}}</p>
+                </div>
+                <div class="col-md-2">
+                  <label>Quantity</label>
+                  <p class="rk-form-fontsize px-3">{{item.quantity}}</p>
+                </div>
+                <div class="col-md-4">
+                  <label>Image</label>
+                  <img src="{{item.addon_image}}" height="100px" width="100px" onerror="this.src='./assets/img/no_image.svg'" style="display: block;" *ngIf="item.addon_image">
+                </div>
+                <div class="col-md-12 mt-3" *ngFor="let item1 of customizationDetails.addons_for_addons">
+                  <ng-container *ngIf="item1.compulsory_addon_id==item.id">
+                    <div class="row mb-3 optaddonrow">
+                      <div class="col-5">
+                        <label>Optional Addon</label>
+                        <p class="rk-form-fontsize">{{item1.name}} - {{item1.code}}</p>
+                      </div>
+                      <div class="col-3">
+                        <label>Quantity</label>
+                        <p class="rk-form-fontsize px-3">{{item1.quantity}}</p>
+                      </div>
+                      <div class="col-md-4">
+                        <label>Image</label>
+                        <img src="{{item1.addon_image}}" height="100px" width="100px" onerror="this.src='./assets/img/no_image.svg'" style="display: block;" *ngIf="item1.addon_image">
+                      </div>
+                    </div>
+                  </ng-container>
+                </div>
+              </div>
+              <div class="row mx-0 py-2 mb-2 addonrow" *ngIf="!item.compulsory">
+                <div class="col-md-6">
+                  <label>Addon</label>
+                  <p class="rk-form-fontsize">{{item.name}} - {{item.code}}</p>
+                </div>
+                <div class="col-md-2">
+                  <label>Quantity</label>
+                  <p class="rk-form-fontsize px-3">{{item.quantity}}</p>
+                </div>
+                <div class="col-md-4">
+                  <label>Image</label>
+                  <img src="{{item.addon_image}}" height="100px" width="100px" onerror="this.src='./assets/img/no_image.svg'" style="display: block;" *ngIf="item.addon_image">
+                </div>
+              </div>
+            </fieldset>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

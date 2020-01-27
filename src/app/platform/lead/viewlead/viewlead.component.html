@@ -1,0 +1,86 @@
+<!-- <div class="col-md-12">
+    <div class="card">
+     	<div class="card-content" *ngIf="lead">
+     		<label class="col-sm-2 label-on-left"> Id</label>
+            <div class="col-sm-10">
+                {{lead.id}}
+            </div>
+            <div class="clearfix"></div>
+     		<label class="col-sm-2 label-on-left"> Name</label>
+            <div class="col-sm-10">
+                {{lead.name}}
+            </div>
+            <div class="clearfix"></div>
+            <label class="col-sm-2 label-on-left"> Contact</label>
+            <div class="col-sm-10">
+                {{lead.contact}}
+            </div>
+            <div class="clearfix"></div>
+            <label class="col-sm-2 label-on-left"> Email</label>
+            <div class="col-sm-10">
+                {{lead.email}}
+            </div>
+            <div class="clearfix"></div> -->
+            <!-- <label class="col-sm-2 label-on-left"> City</label>
+            <div class="col-sm-10">
+                {{lead.city}}
+            </div> -->
+<!--             <div class="clearfix"></div>
+            <label class="col-sm-2 label-on-left"> Pin code</label>
+            <div class="col-sm-10">
+                {{lead.pincode}}
+            </div>
+            <div class="clearfix"></div> -->
+            <!-- <label class="col-sm-2 label-on-left"> Details</label>
+            <div class="col-sm-10">
+                {{lead.details}}
+            </div> -->
+<!--
+     	</div>
+    </div>
+</div> -->
+
+
+<div class="row title">
+  <h3>View Lead</h3>
+</div>
+<div class="row body_height justify-content-center">
+  <div class="col-12" *ngIf="erroralert">
+    <div class="alert-box grid-100 col-sm-10" *ngIf="errorMessage">
+      <div class="alert alert-danger mt-3 text-center">
+        <a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a>
+        {{errorMessage}}
+      </div>
+    </div>
+  </div>
+  <div class="col-12" *ngIf="successalert">
+    <div class="alert-box grid-100" *ngIf="successMessage">
+      <div class="alert alert-success mt-3 text-center">
+        <a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+        {{successMessage}}
+      </div>
+    </div>
+  </div>
+  <div class="col-11 table-responsive">
+    <table class="table table-hover" *ngIf="lead">
+      <thead>
+        <tr>
+          <th>ID <i class="fa fa-caret-down" aria-hidden="true"></i></th>
+          <th>Name <i class="fa fa-caret-down" aria-hidden="true"></i></th>
+          <th>Contact <i class="fa fa-caret-down" aria-hidden="true"></i></th>
+          <th>Email <i class="fa fa-caret-down" aria-hidden="true"></i></th>
+          <th>Pin Code <i class="fa fa-caret-down" aria-hidden="true"></i></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>{{lead.id}}</td>
+          <td>{{lead.name}}</td>
+          <td>{{lead.contact}}</td>
+          <td>{{lead.email}}</td>
+          <td>{{lead.pincode}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,824 @@
+<div class="row ss-top-menu" style="position: fixed;width: 100%;z-index: 15;min-height: 65px;">
+  <div class="col-sm-12">
+    <span class="ss-link addCursor" routerLink="/" style="vertical-align: -webkit-baseline-middle;">Dashboard</span>
+    <span style="vertical-align: -webkit-baseline-middle;" > <i class="rightArrow fa fa-angle-right"></i>  </span>
+    <span class="ss-link addCursor" [routerLink]="['/lead',lead_id,'ppt']" style="vertical-align: -webkit-baseline-middle;">Lead</span>
+    <span style="vertical-align: -webkit-baseline-middle;"> <i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;">Presentations</span>
+    
+  </div>
+</div>
+   <div class="row">
+    </div>
+  
+  <div class="container">
+  
+   
+    <div class="row">
+      <div class="col-10">
+        <div class="row">
+          <div class="col-md-12 ">
+            <div class="navi-chng">
+              <ul class="nav my-nav w-100 border">
+                
+                <li class="nav-item dropdown">
+                  <!-- <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Dropdown</a> -->
+                  <span class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                    <img src="../../../assets/img/Shape1.png" data-toggle="tooltip" title="Import Shape">
+                  </span>
+                  
+                  <div class="dropdown-menu">
+                    <a class="dropdown-item" (click)="addFigure('rectangle');">Rectangle</a>
+                    <a class="dropdown-item" (click)="addFigure('square');">Square</a>
+                    <a class="dropdown-item" (click)="addFigure('triangle');">Triangle</a>
+                    <a class="dropdown-item" (click)="addFigure('circle');">Circle</a>
+                  </div>
+                </li>
+                <li class="nav-item dropdown chng-border">
+                  <span class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                    <img src="../../../assets/img/Shape2.png"  data-toggle="tooltip" title="Import Images">
+                  </span>
+                  
+                  <div class="dropdown-menu" style="padding:1rem;">
+                    <p>Choose Image</p>
+                    <input type="file" (change)="readUrl($event);">
+                    <img id="testImage" *ngIf="url" class="images-item-upload" [src]="url" (click)="addImageOnCanvas(url);" style="max-height:200px;">
+                    <br/>
+                    <br/>
+                    <div class="btn-group btn-group-justified" role="group" aria-label="...">
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-outline-danger btn-sm" (click)="removeWhite(url);">
+                                <i class="fa fa-times" aria-hidden="true"></i> Remove</button>
+                        </div>
+                    </div>
+                  </div>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link dropdown-toggle"  data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span data-toggle="tooltip" title="Change Background"><img src="../../../assets/img/Shape3.png"  data-toggle="tooltip" title="Background Color"></span></a>
+                  <div class="dropdown-menu" style="padding:1rem">
+                    <span>Choose Color</span>
+                    <input type="text" class="form-control" [cpPosition]="'bottom'" [(colorPicker)]="props.canvasFill" [style.background]="props.canvasFill"
+                                          [value]="props.canvasFill" (colorPickerChange)="setCanvasFill()">
+                    
+                  </div>
+                </li>
+                
+      
+                <li class="nav-item chng-border">
+      
+                  <a class="nav-link dropdown-toggle"  data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span data-toggle="tooltip" title="Change Background"><img src="../../../assets/img/Shape4.png"  data-toggle="tooltip" title="Text Color"></span></a>
+                  <div class="dropdown-menu" style="padding:1rem">
+                    <input type="text" class="form-control" [cpPosition]="'bottom'" [(colorPicker)]="props.fill" [style.background]="props.fill"
+                                [value]="props.fill" (colorPickerChange)="setFill()">
+                  </div>              
+                  
+                </li>
+                <li class="nav-item font-set chng-border">
+                  <button type="button"  class="close" [ngClass]="{'active': hasTextDecoration('line-through') }"
+                      (click)="setTextDecoration('line-through')">
+                      <img src="../../../assets/img/Shape9.png"  data-toggle="tooltip" title="Line Through">
+                  </button>
+                  <button type="button" class="close" [ngClass]="{'active': hasTextDecoration('overline') }"
+                      (click)="setTextDecoration('overline')">
+                      <img src="../../../assets/img/Shape8.png"  data-toggle="tooltip" title="Overline">
+                  </button>
+                    <button type="button" class="close" [ngClass]="{'active': hasTextDecoration('underline') }"
+                      (click)="setTextDecoration('underline')">
+                      <img src="../../../assets/img/Shape7.png"  data-toggle="tooltip" title="underline">
+                  </button>
+                  <button type="button" class="close" [ngClass]="{'active': props.fontStyle }" (click)="setFontStyle()">
+                      <img src="../../../assets/img/Shape6.png"  data-toggle="tooltip" title="Italic">
+                  </button>
+                  <button type="button" style="margin-left: 5px;" class="close" [ngClass]="{'active': props.fontWeight }" (click)="setBold()">
+                    <span aria-hidden="true"><img src="../../../assets/img/Shape5.png"  data-toggle="tooltip" title="BoldText"></span>
+                  </button>
+                  
+                  
+                  
+                  
+                  
+                </li>
+                <li class="nav-item font-set chng-border">
+                  
+                  
+                  <button type="button" class="close"  [ngClass]="{'active': props.textAlign == 'right' }" (click)="setTextAlign('right')">
+                        <img src="../../../assets/img/Shape12.png" data-toggle="tooltip" title="Right Align">
+                  </button>
+                  <button type="button" class="close" [ngClass]="{'active': props.textAlign == 'justify' }" (click)="setTextAlign('justify')">
+                        <img src="../../../assets/img/Shape13.png"  data-toggle="tooltip" title="Justify">
+                  </button>
+                  <button type="button" class="close" [ngClass]="{'active': props.textAlign == 'center' }" (click)="setTextAlign('center')">
+                        <img src="../../../assets/img/Shape11.png" data-toggle="tooltip" title="Center Align">
+                  </button>
+                  <button type="button" class="close" style="margin-left: 5px" [ngClass]="{'active': props.textAlign == 'left' }" (click)="setTextAlign('left')">
+                    <img src="../../../assets/img/Shape10.png"  data-toggle="tooltip" title="Left Align">
+                  </button>
+      
+                </li>
+                <li class="nav-item chng-border">
+                  <select [(ngModel)]="props.fontFamily" class="form-control frm-chng" (change)="setFontFamily()">
+                      <option value="arial">Arial</option>
+                      <option value="helvetica" selected>Helvetica</option>
+                      <option value="verdana">Verdana</option>
+                      <option value="courier">Courier</option>
+                      <option value="Roboto">Roboto</option>
+                      <option value="Open Sans">Open Sans</option>
+                      <option value="Zilla Slab">Zilla Slab</option>
+                      <option value="Lato">Lato</option>
+                      <option value="Bellefair">Bellefair</option>
+                      <option value="Fresca">Fresca</option>
+                      <option value="Raleway">Raleway</option>
+                      <option value="Open Sans Condensed">Open Sans Condensed</option>
+                      <option value="Indie Flower">Indie Flower</option>
+                      <option value="Josefin Sans">Josefin Sans</option>
+                      <option value="Inconsolata">Inconsolata</option>
+                      <option value="Pacifico">Pacifico</option>
+                      <option value="Gloria Hallelujah">Gloria Hallelujah</option>
+                  </select>
+                  
+                </li>
+                <li class="nav-item chng-border">
+                    <select [(ngModel)]="props.fontSize" class="form-control frm-chngs" (change)="setFontSize()">
+                      <option *ngFor= "let number of font_size_numbers" value="{{number}}">{{number}}</option>
+                    </select>
+      
+                  
+                </li>
+                <li class="nav-item chng-border">
+                  
+                  <button data-toggle="tooltip" class="close" data-placement="bottom" title="Send to front" type="button"  [disabled]="!selected"
+                        (click)="bringToFront();">
+                        <img src="../../../assets/img/Shape17.png" data-toggle="tooltip" >
+                  </button>
+                  <button data-toggle="tooltip" class ="close" data-placement="bottom" title="Send to back" type="button"  [disabled]="!selected"
+                    (click)="sendToBack();">
+                    <img src="../../../assets/img/Shape16.png"  data-toggle="tooltip" >
+                  </button>
+                    
+      
+                  <button data-toggle="tooltip" class="close" data-placement="bottom" title="Delete element" type="button"  [disabled]="!selected"
+                        (click)="removeSelected();">
+                          <img src="../../../assets/img/Shape15.png"  data-toggle="tooltip" >
+                    </button>
+                  <button data-toggle="tooltip" style="margin-left: 5px;" class="close" data-placement="bottom" title="Clone" type="button"  [disabled]="!selected || selected.type == 'group'"
+                        (click)="clone();">
+                        <img src="../../../assets/img/Shape14.png"  data-toggle="tooltip">
+                  </button>  
+                    
+                    
+                  
+                </li>
+      
+              
+                <li class="nav-item">
+                  <a class="nav-link dropdown-toggle font-12"  data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">File</a>
+                  <div class="dropdown-menu">
+                    <a class="dropdown-item" data-toggle="tooltip" title="Export to Image" (click)="rasterize();">Export to Image</a>
+                    <a class="dropdown-item" data-toggle="tooltip" title="Export to SVG" (click)="rasterizeSVG();">Export to SVG</a>
+                    <a class="dropdown-item" data-toggle="tooltip" title="Export to SVG" (click)="exportPPT();">Export to PPT</a>
+
+                    <a class="dropdown-item" data-toggle="tooltip" title="Clean PPT" (click)="linkedProducts();">Linked Products</a>
+
+                    <a class="dropdown-item" data-toggle="tooltip" title="Clean PPT" (click)="saveFile();">Save File</a>
+                    <!-- {{presentation | json}} -->
+                    <a class="dropdown-item" data-toggle="tooltip" title="Create BOQ" (click)="createBOQ();" *ngIf="presentation && presentation.presentation.id">Create BOQ</a>
+                    <a class="dropdown-item" data-toggle="tooltip" title="Clean PPT" (click)="confirmClear();">Reset</a>
+                    <a class="dropdown-item" data-toggle="tooltip" title="View JSON" (click)="ViewJson();">View Json</a>
+                  </div>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link dropdown-toggle font-12"  data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span data-toggle="tooltip" title="Change Background">Text</span></a>
+                  <div class="dropdown-menu font-12 custom-drop" style="padding:1rem;width: 20rem;">
+                    <p>Enter Text</p>
+                    <textarea class="form-control" [(ngModel)]="textString" style="width: 80%;float: left;"></textarea>
+                    <div class="input-group-append">
+                        <span class="input-group-text">
+                            <button id="add-text" data-toggle="tooltip" data-placement="bottom" title="Add text" class="btn btn-primary pull-right" (click)="addText()">
+                                <i class="fa fa-plus" aria-hidden="true"></i>
+                            </button>
+                        </span>
+                    </div>
+                  </div>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link font-12" data-toggle="modal" data-target="#addProductModal"><span data-toggle="tooltip" title="Add Catalogue Products" (click) = "getCatalogueProducts('all','all')">Products</span></a>
+                </li>
+                <!-- Delete this block for production -->
+                <!--  <li class="nav-item">
+                  <a class="nav-link"><span data-toggle="tooltip" title="Add Catalogue Products" (click) = "getImage()">Image</span></a>
+                </li> -->
+                <li class="nav-item">
+                  <a class="nav-link dropdown-toggle font-12"  data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Slide</a>
+                  <div class="dropdown-menu custom-drop">
+                    <a class="dropdown-item" href="" data-toggle="modal" data-target="#beforeCanvasModal">Add Before Selected</a>
+                    <a class="dropdown-item" href="" data-toggle="modal" data-target="#afterCanvasModal">Add After Selected</a>
+                    <a class="dropdown-item" (click)="deleteCanvas();">Delete Selected</a>
+                  </div>
+                </li>
+                
+                
+                <!-- <li class="nav-item">
+                  <a class="nav-link"><span data-toggle="tooltip" title="Add Catalogue Products" (click) = "saveCanvasToJSON()">Load Local</span></a>
+                </li> -->
+              </ul>
+            </div>  
+          </div> 
+          <div class="col-md-12">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="Close">
+                      <i class="fa fa-times pull-right" aria-hidden="true" style="cursor:pointer" (click) = "closeSidePanel()"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+      
+              <div class="row product-list">
+                <div class="col-md-12">
+                  <div class="scroll-change">
+                    <div class="arrowDiv">
+                      <div class="arrow"></div>
+                    </div>
+                    <div style="min-width: 10rem; background-color: white;margin-top: 10px" *ngFor="let product of productList">
+                      <div class="img-chng" style="min-height: 68px;">
+                        <img class="card-img-top product-card img-fluid" src="{{baseUrl}}{{product.image_relative_url}}" alt="{{product.unique_sku}}" (click)="getImgPolaroidProduct($event, product.id)">
+                      </div>
+                        <p class="card-title product-card text-left font-12 d-flex justify-content-center" style="font-weight:400; height: 20px; text-align: center !important;">{{product.name}}</p>
+                    </div>
+                  </div>   
+                </div>
+              </div>       
+            </div>
+          </div>
+        
+          <div class="col-md-11  canvas-slides can-chng ml-3"
+            (window:keyup.control.c)="copy()" 
+            (window:keyup.control.v)="paste()"
+            (window:keyup.control.x)="cut()"
+            (window:keyup.control.shift.x)="copySlide()"
+            (window:keyup.control.shift.v)="pasteSlide()"
+            (window:keyup.control.z)="undoAction()"
+            (window:keyup.control.shift.l)="targetSlideMove()"
+            (window:keyup.shift.arrowup)="positionTop()"
+            (window:keyup.shift.arrowdown)="positionBelow()" >
+
+            <!-- <canvas id="canvas-0" class="canvas"></canvas>  -->
+
+          </div>
+        
+          <!-- Delete this block for production -->
+          <div class="col-md-12 mt-5 sidepanel-fixed image-list">
+            <div class="row" style="border-bottom: 1px solid #bbb;margin-bottom: 1rem;padding: 0.5rem 0;">
+              <div class="col-md-12">
+                <div class="row">
+                  <div class="col-md-6">
+                    <b>Select Images</b>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="Close">
+                      <i class="fa fa-times pull-right" aria-hidden="true" style="cursor:pointer" (click) = "closeImagePanel()"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+      
+              <div class="col-md-2" *ngFor="let url of tempData">
+      
+                <img class="" src="{{url}}" alt="{{url}}" (click)="getImgPolaroidImage($event)" style="width:100%;">
+      
+              </div>
+      
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="col-md-2  sidepanel-fixed sidepanel-chng h-100" style= "z-index: 10;">
+        <div class="form-group">
+          <label for="p-title">Presentation Title</label>
+          <input type="text" class="form-control" id="p-title" placeholder = "Presentation Title">
+        </div>
+        <div class="custom-item" *ngIf="selected && textEditor || selected && figureEditor">
+          <div class="custom-item-title">Fill</div>
+          <div class="custom-item-body">
+            <input type="text" class="form-control" [cpPosition]="'bottom'" [(colorPicker)]="props.fill" [style.background]="props.fill" [value]="props.fill" (colorPickerChange)="setFill()">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="p-title">Shortcut Keys</label>
+          <ul style="padding-left: 18px; font-size: 13px;">
+            <li class="mb-2">
+              <span style="font-weight: 600;">ctrl + c</span> <span>(Copy the elements)</span></li>
+            <li class="mb-2">
+              <span style="font-weight: 600;">ctrl + v</span> <span>(Paste the elements)</span>
+            </li>
+            <li class="mb-2">
+              <span style="font-weight: 600;">ctrl + x</span> <span>(Cut the elements)</span>
+            </li>
+            <li class="mb-2">
+              <span style="font-weight: 600;">ctrl + shift + x</span> <span>(Copy the entire slide)</span>
+            </li>
+            <li class="mb-2">
+              <span style="font-weight: 600;">ctrl + shift + v</span> <span>(Paste the entire slide)</span>
+            </li>
+            <li class="mb-2">
+              <span style="font-weight: 600;">ctrl + z</span> <span>(undo the actions)</span>
+            </li>
+            <li class="mb-2">
+              <span style="font-weight: 600;">ctrl + shift + l</span> <span>(lock the target slide to move)</span>
+            </li>
+            <li class="mb-2">
+              <span style="font-weight: 600;">shift + arrowup</span> <span>(Move the slide to top of selected)</span>
+            </li>
+            <li class="mb-2">
+              <span style="font-weight: 600;">shift + arrowdown</span> <span>(Move the slide to down of selected)</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="modal fade" id="beforeCanvasModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="max-width: 80%;">
+      <div class="modal-content">
+        <div class="modal-header" style="border-bottom: 1px solid #e4e4e4;">
+          <h6 class="modal-title" id="exampleModalLabel">Choose from the given template : </h6>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="card-deck" style="width: 90%;margin: 0 auto;float: none;">
+                <div class="card canvas-card" data-dismiss="modal" aria-label="Close" (click)="addBeforeCanvas();">
+                  <i class="ion-ios-plus-outline" style="margin: 34% 0;text-align: center;font-size: 2.5rem;color: #8f0521;"></i>
+                </div>
+  
+                <div class="card canvas-card">
+                  <div class="card-ss-header text-center">
+                    <img class="card-img-top" src="./assets/json/slides/default1.png" alt="Default">
+                  </div>
+                  
+                  <div class="card-block text-center p-4">
+                    <div class="card-title">Arrivae default</div>
+                    <a class="btn btn-pink pl-5 pr-5" data-dismiss="modal" aria-label="Close" (click)="addBeforeCanvas('default');">Choose</a>
+                  </div>
+                </div>
+  
+                <div class="card canvas-card">
+                  <div class="card-ss-header text-center">
+                    <img class="card-img-top" src="./assets/json/slides/moodboard1.png" alt="MoodBoard">
+                  </div>
+                  
+                  <div class="card-block text-center p-4">
+                    <div class="card-title">MoodBoard</div>
+                    <a class="btn btn-pink pl-5 pr-5" data-dismiss="modal" aria-label="Close" (click)="addBeforeCanvas('moodboard');">Choose</a>
+                  </div>
+                </div>
+  
+                <div class="card canvas-card">
+                  <div class="card-ss-header text-center">
+                    <img class="card-img-top" src="./assets/json/slides/spaces.png" alt="Introduction">
+                  </div>
+                  
+                  <div class="card-block text-center p-4">
+                    <div class="card-title">Spaces</div>
+                    <a class="btn btn-pink pl-5 pr-5" data-dismiss="modal" aria-label="Close" (click)="addBeforeCanvas('spaces');">Choose</a>
+                  </div>
+                </div>
+              </div>
+              <div class="card-deck" style="width: 70%;margin: 0 auto;float: none;margin-bottom: 2rem;">
+  
+               <!--  <div class="card canvas-card">
+                  <img class="card-img-top" src="./assets/json/slides/looks.png" alt="Looks">
+                  <div class="card-block text-center p-4">
+                    <div class="card-title">Looks</div>
+                    <a class="btn btn-pink pl-5 pr-5" data-dismiss="modal" aria-label="Close" (click)="addBeforeCanvas('looks');">Choose</a>
+                  </div>
+                </div> -->
+  
+                <div class="card canvas-card">
+                  <div class="card-ss-header text-center">
+                    <img class="card-img-top" src="./assets/json/slides/elements.png" alt="Elements">
+                  </div>
+                  
+                  <div class="card-block text-center p-4">
+                    <div class="card-title">Elements</div>
+                    <a class="btn btn-pink pl-5 pr-5" data-dismiss="modal" aria-label="Close" (click)="addBeforeCanvas('elements');">Choose</a>
+                  </div>
+                </div>
+  
+                <div class="card canvas-card">
+                  <div class="card-ss-header text-center">
+                    <img class="card-img-top" src="./assets/json/slides/floorplan1.png" alt="Floorplan">
+                  </div>
+                  
+                  <div class="card-block text-center p-4">
+                    <div class="card-title">FloorPlan</div>
+                    <a class="btn btn-pink pl-5 pr-5" data-dismiss="modal" aria-label="Close" (click)="addBeforeCanvas('floorplan');">Choose</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="modal fade" id="afterCanvasModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="max-width: 80%;">
+      <div class="modal-content">
+        <div class="modal-header" style="border-bottom: 1px solid #e4e4e4;">
+          <h6 class="modal-title" id="exampleModalLabel">Choose from the given template : </h6>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="card-deck" style="width: 90%;margin: 0 auto;float: none;">
+                <div class="card canvas-card" data-dismiss="modal" aria-label="Close" (click)="addAfterCanvas();">
+                  <i class="ion-ios-plus-outline" style="margin: 34% 0;text-align: center;font-size: 2.5rem;color: #8f0521;"></i>
+                </div>
+  
+                <div class="card canvas-card">
+                  <div class="card-ss-header text-center">
+                    <img class="card-img-top" src="./assets/json/slides/default1.png" alt="Default">
+                  </div>
+                  
+                  <div class="card-block text-center p-4">
+                    <div class="card-title">Arrivae default</div>
+                    <a class="btn btn-pink pl-5 pr-5" data-dismiss="modal" aria-label="Close" (click)="addAfterCanvas('default');">Choose</a>
+                  </div>
+                </div>
+  
+                <div class="card canvas-card">
+                  <div class="card-ss-header text-center">
+                    <img class="card-img-top" src="./assets/json/slides/moodboard1.png" alt="MoodBoard">
+                  </div>
+                  
+                  <div class="card-block text-center p-4">
+                    <div class="card-title">MoodBoard</div>
+                    <a class="btn btn-pink pl-5 pr-5" data-dismiss="modal" aria-label="Close" (click)="addAfterCanvas('moodboard');">Choose</a>
+                  </div>
+                </div>
+  
+                <div class="card canvas-card">
+                  <div class="card-ss-header text-center">
+                    <img class="card-img-top" src="./assets/json/slides/spaces.png" alt="Introduction">
+                  </div>
+                  
+                  <div class="card-block text-center p-4">
+                    <div class="card-title">Spaces</div>
+                    <a class="btn btn-pink pl-5 pr-5" data-dismiss="modal" aria-label="Close" (click)="addAfterCanvas('spaces');">Choose</a>
+                  </div>
+                </div>
+              </div>
+              <div class="card-deck" style="width: 70%;margin: 0 auto;float: none;margin-bottom: 2rem;">
+  
+               <!--  <div class="card canvas-card">
+                  <img class="card-img-top" src="./assets/json/slides/looks.png" alt="Looks">
+                  <div class="card-block text-center p-4">
+                    <div class="card-title">Looks</div>
+                    <a class="btn btn-pink pl-5 pr-5" data-dismiss="modal" aria-label="Close" (click)="addAfterCanvas('looks');">Choose</a>
+                  </div>
+                </div> -->
+  
+                <div class="card canvas-card">
+                  <div class="card-ss-header text-center">
+                    <img class="card-img-top" src="./assets/json/slides/elements.png" alt="Elements">
+                  </div>
+                  
+                  <div class="card-block text-center p-4">
+                    <div class="card-title">Elements</div>
+                    <a class="btn btn-pink pl-5 pr-5" data-dismiss="modal" aria-label="Close" (click)="addAfterCanvas('elements');">Choose</a>
+                  </div>
+                </div>
+  
+                <div class="card canvas-card">
+                  <div class="card-ss-header text-center">
+                    <img class="card-img-top" src="./assets/json/slides/floorplan1.png" alt="Floorplan">
+                  </div>
+                  
+                  <div class="card-block text-center p-4">
+                    <div class="card-title">FloorPlan</div>
+                    <a class="btn btn-pink pl-5 pr-5" data-dismiss="modal" aria-label="Close" (click)="addAfterCanvas('floorplan');">Choose</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+<div class="modal fade" id="addProductModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="ui-notification" *ngIf="notificationAlert">
+    <span id="notificationMessageText">{{product_notify_message}}</span>
+    <a class="close linknotification" (click)="notificationAlert=false">×</a>
+  </div>
+  <div class="modal-dialog my-2 mx-2" role="document">
+    <div class="modal-content" id="allproductsRow">
+      <div class="modal-header">
+        <div class="container-fluid">
+          <div class="row justify-content-center">
+            <div class="col-5">
+              <div class="ss-searchbox">
+                <i class="fa fa-search"></i>
+                <input class="form-control" type="text" placeholder="Type product name to search..." #search (keyup)="0">
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <span class="rk-textColor">Choose from :</span>
+              <select class="form-control selectCatalogue ml-2" (change)="setProductSource($event.target.value)">
+                <option value="catalogue" [selected]="product_source=='catalogue' ">Catalogue</option>
+                <option value="project" [selected]="product_source=='project' ">This Project</option>
+              </select>
+              <i class="downArrow fa fa-angle-down"></i>
+            </div>
+          </div>
+        </div>
+        <!-- <button type="button" class="close addProductModalClose" data-dismiss="modal" aria-label="Close" (click)="closeModal()">
+            <span aria-hidden="true">&times;</span>
+        </button> -->
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeModal()">
+            <span aria-hidden="true"><img src="../../../assets/img/cross-out.svg" style="width:15px;"></span>
+        </button>
+      </div>
+      <div class="modal-body pt-0">
+        <div class="row" *ngIf="product_source=='catalogue' ">
+          <div class="col-md-2">
+            <div class="mx-2">
+              <div class="mb-3">
+                <h6 class="rk-textColor py-2" style="border-bottom: 1px solid lightgray;">By Section<span class="pull-right">-</span></h6>
+                <div class="aa-text">
+                  <input type="radio" name="section" class="mr-1" value="all"  (click)="getCatalogueProducts('all','all')"> <span class="sideOption">All</span><span class="pull-right">{{totalProductCountForAll}}</span>
+                  <br>
+                </div>
+                <div class="aa-text" *ngFor="let data of sectionsList">
+                  <input type="radio" name="section" class="mr-1" value="{{data.id}}"  (click)="getCatalogueProducts(data.name,data.id)"> <span class="sideOption">{{data.name}}</span><span class="pull-right">{{data.count}}</span>
+                  <br>
+                </div>
+              </div>
+              <div class="mb-3"  *ngIf="products_catalogue && subsections && subsections.length>0">
+                <h6 class="rk-textColor py-2" style="border-bottom: 1px solid lightgray;">By Category<span class="pull-right">-</span></h6>
+                <div class="aa-text" *ngFor="let subsec of subsections">
+                  <input type="radio" name="category" class="mr-1" value="{{subsec.id}}" (click)="getCatalogueSubsectionProducts(subsec.id,subsec.name)"> <span class="sideOption" >{{subsec.name}}</span><span class="pull-right">{{subsec.count}}</span>
+                  <br>
+                </div>
+              </div>
+              <div class="mb-3" *ngIf="products_catalogue && product_configurations && product_configurations.length>0">
+                <h6 class="rk-textColor py-2" style="border-bottom: 1px solid lightgray;">By Configurations<span class="pull-right">-</span></h6>
+                <div class="aa-text" *ngFor="let config_prod of product_configurations">
+                  <input type="radio" name="configuration" class="mr-1" value="{{config_prod.id}}" (click)="getCatalogueConfigurationProducts(config_prod.id,config_prod.name,products_catalogue.section.id)"> <span class="sideOption" >{{config_prod.name}}</span><span class="pull-right">{{config_prod.count}}</span>
+                  <br>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-10 bgColor">
+            <div class="row justify-content-center">
+              <div class="col-11">
+                <div class="row" *ngIf="products_catalogue && products_arr.length>0; else no_product">
+                  <div *ngIf="(products_arr | category: search.value).length == 0" class="col-md-12 text-center">
+                    <h5>No Product</h5>
+                  </div>
+                  <div class="col-sm-3" *ngFor="let product of products_arr | category: search.value | paginate: { itemsPerPage: per_page, currentPage: current_page, totalItems: total_page  };">
+                    <div class="card mb-5">
+                      <div class="card-ss-header text-center">
+                        <img class="card-img-top" src="{{product.image_urls[0]}}" alt="No Image">
+                      </div>
+                      <div class="card-body">
+                        <h6 class="card-title textColor1 rk-textColor">{{product.name}}</h6>
+                        <p class="card-text textColor2">Color : {{product.color}}</p>
+                        <p class="textColor2">Price : &#8377; {{product.price}}</p>
+                      </div>
+                      <button class="btn btn-block button" (click)="viewmoreProductDetails(product.id,selectedsectionId)">View More</button>
+                    </div>
+                  </div>
+                  
+                </div>
+                <div class="text-center" *ngIf="products_arr && products_arr.length >0">
+                    <pagination-controls autoHide="true" (pageChange)="current_page = getCatalogueProducts('all', 'all', $event)"></pagination-controls>
+                </div>
+                <ng-template #no_product></ng-template>
+                <div class="row" *ngIf="products_catalogue && products_arr.length==0 ">
+                  <p class="text-center">No product available</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row justify-content-center" *ngIf="product_source=='project' ">
+          <div class="col-md-10 mt-5">
+            <div class="row" *ngIf="products_catalogue && products_catalogue.products.length>0; else no_product">
+              <div *ngIf="(products_catalogue.products | category: search.value).length == 0" class="text-center col-md-12 mb-3">
+                   <h5> No Product</h5>
+              </div>
+              <div class="col-sm-3" *ngFor="let product of products_catalogue.products | category: search.value">
+                <div class="card mb-5">
+                  <div class="card-ss-header text-center">
+                    <img class="card-img-top" src="{{product.image_urls[0]}}" alt="No Image">
+                  </div>
+                  
+                  <div class="card-body">
+                    <h6 class="card-title textColor1 rk-textColor">{{product.name}}</h6>
+                    <p class="card-text textColor2">Color : {{product.color}}</p>
+                    <p>Price : &#8377; {{product.price}}</p>
+                  </div>
+                  <button class="btn btn-block button" (click)="viewmoreProductDetails(product.id,product.section_id)">View More</button>
+                </div>
+              </div>
+            </div>
+            <ng-template #no_product><div class="text-center">No product available</div></ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-dialog my-1 mx-2" role="document">
+    <div class="modal-content modal-change" id="viewproductRow" style="display: 'none'!important">
+      <div class="modal-header" *ngIf="product_details">
+          <div class="col-sm-9">
+            <a (click)="backToProducts()" class="addCursor" style="color: #1caede;"><i class="fa fa-arrow-left mr-2"></i>Back to products</a>
+          </div>
+          <div class="col-sm-2 pull-right">
+            <button type="button" class="close addProductModalClose" data-dismiss="modal" aria-label="Close" (click)="closeModal()">
+              <span aria-hidden="true"><img src="../../../assets/img/cross-out.svg" style="width:15px;"></span>
+            </button>
+          </div>
+      </div>
+      <div class="modal-body" *ngIf="product_details">
+        <div class="row justify-content-center">
+          <div class="col-11">
+            <div class="row">
+              <div class="col-md-6 cl-chng"> 
+                <div class="row">
+                <div class="col-md-8">
+                  <div class="mainDiv">
+                    <img class="addCursor mb-2 zoom" src="{{product_details.image_urls[0]}}" width="100%" height="400px;">
+                  </div>
+                </div>  
+              </div>
+            </div>  
+            <div class="col-md-6 cl-chngs" *ngIf="product_details">
+              <div class="row infos-change">
+                <div class="col-12">
+                    <div class="text-chng">
+                      {{ product_details.name }}
+                    </div>
+                  <div class="row">
+                    <div class="col-md-6 price-chng">
+                      Rs. {{ product_details.sale_price }}
+                    </div>
+                    <div class=" col-md-6 sku-chng">
+                      SKU Code : {{product_details.unique_sku}}
+                    </div>
+                  </div>
+                  <hr>
+                </div>
+              </div>
+              <div class="row p-0 img-chng">
+                <div class="col-md-3 mt-4 " *ngFor="let variation of product_variations" (click)="showVariationDetails(variation)">
+                  <div class="card" style="width: 5.5rem;">
+                    <div class="card-body  body-chng">
+                      <img src="{{variation.image_urls[0]}}" height="50px" width="50px" (click)="getImgPolaroidProduct($event, product_details.id); addProductToBoqs(product_details);" id="variation_{{product_details.id}}">
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+              <br>
+              <form [formGroup]="modalQuantityandProductSelectionForm" class="col-10 productDetailsSpan">
+                <label>Quantity : </label>
+                <input class="form-control ml-3" type="number" name="productQty" style="width: 30%; display: inline-block;" formControlName="productQty" min="1" [value]="1" >
+                <label>Space : </label>
+                <select class="form-control ml-3" name="productSpace" style="width: 30%; display: inline-block;" formControlName="productSpace">
+                  <option value="Master Bedroom" [attr.selected]= "true" >Master Bedroom</option>
+                  <option value="Kids Room">Kids Room</option>
+                  <option value="Guest Room">Guest Room</option>
+                  <option value="Living">Living</option>
+                  <option value="Kitchen">Kitchen</option>
+                  <option value="Foyer">Foyer</option>
+                  <option value="Dining Area">Dining Area</option>
+                  <option value="Balcony">Balcony</option>
+                  <option value="Attic">Attic</option>
+                  <option value="Basement">Basement</option>
+                  <option value="Bathroom">Bathroom</option>
+                  <option value="Garage">Garage</option>
+                  <option value="Hallway">Hallway</option>
+                  <option value="Library">Library</option>
+                  <option value="Loft">Loft</option>
+                  <option value="Nook">Nook</option>
+                  <option value="Pantry">Pantry</option>
+                  <option value="Porch">Porch</option>
+                  <option value="Office">Office</option>
+                  <option value="Other">Other</option>
+                </select>
+                <button class="interalBtnColor skuBtn addCursor mt-2" type="submit" (click)="getImgPolaroidProduct('', product_details.id); addProductToBoqs(product_details,modalQuantityandProductSelectionForm.value); ">Add Product</button>
+              </form>
+            </div>
+          </div>   
+          <div class="row mt-5">
+            <div class="col-md-12 details-info">
+              <p class="marg-chng">Items Details</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <div class="row">
+                <div class="col-md-12 details-infos">
+                  <div class="text-infos">
+                    Product Information
+                  </div>
+                  <hr style="border-top: 2px dashed #a2a0a2;">
+                  <div class="row">
+                    <div class="col-md-4">
+                      <ul class="font-chng">
+                        <li class="mb-2">Color: {{ product_details.color}}</li>
+                        <li class="mb-2">Configuration: {{ product_details.product_config}}</li>
+                        <li>Measurement Unit: {{ product_details.measurement_unit}}</li>
+                      </ul>
+                    </div>
+                    <div class="col-md-4">
+                      <ul class="font-chng">
+                        <li class="mb-2">Lead Time: {{ product_details.lead_time}}</li>
+                        <li class="mb-2">Finish: {{ product_details.finish}}</li>
+                        <li>Dimension Remark: {{ product_details.dimension_remark}}</li>
+                      </ul>
+                    </div>
+                    <div class="col-md-4">
+                      <ul class="font-chng">
+                        <li class="mb-2">Dimension(mm): {{ product_details.width}}*{{ product_details.height}}*{{ product_details.length}}</li>
+                        <li class="mb-2">Material: {{ product_details.material}}</li>
+                        <li class="mb-2">Remarks: {{ product_details.remark}}</li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-12">
+                      <ul class="font-chng" style="margin-top: 0px;">
+                        <li>Warranty: {{ product_details.warranty}}</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div> 
+          </div>
+        </div>  
+      </div>
+    </div>
+  </div> 
+</div>
+</div>
+
+<div class="modal fade" id="linkedProductModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document" style="max-width: 80%;">
+    <div class="modal-content">
+      <div class="modal-header" style="border-bottom: 1px solid #e4e4e4;">
+        <h6 class="modal-title" id="exampleModalLabel">Linked Products </h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+
+
+            <div class="row">
+              <div *ngIf="ppt_products.length <= 0" class="col-md-12 text-center">
+                <h5>No Product</h5>
+              </div>
+              <div class="col-sm-3" *ngFor="let product of ppt_products">
+                <div class="card mb-5">
+                  <div class="card-ss-header text-center">
+                    <img class="card-img-top" src="{{product.product_photo}}" alt="No Image">
+                  </div>
+                  <div class="card-body">
+                    <h6 class="card-title textColor1 rk-textColor">{{product.product_name}}</h6>
+                    <p class="card-text textColor2">Space : {{product.space}}</p>
+                    <p class="textColor2">Quantity : {{product.quantity}}</p>
+                  </div>
+                  <button class="btn btn-block button" (click)="deleteProducts(product.id)">Delete</button>
+                </div>
+              </div>
+            </div>
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

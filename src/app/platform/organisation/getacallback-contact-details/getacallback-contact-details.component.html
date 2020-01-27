@@ -1,0 +1,46 @@
+<div class="row title">
+  <h3>Dashboard / <span>Contact Leads</span></h3>
+</div>
+<div class="row body_height justify-content-center">
+  <div class="col-12" *ngIf="erroralert">
+    <div class="alert-box grid-100" *ngIf="errorMessage">
+      <div class="alert alert-danger mt-3 text-center">
+        <a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a>
+        {{errorMessage}}
+      </div>
+    </div>
+  </div>
+  <div class="col-12" *ngIf="successalert">
+    <div class="alert-box grid-100" *ngIf="successMessage">
+      <div class="alert alert-success mt-3 text-center">
+        <a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+        {{successMessage}}
+      </div>
+    </div>
+  </div>
+  <div class="col-12 table-responsive p-0">
+    <table class="table table-hover" *ngIf="contactLeads && contactLeads?.length>0">
+      <thead>
+        <tr>
+          <th>Contact No.</th>
+          <th class="addCursor" (click)="sort('created_at')">Created Date <i class="fa ml-2" [ngClass]="{'fa-sort-asc': (column == 'created_at' && !isDesc), 'fa-sort-desc': (column == 'created_at' && isDesc) }" aria-hidden="true"> </i></th>
+          <th>Source</th>
+          <th class="text-center">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let lead of contactLeads | sortDatewise: {property: column, direction: direction};">
+          <td class="">{{lead.phone_number}}</td>
+          <td class="capitalize">{{lead.created_at | date: 'dd/MM/yyyy'}}</td>
+          <td>Get A Callback From Us</td>
+          <td class="text-center"><a (click)="deleteContact(lead.id)" class="addCursor"><i class="fa fa-trash" aria-hidden="true"></i></a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+
+
+

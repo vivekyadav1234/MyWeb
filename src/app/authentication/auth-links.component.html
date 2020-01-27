@@ -1,0 +1,7 @@
+<button type="button" class="btn c-btn c-btn-primary" [routerLink]="['/login']" routerLinkActive = "active" *ngIf="isLoggedOut()">Login</button>
+<!-- <button type="button" class="btn c-btn c-btn-primary" [routerLink]="['/signup']" routerLinkActive = "active" *ngIf="isLoggedOut()">Sign Up</button> -->
+<button type="button" class="btn c-btn c-btn-primary" [routerLink]="['/leadSignUp']" routerLinkActive = "active" *ngIf="isLoggedOut()">Sign Up</button>
+<button type="button" class="btn c-btn c-btn-primary" [routerLink]="['/logout']" (click) = "logOut()" *ngIf="isLoggedIn()">Logout</button>
+
+<button type="button" class="btn c-btn c-btn-primary" [routerLink]="['/signupdesigner']" routerLinkActive="active" *ngIf="isLoggedOut()">Designer Sign Up</button>
+<button type="button" class="btn c-btn c-btn-primary" [routerLink]="['/logindesigner']" routerLinkActive="active" *ngIf="isLoggedOut()">Designer Login</button>

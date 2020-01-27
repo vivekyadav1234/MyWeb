@@ -1,0 +1,401 @@
+<div id="check">
+  <div class="rk-ui-notification" *ngIf="successalert">
+  <span id="notificationMessageText">{{successMessage}}</span>
+  <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+<div class="rk-ui-notification err" *ngIf="erroralert"  style="z-index: 10000;">
+  <span id="notificationMessageText">{{errorMessage}}</span>
+  <a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+<div class="row ss-top-menu">
+  <div class="col-sm-6">
+    <span class="ss-text-dark " style="vertical-align: -webkit-baseline-middle;">Dashboard</span>
+    <span style="vertical-align: -webkit-baseline-middle;"> <i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;">Training Material</span>
+  </div>
+</div>
+<div class="row pt-4 pb-4 ml-3 mr-3" style="background-color: #fff;" *ngIf="role == 'business_head'">
+  <div class="col-4">
+    <button class="btn  bt-boq pull-right" data-target="#categoryModal" data-toggle="modal">Create Category</button>
+  </div>
+  <div class="col-4">
+    <button class="btn  bt-boq pull-right" data-target="#SubCategory" data-toggle="modal" (click) = "getCategory();">Create SubCategory</button>
+  </div>
+  <div class="col-4">
+    <button class="btn  bt-boq pull-right" data-target="#uploadMaterial" data-toggle="modal" (click) = "getCategory();">Upload Training
+      Material</button>
+  </div>
+</div>
+<div class="row pt-4 pb-4 ml-3 mr-3 bg-white">
+  <div class="col-12" *ngFor="let item of category_list">
+      <div>
+        <div class="card card-shadow mt-3">
+          <div class="card-header card-header-link p-0" >
+            <h2 class="mb-0 panel-title px-2">
+              <button class="btn btn-link capitalize" type="button" (click)="toggleRow(item.id)">
+                {{item.category_name}}<a class="ml-1" data-target="#editCategoryModal" data-toggle="modal"><i class="fa fa-pencil-square-o" (click) = "setCategoryId(item.id,item.category_name)" *ngIf="role == 'business_head'"></i></a>
+              </button>
+              <button class="btn btn-link pull-right " type="button" (click)="confirmAndDelete(item.id)">
+              <i data-toggle="tooltip" title="Delete" data-placement="top" class="fa fa-trash  cursor-pointer ml-2" aria-hidden="true" *ngIf="role == 'business_head'"></i>
+              </button>
+            </h2>
+          </div>
+          <div class="hide-div" *ngIf="display_row == item.id">
+            <div class="card-body card-body-link" *ngIf='item.sub_categories.length > 0'>
+              <div class="row" *ngFor="let sub of item.sub_categories">
+                <div class="col-md-12 bg-span rounded shadow p-2">
+                  <span class="text-sub capitalize">{{sub.sub_category_name}}
+                  </span>
+                  <span *ngIf="role == 'business_head'" class="pull-right"><i data-toggle="tooltip" title="Delete" data-placement="top" class="fa fa-trash cursor-pointer mr-2" aria-hidden="true" (click)="confirmAndDelete(sub.id,item.id)"></i>
+                    <a class="ml-1" data-target="#editsubCategory" data-toggle="modal" *ngIf="role == 'business_head'"><i class="fa fa-pencil-square-o" (click) = "setsubCategoryId(sub.id,item.id,sub.sub_category_name,item.category_name)"></i></a>
+                  </span>
+                  
+                </div>
+
+
+                  <ng-container *ngFor="let mat of sub.training_materials">
+                    <div class="col-md-4 mt-2"  *ngIf="SplitString(mat.file_name) == 'mp4' && sub.training_materials.length > 0">
+                      
+                      <div class="card mb-md-5 mb-sm-3 mb-3 border-0" >
+                        
+                        <div class="videoDiv d-flex align-items-center justify-content-center">
+                          <img id="img_{{ mat.id }}" src="../../assets/img/play-btn.png" width="40px">
+                          <div class="video" (click)="playVideo(mat.id)">
+                            <video id="{{mat.id}}" controlsList="nodownload">
+                              <source src="{{mat.file_url}}#t=1" type="video/mp4" />
+                            </video>
+                          </div>
+                        </div>
+                        <div class="card-body Cbody">
+                          <span *ngIf="role == 'business_head'"><button class="btn btn-danger" (click)="confirmAndDeleteContent(mat.id)">Delete</button></span>
+                        </div>
+                      </div>
+                 
+                      
+                      
+                    </div>
+                    <div class="col-md-4 mt-2" *ngIf="SplitString(mat.file_name) == 'pdf'">
+                      <div class="card mb-md-5 mb-sm-3 mb-3 border-0">
+                        <iframe [src]="sanitize(mat.file_url)" 
+                      
+                          style="height:242px;pointer-events: none !important;" frameborder="0" id='filecontainer'>
+                            
+                          </iframe>
+                          
+                          <button class="btn btn sm btn-pink btn-pdf" (click)="showModal(mat.file_url,mat.total_page_count)">Preview</button>
+
+                        <div class="card-body Cbody">
+                          <span *ngIf="role == 'business_head'"><button class="btn btn-danger cursor-pointer" (click)="confirmAndDeleteContent(mat.id)">Delete</button></span>
+                        </div>  
+                   
+                      </div>
+                        
+                    </div>
+                  </ng-container>  
+                  
+                  <ng-container *ngIf='sub.training_materials.length == 0'>
+                    <div class="col-md-12 text-center mt-5">
+                      <p class="text-muted">No Training Material Uploaded Yet...</p>
+                      
+                    </div>
+                  </ng-container>
+              </div>
+
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <ng-container *ngIf='item.sub_categories.length == 0'>
+                  <div class="col-md-12 text-center mt-5">
+                    <p class="text-muted">No Sub Category Added Yet...</p>
+                    
+                  </div>
+                 </ng-container>
+                
+              </div>
+              
+            </div>
+
+          </div>
+        </div>  
+      </div>    
+  </div>
+</div>
+
+
+<!--Modals start-->
+<!-- The Modal -->
+<div class="modal" id="categoryModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Create Category</h4>
+        <button type="button" class="close" data-dismiss="modal" (click) = "close()">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body modal-body-change">
+        <div class="row">
+          <div class="col-12" style="padding: 0">
+            <div class="form">
+              <form [formGroup]="categoryForm">
+                <div class="row-change">
+                  <div class="check">
+                    <div class="row">
+                      <div class="col-md-12 mt-3">
+                        <label class="name">Catergory Name <span class="text-danger">*</span></label>
+                        <input type="text" id='cat' formControlName="upload_name" class="form-control"
+                          placeholder="Enter Category Name">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-lg-12 mb-3 text-center">
+                    <button class="btn btn-pink  text-center mt-4" (click)="createCategory()" [disabled] = "!categoryForm.valid">Create</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- The Modal -->
+<div class="modal" id="SubCategory">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Create Sub Category</h4>
+        <button type="button" class="close" data-dismiss="modal" (click) = "close()">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body modal-body-change">
+        <div class="row">
+          <div class="col-12" style="padding: 0">
+            <div class="form">              
+              <form [formGroup]="subcategoryForm">
+                <div class="row-change">
+                  <div class="check">
+                    <div class="row justify-content-center">
+                      <div class="col-md-6 mt-3">
+                        <label class="name">Select Category Name<span class="text-danger">*</span></label>
+                        <ng-select formControlName="selectCategory_name" placeholder="Select Category">
+                          <!-- <ng-option value="" selected>Select Category</ng-option> -->
+                          <ng-option *ngFor="let category of categoriesList" value={{category.id}}>
+                            {{category.category_name}}
+                          </ng-option>
+                        </ng-select>
+                      </div>
+                      <div class="col-md-6 mt-3">
+                        <label class="name">SubCatergory Name <span class="text-danger">*</span></label>
+                        <input type="text" id="subCat"  class="form-control"
+                          placeholder="Enter SubCategory Name" formControlName="subcategory_name">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12 mb-3 mt-4 text-center">
+                      <button class="btn btn-pink  text-center" (click)="createSubCategory()" [disabled]="!subcategoryForm.valid">Create</button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- The Modal -->
+<!-- The Modal -->
+<div class="modal" id="uploadMaterial">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Upload Training Material</h4>
+        <button type="button" class="close" data-dismiss="modal" (click) = "close()">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body modal-body-change">
+        <div class="row">
+          <div class="col-12" style="padding: 0">
+            <div class="form">
+              <form [formGroup]="materialUploadForm">
+                <div class="row-change">
+                  <div class="check">
+                    <div class="row">
+                      <div class="col-md-6 mt-3">
+                        <label class="name">Select Category Name<span class="text-danger">*</span></label>
+                        <ng-select (change)="onCategorySelect($event)" formControlName="selectCategory_name" placeholder="Select Category">
+                          <!-- <ng-option value="" selected>Select Category</ng-option> -->
+                          <ng-option *ngFor="let category of categoriesList" value={{category.id}}>
+                            {{category.category_name}}
+                          </ng-option>
+                        </ng-select>
+                      </div>
+                      <div class="col-md-6 mt-3">
+                        <label class="name">Select Sub Category Name<span class="text-danger">*</span></label>
+                        <ng-select (change)="onsubCategorySelect($event)" formControlName="selectSubCategory_name" placeholder="Select Sub Category">
+                          <!-- <ng-option value="" selected>Select Sub Category</ng-option> -->
+                          <ng-option *ngFor="let subcategory of subcategories" value={{subcategory.id}}>
+                            {{subcategory.category_name}}
+                          </ng-option>
+                        </ng-select>
+                      </div>
+                      <div class="col-md-6 mt-3">
+                        <label class="core_material">Upload<span class="text-danger">*</span></label>
+                        <input type="file" id='files' class="form-control"
+                          (change)="UploadDD($event)" multiple formControlName="selectupload_file">
+                      </div>
+                      <div class="row w-100">
+                        <div class="col-md-12 mb-3 mt-4 text-center">
+                          <button class="btn btn-pink  text-center" (click)="upload()" [disabled] = "!materialUploadForm.valid">Upload</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+  
+</div>
+
+
+
+<!--For edit Category-->
+<!-- The Modal -->
+<div class="modal" id="editCategoryModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Edit Category</h4>
+        <button type="button" class="close" data-dismiss="modal" (click) = "close()">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body modal-body-change">
+        <div class="row">
+          <div class="col-12" style="padding: 0">
+            <div class="form">
+              <form [formGroup]="categoryForm">
+                <div class="row-change">
+                  <div class="check">
+                    <div class="row">
+                      <div class="col-md-6 mt-3">
+                        <label class="name">Catergory Name <span class="text-danger">*</span></label>
+                        <input type="text" id='cat' value="{{catname}}" formControlName="upload_name" class="form-control"
+                          placeholder="Enter Category Name">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-lg-12 mb-3 text-center">
+                    <button class="btn btn-pink  text-center mt-4" (click)="editCreateCategory()" [disabled] = "!categoryForm.valid">Update</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- The Modal -->
+<div class="modal" id="editsubCategory">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Edit Sub Category</h4>
+        <button type="button" class="close" data-dismiss="modal" (click) = "close()">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body modal-body-change">
+        <div class="row">
+          <div class="col-12" style="padding: 0">
+            <div class="form">              
+              <form [formGroup]="subcategoryForm">
+                <div class="row-change">
+                  <div class="check">
+                    <div class="row justify-content-center">
+                      <div class="col-md-6 mt-3">
+                        <label class="name">Category Name<span class="text-danger">*</span></label>
+                        <input type="text" value="{{categoryname}}" readonly>
+                      </div>
+                      <div class="col-md-6 mt-3">
+                        <label class="name">SubCatergory Name <span class="text-danger">*</span></label>
+                        <input type="text" id="subCat" value="{{subcategoryname}}"  class="form-control"
+                          placeholder="Enter SubCategory Name" formControlName="subcategory_name">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12 mb-3 mt-4 text-center">
+                      <button class="btn btn-pink  text-center" (click)="editsubCategory()">Edit</button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="poPreviewModal">
+    <div class="modal-dialog modal-lg" style="max-width:890px">
+      <div class="modal-content">
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">Preview PO</h4>
+          <button type="button" class="close" data-dismiss="modal" >&times;</button>
+        </div>
+        <div class="modal-body row" id="hide">
+          
+            <div class="col-md-1 col-lg-1 col-sm-1" style="margin:auto;text-align: right;">
+              <i *ngIf="showPdfLeft" (click)="prevPdfPage()" class="fa fa-chevron-left pdf-page-change"></i>
+            </div>
+            <div class="col-md-10 col-lg-10 col-sm-10" id="frameDiv">
+             <iframe [src]="updatedUrl" id="frameID"  alt="pdf" style="pointer-events:none; height: 585px;width:100%">
+             </iframe>
+            </div>
+            <div class="col-md-1 col-lg-1 col-sm-1" style="margin:auto">
+              <i *ngIf="showPdfRight" (click)="nextPdfPage()" class="fa fa-chevron-right pdf-page-change"></i>
+            </div>
+
+        </div>
+      </div>
+
+</div>
+</div>

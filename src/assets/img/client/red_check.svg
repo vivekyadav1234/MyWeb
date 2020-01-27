@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48 (47235) - http://www.bohemiancoding.com/sketch -->
+    <title>BOQ Check red</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Client-Profile-Edit" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-280.000000, -274.000000)">
+        <g id="BOQ-Check-red" transform="translate(281.000000, 275.000000)" stroke="#8F0021">
+            <circle id="Oval-3-Copy" stroke-width="2" opacity="0.8" cx="15" cy="15" r="15"></circle>
+            <g id="Check-icon" transform="translate(7.000000, 10.000000)" stroke-linecap="square" stroke-width="2.5">
+                <path d="M15.4898816,0.790251784 L4.66666667,10.8137085" id="Line-4"></path>
+                <path d="M0,5 L4.5213079,10.6568542" id="Line-4-Copy"></path>
+            </g>
+        </g>
+    </g>
+</svg>

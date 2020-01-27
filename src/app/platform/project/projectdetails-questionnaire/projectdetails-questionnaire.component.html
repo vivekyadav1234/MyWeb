@@ -1,0 +1,904 @@
+<div class="row title">
+	<h3>Questionnaire Form</h3>
+</div>
+
+<div class="marginTop row">
+  <div class="col-12" *ngIf="erroralert">
+    <div class="alert-box grid-100" *ngIf="errorMessage">
+      <div class="alert alert-danger mt-3 text-center">
+        <a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a>
+        {{errorMessage}}
+      </div>
+    </div>
+  </div>
+  <div class="col-12" *ngIf="successalert">
+    <div class="alert-box grid-100" *ngIf="successMessage">
+      <div class="alert alert-success mt-3 text-center">
+        <a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+        {{successMessage}}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="formButton" align="left">
+	<button  (click)="product()" class="upload0 actBtn">Basic Info</button>
+	<button (click)="servicesBtn()" class="upload1">LifeStyle</button>
+</div>
+
+<hr>
+
+<div class="addClass">
+	<form (ngSubmit)="onSubmit(form.value)" [formGroup]="form">
+		<div  *ngFor="let obj of result" >
+
+			<div class="row random">
+				<div class="col">
+					<label><strong>Name:</strong></label>
+					<input class="form-control" formControlName="customer_name" type="text" name="customer_name" placeholder="Name">
+					<div class="alert alert-danger" *ngIf="!form.controls['customer_name'].valid && form.controls['customer_name'].touched">
+					    Name is required
+					</div>
+				</div>
+				<div class="col">
+					<label><strong>Mobile Number:</strong></label>
+					<input class="form-control" formControlName="mobile_number" type="number" name="mobile_number" placeholder="Mobile Number">
+
+					<div class="alert alert-danger" *ngIf="!form.controls['mobile_number'].valid && form.controls['mobile_number'].touched">
+			  	    Mobile number is required
+			  		</div>
+				</div>
+			</div>
+
+			<div class="row random">
+				<div class="col">
+					<label><strong>Alternate Mobile Number:</strong></label>
+					<input class="form-control" formControlName="alternate_mobile" type="number" name="alternate_mobile" placeholder="Alternate Number">
+				</div>
+				<div class="col">
+					<label><strong>Email:</strong></label>
+					<input class="form-control" formControlName="email" type="email" name="email" placeholder="abc@xyz.com">
+					<div class="alert alert-danger" *ngIf="!form.controls['email'].valid && form.controls['email'].touched">
+							 Enter valid email address
+				 	</div>
+				</div>
+			</div>
+
+			<div class="row random">
+				<div class="col">
+					<label><strong>Lead Id:</strong></label>
+					<input class="form-control" formControlName="lead_id" type="number" name="lead_id" placeholder="Lead Id">
+				</div>
+				<div class="col">
+					<label><strong>City Name:</strong></label>
+					<input class="form-control" formControlName="city" type="text" name="city" placeholder="e.g Ahmedabad">
+				</div>
+			</div>
+
+			<div class="row random">
+				<div class="col">
+					<label><strong>Budget:</strong></label>
+					<input class="form-control" formControlName="budget" type="number" name="budget" placeholder="e.g 10000 Rs">
+				</div>
+				<div class="col">
+					<label><strong>Preferred call from designer</strong></label>
+					<input class="form-control" formControlName="preferred_time_call_designer" type="date" name="preferred_time_call_designer" placeholder="When would you like to get a call from our Designer?">
+				</div>
+			</div>
+
+			<div class="row random">
+				<div class="col">
+					<label><strong>Site Visit:</strong></label>
+					<input class="form-control" formControlName="preferred_time_site_visit" type="date" name="preferred_time_site_visit" placeholder="When would you like to visit our Site?">
+				</div>
+				<div class="col">
+					<label><strong>Total Family Members:</strong></label>
+					<input class="form-control" formControlName="members_in_family" type="number" name="members_in_family" placeholder="Number of Family Members">
+				</div>
+			</div>
+
+			<div class="row random">
+				<div class="col">
+					<label><strong>Date of moving:</strong></label>
+					<input class="form-control" formControlName="tentative_date_moving" type="date" name="tentative_date_moving" placeholder="What is your tentative date of moving?">
+				</div>
+				<div class="col">
+					<label><strong>Occupation:</strong></label>
+					<input class="form-control" formControlName="occupation_of_customer" type="text" name="occupation_of_customer" placeholder="e.g Teacher">
+				</div>
+			</div>
+
+			<div class="maxl">
+				<span class="title1">Property Age: </span>
+  				<label class="radio inline">
+					<div *ngFor="let i of obj.property_age" class="radio inline">
+						<input type="radio" name="property_age" formControlName="property_age" value="{{i}}" checked>
+						<span>{{i}}</span>
+					</div>
+   				</label>
+			</div>
+
+			<div class="maxl">
+				<span class="title1">Property Usage: </span>
+				<label class="radio inline">
+					<div class="radio inline" *ngFor="let i of obj.property_usage">
+						<input type="radio" name="property_usage" formControlName="property_usage" value="{{i}}">
+						<span>{{i}}</span>
+					</div>
+				</label>
+			</div>
+
+			<div class="maxl">
+				<span class="title1">Property Type: </span>
+				<label class="radio inline">
+					<div class="radio inline" *ngFor="let i of obj.property_type">
+						<input type="radio" name="property_type" formControlName="property_type" value="{{i}}">
+						<span>{{i}}</span>
+					</div>
+				</label>
+			</div>
+
+			<div class="maxl">
+				<span class="title1">Number of Rooms: </span>
+				<label class="radio inline">
+					<div class="radio inline" *ngFor="let i of obj.number_of_rooms">
+						<input type="radio" name="number_of_rooms" formControlName="number_of_rooms" value="{{i}}">
+						<span>{{i}}</span>
+					</div>
+				</label>
+			</div>
+
+			<div class="maxl">
+				<span class="title1">Possession Status: </span>
+				<label class="radio inline">
+					<div class="radio inline" *ngFor="let i of obj.possession_status">
+						<input type="radio" name="possession_status" formControlName="possession_status" value="{{i}}">
+						<span>{{i}}</span>
+					</div>
+				</label>
+			</div>
+
+			<div class="maxl">
+				<span class="title1">Use Type: </span>
+				<label class="radio inline">
+					<div class="radio inline" *ngFor="let i of obj.use_type">
+						<input type="radio" name="use_type" formControlName="use_type" value={{i}}>
+						<span>{{i}}</span>
+					</div>
+				</label>
+			</div>
+
+			<div class="maxl">
+				<span class="title1">Requirement: </span>
+				<label class="radio inline">
+					<div class="radio inline" *ngFor="let i of obj.requirement">
+						<input type="radio" name="requirement" formControlName="requirement" value={{i}}>
+						<span>{{i}}</span>
+					</div>
+				</label>
+			</div>
+
+
+			<div class="submitBtn">
+				<input  type="submit" value="Submit" class="btn btn-md btn-dark">
+			</div>
+		</div>
+	</form>
+</div>
+
+
+
+<!-- Level -->
+<div class="addClass1 hideClass">
+<div  *ngFor="let obj of result" >
+	<form (ngSubmit)="onSubmit2(form1.value)" [formGroup]="form1">
+
+		<!-- <div class="row random">
+			<div class="col">
+				<input class="form-control" formControlName="servents_room" type="text" name="servents_room" placeholder="Servent Room !!">
+			</div>
+			<div class="col">
+				<input class="form-control" formControlName="utility_area" type="text" name="utility_area" placeholder="Utility Area !!">
+			</div>
+		</div>
+
+		<div class="form-group">
+			<input formControlName="library" type="text" class="form-control" id="formGroupExampleInput" name="library" placeholder="Library !!">
+  		</div> -->
+
+
+
+		<div class="maxl">
+				<span class="title1">Project Type: </span><br>
+			<label class="radio inline">
+				<div class="radio inline" *ngFor="let i of obj.project_type">
+					<input type="radio" name="project_type" formControlName="project_type" value={{i}}>
+						<span>{{i}}</span>
+				</div>
+			</label>
+		</div>
+
+		<div class="maxl">
+				<span class="title1">Scope of : </span><br>
+			<div *ngFor="let choice of obj.scope_of_work; let i=index ">
+			  <label>
+			    <input type="checkbox"  [value]="choice" (change)="onCheckChange($event,'scope_of_work')">
+			    {{choice}}
+			  </label>
+			</div>
+		</div>
+
+	<div id="accordion" role="tablist" >
+  		<div class="card">
+  			<a style="color: #fff;" data-toggle="collapse" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+			    <div class="card-header" role="tab" id="headingOne">
+			      <h5 class="mb-0">
+			          Kitchen
+			      </h5>
+			    </div>
+    		</a>
+
+    <div formGroupName="kitchen" id="collapseOne" class="collapse show" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion">
+      <div class="card-body">
+				<div class="maxl">
+						<span class="title1">Platform: </span><br>
+					<label class="radio inline">
+						<div class="radio inline" *ngFor="let i of obj.kitchen.platform">
+							<input type="radio" name="platform" formControlName="platform" value="{{i}}">
+								<span>{{i}}</span>
+						</div>
+					</label>
+				</div>
+
+				<div class="maxl">
+						<span class="title1">Shape of Kitchen: </span><br>
+					<label class="radio inline">
+						<div class="radio inline" *ngFor="let i of obj.kitchen.shape_of_kitchen">
+							<input type="radio" name="shape_of_kitchen" formControlName="shape_of_kitchen" value="{{i}}">
+								<span>{{i}}</span>
+						</div>
+					</label>
+				</div>
+
+				<div class="maxl">
+					<span class="title1">Type of Kitchen: </span><br>
+					<label class="radio inline">
+						<div class="radio inline" *ngFor="let i of obj.kitchen.type_of_kitchen">
+							<input type="radio" name="type_of_kitchen" formControlName="type_of_kitchen" value="{{i}}">
+								<span>{{i}}</span>
+						</div>
+					</label>
+				</div>
+
+				<div class="maxl">
+						<span class="title1">Furniture: </span><br>
+					<!-- <label class="radio inline">
+						<div class="radio inline" *ngFor="let i of obj.kitchen.furniture">
+							<input type="checkbox" name="furniture" formControlName="furniture" value="{{i}}">
+								<span>{{i}}</span>
+						</div>
+					</label> -->
+					<div *ngFor="let choice of obj.kitchen.furniture; let i=index ">
+					  <label>
+					    <input type="checkbox" [value]="choice" (change)="onCheckChange($event,'kitchen_furniture')">
+					    {{choice}}
+					  </label>
+					</div>
+				</div>
+
+				<div class="maxl">
+					<span class="title1">Services: </span><br>
+					<div *ngFor="let choice of obj.kitchen.services; let i=index ">
+					  <label>
+					    <input type="checkbox" [value]="choice" (change)="onCheckChange($event,'kitchen_services')">
+					    {{choice}}
+					  </label>
+					</div>
+				</div>
+
+				<div class="maxl">
+					<span class="title1">Appliances: </span><br>
+					<div *ngFor="let choice of obj.kitchen.appliances; let i=index ">
+					  <label>
+					    <input type="checkbox" [value]="choice" (change)="onCheckChange($event,'kitchen_appliances')">
+					    {{choice}}
+					  </label>
+					</div>
+				</div>
+
+				<div class="maxl">
+					<span class="title1">Appliances II: </span><br>
+					<div *ngFor="let choice of obj.kitchen.apliances_ii; let i=index ">
+					  <label>
+					    <input type="checkbox" [value]="choice" (change)="onCheckChange($event,'kitchen_apliances_ii')">
+					    {{choice}}
+					  </label>
+					</div>
+				</div>
+
+				<div class="maxl">
+						<span class="title1">Preffered Material: </span><br>
+					<label class="radio inline">
+						<div class="radio inline" *ngFor="let i of obj.kitchen.preferred_material">
+							<input type="radio" name="preferred_material" formControlName="preferred_material" value="{{i}}">
+								<span>{{i}}</span>
+						</div>
+					</label>
+				</div>
+
+				<div class="maxl">
+						<span class="title1">Preffered Finish: </span><br>
+					<label class="radio inline">
+						<div class="radio inline" *ngFor="let i of obj.kitchen.preferred_finish">
+							<input type="radio" name="preferred_finish" formControlName="preferred_finish" value="{{i}}">
+								<span>{{i}}</span>
+						</div>
+					</label>
+				</div>
+
+				<div class="maxl">
+						<span class="title1">Preffered Finish Material: </span><br>
+					<label class="radio inline">
+						<div class="radio inline" *ngFor="let i of obj.kitchen.preferred_finish_material">
+							<input type="radio" name="preferred_finish_material" formControlName="preferred_finish_material" value="{{i}}">
+								<span>{{i}}</span>
+						</div>
+					</label>
+				</div>
+
+				<div class="maxl">
+						<span class="title1">More used by: </span><br>
+					<label class="radio inline">
+						<div class="radio inline" *ngFor="let i of obj.kitchen.more_used_by">
+							<input type="radio" name="more_used_by" formControlName="more_used_by" value="{{i}}">
+								<span>{{i}}</span>
+						</div>
+					</label>
+				</div>
+
+				<div class="maxl">
+						<span class="title1">Other Requirements: </span><br>
+					<label class="radio inline">
+						<textarea rows="4" cols="70" type="text"  name="other_requirments" formControlName="other_requirments">
+						</textarea>
+					</label>
+				</div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+  	<a style="color: #fff;" class="collapsed" data-toggle="collapse" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+	    <div class="card-header" role="tab" id="headingTwo">
+	      <h5 class="mb-0">
+	          Master-Bed Room
+	      </h5>
+	    </div>
+    </a>
+    <div formGroupName="master_bedroom" id="collapseTwo" class="collapse" role="tabpanel" aria-labelledby="headingTwo" data-parent="#accordion">
+      <div class="card-body">
+
+				<div class="maxl">
+					<span class="title1">Furniture: </span><br>
+					<div *ngFor="let choice of obj.master_bedroom.furniture; let i=index ">
+					  <label>
+					    <input type="checkbox" [value]="choice" (change)="onCheckChange($event,'master_bedroom_furniture')">
+					    {{choice}}
+					  </label>
+					</div>
+
+					<!-- <label class="radio inline">
+						<div class="radio inline" *ngFor="let i of obj.master_bedroom.furniture">
+							<input type="checkbox" name="furniture" formControlName="furniture" value="{{i}}">
+								<span>{{i}}</span>
+						</div>
+					</label> -->
+				</div>
+
+				<div class="maxl">
+						<span class="title1">Type of Wardrobe: </span><br>
+					<label class="radio inline">
+						<div class="radio inline" *ngFor="let i of obj.master_bedroom.type_of_wardrobe">
+							<input type="radio" name="type_of_wardrobe" formControlName="type_of_wardrobe" value="{{i}}">
+								<span>{{i}}</span>
+						</div>
+					</label>
+				</div>
+
+				<div class="maxl">
+						<span class="title1">Type of Bed: </span><br>
+					<div *ngFor="let choice of obj.master_bedroom.type_of_bed; let i=index">
+						<label>
+						  <input type="checkbox" [value]="choice" (change)="onCheckChange($event,'master_bedroom_type_of_bed')">
+						  {{choice}}
+						</label>
+					</div>
+				</div>
+
+				<div class="maxl">
+						<span class="title1">Services: </span><br>
+					<div *ngFor="let choice of obj.master_bedroom.services; let i=index">
+					<!-- <label class="radio inline">
+
+							<input type="checkbox" name="services" formControlName="services" value="{{i}}">
+								<span>{{i}}</span>
+
+					</label> -->
+						<label>
+						  <input type="checkbox" [value]="choice" (change)="onCheckChange($event,'master_bedroom_services')">
+						  {{choice}}
+						</label>
+					</div>
+				</div>
+
+				<div class="maxl">
+						<span class="title1">Preffered Material: </span><br>
+					<label class="radio inline">
+						<div class="radio inline" *ngFor="let i of obj.master_bedroom.preferred_material">
+							<input type="radio" name="preferred_material" formControlName="preferred_material" value="{{i}}">
+								<span>{{i}}</span>
+						</div>
+					</label>
+				</div>
+
+				<div class="maxl">
+						<span class="title1">Preffered Finish: </span><br>
+					<label class="radio inline">
+						<div class="radio inline" *ngFor="let i of obj.master_bedroom.preferred_finish">
+							<input type="radio" name="preferred_finish" formControlName="preferred_finish" value="{{i}}">
+								<span>{{i}}</span>
+						</div>
+					</label>
+				</div>
+
+				<div class="maxl">
+						<span class="title1">Preffered Finish Material: </span><br>
+					<label class="radio inline">
+						<div class="radio inline" *ngFor="let i of obj.master_bedroom.preferred_finish_material">
+							<input type="radio" name="preferred_finish_material" formControlName="preferred_finish_material" value="{{i}}">
+								<span>{{i}}</span>
+						</div>
+					</label>
+				</div>
+
+				<div class="maxl">
+						<span class="title1">Other Requirements: </span><br>
+					<label class="radio inline">
+						<textarea rows="4" cols="70" type="text" name="other_requirments" formControlName="other_requirments">
+						</textarea>
+					</label>
+				</div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="card">
+	<a  style="color: #fff;"class="collapsed" data-toggle="collapse" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+	    <div class="card-header" role="tab" id="headingThree">
+	      <h5 class="mb-0">
+	          Kids Bedroom
+	      </h5>
+	    </div>
+    </a>
+    <div formGroupName="kids_bedroom" id="collapseThree" class="collapse" role="tabpanel" aria-labelledby="headingThree" data-parent="#accordion">
+      <div class="card-body">
+				<div class="maxl">
+						<span class="title1">Furniture: </span><br>
+					<div *ngFor="let choice of obj.kids_bedroom.furniture; let i=index">
+						<label>
+						  <input type="checkbox" [value]="choice" (change)="onCheckChange($event,'kids_bedroom_furniture')">
+						  {{choice}}
+						</label>
+					</div>
+				</div>
+
+				<div class="maxl">
+						<span class="title1">Type of Wardrobe: </span><br>
+					<label class="radio inline">
+						<div class="radio inline" *ngFor="let i of obj.kids_bedroom.type_of_wardrobe">
+							<input type="radio" name="type_of_wardrobe" formControlName="type_of_wardrobe" value="{{i}}">
+								<span>{{i}}</span>
+						</div>
+					</label>
+				</div>
+
+				<div class="maxl">
+						<span class="title1">Type of Bed: </span><br>
+					<div  *ngFor="let choice of obj.kids_bedroom.type_of_bed">
+						<label>
+						  <input type="checkbox" [value]="choice" (change)="onCheckChange($event,'kids_bedroom_type_of_bed')">
+						  {{choice}}
+						</label>
+					</div>
+				</div>
+
+				<div class="maxl">
+						<span class="title1">Services: </span><br>
+					<div *ngFor="let choice of obj.kids_bedroom.services; let i=index">
+					<label>
+						<input type="checkbox" [value]="choice" (change)="onCheckChange($event,'kids_bedroom_services')">
+						{{choice}}
+					</label>
+				</div>
+			</div>
+
+				<div class="maxl">
+						<span class="title1">Prefered Material: </span><br>
+					<label class="radio inline">
+						<div class="radio inline" *ngFor="let i of obj.kids_bedroom.preferred_material">
+							<input type="radio" name="preferred_material" formControlName="preferred_material" value="{{i}}">
+							<span>{{i}}</span>
+						</div>
+					</label>
+				</div>
+
+				<div class="maxl">
+						<span class="title1">Prefered Finish: </span><br>
+					<label class="radio inline">
+						<div class="radio inline" *ngFor="let i of obj.kids_bedroom.preferred_finish">
+								<input type="radio" name="preferred_finish" formControlName="preferred_finish" value="{{i}}">
+									<span>{{i}}</span>
+						</div>
+					</label>
+				</div>
+
+				<div class="maxl">
+						<span class="title1">Prefered Finish Material: </span><br>
+					<label class="radio inline">
+						<div class="radio inline" *ngFor="let i of obj.kids_bedroom.preferred_finish_material">
+							<input type="radio" name="preferred_finish_material" formControlName="preferred_finish_material" value="{{i}}">
+								<span>{{i}}</span>
+						</div>
+					</label>
+				</div>
+
+				<div class="maxl">
+						<span class="title1">Other Requirements: </span><br>
+					<label class="radio inline">
+						<textarea rows="4" cols="70" type="text" name="other_requirments" formControlName="other_requirments">
+						</textarea>
+					</label>
+				</div>
+			</div>
+
+    </div>
+  </div>
+
+	<div class="card">
+		<a  style="color: #fff;"class="collapsed" data-toggle="collapse" href="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
+			<div class="card-header" role="tab" id="headingEight">
+				<h5 class="mb-0">
+						Parent Bedroom
+				</h5>
+			</div>
+		</a>
+
+		<div formGroupName="parent_bedroom" id="collapseEight" class="collapse" role="tabpanel" aria-labelledby="headingEight" data-parent="#accordion">
+			<div class="card-body">
+				<div class="maxl">
+						<span class="title1">Furniture: </span><br>
+						<div *ngFor="let choice of obj.parent_bedroom.furniture ; let i=index">
+							<label>
+							  <input type="checkbox" [value]="choice" (change)="onCheckChange($event,'parent_bedroom_furniture')">
+							  {{choice}}
+							</label>
+					</div>
+				</div>
+
+				<div class="maxl">
+						<span class="title1">Type of Wardrobe: </span><br>
+					<label class="radio inline">
+						<div class="radio inline" *ngFor="let i of obj.parent_bedroom.type_of_wardrobe">
+							<input type="radio" name="type_of_wardrobe" formControlName="type_of_wardrobe" value="{{i}}">
+								<span>{{i}}</span>
+						</div>
+					</label>
+				</div>
+
+				<div class="maxl">
+						<span class="title1">Type of Bed: </span><br>
+					<div  *ngFor="let choice of obj.parent_bedroom.type_of_bed; let i=index">
+						<label>
+						  <input type="checkbox" [value]="choice" (change)="onCheckChange($event,'parent_bedroom_type_of_bed')">
+						  {{choice}}
+						</label>
+					</div>
+				</div>
+
+				<div class="maxl">
+						<span class="title1">Services: </span><br>
+					<div  *ngFor="let choice of obj.parent_bedroom.services; let i=index">
+						<label>
+						  <input type="checkbox" [value]="choice" (change)="onCheckChange($event,'parent_bedroom_services')">
+						  {{choice}}
+						</label>
+					</div>
+				</div>
+
+				<div class="maxl">
+						<span class="title1">Prefered Material: </span><br>
+					<label class="radio inline">
+						<div class="radio inline" *ngFor="let i of obj.parent_bedroom.preferred_material">
+							<input type="radio" name="preferred_material" formControlName="preferred_material" value="{{i}}">
+							<span>{{i}}</span>
+						</div>
+					</label>
+				</div>
+
+				<div class="maxl">
+						<span class="title1">Prefered Finish: </span><br>
+					<label class="radio inline">
+						<div class="radio inline" *ngFor="let i of obj.parent_bedroom.preferred_finish">
+								<input type="radio" name="preferred_finish" formControlName="preferred_finish" value="{{i}}">
+									<span>{{i}}</span>
+						</div>
+					</label>
+				</div>
+
+				<div class="maxl">
+						<span class="title1">Prefered Finish Material: </span><br>
+					<label class="radio inline">
+						<div class="radio inline" *ngFor="let i of obj.parent_bedroom.preferred_finish_material">
+							<input type="radio" name="preferred_finish_material" formControlName="preferred_finish_material" value="{{i}}">
+								<span>{{i}}</span>
+						</div>
+					</label>
+				</div>
+
+				<div class="maxl">
+						<span class="title1">Other Requirements: </span><br>
+					<label class="radio inline">
+						<textarea rows="4" cols="70" type="text" name="other_requirments" formControlName="other_requirments">
+						</textarea>
+					</label>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+	<div class="card">
+		<a  style="color: #fff;"class="collapsed" data-toggle="collapse" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+			<div class="card-header" role="tab" id="headingFour">
+				<h5 class="mb-0">
+						Guest Bedroom
+				</h5>
+			</div>
+		</a>
+
+		<div formGroupName="guest_bedroom" id="collapseFour" class="collapse" role="tabpanel" aria-labelledby="headingFour" data-parent="#accordion">
+			<div class="card-body">
+				<div class="maxl">
+						<span class="title1">Furniture: </span><br>
+					<div  *ngFor="let choice of obj.guest_bedroom.furniture; let i=index">
+						<label>
+						  <input type="checkbox" [value]="choice" (change)="onCheckChange($event,'guest_bedroom_furniture')">
+						  {{choice}}
+						</label>
+					</div>
+				</div>
+
+				<div class="maxl">
+						<span class="title1">Type of Wardrobe: </span><br>
+					<label class="radio inline">
+						<div class="radio inline" *ngFor="let i of obj.guest_bedroom.type_of_wardrobe">
+							<input type="radio" name="type_of_wardrobe" formControlName="type_of_wardrobe" value="{{i}}">
+								<span>{{i}}</span>
+						</div>
+					</label>
+				</div>
+
+				<div class="maxl">
+						<span class="title1">Type of Bed: </span><br>
+					<div  *ngFor="let choice of obj.guest_bedroom.type_of_bed; let i=index">
+						<label>
+						  <input type="checkbox" [value]="choice" (change)="onCheckChange($event,'guest_bedroom_type_of_bed')">
+						  {{choice}}
+						</label>
+
+					</div>
+				</div>
+
+				<div class="maxl">
+						<span class="title1">Services: </span><br>
+					<div  *ngFor="let choice of obj.guest_bedroom.services; let i=index">
+						<label>
+						  <input type="checkbox" [value]="choice" (change)="onCheckChange($event,'guest_bedroom_services')">
+						  {{choice}}
+						</label>
+					</div>
+				</div>
+
+				<div class="maxl">
+						<span class="title1">Prefered Material: </span><br>
+					<label class="radio inline">
+						<div class="radio inline" *ngFor="let i of obj.guest_bedroom.preferred_material">
+							<input type="radio" name="preferred_material" formControlName="preferred_material" value="{{i}}">
+								<span>{{i}}</span>
+						</div>
+					</label>
+				</div>
+
+				<div class="maxl">
+						<span class="title1">Prefered Finish: </span><br>
+					<label class="radio inline">
+						<div class="radio inline" *ngFor="let i of obj.guest_bedroom.preferred_finish">
+							<input type="radio" name="preferred_finish" formControlName="preferred_finish" value="{{i}}">
+								<span>{{i}}</span>
+						</div>
+					</label>
+				</div>
+
+				<div class="maxl">
+						<span class="title1">Prefered Finish Material: </span><br>
+					<label class="radio inline">
+						<div class="radio inline" *ngFor="let i of obj.guest_bedroom.preferred_finish_material">
+							<input type="radio" name="preferred_finish_material" formControlName="preferred_finish_material" value="{{i}}">
+								<span>{{i}}</span>
+					</div>
+					</label>
+				</div>
+
+				<div class="maxl">
+						<span class="title1">Other Requirements: </span><br>
+					<label class="radio inline">
+						<textarea rows="4" cols="70" type="text" name="other_requirments" formControlName="other_requirments">
+						</textarea>
+					</label>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="card">
+		<a  style="color: #fff;"class="collapsed" data-toggle="collapse" href="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+			<div class="card-header" role="tab" id="headingFive">
+				<h5 class="mb-0">
+						Living Room
+				</h5>
+			</div>
+		</a>
+
+		<div formGroupName="living_room" id="collapseFive" class="collapse" role="tabpanel" aria-labelledby="headingFive" data-parent="#accordion">
+			<div class="card-body">
+				<div class="maxl">
+						<span class="title1">Furniture: </span><br>
+					<div *ngFor="let choice of obj.living_room.furniture; let i=index">
+						<label>
+						  <input type="checkbox" [value]="choice" (change)="onCheckChange($event,'living_room_furniture')">
+						  {{choice}}
+						</label>
+					</div>
+				</div>
+
+				<div class="maxl">
+						<span class="title1">Services: </span><br>
+					<div  *ngFor="let choice of obj.living_room.services; let i=index ">
+						<label>
+						  <input type="checkbox" [value]="choice" (change)="onCheckChange($event,'living_room_services')">
+						  {{choice}}
+						</label>
+					</div>
+				</div>
+
+				<div class="maxl">
+						<span class="title1">Prefered Material: </span><br>
+					<label class="radio inline">
+						<div class="radio inline" *ngFor="let i of obj.living_room.preferred_material">
+							<input type="radio" name="preferred_material" formControlName="preferred_material" value="{{i}}">
+								<span>{{i}}</span>
+						</div>
+					</label>
+				</div>
+
+				<div class="maxl">
+						<span class="title1">Prefered Finish: </span><br>
+					<label class="radio inline">
+						<div class="radio inline" *ngFor="let i of obj.living_room.preferred_finish">
+							<input type="radio" name="preferred_finish" formControlName="preferred_finish" value="{{i}}">
+								<span>{{i}}</span>
+					</div>
+					</label>
+				</div>
+
+				<div class="maxl">
+						<span class="title1">Prefered Finish Material: </span><br>
+					<label class="radio inline">
+						<div class="radio inline" *ngFor="let i of obj.living_room.preferred_finish_material">
+							<input type="radio" name="preferred_finish_material" formControlName="preferred_finish_material" value="{{i}}">
+								<span>{{i}}</span>
+						</div>
+					</label>
+				</div>
+
+				<div class="maxl">
+						<span class="title1">Other Requirement: </span><br>
+					<label class="radio inline">
+						<textarea rows="4" cols="70" type="text" name="other_requirments" formControlName="other_requirments">
+						</textarea>
+					</label>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+	<div class="card">
+		<a  style="color: #fff;"class="collapsed" data-toggle="collapse" href="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+			<div class="card-header" role="tab" id="headingSix">
+				<h5 class="mb-0">
+						Pooja Room
+				</h5>
+			</div>
+		</a>
+
+		<div formGroupName="pooja_room" id="collapseSix" class="collapse" role="tabpanel" aria-labelledby="headingSix" data-parent="#accordion">
+			<div class="card-body">
+				<div class="maxl">
+						<span class="title1">Furniture: </span><br>
+					<div *ngFor="let choice of obj.pooja_room.furniture; let i=index">
+						<label>
+						  <input type="checkbox" [value]="choice" (change)="onCheckChange($event,'pooja_room_furniture')">
+						  {{choice}}
+						</label>
+					</div>
+				</div>
+
+				<div class="maxl">
+						<span class="title1">Services: </span><br>
+					<div  *ngFor="let choice of obj.pooja_room.services; let i=index ">
+						<label>
+						  <input type="checkbox" [value]="choice" (change)="onCheckChange($event,'pooja_room_services')">
+						  {{choice}}
+						</label>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+	<div class="card">
+		<a  style="color: #fff;"class="collapsed" data-toggle="collapse" href="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
+			<div class="card-header" role="tab" id="headingSeven">
+				<h5 class="mb-0">
+						Foyer
+				</h5>
+			</div>
+		</a>
+		<div formGroupName="foyer" id="collapseSeven" class="collapse" role="tabpanel" aria-labelledby="headingSeven" data-parent="#accordion">
+			<div class="card-body">
+				<div class="maxl">
+						<span class="title1">Furniture: </span><br>
+					<div *ngFor="let choice of obj.foyer.furniture; let i=index ">
+						<label>
+						  <input type="checkbox" [value]="choice" (change)="onCheckChange($event,'foyer_furniture')">
+						  {{choice}}
+						</label>
+					</div>
+				</div>
+
+				<div class="maxl">
+						<span class="title1">Services: </span><br>
+					<div  *ngFor="let choice of obj.foyer.services; let i=index">
+						<label>
+						  <input type="checkbox" [value]="choice" (change)="onCheckChange($event,'foyer_services')">
+						  {{choice}}
+						</label>
+					</div>
+				</div>
+		</div>
+	</div>
+</div>
+
+
+</div>
+		<div class="">
+			<input type="submit" value="Submit" class="btn btn-md btn-dark">
+
+		</div>
+	</form>
+</div>
+</div>

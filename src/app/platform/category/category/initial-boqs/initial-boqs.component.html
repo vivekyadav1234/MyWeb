@@ -1,0 +1,257 @@
+<div class="row pl-1 w-100">
+  <div class="component-parent col-xs-12 col-sm-12 col-md-12 col-lg-12">
+      <div class="col-12 not-found" *ngIf="project_list && project_list.length==0 ">
+          <div class="boq-img text-center">
+            <img src="../../../assets/img/desktop.png">
+          </div>
+          <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing to show...</p> 
+        </div>
+    <div class="col-12" *ngIf="project_list && project_list.length>0">
+      <div class="tableDiv project-table">
+        <table class="table">
+          <thead class="ss-thead">
+            <tr>
+              <th class="firstTh">PROJECT ID</th>
+              <th>LEAD NAME</th>
+              <th> DESIGNER </th>
+              <th>COMMUNITY MANAGER</th>
+              <th class="lastTh">BOQ</th>
+            </tr>
+          </thead>
+          <tbody class="ss-tbody">
+            <tr *ngFor="let obj of project_list | paginate: { itemsPerPage: per_page, currentPage: current_page, totalItems: total_page}; let i = index" [attr.data-index]="i">
+              <td>{{obj.id}}</td>
+              <td class="capitalize">
+                <span *ngIf="obj.lead_details">{{ obj.lead_details.name }}</span>
+              </td>
+              <td class="capitalize">
+                <span *ngIf="obj.designer_details">{{obj.designer_details.name}}</span>
+                <br>
+                <span class="email-chng" *ngIf="obj.designer_details">({{obj.designer_details.email }})</span>
+              </td>
+              <td class="capitalize">{{obj.cm_details.name}}<br><span class="email-chng">({{ obj.cm_details.email }})</span></td>
+              <td>
+                <button class="category-btn rounded addCursor py-1 px-2" data-toggle="modal" data-target="#boqModal" (click) ="getQuotationListByStatus(obj.id)">
+                View BOQs
+              </button>
+            </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="text-center" *ngIf="project_list && project_list.length >0">
+          <pagination-controls autoHide="true" (pageChange)="current_page = getProjectList($event)"></pagination-controls>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--BOQ list modal start-->
+<div class="modal fade" id="boqModal" role="dialog" data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog modal-lg">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="col-12 text-right">
+          <button type="button" class="close pull-right addCursor" data-dismiss="modal" style="height: 38px;">&times;</button>
+        </div>
+      </div>
+      <div class="modal-body mb-5">
+        <div class="card d-inline-block mt-2 mb-4" *ngFor="let obj of boq_list">
+          <div class="card-chng addCursor" (click)="openBoq(obj.quotation.project_id,obj.quotation.id)" data-toggle="modal">
+            <img class="card-img-top px-2 pt-2" src="https://5.imimg.com/data5/CW/YW/MY-418425/sliding-door-wardrobe-500x500.jpeg" alt="Card image cap" style="max-height: 235px;" />
+            <div class="card-block px-2 py-2">
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="d-inline-block" style="border: 1px solid #f1f0f0; padding: 5px">
+                    <img src="../../../../../assets/img/customer/BOQ.png" class="img-fluid">
+                  </div>
+                  <div class="d-inline-block ml-2">
+                    {{obj.quotation.reference_number}}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--BOQ list modal end-->
+
+<!--Invoice modal start-->
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="InvoiceModal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <button type="button" class=" custom-close" data-dismiss="modal" aria-label="Close" (click)="closeInvoiceModal()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <div class="modal-body" *ngIf="selected_boq_details">
+        <div class="container-fluid px-4">
+          <div class="row borders border-bottom-0 border-dark">
+            <div class="col-md-8 border-right border-dark">
+              <div class="logo">
+                 <img src="../../../assets/img/mainLogo.svg" width="100%">
+              </div>   
+              
+            </div>
+            <div class="col-md-4">
+              <p class="quoteFont">Quotation</p>
+            </div>
+            
+          </div>
+          <div class="row borders border-dark">
+            <div class="col-md-8 border-right border-dark">
+              <div class="address">
+                AZB Services LLP
+            B501/502, Everest House, Suren Road, Gundavali
+            Andheri East, Mumbai - 400093
+                
+              </div>   
+              
+            </div>
+            <div class="col-md-4">
+              <div class="row">
+                <div class="col-md-6 border border-top-0 border-dark">
+                  Date
+                </div>
+                <div class="col-md-6 border border-top-0  border-dark">
+                  {{selected_boq_details.generation_date}}
+                </div>
+                
+              </div>
+              <div class="row  ">
+                <div class="col-md-6 border border-dark">
+                  Lead ID
+                </div>
+                <div class="col-md-6 border border-dark">
+                  {{selected_boq_details.lead_id}}
+                </div>
+                
+              </div>
+              <div class="row">
+                <div class="col-md-6 border  border-bottom-0 border-dark">
+                  BOQ Number
+                </div>
+                <div class="p-1 col-md-6 border border-bottom-0 border-dark">
+                  {{selected_boq_details.reference_number}}
+                </div>
+                
+              </div>
+            </div>
+            
+          </div>
+          
+          <div class="row mt-3">
+            <table class="table table-bordered">
+              <thead>
+              </thead>
+              <tbody>
+                  <tr>
+                      <td>Name</td>
+                      <td>{{selected_boq_details.lead_name}}</td>
+                      <td>Designer Name</td>
+                      <td>{{selected_boq_details.designer_name}}</td>
+                  </tr>
+                  <tr>
+                      <td>Contact</td>
+                      <td>{{selected_boq_details.lead_contact}}</td>
+                      <td>Designer Contact</td>
+                      <td>{{selected_boq_details.designer_contact}}</td>
+                  </tr>
+                  <tr>
+                      <td class="minTdWidth">Project Name and Address</td>
+                      <td class="minTdWidth">
+                        {{selected_boq_details.project_name}},
+                        <br>
+                        {{selected_boq_details.lead_location}}
+                      </td>
+                      <td>Designer Email ID</td>
+                      <td>{{selected_boq_details.designer_email}}</td>
+                  </tr>
+                  
+              </tbody>
+            </table>
+            
+          </div>
+          <div *ngFor="let space of selected_boq_details.all_spaces">
+            <span class="spanChange">{{space}}</span>
+            <div class="row mt-3">
+              <table class="table table-bordered">
+                <thead>
+                  <th scope="col">Sr. No.</th>
+                  <th scope="col">Product</th>
+                  <th scope="col">Name</th>
+                  <th scope="col">Description</th>
+                  <th scope="col">Qty.</th>
+                  
+                </thead>
+                <tbody>
+                  <tr class="rowChng" *ngFor="let item of selected_boq_details.quotation_body.boq_hash[space];let i = index">
+                    <td>{{ i+1}}</td>
+                    <td>{{item.product}}</td>
+                    <td>{{item.name}}</td>
+                    <td>
+                      {{item.description}}
+                    </td>
+                    <td>
+                      {{item.quantity}}
+                    </td>
+                        
+                  </tr>
+                </tbody>
+                
+              </table>
+            </div>
+          </div>
+          
+          <div class="row mt-3">
+            <div class="col-md-6">
+              
+            </div>
+            <div class="col-md-6">
+              <div class="row">
+                <div class="col-md-8 borders border-bottom-0 border-dark">
+                  <div class="text">
+                    Net Amount
+                  </div>
+                  
+                </div>
+                <div class="col-md-4 borders border-left-0 border-bottom-0 border-dark">
+                  <div class="text">
+                    {{selected_boq_details.net_amount}}
+                  </div>                  
+                </div>
+                <div class="col-md-8 borders border-bottom-0 border-dark">
+                  <div class="text">
+                    Discount Applied                   
+                  </div>                 
+                </div>
+                <div class="col-md-4 borders border-left-0 border-bottom-0 border-dark">
+                  <div class="text" *ngIf="selected_boq_details && selected_boq_details.discount_value">
+                    {{selected_boq_details.discount_value}}%
+                  </div>
+                  <div class="text" *ngIf="selected_boq_details && !selected_boq_details.discount_value">
+                    0 %
+                  </div>                 
+                </div>
+                <div class="col-md-8 borders border-dark">
+                  <div class="text">
+                    Total
+                  </div>
+                </div>
+                <div class="col-md-4 borders border-left-0 border-dark">
+                  <div class="text">
+                    {{selected_boq_details.total_amount}}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--Invoice modal end-->

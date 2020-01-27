@@ -1,0 +1,153 @@
+.ss-text-dark{
+	vertical-align: -webkit-baseline-middle;
+    font-size: 1.5rem;
+    font-weight: 500;
+    /* font-family: 'roboto'; */
+    color: #646464;
+}
+.ss-top-menu{
+	padding: 0rem 0rem !important;
+}
+.navbar-new{
+	padding: 1rem;
+
+}
+.stat-check{
+  color: #646464;
+  font-size: 19px;
+}
+.navbar-nav>li {
+    color: #222;
+    border-left: 1px solid #ECF0F1;
+}
+.nav > li{
+    float: left;
+    list-style-type: none;
+    padding: 5px;
+}
+.navbar-nav > li:last-child{
+    border-right: 1px solid #ECF0F1;
+}
+.text-head p{
+  font-size: 16px;
+  font-weight: 400;
+  color: #646464;
+  padding-top: .25rem;
+  padding-bottom: .25rem;
+}
+.small-change{
+	box-shadow: 0 6px 15px 0 rgba(0, 0, 0, 0.08);
+}
+.bg-light {
+    background-color: #fff!important;
+    box-shadow: 0 0 0 2px #e7eaed;
+}
+.navbar{
+  padding-top:0.5rem ;
+  padding-left:1rem;
+  padding-right:1rem;
+  padding-bottom:0px;
+}
+
+select, input{
+  background-color: #f8f9fa;
+  font-size: 15px;
+  font-weight: lighter;
+  border:1px solid #d5d7d8;
+  border-radius: 3px;
+}
+.card-body{
+  padding: 0.6rem;
+}
+.my-2{
+  margin-right: 125px;
+}
+.navbar-brand{
+  font-weight: 500;
+  font-size: 25px;
+  color: #646464 !important;
+  margin-left: 0.5rem;
+}
+.active{
+  border-bottom: 4px solid blue;
+}
+.section1{
+  float:left;
+  font-size: 25px;
+  font-weight: 400;
+  padding-top: 15px;
+  color: #646464;
+}
+.clear_all{
+  font-size: 12px;
+  padding-top: 15px;
+  color:#ff3366;
+  font-weight:bold;
+}
+.filter1{
+  border: 1px solid #d5d7d8;
+  margin: 3px;
+  padding: 3px;
+}
+.filter2{
+  border: 1px solid #d5d7d8;
+  margin: 6px;
+  padding: 3px;
+}
+.fltype{
+  color: blue;
+  font-size: 10px;
+  font-weight: bold;
+  padding-left: 3px;
+}
+.col_buttons{
+  border: 1px solid #d5d7d8;
+  width:32%;
+  font-size: 12px;
+}
+.floptions{
+  margin: 3px;
+}
+.greencolor{
+  background: #d2fee5;
+}
+.pinkcolor{
+  background: #fddbdb;
+}
+.col_buttons{
+  cursor: pointer;
+  color: #707070;
+}
+.btn:focus{
+  outline: 0;
+}
+.col_buttons.active{
+  background-color: #4C4AF6;
+  border:#4C4AF6;
+  color: white;
+  cursor: pointer;
+}
+.rk-form-fontsize{
+  font-size: 10px !important;
+}
+.go-filter{
+  color: blue;
+  font-size: 9px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-left: 6rem
+
+}
+.lead-count{
+  font-size: 12px;
+  color: #646464;
+  font-weight: 500;
+}
+#barChartCS{
+  height:350px !important;
+
+}
+.btn:focus{
+  outline: none !important;
+      box-shadow: none;
+}

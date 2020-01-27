@@ -1,0 +1,219 @@
+<div class="View-Product">
+  <div>
+    <div class="row container-set container-set-change">
+      <div class="col-6">
+        <div class="ss-searchbox">
+          <i class="fa fa-search float-right"></i>
+          <input class="form-control" type="text" placeholder="Search by SKU" (keydown.enter)="newSearchFilter($event.target.value)">
+        </div>
+      </div>
+    </div>
+</div>
+<span class="cursor-pointer" (click) = "goBack()" ><i class="fa fa-chevron-left left_chevron-copy-4 mt-4 mb-4"></i> Back</span>
+
+<div class="container">
+    <section id="default" class="padding-top0">
+          <div class="row">
+            <div class="col-md-6">
+                <div class="xzoom-container">
+                  <div class="zoomer img-zoom-container" (mouseenter)="imageZoom('img-lg-zoom','myresult')" (mouseleave)="removeHover('myresult')">
+
+                    <img class="xzoom" id="img-lg-zoom" src="{{ medium_image }}"  onError="this.src = 'assets/v3/img/noImg.png' "/>
+                  </div>
+                  <div id="myresult" class="img-zoom-result" style="display: none"></div>  
+
+                  <div id="carouselExample" class="xzoom-thumbs carousel slide" data-ride="carousel" data-interval="9000">
+                      <div class="carousel-inner row w-100 mx-auto xzoom-thumbs " role="listbox">
+                          <div class="carousel-item col-md-3 mt-3" *ngFor="let item of product_detail.all_image_urls;let i= index" [class.active]="selectedIndex === i">
+                              <img class="img-fluid mx-auto d-block xzoom-gallery" src="{{ item.thumbnail }}" alt="slide 2" onerror="this.src='./assets/img/no_image.svg'" (click)="sendMidImge(item.medium,i)" style="width:100px" [class.active]="selectedIndexChange === i"  >
+                          </div>
+                         
+                      </div>
+                      <a class="carousel-control-prev" href="#carouselExample" role="button" data-slide="prev" *ngIf="product_detail.all_image_urls.length > 4">
+                          <span><i class="fa fa-angle-left"></i></span>
+                          <span class="sr-only">Previous</span>
+                      </a>
+                      <a class="carousel-control-next text-faded" href="#carouselExample" role="button" data-slide="next" *ngIf="product_detail.all_image_urls.length > 4">
+                          <span><i class="fa fa-angle-right"></i></span>
+                          <span class="sr-only">Previous</span>
+                      </a>
+                  </div>
+
+                </div>        
+            </div>
+
+            <div class="col-sm-6">
+            	 <div class="form-pos">
+                    <div class="mb-1">
+
+                      <!-- Catalogue breadcrumb -->
+                    	<small class="Living-room-seating cursor-pointer" [routerLink]="['/catalogue']" (mouseover) = "$event.target.style.color='#922230'" >Catalogue</small>
+                      
+                      <!-- segment breadcrumb -->
+                      <i class="fa fa-angle-right  cosTogg1" *ngIf="product_detail.breadcrumb.segment"></i><small class="Sofa-Sets cursor-pointer" [routerLink]="['/catalogue','filter','segment',product_detail.breadcrumb.segment.id]" [queryParams]="{segment: product_detail.breadcrumb.segment.name}" (mouseover) = "$event.target.style.color='#922230'" *ngIf="product_detail.breadcrumb.segment">{{product_detail.breadcrumb.segment.name}}</small>
+                      
+                      <!-- category breadcrumb -->
+                      <i class="fa fa-angle-right cosTogg1" *ngIf="product_detail.breadcrumb.category"></i><small class="Hopefull-Sofa cursor-pointer" *ngIf="product_detail.breadcrumb.category" [routerLink]="['/catalogue','filter','category',product_detail.breadcrumb.category.id]" (mouseover) = "$event.target.style.color='#922230'">{{product_detail.breadcrumb.category.name}}</small>
+                      
+                      <!-- subcategory breadcrumb -->
+                      <i class="fa fa-angle-right cosTogg1" *ngIf="product_detail.breadcrumb.subcategory"></i><small class="Hopefull-Sofa cursor-pointer" *ngIf="product_detail.breadcrumb.subcategory" [routerLink]="['/catalogue/']" [queryParams]="{subcategory_ids: product_detail.breadcrumb.subcategory.id}" (mouseover) = "$event.target.style.color='#922230'">{{product_detail.breadcrumb.subcategory.name}}</small>
+
+                      <!-- product breadcrumb -->
+                      <i class="fa fa-angle-right cosTogg1" *ngIf="product_detail.breadcrumb.product"></i><small class="Hopefull-Sofa cursor-pointer" *ngIf="product_detail.breadcrumb.product">{{product_detail.breadcrumb.product.name}}</small>
+
+
+                    </div>
+                    <div class="sku-chng ">
+	                    <small class=" SKU-Code-Arr-2Seat">  SKU Code :{{product_detail.unique_sku}}</small>
+	                </div>
+	                <div class="coc">
+	                  <h4 class="Coco---Two-Seater-So">
+                      {{product_detail.name}}
+                      <i class="fa {{product_detail.liked ? 'fa-heart' : 'fa-heart-o'}} pull-right mx-2 cursor-pointer" style="color:#8c051e; font-size: 26px;" (click) = "likeProduct(product_detail.id)"></i>
+
+                      <!-- <i class="fa fa-heart Path_110"></i> -->
+                    </h4>
+	                </div>
+    
+                    <div class="prices" price-chng="">
+	                    <p>  ₹ {{product_detail.sale_price | number : '1.2-2'}}</p>
+	                </div>
+                </div>
+            	<div class="form form-pos">
+             	<div class="form-group" *ngIf="master_option.length > 0">
+            		<label for="sel3"class="MASTER-OPTION">MASTER OPTION</label>
+                  <div class="form-control Rectangle" *ngFor="let master of master_option">
+                    {{master.name}}
+                  </div>
+                     <!-- <select class="form-control Rectangle" id="sel3">
+                        <option> Fabric </option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                    </select> -->
+                 </div>
+                <div class="form-group" *ngIf="sub_option.length > 0">
+                   <label for="exampleFormControlSelect1"  class="MASTER-SUBOPTION">MASTER SUBOPTION</label>
+                    <span><i class="fa fa-angle-right left_chevron-copy-2"style="margin-top: 85px"></i></span>
+                    <select class="form-control Rectangle1" id="exampleFormControlSelect1" style="height:53px" (change) = "fetchCatalogueOptions($event.target.value)" >
+                      <option value = "{{sub.id}}" *ngFor="let sub of sub_option">{{sub.name}}</option>
+                    </select> 
+                </div>
+                 <div class="form-group" *ngIf="cat_option.length > 0">
+                   <label for="exampleFormControlSelect1"  class="CATALOG-OPTIONS">CATALOGUE OPTION </label>
+                    <span><i class="fa fa-angle-right left_chevron-copy-3"style="margin-top:80px"></i></span>
+                    <select class="form-control Rectangle1" id="exampleFormControlSelect1" style="height:53px"  (change) = "fetchVariation($event.target.value)">
+                        <option value="{{cat.id}}" *ngFor="let cat of cat_option" >{{cat.name}} </option>
+                    </select>
+                     
+                </div>
+            </div>
+            <div class="form-possi" *ngIf="variation.length > 0">
+              <div class="variation-img-container variation-img-container-12 rounded-circle" *ngFor="let varia of variation" (mouseenter) = "activateZoomer(varia.attributes.medium_image, $event)" (mouseleave) = "deActivateZoomer()">
+                	<img class="variation-img" src="{{varia.attributes.thumbnail}}" title="{{varia.attributes.name}}">
+              </div>
+            </div>
+            <small class="View-More float-right cursor-pointer" *ngIf="variation.length > 14" (click) = "viewMoreVariation($event)">View More</small>
+          </div>
+        </div>
+    </section>
+</div>
+<div class="container mt-4">
+	<div class="row">
+		<div class="col-md-12">
+			<h6 class="PRODUCT-INFORMATION">PRODUCT INFORMATION</h6>
+            <table>
+               <tr class="trmarg " *ngIf="product_detail.color">
+                  <td class="text-deco w-60">Color:</td>
+                  <td class="text-deco1">{{product_detail.color}}</td>
+                </tr>
+                <tr class="trmarg" *ngIf="product_detail.product_config">
+                    <td class="text-deco w-50">Configuration:</td>
+                    <td class="text-deco1">{{product_detail.product_config}}</td>
+                </tr>
+                <tr class="trmarg" *ngIf="product_detail.measurement_unit">
+                    <td class="text-deco w-50">Measurment Unit:</td>
+                    <td class="text-deco1">{{product_detail.measurement_unit}}</td>
+                </tr>
+                <tr class="trmarg" *ngIf="product_detail.lead_time">
+                    <td class="text-deco w-50">Lead time:</td>
+                    <td class="text-deco1">{{product_detail.lead_time}}</td>
+                </tr>
+                 <tr class="trmarg" *ngIf="product_detail.finish">
+                    <td class="text-deco w-50">Finish</td>
+                    <td class="text-deco1">{{product_detail.finish}}</td>
+                </tr>
+                 <tr class="trmarg" *ngIf="product_detail.length">
+                    <td class="text-deco w-50">Dimension(mm):</td>
+                    <td class="text-deco1">{{product_detail.length}}<span>&#215;</span>{{product_detail.width}}<span>&#215;</span>{{product_detail.height}}</td>
+                </tr>
+            </table>
+		</div><br>
+		<div class="col-md-12 mt-4" *ngIf="product_detail.material">
+		    <p class="lorem-head">Material:</p>
+            <p class="Lorem-ipsum"> {{product_detail.material}}</p>
+        </div>
+        <div class="col-md-12 mt-1" *ngIf="product_detail.dimension_remark">
+		    <p class="lorem-head">Dimension Remark:</p>
+            <p class="Lorem-ipsum"> {{product_detail.dimension_remark}}</p>
+        </div>
+        <div class="col-md-12 mt-1" *ngIf="product_detail.remark">
+		    <p class="lorem-head">Remark:</p>
+            <p class="Lorem-ipsum"> {{product_detail.remark}}</p>
+        </div>
+        <div class="col-md-12 mt-1" *ngIf="product_detail.warranty">
+		    <p class="WARRANTY"> WARRANTY:</p>
+            <p class="Lorem-ipsum">  {{product_detail.warranty}}</p>
+        </div>
+        <div class="col-md-12 mt-1" *ngIf="product_detail.similar_products.length > 0">
+        	 <h6 class="VIEW-SIMILAR-PRODUCT mt-4">VIEW SIMILAR PRODUCT</h6>
+        </div>
+
+        <div class="col-md-3 px-2 py-2 mt-3" *ngFor="let product of product_detail.similar_products;let i = index">
+          <div class="card addCursor {{product.new_product ? 'new' : ''}}">
+            <div class="su-img-container">
+              <img class="product-card-img" src="{{product.image_url}}" onerror="this.src='./assets/img/noimage.jpg'" [routerLink]="['/catalogue','product',product.id]" id="prod-img-{{i}}">
+            </div>
+            <div class="row px-2 pt-2">
+              <div class="col-sm-7 catlogue-product-name" title="{{product.name}}">
+                {{product.name}}
+              </div>
+            </div>
+            <div class="row p-2">
+              <div class="col-sm-7 catlogue-product-price">
+                Rs.{{product.sale_price}}
+              </div>
+              <div class="col-sm-5">
+                <img src="./assets/img/view.jpg" alt="" style="margin-top: -10px;" (click)="zoomImg('prod-img-',i)"> 
+                <i class="fa {{product.liked ? 'fa-heart' : 'fa-heart-o'}} pull-right mx-2" style="color:#8c051e;font-size: 20px;" (click) = "likeProduct(product.id)" ></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+    </div>
+ </div>
+ </div>
+
+ <div class="zoomer-container">
+  <img src="{{this.activatedZoomerImg}}">
+</div>
+
+ <!-- Modal For preview Image -->
+  <div class="modal fade zoom-img-modal-lg" tabindex="-1" role="dialog" aria-labelledby="zoomImageModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header text-right row">
+          <button type="button" class="btn close col-12 text-right px-3 py-0" data-dismiss="modal" aria-label="Close" (click)="normalImg()">
+            &times;
+          </button>
+        </div>
+        <div class="modal-body text-center" id="imagecontainer">
+          <img src="" class="large-img" id="img-lg-zoom1" style="width:100%">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="zoomer-container">
+    <img src="{{this.activatedZoomerImg}}">
+  </div>

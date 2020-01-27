@@ -1,0 +1,43 @@
+<div class="col-md-12 p-0 mt-4">
+  <ul class="nav nav-tabs ss-nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link ss-nav-link {{overview_tab}}" id="home-tab" data-toggle="tab" role="tab" aria-controls="home" aria-selected="true" routerLink="/lead/{{lead_id}}/overview" [queryParams]="{lead_status: lead_status}" *ngIf="isProjectInWip()">Overview</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link {{activity_log_tab}} ss-nav-link" id="home-tab" data-toggle="tab" role="tab" aria-controls="home" aria-selected="true" routerLink="/lead/{{lead_id}}/activity-logs" [queryParams]="{lead_status: lead_status}">Activity Logs</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link {{basic_info_tab}} ss-nav-link" id="profile-tab" data-toggle="tab" role="tab" aria-controls="profile" aria-selected="false" routerLink="/lead/{{lead_id}}/basic-info" [queryParams]="{lead_status: lead_status}">Basic Info</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link {{detailed_info_tab}} ss-nav-link" id="contact-tab" data-toggle="tab" role="tab" aria-controls="contact" aria-selected="false" routerLink="/lead/{{lead_id}}/detailed-info" [queryParams]="{lead_status: lead_status}">Detailed Info</a>
+    </li>
+    <li class="nav-item" *ngIf="isProjectInWip()">
+      <a class="nav-link ss-nav-link {{boq_tab}}" id="boq-tab" data-toggle="tab" role="tab" aria-controls="boq" aria-selected="true" routerLink="/lead/{{lead_id}}/boq" [queryParams]="{lead_status: lead_status}">BOQ</a>
+    </li>
+    <li class="nav-item" *ngIf="isProjectInWip()">
+      <a class="nav-link ss-nav-link {{ppt_tab}}" id="ppt-tab" data-toggle="tab" role="tab" aria-controls="ppt" aria-selected="false" routerLink="/lead/{{lead_id}}/ppt" [queryParams]="{lead_status: lead_status}">PPT</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link ss-nav-link {{files_tab}}" id="files-tab" data-toggle="tab" role="tab" aria-controls="files" aria-selected="false" routerLink="/lead/{{lead_id}}/files" [queryParams]="{lead_status: lead_status}">Files</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link ss-nav-link {{calender_tab}}" id="calendar-tab" data-toggle="tab" href="#calendar" role="tab" aria-controls="calendar" aria-selected="false" routerLink="/lead/{{lead_id}}/calendar" [queryParams]="{lead_status: lead_status}">Calendar</a>
+    </li>
+    <li class="nav-item" *ngIf="isProjectInWip()">
+      <a class="nav-link ss-nav-link {{proposal_tab}}" id="proposal-tab" data-toggle="tab" href="#proposals" role="tab" aria-controls="proposals" aria-selected="false" routerLink="/lead/{{lead_id}}/proposals" [queryParams]="{lead_status: lead_status}">Proposals</a>
+    </li>
+    <li class="nav-item" *ngIf="isProjectInWip()">
+      <a class="nav-link ss-nav-link {{custom_tab}}" id="proposal-tab" data-toggle="tab" href="#custom" role="tab" aria-controls="custom" aria-selected="false" routerLink="/lead/{{lead_id}}/custom-view" [queryParams]="{lead_status: lead_status}">Custom Element</a>
+    </li>
+    <li class="nav-item" *ngIf="isProjectInWip()">
+        <a class="nav-link ss-nav-link {{payment_tab}}" id="payment-tab" data-toggle="tab" href="#payment" role="tab" aria-controls="payment" aria-selected="false" routerLink="/lead/{{lead_id}}/payments" [queryParams]="{lead_status: lead_status}">Payments</a>
+    </li>
+    <li class="nav-item" *ngIf="isProjectInWip() && role!='designer'">
+        <a class="nav-link ss-nav-link {{payment_approval_tab}}" id="proposal-approve-tab" data-toggle="tab" href="#proposals-approve" role="tab" aria-controls="proposal-approve" aria-selected="false" routerLink="/lead/{{lead_id}}/proposal-approve" [queryParams]="{lead_status: lead_status}" >Proposal Approve</a>
+    </li>
+    <li class="nav-item" *ngIf="isProjectInWip()">
+        <a class="nav-link ss-nav-link {{handover_for_production}}" id="handover-for-production-tab" data-toggle="tab" href="#handover-for-production" role="tab" aria-controls="handover-for-production" aria-selected="false" routerLink="/lead/{{lead_id}}/handover-for-production" [queryParams]="{lead_status: lead_status}" >Handover/Feasibility</a>
+    </li>
+  </ul>
+</div>

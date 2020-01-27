@@ -1,0 +1,113 @@
+.nothing-to-show{
+    font-size: 21px;
+    text-align: center;
+    color: dimgray
+  }
+  .btn{
+    cursor:pointer;
+  }
+  .table th{
+    min-width:0rem!important;
+  }
+  .circularIcon .fa{
+    left: 0px!important;
+  }
+  .rk-ui-notification, .rk-ui-notification.err{
+    z-index: 1060;
+  }
+  .addVendorProductBtn {
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    background: #8c031f;
+    outline: none;
+    color: #fff;
+  }
+  .circularIcon .fa{
+    left: 0px!important;
+  }
+
+  .table{
+    border-collapse: separate;
+    border-spacing: 0 5px;
+  }
+  .table td{
+      padding: 0.7rem 0.75rem;
+      vertical-align: middle;
+      font-size: 14px;
+      color: rgba(0, 0, 0, 0.7);
+      border: none;
+  }
+  .table th {
+      padding: .9rem;
+      vertical-align: middle;
+      border: none;
+      font-size: 12px;
+      text-transform: uppercase;
+      color: #fff;
+      background-color: #5A5A5A;
+  }
+  .tableDiv tbody{
+    background-color: #fff;
+  }
+  .tableDiv tbody tr{
+    box-shadow: 1px 1px 7px 0px #dadada;
+    border-radius: 5px;
+  }
+  .firstTh{
+    border-radius: 5px 0 0 0;
+  }
+  .lastTh{
+    border-radius: 0px 5px 0 0;
+  }
+  .filterRow {
+    border-radius: 4px;
+    background-color: #d5d9da;
+    box-shadow: 0 0 0 0 #bdbdbd;
+  }
+  .filterHeading {
+    font-size: 14px
+  }
+  .filterRow .ss-searchbox{
+    width: 94%
+  }
+  .filterRow .filterSelectBox{
+    width: 62%;
+    font-size: 13px;
+  }
+  .filterRow div[class*=col-]{
+      background-color: #d5d9da;
+  }
+  .planeIcon{
+      background-color: #d5d9da;
+  }
+  .active-text{
+      color: #8c031f!important;
+      font-weight: bold;
+  }
+
+.container-set-change{
+  background: #e6e4e4;
+  border-radius: 5px;
+}
+.ss-searchbox{
+  margin-top: 15px;
+  margin-bottom: 15px;
+  margin-left: 22px;
+  background: white;
+}
+.warning{
+  color: red;
+}
+.filter-chng{
+  margin-bottom: 15px;
+  margin-top:  15px;
+}
+ .dissplay-chng{
+    display: inline-block;
+    width: 70%;
+  }
+  .dissplay-chng1{
+    display: inline-block;
+    width: 40%;
+  }

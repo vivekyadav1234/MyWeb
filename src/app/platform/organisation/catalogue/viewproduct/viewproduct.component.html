@@ -1,0 +1,102 @@
+<div class="row title" *ngIf="product">
+  <h3>Dashboard / <span class="addCursor" [routerLink]="['/catalogue/sections']" routerLinkActive='active'>Catalogue</span> / <span class="addCursor" [routerLink]="['/catalogue/section/'+product.parent_id+'/subsections']" routerLinkActive='active'>{{product.parent_name | ucwords}}</span> / <span class="addCursor" [routerLink]="['/catalogue/section/'+product.parent_id+'/subsection/'+product.section_id+'/product']" routerLinkActive='active'>{{product.section_name | ucwords}}</span> / <span>{{product.name | ucwords}}</span></h3>
+</div>
+<div class="marginTop">
+  <!-- <div class="col-12" *ngIf="erroralert">
+    <div class="alert-box grid-100" *ngIf="errorMessage">
+      <div class="alert alert-danger text-center">
+        <a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a>
+        {{errorMessage}}
+      </div>
+    </div>
+  </div>
+  <div class="col-12" *ngIf="successalert">
+    <div class="alert-box grid-100" *ngIf="successMessage">
+      <div class="alert alert-success text-center">
+        <a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+        {{successMessage}}
+      </div>
+    </div>
+  </div> -->
+</div>
+<div class="row body_height" *ngIf="product">
+  <div class="col-sm-12 col-md-8 col-lg-8 pull-left mb-2"><h4 class="productHeading">{{product.name}}</h4></div>
+  <div class="col-sm-12 col-md-8 col-lg-8">
+    <div class="mainDiv">
+      <img class="addCursor mb-2" src="{{product.image_url}}" width="100%" onError="this.src = 'assets/v3/img/noImg.png' ">
+      <hr>
+      <div class="mainBody mt-2" *ngIf="product">
+        <h6 class="my-5 px-2"><strong>PRODUCT INFORMATION</strong> <!-- <a *ngIf="product.product_url !=''  || product.product_url != null " href="{{product.product_url}}" target="_blank" class="ml-3" >VIEW ON WEBSITE <i class="fa fa-external-link" aria-hidden="true"></i></a> --></h6>
+        <div class="row">
+          <div class="col-sm-12 col-md-6">
+            <div class="row">
+              <span class="col-5 ml-2 productDetailsSpan">SKU Code : </span>
+              <span class="col-6 productDetailsSpan">{{product.unique_sku}}</span>
+              <p class="col-5 ml-2 productDetailsSpan">Color : </p>
+              <p class="col-6 productDetailsSpan">{{product.color}}</p>
+              <p class="col-5 ml-2 productDetailsSpan">Configuration : </p>
+              <p class="col-6 productDetailsSpan">{{product.product_config}}</p>
+              <p class="col-5 ml-2 productDetailsSpan"> Price : </p>
+              <p class="col-6 productDetailsSpan"><span class="mr-1">&#x20B9;</span>{{product.sale_price}}</p>
+              <p class="col-5 ml-2 productDetailsSpan">Measurement Unit : </p>
+              <p class="col-6 productDetailsSpan">{{product.measurement_unit}}</p>
+              <p class="col-5 ml-2 productDetailsSpan">Lead Time : </p>
+              <p class="col-6 productDetailsSpan">{{product.lead_time}}</p>
+              <p class="col-5 ml-2 productDetailsSpan">Finish  : </p>
+              <p class="col-6 productDetailsSpan">{{product.finish}}</p>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-6" *ngIf="product">
+            <div class="row">
+              <p class="col-5 ml-2 productDetailsSpan">Dimension L x B x H (mm) : </p>
+              <p class="col-6 productDetailsSpan">{{product.length}} x {{product.width}} x {{product.height}}</p>
+              <!-- <p class="col-5 ml-2 productDetailsSpan">Vendor Name : </p>
+              <p class="col-6 productDetailsSpan">{{product.vendor_name}}</p> -->
+              <p class="col-5 ml-2 productDetailsSpan">Material : </p>
+              <p class="col-6 productDetailsSpan">{{product.material}}</p>
+              <p class="col-5 ml-2 productDetailsSpan">No of Units : </p>
+              <p class="col-6 productDetailsSpan">{{product.qty}}</p>
+              <p class="col-5 ml-2 productDetailsSpan">Dimension Remark : </p>
+              <p class="col-6 productDetailsSpan">{{product.dimension_remark}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-12 col-md-4 col-lg-4">
+    <h3 class="productHeading">Warranty :</h3>
+    <span class="" style="font-size: 13px;">{{product.warranty}}</span><hr/>
+    <h3 class="productHeading mt-2">Remarks :</h3>
+    <span class="" style="font-size: 13px;">{{product.remark}}</span>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,293 @@
+<!-- <div class="row title">
+  <h3>Dashboard / <span>User Management</span></h3>
+  <span data-toggle="modal" data-target="#inviteModal"><p class="Invite" data-toggle="tooltip" title="Invite User" data-placement="left" *ngIf="updateRoleAccess && (updateRoleAccess.length>0) && (updateRoleAccess.indexOf(role) > -1)" id="tooltipinviteuser" (click)="hideValidationMsg()"><i class="fa fa-plus" aria-hidden="true"></i></p></span>
+  <input class="searchBox addCursor" #search (keyup)="0">
+  <p class="searchIcon"><i class="fa fa-search" aria-hidden="true"></i></p> -->
+  <!-- <button class="addCursor" (click)="downloadFile(exportFileData)">Export</button> -->
+<!--   <p class="Invite Invite1" data-toggle="tooltip" title="Export" data-placement="left"  id="tooltipinviteuser" (click)="exportLeads()"><i class="fa fa-download" aria-hidden="true"></i></p>
+</div> -->
+
+<div class="row ss-top-menu">
+  <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-xs-3">
+    <span class="ss-text-light" style="vertical-align: -webkit-baseline-middle;">Dashboard <i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;">User Management</span>
+  </div>
+  <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-xs-4">
+    <div class="ss-searchbox">
+      <i class="fa fa-search"></i>
+      <input class="form-control " name="search" type="text" placeholder="Type name, email, contact to search..." [(ngModel)]="search">
+    </div>
+  </div>
+  <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1">
+    <button class="rk-interalBtnColor"(click)="getUserListFromService(current_page)">Search</button>
+  </div>
+  <!-- //V:button for category role split users list// -->
+  <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2">
+    <button class="rk-interalBtnColor" data-toggle="modal" data-target="#getUserCategorySplit" style="outline: none;">Users by Segment</button>
+  </div>
+  <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="dropdown pull-right">
+          <button class="btn btn-pink dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Action
+          </button>
+          <button class="bt-boq btn btn-pink mr-2 ml-1 p-2 pull-right" type="button" data-toggle="modal" data-target="#inviteChampionModal" *ngIf = "is_champion=='true'" (click)="referralinvitechampions.getChampionList()">Invite Level 2 & Level 3 User</button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" data-toggle="modal" data-target="#inviteModal" *ngIf="updateRoleAccess && (updateRoleAccess.length>0) && (updateRoleAccess.indexOf(role) > -1)" id="tooltipinviteuser" (click)="hideValidationMsg()">Invite User</a>
+            <a class="dropdown-item" (click)="exportLeads()">Export User</a>
+          </div>
+        </div>
+      </div>
+      <!-- <div class="col-md-8"></div> -->
+    </div>
+  </div>
+</div>
+
+<!-- <div class="marginTop row">
+  <div class="col-12" *ngIf="erroralert">
+    <div class="alert-box grid-100" *ngIf="errorMessage">
+      <div class="alert alert-danger mt-3 text-center">
+        <a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a>
+        {{errorMessage}}
+      </div>
+    </div>
+  </div>
+  <div class="col-12" *ngIf="successalert">
+    <div class="alert-box grid-100" *ngIf="successMessage">
+      <div class="alert alert-success mt-3 text-center">
+        <a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+        {{successMessage}}
+      </div>
+    </div>
+  </div>
+</div> -->
+
+<div class="rk-ui-notification err" *ngIf="erroralert"  style="z-index: 10000;">
+  <span id="notificationMessageText">{{errorMessage}}</span>
+  <a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+<div class="rk-ui-notification" *ngIf="successalert"  style="z-index: 10000;">
+  <span id="notificationMessageText">{{successMessage}}</span>
+  <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+
+<div class="row mt-5">
+  <div class="col-md-12">
+    <div class="tableDiv">
+      <table class="table" *ngIf="users">
+        <thead class="tHead">
+          <tr>
+            <th class="text-center firstTh" style="min-width: 70px;">ID</th>
+            <th style="min-width: 180px;">Name</th>
+            <th style="min-width: 300px;">Email</th>
+            <th style="min-width: 180px;">Contact</th>
+            <th style="min-width: 150px;">Roles</th>
+            <!-- <th>Actions</th> -->
+            <th style="min-width: 260px;" class="lastTh" *ngIf="updateRoleAccess && (updateRoleAccess.length>0) && (updateRoleAccess.indexOf(role) > -1) ">Update Role</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of users | paginate: { itemsPerPage: per_page, currentPage: current_page, totalItems: total_page  }; let i = index" [attr.data-index]="i">
+            <td class="text-center" style="min-width: 70px;">{{user.id}}</td>
+            <td class="capitalize"  style="min-width: 180px;">{{user.name}}</td>
+            <td style="min-width: 300px;">{{user.email}}</td>
+            <td style="min-width: 180px;">{{user.contact}}</td>
+            <td style="min-width: 150px;">{{user.roles[0] | replaceChar | ucwords}}</td>
+            <td style="min-width: 260px;" *ngIf="updateRoleAccess && (updateRoleAccess.length>0) && (updateRoleAccess.indexOf(role) > -1) ">
+              <select class="form-control col-9 d-inline-block" (change)="onDropdownChange(user.id,$event.target.value,i)" id="updaterolerow{{user.id}}" *ngIf="user.roles != 'vendor'">
+                <option value="">Update Role To</option>
+                <option *ngIf="user.roles != 'design_head'" value="design_head">Design Head</option>
+                <option *ngIf="user.roles != 'lead_head'" value="lead_head">Lead Head</option>
+                <option *ngIf="user.roles != 'customer_head'" value="customer_head">Customer Head</option>
+                <option *ngIf="user.roles != 'catalogue_head'" value="catalogue_head">Catalogue Head</option>
+                <option *ngIf="user.roles != 'customer'" value="customer">Customer</option>
+                <option value="designer" *ngIf="user.roles != 'designer'">Designer</option>
+                <option value="broker" *ngIf="user.roles != 'broker'">Broker</option>
+                <option value="manufacturer" *ngIf="user.roles != 'manufacturer'">Manufacturer</option>
+                <option value="cs_agent" *ngIf="user.roles != 'cs_agent'">CS Agent</option>
+                <option value="community_manager" *ngIf="user.roles !='community_manager' ">Community Manager</option>
+                <option value="finance" *ngIf="user.roles !='finance' ">Finance</option>
+                <option value="category" *ngIf="user.roles !='category' ">Category </option>
+                <option value="sitesupervisor" *ngIf="user.roles !='sitesupervisor' ">Site Supervisor </option>
+                <option value="cad" *ngIf="user.roles !='cad' ">CAD </option>
+                <option value="sales_manager" *ngIf="user.roles !='sales_manager' ">Sales Manager </option>
+                <option value="vendor" *ngIf="user.roles !='vendor' ">Vendor </option>
+                <option value="referral" *ngIf="user.roles !='referral' ">Referral</option>
+                <option value="order_manager" *ngIf="user.roles !='order_manager' ">Order Manager</option>
+                <option value="catalog_viewer" *ngIf="user.roles !='catalog_viewer' ">Catalog Viewer</option>
+                <option value="employee_referral" *ngIf="user.roles !='employee_referral' ">Employee Referral </option>
+                <option value="design_partner_referral" *ngIf="user.roles !='design_partner_referral' ">Design Partner Referral</option>
+                <option value="client_referral" *ngIf="user.roles !='client_referral' ">Client Referral</option>
+                <option value="display_dealer_referral" *ngIf="user.roles !='display_dealer_referral' ">Display Dealer Referral</option>
+                <option value="non_display_dealer_referral" *ngIf="user.roles !='non_display_dealer_referral' ">Non Display Dealer Referral </option>
+                <option value="business_head" *ngIf="user.roles !='business_head' ">Business Head </option>
+                <option value="arrivae_champion" *ngIf="user.roles !='arrivae_champion' ">Arrivae Champion </option>
+                <option value="others" *ngIf="user.roles !='others' ">Others </option>
+                <option value="associate_partner" *ngIf="user.roles !='associate_partner' ">Associate partner</option>
+                <option value="developer" *ngIf="user.roles !='developer'"> Developer Role</option>
+                <option value="city_gm" *ngIf="user.roles !='city_gm'"> General Manager</option>
+                <option value="category_head" *ngIf="user.roles !='category_head'">CATEGORY HEAD</option>
+                <option value="design_manager" *ngIf="user.roles !='design_manager'">Design Manager</option>
+                <option value="category_panel" *ngIf="user.roles !='category_panel'">Category Panel</option>
+                <option value="category_non_panel" *ngIf="user.roles !='category_non_panel'">Category Non Panel</option>
+                <option value="category_services" *ngIf="user.roles !='category_services'">Category Services</option>
+              </select>
+              <i class="downArrow fa fa-angle-down"></i>
+              <i class="ion-android-send ss-send-circle" (click)="updateRole(user.id,i)" *ngIf="user.roles != 'vendor'"></i>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="text-center" *ngIf="users && users.length > 0">
+        <pagination-controls autoHide="true" (pageChange)="current_page = getUserListFromService($event)"></pagination-controls>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <!-- Modal -->
+<div class="modal fade" id="inviteModal" tabindex="-1" role="dialog" aria-labelledby="inviteModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="inviteModalLabel">Invite User</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="inviteUserForm.reset(); failedMsgerrors();">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+        <p id="afterSubmitFailedErrMsg" class="text-center text-danger"></p>
+        <form (ngSubmit)="onSubmit(inviteUserForm.value,inviteUserForm);" class="form-horizontal" [formGroup]="inviteUserForm">
+          <div class="modal-body">
+            <div class="row">
+                <label class="col-sm-3 label-on-left"> Name*</label>
+                 <div class="col-sm-9 form-group">
+                    <input type="text" class="form-control" id="name" required name="name" formControlName="name" (focus)="onFocus(inviteUserForm,'name')">
+                    <div *ngIf="inviteUserForm.controls['name'].errors && !inviteUserForm.controls['name'].pristine" class="text-danger">
+                      <div [hidden]="!inviteUserForm.controls['name'].errors.required">Name is required.</div>
+                    </div>
+                 </div>
+                 <label class="col-sm-3 label-on-left">Email*</label>
+                  <div class="col-sm-9 form-group">
+                    <input type="email" class="form-control" id="email" required name="email" formControlName="email"  (focus)="onFocus(inviteUserForm,'email'); hideValidationMsg();">
+                    <p class="text-danger" id="validEmailMsg">Email is not valid.</p>
+                    <div *ngIf="inviteUserForm.controls['email'].errors && !inviteUserForm.controls['email'].pristine" class="text-danger">
+                      <div [hidden]="!inviteUserForm.controls['email'].errors.required">Email is required.</div>
+                       <!-- <div [hidden]="!inviteUserForm.controls['email'].errors.email">Email is not valid.</div> -->
+                    </div>
+                  </div>
+            </div>
+            <div class="row">
+              <label class="col-sm-3 label-on-left">Contact</label>
+               <div class="col-sm-9 form-group">
+                <input type="number" class="form-control" id="contact" name="contact" (keydown)="numberCheck($event)" formControlName="contact" min="0">
+               </div>
+               <label class="col-sm-3 label-on-left">Select Role*</label>
+                <div class="col-sm-9 form-group">
+                  <select class="form-control" id="user_type" name="user_type" formControlName="user_type"  required (focus)="onFocus(inviteUserForm,'user_type')">
+                     <option value="">Select Role</option>
+                      <option value="catalogue_head">Catalogue Head</option>
+                      <option value="design_head">Design Head</option>
+                      <option value="lead_head">Lead Head</option>
+                      <option value="customer_head">Customer Head</option>
+                      <option value="customer">Customer</option>
+                      <option value="designer">Designer</option>
+                      <option value="cs_agent">CS Agent</option>
+                      <option value="broker">Broker</option>
+                      <option value="manufacturer">Manufacturer</option>
+                      <option value="community_manager">Community Manager</option>
+                      <option value="finance">Finance</option>
+                      <!-- <option value="category">Category</option> -->
+                      <option value="sitesupervisor">Site Supervisor </option>
+                      <option value="cad">CAD </option>
+                      <option value="sales_manager">Sales Manager </option>
+                      <option value="referral">Referral</option>
+                      <option value="order_manager">Order Manager</option>
+                      <option value="catalog_viewer">Catalog Viewer</option>
+                      <option value="employee_referral">Employee Referral </option>
+                      <option value="design_partner_referral">Design Partner Referral</option>
+                      <option value="client_referral">Client Referral</option>
+                      <option value="display_dealer_referral">Display Dealer Referral</option>
+                      <option value="non_display_dealer_referral">Non Display Dealer Referral </option>
+                      <option value="business_head">Business Head </option>
+                      <option value="associate_partner">Associate partner</option>
+                      <option value="developer"> Developer Role</option>
+                      <option value="city_gm">General Manager</option>
+                      <option value="category_head">CATEGORY HEAD</option>
+                      <option value="design_manager">Design Manager</option>
+                      <option value="category_panel">Category Panel</option>
+                      <option value="category_non_panel">Category Non Panel</option>
+                      <option value="category_services">Category Services</option>
+                      <option value="others">Others</option>
+                  </select>
+                </div>
+                <div class="col-sm-9">
+                  <input id="arrivaeChampioncheckbox" type="checkbox" formControlName="champion" name="champion"> invitee is part of Arrivae Champions program
+                </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+
+            <button type="submit" class="modalButton">Submit</button>
+            <button type="button" class="cancel" data-dismiss="modal" (click)="inviteUserForm.reset(); failedMsgerrors();">Close</button>
+          </div>
+        </form>
+    </div>
+  </div>
+</div>
+<!-- V:modal box for Category role split users list-->
+<div class="modal fade" id="getUserCategorySplit" tabindex="-1" role="dialog" aria-labelledby="getUserCategorySplitLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="getUserCategorySplitLabel">Users by Segment</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>  
+      <div class="modal-body">
+        <div class="col-md-4 mt-3">
+          <label class="name">Type<span class="text-danger">:</span></label>
+          <select (change) = "getUserCategorySplit($event)">
+            <option value="" disabled>Select Type</option>
+            <option value="category_panel">Category Panel</option>
+            <option value="category_non_panel">Category Non Panel</option>
+            <option value="category_services">Category Services</option>
+          </select>
+        </div>
+        <div class="row" *ngIf="!this.Vusers">
+          <div class="col-12 text-center">
+             <i class="fas fa-spinner fa-spin mt-4" style="font-size: 40px;color:#8C031F"></i>
+             <p class="mt-4" style="color:#8C031F">Select One Type To Show User List</p>
+          </div>
+        </div>
+        <div class="row mt-4"  *ngIf="this.Vusers && this.Vusers.length > 0">
+          <div class="col-md-12">
+            <div class="tableDiv">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead class="thead-dark">
+                      <tr>
+                        <th scope="col" class="firstTh">#</th>
+                        <th scope="col" class="w-25">USER ID</th>
+                        <th scope="col" class="w-25">USER NAME</th>
+                        <th scope="col" class="w-25">EMAIL</th>
+                      </tr>
+                  </thead>
+                  <tbody lass="ss-tbody">
+                    <tr *ngFor="let obj of Vusers; let i = index" [attr.data-index]="i">
+                      <td style="min-width: 1rem;">{{i+1}}</td>
+                      <td class="capitalize">{{obj.id}}</td>
+                      <td class="capitalize">{{obj.name}}</td>
+                      <td class="capitalize">{{obj.email}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>          
+          </div> 
+        </div>
+      </div>   
+    </div>
+  </div>
+</div>

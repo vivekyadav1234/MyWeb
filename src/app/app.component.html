@@ -1,0 +1,61 @@
+<div class="wrapper">
+  <div class="main-panel">
+    <app-header *ngIf="isLoggedIn()"></app-header>
+    <app-customer-header *ngIf="isLoggedIn() && isCustomer()"></app-customer-header>
+    <div class="container-fluid MAIN">
+      <div *ngIf="isLoggedIn()" class="row">
+        <div class="col-sm-12 col-md-2 col-lg-2 p-0 borderRight marginTop" *ngIf="!isCustomer()">
+          <app-sidenavbar *ngIf="isLoggedIn()"></app-sidenavbar>
+        </div>
+
+        <!-- For customer -->
+        <div class="col-sm-12 col-md-12 col-lg-12 marginTop ss-body" *ngIf="isCustomer()">
+          <router-outlet *ngIf="isLoggedIn()">
+            <div class="loader" *ngIf="showLoader">
+              <svg class="circular" viewBox="25 25 50 50">
+                <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/>
+              </svg>
+            </div>
+          </router-outlet>
+        </div>
+        <!-- For non customer -->
+        <div class="col-sm-12 col-md-10 col-lg-10 marginTop ss-body pb-4" *ngIf="!isCustomer()">
+          <router-outlet *ngIf="isLoggedIn()">
+            <div class="loader" *ngIf="showLoader">
+              <svg class="circular" viewBox="25 25 50 50">
+                <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/>
+              </svg>
+            </div>
+          </router-outlet>
+        </div>
+      </div>
+      <router-outlet *ngIf="isLoggedOut()">
+        <a class="text-center" id="myBtn" title="Go to top"><i class="fa fa-chevron-up" aria-hidden="true"></i></a>
+
+        <div class="loader" *ngIf="showLoader">
+          <svg class="circular" viewBox="25 25 50 50">
+            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/>
+          </svg>
+          <ng-container *ngIf="!this.url.includes('polkahouse.com') ||
+                               this.url.indexOf('polkahouse.com') == -1" >
+                            <img class="loader_img" src="../../assets/img/loaderLogo.png">
+          </ng-container>
+          <ng-container *ngIf="this.url.includes('polkahouse.com') ||
+                               this.url.indexOf('polkahouse.com') !== -1" >
+                        <img class="loader_img">
+          </ng-container>
+        </div>
+        <!-- <div class="showbox" *ngIf="showLoader">
+          <div class="loader">
+            <svg class="circular" viewBox="25 25 50 50">
+              <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"></circle>
+               <img class="loader_img" src="https://d2wtye2lnn1ee2.cloudfront.net/assets/v3/img/logo.png">
+            </svg>
+          </div>
+        </div> -->
+      </router-outlet>
+    </div>
+    <app-footer *ngIf="isLoggedIn() && !isCustomer()"></app-footer>
+    <app-customer-footer *ngIf="isLoggedIn() && isCustomer()"></app-customer-footer>
+  </div>
+</div>

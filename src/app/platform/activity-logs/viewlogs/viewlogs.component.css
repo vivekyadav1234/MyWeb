@@ -1,0 +1,427 @@
+/* ======================================== */
+.vColor{
+  color: #888;
+  font-weight: 100;
+}
+.vColor1{
+  color: #5a5a5a;
+  font-weight: 100;
+}
+.fontSize14{
+	font-size: 14px;
+}
+.dropdownButton{
+  padding: 5px 12px;
+  width: 10rem;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  outline: none;
+  color: #515151;
+  text-align: left;
+  border: 1px solid #ecf0f1;
+}
+.dropdownButton.dropdownButton1{
+	width: 14rem;
+
+}
+.dropdown-item{
+  padding: 3px 10px;
+  border-bottom: 1px solid #ecf0f1;
+  font-size: 15px;
+  color: #515151 !important;
+}
+.dropdown-toggle::after{
+  float: right;
+  margin-top: 10px;
+}
+.myFluit{
+	border-radius: 50px;
+	width: 1.5rem;
+	box-shadow: 0 0 0px 2px #ccc;
+}
+.dropdownMenu.show{
+	width: 14rem;
+	border: 1px solid #e8e8e8;
+}
+/* ======================================== */
+
+.leadDetailsMainDiv{
+  background-color: #fff;
+  margin-top: 1.8rem;
+}
+.borderBottom{
+	border-bottom: 1px solid #f1f1f1;
+}
+.customRow{
+	background-color: #fff;
+  min-height: 3.7rem;
+}
+.customRow img{
+	border-radius: 50px;
+  width: 62%;
+  margin-top: 13px;
+  box-shadow: 0 0 0px 2px #ccc;
+}
+.vPara{
+	font-size: 18px;
+	color: #000;
+}
+.vDate{
+  font-size: 10px;
+}
+.cusDownArrow{
+	float: right;
+	margin-top: -8px;
+	font-size: 18px;
+	margin-right: 10px;
+}
+.card-body{
+	border-radius: 0;
+}
+
+.modal-header-chng{
+ background-image: url("../../../../assets/img/customer/image7.png");
+ height: 130px;
+}
+.modal-title-change{
+  color: white;
+
+}
+.iconbox{
+  border-radius: 50%;
+  background: white;
+  width: 24px;
+  height: 25px;
+  opacity: 0.7;
+}
+.close-icon{
+  float: center;
+  font-size: 24px;
+  font-weight: 400;
+  padding-right: 5px;
+}
+.modal-body-change{
+  background: white;
+  padding-left: 44px;
+  padding-right: 44px;
+}
+.an-textColor{
+  color: #212529;
+  font-weight: 400;
+  font-size: 16px;
+  margin-left: 10px;
+}
+.footer-chng{
+  border-top:none;
+}
+.container-fluid-chng{
+  border-top: 1px solid #d8d4d4;
+}
+
+.table{
+  border-collapse: separate;
+  border-spacing: 0 5px;
+}
+.table td{
+    padding: 0.7rem 0.75rem;
+    vertical-align: middle;
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.7);
+    border: none;
+}
+.table th {
+    padding: .9rem;
+    vertical-align: middle;
+    border: none;
+    font-size: 12px;
+    text-transform: uppercase;
+    color: #fff;
+    background-color: #5A5A5A;
+}
+.tableDiv tbody{
+  background-color: #fff;
+}
+.tableDiv tbody tr{
+  box-shadow: 1px 1px 7px 0px #dadada;
+  border-radius: 5px;
+}
+.firstTh{
+  border-radius: 5px 0 0 0;
+}
+.lastTh{
+  border-radius: 0px 5px 0 0;
+}
+.boq-img{
+  text-align: center;
+}
+
+
+/*   For tooltip    */
+
+
+/* hide the tootip */
+[data-tooltip]:before,
+[data-tooltip]:after {
+  visibility: hidden;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+  filter: progid: DXImageTransform.Microsoft.Alpha(Opacity=0);
+  opacity: 0;
+  pointer-events: none;
+}
+
+
+/* Position tooltip above the element */
+[data-tooltip]:before {
+  position: absolute;
+  bottom: 150%;
+  left: 20%;
+  margin-bottom: 5px;
+  margin-left: 740px;
+  padding: 7px;
+  width: 160px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  background-color: #000;
+  background-color: hsla(0, 0%, 20%, 0.9);
+  color: #fff;
+  content: attr(data-tooltip);
+  text-align: center;
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+/* Triangle hack to make tooltip look like a speech bubble */
+[data-tooltip]:after {
+  position: absolute;
+  bottom: 150%;
+  left: 20%;
+  margin-left: 815px;
+  width: 0;
+  border-top: 5px solid #000;
+  border-top: 5px solid hsla(0, 0%, 20%, 0.9);
+  border-right: 5px solid transparent;
+  border-left: 5px solid transparent;
+  content: " ";
+  font-size: 0;
+  line-height: 0;
+}
+
+/* Show tooltip content on hover */
+[data-tooltip]:hover:before,
+[data-tooltip]:hover:after {
+  visibility: visible;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+  filter: progid: DXImageTransform.Microsoft.Alpha(Opacity=100);
+  opacity: 1;
+}
+
+
+
+
+
+
+
+
+/* hide the tootip */
+[data-tooltip1]:before,
+[data-tooltip1]:after {
+  visibility: hidden;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+  filter: progid: DXImageTransform.Microsoft.Alpha(Opacity=0);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Position tooltip above the element */
+[data-tooltip1]:before {
+  position: absolute;
+  bottom: 150%;
+  left: 33%;
+  margin-bottom: 5px;
+  margin-left: 602px;
+  padding: 7px;
+  width: 160px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  background-color: #000;
+  background-color: hsla(0, 0%, 20%, 0.9);
+  color: #fff;
+  content: attr(data-tooltip1);
+  text-align: center;
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+/* Triangle hack to make tooltip look like a speech bubble */
+[data-tooltip1]:after {
+  position: absolute;
+  bottom: 150%;
+  left: 33%;
+  margin-left: 690px;
+  width: 0;
+  border-top: 5px solid #000;
+  border-top: 5px solid hsla(0, 0%, 20%, 0.9);
+  border-right: 5px solid transparent;
+  border-left: 5px solid transparent;
+  content: " ";
+  font-size: 0;
+  line-height: 0;
+}
+
+/* Show tooltip content on hover */
+[data-tooltip1]:hover:before,
+[data-tooltip1]:hover:after {
+  visibility: visible;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+  filter: progid: DXImageTransform.Microsoft.Alpha(Opacity=100);
+  opacity: 1;
+}
+
+
+
+
+
+
+
+/* hide the tootip */
+[data-tooltip2]:before,
+[data-tooltip2]:after {
+  visibility: hidden;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+  filter: progid: DXImageTransform.Microsoft.Alpha(Opacity=0);
+  opacity: 0;
+  pointer-events: none;
+}
+
+
+/* Position tooltip above the element */
+[data-tooltip2]:before {
+  position: absolute;
+  bottom: 150%;
+  left: 46%;
+  margin-bottom: 5px;
+  margin-left: 455px;
+  padding: 7px;
+  width: 160px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  background-color: #000;
+  background-color: hsla(0, 0%, 20%, 0.9);
+  color: #fff;
+  content: attr(data-tooltip2);
+  text-align: center;
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+/* Triangle hack to make tooltip look like a speech bubble */
+[data-tooltip2]:after {
+  position: absolute;
+  bottom: 150%;
+  left: 46%;
+  margin-left: 581px;
+  width: 0;
+  border-top: 5px solid #000;
+  border-top: 5px solid hsla(0, 0%, 20%, 0.9);
+  border-right: 5px solid transparent;
+  border-left: 5px solid transparent;
+  content: " ";
+  font-size: 0;
+  line-height: 0;
+}
+
+/* Show tooltip content on hover */
+[data-tooltip2]:hover:before,
+[data-tooltip2]:hover:after {
+  visibility: visible;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+  filter: progid: DXImageTransform.Microsoft.Alpha(Opacity=100);
+  opacity: 1;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@media (min-width: 768px) {
+
+}
+@media (max-width: 767px) {
+  .bg-white{
+    background-color: transparent !important;
+  }
+  .mobNone{
+    display: none;
+  }
+  .vColor1{
+    width: 85%;
+  }
+  .vColor1 span{
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .cusDownArrow{
+    position: absolute;
+    right: 0;
+    margin-right: 15px;
+    top: 50%;
+  }
+  td.tableMob{
+    width: auto;
+    border: 1px solid #ccc !important;
+    font-size: 14px;
+    font-weight: 400;
+  }
+  .dropdownButton.dropdownButton1{
+
+  }
+  .dropdownButton{
+    width: auto !important;
+  }
+  .nav-tabs .nav-link.ss-nav-link{
+    padding: 0.6rem 1.8rem;
+    width: 9rem;
+  }
+  .dropdownMenu.show{
+    width: auto;
+  }
+
+
+}
+
+#SmsModal{
+  z-index: 100000;
+}
+
+
+
+
+
+
+
+
+
+
+
+

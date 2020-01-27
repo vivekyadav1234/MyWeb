@@ -1,0 +1,79 @@
+.bg-color{
+  background-color: #e1e7e8;
+}
+.bg-white{
+  min-height: 100%;
+  border-radius: 5px;
+}
+.alert {
+  color: #e40335;
+}
+.formDiv{
+  width: 60%;
+}
+button[type="submit"]:enabled{
+  cursor: pointer;
+  color: white;
+  background: darkred;
+}
+.viewProfileForm .form-group{
+  margin-bottom: 2rem;
+}
+
+.productInput{
+	border-top: none;
+    border-left: none;
+    border-right: none;
+    background: none;
+}
+.view-chng{
+  height: 423px;
+
+}
+
+.img-chng{
+  border-radius: 50px;
+  box-shadow: 0 3px 20px 2px #c1c1c1;
+  border: 3px solid #f1eded;
+}
+.imgdiv{
+      text-align: center;
+    margin-top: -2rem;
+}
+.txtDiv{
+  font-family: Roboto;
+  font-size: 14px;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.43;
+  letter-spacing: normal;
+  text-align: center;
+  color: #999999;
+  margin-top: 30px;
+}
+.view-show{
+    background: #8c1616;
+    width: 64px;
+    height: 63px;
+    box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.14);
+    margin-top: -31px;
+    margin-left: 0px;
+    text-align: center;
+    border-radius: 6%;
+}
+.icon-chng{
+    width: 20px;
+    margin-top: 20px;
+}
+.view-text{
+  margin-left: 89px;
+  margin-top: -29px;
+  font-size: 18px;
+  margin-bottom: 40px;
+
+}
+
+.ss-body {
+    background-color: #e1e7e8 !important;
+}

@@ -1,0 +1,150 @@
+# Javascript Node CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-javascript/ for more details
+#
+version: 2.1
+executors:
+  project-executor:
+    docker:
+      # specify the version you desire here
+      - image: circleci/node:11.10.0
+
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
+      # - image: circleci/mongo:3.4.4
+
+    working_directory: ~/arrivae-frontend
+
+jobs:
+
+  setup-environment:
+    executor: project-executor
+    
+    steps:
+      - checkout
+      - run: 
+          name: Show current branch
+          command: echo ${CIRCLE_BRANCH}
+      
+      - run:
+          name: Install local dependencies
+          command: |
+            sudo npm i npm@6.7.0 -g
+            npm install
+      - run:
+          name: Build Node Sass
+          command: npm install --unsafe-perm node-sass
+
+      - save_cache:
+          key: v1-dependencies-{{checksum "package.json"}}
+          paths:
+            - node_modules
+      
+      - persist_to_workspace:
+          root: .
+          paths: 
+            - src
+            - package.json
+            - angular.json
+            - Dockerfile
+            - tslint.json
+            - tsconfig.json
+            - .firebaserc
+            - firebase.json
+  
+  build:
+    executor: project-executor
+    
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/arrivae-frontend
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+      
+      - run:
+          name: Building
+          command: |
+            if [[ "${CIRCLE_BRANCH}" == "qa-arrivae-delta" ]]; then
+              node --max_old_space_size=4096 ./node_modules/.bin/ng build --environment qa --aot
+            elif [ "${CIRCLE_BRANCH}" == "uat-arrivae-delta" ]; then
+              node --max_old_space_size=4096 ./node_modules/.bin/ng build --environment uat --aot
+            elif [ "${CIRCLE_BRANCH}" == "arrivae-delta" ]; then
+              node --max_old_space_size=4096 ./node_modules/.bin/ng build --environment prod --aot
+            fi
+      # Cache the dist folder for the deploy job
+      - save_cache:
+          key: v1-dist-{{ .Environment.CIRCLE_BRANCH }}-{{ .Environment.CIRCLE_SHA1 }}
+          paths:
+            - dist
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist
+  deploy:
+    executor: project-executor
+    steps:
+      - attach_workspace:
+          at: ~/arrivae-frontend
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies-
+      - run:
+          name: Install Firebase Tool
+          command: sudo npm install -g firebase-tools
+      - run:
+          name: Switch environment
+          command: |
+            if [[ "${CIRCLE_BRANCH}" == "qa-arrivae-delta" ]]; then
+              firebase use arrivae-qa-product
+            elif [ "${CIRCLE_BRANCH}" == "uat-arrivae-delta" ]; then
+              firebase use arrivae-uat-product
+            elif [ "${CIRCLE_BRANCH}" == "arrivae-delta" ]; then
+              firebase use arrivae-product
+            fi
+            # firebase use production
+      - run:
+          name: Firebase deploy
+          command: firebase deploy --token "$FIREBASE_TOKEN"
+
+workflows:
+  version: 2
+  setup-and-deploy:
+    jobs:
+      - setup-environment:
+          filters:
+            branches:
+              only:
+                - qa-arrivae-delta
+                - uat-arrivae-delta
+                - arrivae-delta
+              ignore:
+                - /.*/
+      - build: 
+          filters:
+            branches:
+              only:
+                - qa-arrivae-delta
+                - uat-arrivae-delta
+                - arrivae-delta
+              ignore:
+                - /.*/
+          requires:
+            - setup-environment
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - qa-arrivae-delta
+                - uat-arrivae-delta
+                - arrivae-delta
+              ignore:
+                - /.*/

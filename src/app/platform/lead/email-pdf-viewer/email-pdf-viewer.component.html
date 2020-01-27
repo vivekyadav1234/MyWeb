@@ -1,0 +1,29 @@
+<div class="">
+  <div class="logo mt-3" style="position:absolute !important;">
+    <a href="#"><img style="width:125px;" src="../../../assets/img/Logo resized.svg" width="100%"></a>
+  </div>
+</div>
+<div class="row ss-top-menu">
+  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6">
+    <span class="ss-text-light ss-link" style="vertical-align: -webkit-baseline-middle;" [routerLink]="['/']"></span>
+    <span style="vertical-align: -webkit-baseline-middle;"></span>
+    <!-- <span style="vertical-align: -webkit-baseline-middle;" *ngIf="lead_details.user_reference"><i class="rightArrow fa fa-angle-right"></i> </span> -->
+    <span style="vertical-align: -webkit-baseline-middle;"></span>
+  </div>
+</div>
+<div *ngIf="isLoaded" class="mt-4" style="text-align: center;">
+  <button class="btn btn-pink" (click)="prevPage()" [disabled]="page === 1">Prev</button>
+  <span>{{ page }} / {{ totalPages }}</span>
+  <button class="btn btn-pink" (click)="nextPage()" [disabled]="page === totalPages">Next</button>
+</div>
+  <pdf-viewer src="{{pdf_url}}"  
+  [show-all]="false"
+  [page]="page"
+  (after-load-complete)="afterLoadComplete($event)"
+  ></pdf-viewer>
+<script type="text/javascript">
+  $('.pdfViewer').bind("contextmenu", function (e) {  
+      e.preventDefault(); 
+  });
+</script>
+  

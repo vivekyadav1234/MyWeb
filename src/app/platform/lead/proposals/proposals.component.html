@@ -1,0 +1,487 @@
+<div class="row ss-top-menu">
+  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6">
+    <span class="ss-text-light ss-link" style="vertical-align: -webkit-baseline-middle;" [routerLink]="['/']">Dashboard</span>
+    <span style="vertical-align: -webkit-baseline-middle;"><i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-text-light ss-link" style="vertical-align: -webkit-baseline-middle;" [routerLink]="['/community_manager/leads']" [queryParams]="{lead_status: lead_status}" >Lead</span>
+    <span style="vertical-align: -webkit-baseline-middle;"><i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;" *ngIf="lead_details && lead_details.user_reference">{{lead_details.user_reference.name}}</span>
+  </div>
+</div>
+<div class="rk-ui-notification" *ngIf="successalert">
+  <span id="notificationMessageText">{{successMessage}}</span>
+  <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+<div class="rk-ui-notification err" *ngIf="erroralert">
+  <span id="notificationMessageText">{{errorMessage}}</span>
+  <a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+
+<div class="row px-4">
+  <app-shared-top-menu [lead_id]='lead_id' [lead_details]='lead_details' [lead_status]='lead_status' [proposal_tab]='"active"'></app-shared-top-menu>
+
+  <div class="col-12 bg-white">
+    <app-sms-call></app-sms-call>
+    <div class="row mb-5">
+      <div class="col-md-12">
+        <div class="container-fluid container-set" >
+
+          <div class="row" style="padding: 16px">
+            <div class="col-md-12 mb-2 border-set" >
+
+              <select class="form-control col-sm-3" (change) = "changeProposalType($event)" >
+                <option value="initial_design">Initial Design Proposal</option>
+                <option value="final_design">Final Design Proposal</option>
+              </select>
+
+              <button class="btn pull-right btn-lg bt-boq" type="button" data-toggle="modal" data-target="#myProposal" (click) = "removeItemFromList()" *ngIf="role == 'designer' && project_id || 'community_manager' && project_id  || 'city_gm' && project_id || 'business_head' && project_id || 'design_manager' && project_id" >Add Proposal</button>
+            </div>
+            <div class="tabs-new">
+
+              <ul class="nav nav-tabs tabs-chng mt-4"  id="myTab" role="tablist">
+                <li class="nav-item nav-items">
+                  <a class="nav-link active addCursor text-center mr-3" (click)="getProposalList('all')" [ngClass]="{'active': proposalstatus == 'all'}">ALL</a>
+                </li>
+                <li class="nav-item nav-items">
+                  <a class="nav-link addCursor text-center mr-3" (click)="getProposalList('submitted')" [ngClass]="{'active': proposalstatus == 'submitted'}">SHARED</a>
+                </li>
+
+                <li class="nav-item nav-items" *ngIf="role == 'designer'">
+                  <a class="nav-link addCursor text-center" (click)="getProposalList('draft')" [ngClass]="{'active': proposalstatus == 'draft'}">DRAFT</a>
+                </li>
+                <li class="nav-item nav-items">
+                  <a class="nav-link addCursor text-center mr-3" (click)="getProposalList('discount-proposed')" [ngClass]="{'active': proposalstatus == 'discount-proposed'}" *ngIf="role == 'city_gm' || role=='business_head' || role=='community_manager' || role=='design_manager'">DISCOUNT</a>
+                </li>
+
+              </ul>
+
+            </div>
+
+            <div class="proposalList proposal-chng">
+              <!-- <div class="text-danger" *ngIf="obj.requirement_sheet_status == 'false'">
+                Please fill Requirement Sheet
+              </div> -->
+              <div  *ngFor="let obj of proposalList;let i = index; " [attr.data-index]="i" >
+                <div class="proposalBox addShadow mr-3 mb-3">
+                  <div class="row">
+                    <div class="col-3 text-center px-2">
+                      <div class="proposalBoxImg ">
+                        <img class="img-fluid" src="../../../assets/img/customer/folder.png">
+
+                      </div>
+                    </div>
+                    <div class="col-9 pl-0">
+                      <div class="proposalBoxBody">
+                        <h6 class="mb-0 mt-1 font-chng capitalize"><a  routerLink="/lead/{{lead_id}}/project/{{project_id}}/proposals/{{obj.id}}/view-proposal" routerLinkActive="active" [queryParams]="{status: obj.proposal_status,type:obj.proposal_type}" >{{ obj.proposal_name | replaceChar }}</a></h6>
+
+                        <span class="mb-0" style="position: relative;">{{ obj.proposed_quotations.length + obj.proposesd_presentations.length + obj.proposesd_uploaded_presentations.length }} Files</span>
+
+                        <span class="mb-0" style="position: relative; color: #8c041f;" *ngIf="obj.is_draft == 'yes'"> (Draft)</span>
+                        <span class="mb-0" style="position: relative; color: #0c8c04;" *ngIf="obj.proposal_status == 'proposal_shared'"> (Shared)</span>
+                        <span class="mb-0" style="position: relative; color: #176ab1;" *ngIf="obj.is_draft != 'yes' && ['proposal_for_discount','sent_for_approval'].includes(obj.proposal_status)==true"> (Waiting)</span>
+                        <span class="mb-0">{{ obj.created_at }}</span>
+
+                        <span class=" spanTag"> <i class="ion-android-more-vertical  ss-3-dot-drop" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"></i>
+                          <div class="dropdown-menu pt-2 pb-2" style="font-size: 14px;" *ngIf="obj.proposal_status != 'proposal_shared'">
+                            <a class="dropdown-item addCursor" (click)="confirmAndDelete(obj.id)">Delete</a>
+                            <div class="dropdown-divider"></div>
+                            <p class="text-danger px-4 dropdown-item" *ngIf="obj.is_draft != 'yes' && obj.proposal_status == 'pending' && role == 'designer'"> Please fill Requirement Sheet and upload floorplans  </p>
+                            <a class="dropdown-item addCursor" *ngIf="obj.is_draft != 'yes' && obj.proposal_status == 'pending' && (role == 'designer' || role == 'city_gm' || role=='business_head' || role=='community_manager' || role=='design_manager') && proposal_type == 'initial_design'" (click)="shareToCustomer(obj.id)">Share With Customer</a>
+                            <a class="dropdown-item addCursor" *ngIf="obj.is_draft != 'yes'  && (role == 'designer' || role == 'city_gm' || role=='business_head' || role=='community_manager' || role=='design_manager') && proposal_type == 'final_design' && obj.final_proposal_can_share == true" (click)="shareToCustomer(obj.id)">Share With Customer</a>
+                            <p class="text-danger px-4 dropdown-item" *ngIf="obj.is_draft != 'yes' && obj.proposal_status == 'sent_for_approval' && role == 'designer' && proposal_type == 'final_design' && obj.final_proposal_can_share == false">This Proposal is not approved by CM or Category</p>
+                            <p class="text-danger px-4 dropdown-item" *ngIf="obj.site_measurement_status == false && role == 'designer' && proposal_type == 'final_design'">Site Measurement is not uploaded</p>
+                          </div>
+                        </span>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12 not-found text-center" *ngIf="proposalList && proposalList.length==0 ">
+              <div class="boq-img">
+                <img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+              </div>
+              <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing to show...</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+<!-- <div class="col-12 bg-white">
+  <div class="row mb-5">
+    <div class="col-md-12">
+      <div class="container-fluid container-set" *ngIf="role == 'community_manager'">
+         <div class="row" style="padding: 16px">
+          <ul class="nav nav-tabs tabs-chng mt-4"  id="myTab" role="tablist">
+            <li class="nav-item nav-items">
+              <a class="nav-link active addCursor text-center mr-3" (click)="getProposalList('all')" [ngClass]="{'active': proposalstatus == 'all'}">ALL</a>
+            </li>
+            <li class="nav-item nav-items">
+              <a class="nav-link addCursor text-center mr-3" (click)="getProposalList('submitted')" [ngClass]="{'active': proposalstatus == 'submitted'}">SUBMITTED</a>
+            </li>
+
+          </ul>
+          <div class="proposalList proposal-chng">
+            <div  *ngFor="let obj of proposalList;let i = index; " [attr.data-index]="i" >
+              <div class="proposalBox addShadow mr-3 mb-3">
+                <div class="row">
+                  <div class="col-3 text-center px-2">
+                    <div class="proposalBoxImg ">
+                      <img class="img-fluid" src="../../../assets/img/customer/folder.png">
+
+                    </div>
+                  </div>
+                  <div class="col-9 pl-0">
+                    <div class="proposalBoxBody">
+                      <h6 class="mb-0 mt-1 font-chng "><a routerLink="/lead/{{lead_id}}/proposals/view-proposal/{{obj.id}}" routerLinkActive="active" >{{ obj.proposal_name | replaceChar }}</a><span class="pending" *ngIf="obj.proposal_status == 'proposal_for_discount'">Pending</span></h6>
+                      <p class="mb-0">{{ files_length[i] }} Files</p>
+                      <span class="mb-0">{{ obj.project.updated_at }}</span>
+                      <span class=" spanTag"> <i class="ion-android-more-vertical  ss-3-dot-drop" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"></i>
+                                  <div class="dropdown-menu pt-2 pb-2" style="font-size: 14px;">
+                                    <a class="dropdown-item addCursor" (click)="confirmAndDelete(obj.id)">Delete</a>
+                                    <a   class="dropdown-item addCursor" *ngIf="obj.proposal_status == 'pending'" (click)="shareToCustomer(obj.id)">ShareWithCustomer</a>
+                                  </div></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12 not-found " *ngIf="proposalList && proposalList.length==0 ">
+            <div class="boq-img">
+              <img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+            </div>
+            <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing to show...</p>
+          </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+ -->
+
+ <!-- Modal For Boq check pdf -->
+
+<div class="modal fade" id="boqCheckModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog" role="document" style="max-width: 500px !important;">
+    <div class="modal-content">
+      <div class="modal-header border">
+        <h5 class="modal-title" id="exampleModalLabel" style="font-family: 'algerian';">CHOOSE BOQ PDF FORMAT</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="clearCheckBox()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row justify-content-center">
+
+          <div class="col-md-8">
+            <label class="mr-3">
+              <input type="checkbox" value="boq" (change)="selectPdfFormat($event)" [(ngModel)]="isChecked1">
+              BOQ
+            </label>
+            <label class="mr-3">
+              <input type="checkbox" value="annexure" (change)="selectPdfFormat($event)" [(ngModel)]="isChecked2">
+              ANNEXURE
+            </label>
+            <label>
+              <input type="checkbox" value="summary" (change)="selectPdfFormat($event)" [(ngModel)]="isChecked3">
+              SUMMARY
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary cursor-pointer" data-dismiss="modal" (click)="clearCheckBox()">Close</button>
+        <button type="button" class="btn btn-pink" (click)="shareToCustomer1()">Share</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- End here -->
+
+<!-- Modal create for proposal -->
+<div id="myProposal" class="modal fade" role="dialog" data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog modal-lg">
+
+
+    <div class="modal-content modal-change">
+      <div class="modal-header modal-header-chng">
+        <h4 class="modal-title modal-title-change">Create Proposal</h4>
+        <div class="iconbox">
+          <button type="button" class="close close-icon" data-dismiss="modal" (click)="reMoveContent()">&times;</button>
+        </div>
+      </div>
+
+      <div class="modal-body modal-body-change">
+        <div class="row" style="height: 100px;">
+          <div class="col-md-6">
+            <span class="an-textColor">Choose from :</span><br>
+            <select class="form-control selectCatalogue ml-2" (change)="setProposal($event.target.value)">
+              <option value="" [selected]="isSelected" disabled>Choose Option</option>
+              <option value="boq" >BOQ</option>
+              <option value="ppt">PPT</option>
+            </select>
+            <i class="downArrow fa fa-angle-down"></i>
+          </div>
+
+        </div>
+
+        <div class="container-fluid container-fluid-chng">
+          <div class="row">
+            <div class="col-md-4 border-chng ">
+              <div class="proposalList proposal-chng modal-body-change1"  *ngIf="proposal_status == 'boq'">
+                <div  *ngFor="let obj of quotation;let i = index" [attr.data-index]="i" >
+                  <div class="proposalBox addShadow mr-3 mb-3 {{ obj.id }}" (click)="selectDiv(obj,i)" id="props_{{ obj.id }}">
+                    <div class="row">
+                      <div class="col-12">
+                        <div class="proposalBoxBody">
+                          <h6 class="mb-0 mt-1 font-chng "><a >{{ obj.reference_number }}</a></h6>
+                          <p class="mb-0">Price: &#8377;{{ obj.net_amount }}</p>
+                          <p class="mb-0">Project Management Fee: &#8377;{{ obj.pm_fee || 0}}</p>
+                          <div *ngIf="proposal_type == 'final_design'">
+                            <p class="mb-2 ng" *ngIf="!obj.discount_value">Discount Value: 0%</p>
+                            <p class="mb-2" *ngIf="obj.discount_value">Discount Value: {{ obj.discount_value }}%</p>
+                            
+                            <p class="mb-2">Final Amount: &#8377;{{ obj.total_amount }} </p>
+                            
+                          </div>
+                          <br />
+                          <span class="mb-0">Last Updated {{ obj.updated_at | date:"dd MMMM, y"}}</span>
+                        </div>
+                      </div>
+                      <div class="col-md-3 pull-left d-none">
+                        <label class="form-check-label" for="obj{{obj.status}}">
+                          <input
+                            class="form-check-input boq-checkbox"
+                            type="checkbox"
+                            id="obj{{obj.id}}"
+                            name="obj{{obj.id}}"
+                            [checked]="obj.checked">
+                         </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row mt-3" *ngIf="proposal_status == 'ppt'">
+                <div class="col-md-6 pull-left">
+                  <span class="color-chng" *ngIf="pptList.length > 0">Created PPT</span>                  
+                </div>
+                
+              </div>
+
+              <div class="proposalList proposal-chng modal-body-change1" *ngIf="proposal_status == 'ppt'">
+
+                <div *ngFor="let obj of pptList;let i = index" [attr.data-index]="i" >
+                  <div class="proposalBox addShadow mr-3 mb-3 {{ obj.id }}" (click)="selectDiv1(obj,i)">
+                    <div class="row myHeight">
+                      <div class="col-3 text-center px-2">
+                        <div class="proposalBoxImg1">
+                          <img class="img-fluid" src="../../../assets/img/customer/PPT.svg">
+                          <label class="form-check-label" for="obj{{obj.status}}">
+                          <input
+                            class="form-check-input d-none ppt-checkbox"
+                            type="checkbox"
+                            id="obj{{obj.id}}"
+                            name="tagOptions"
+                            [checked]="obj.checked">
+
+                         </label>
+                        </div>
+                      </div>
+                      <div class="col-9 pl-0">
+                        <div class="proposalBoxBody">
+                          <h6 class="mb-0 mt-1 font-chng ">{{ obj.title | replaceChar }}</h6>
+                          <span class="mb-0">Last Updated:{{ obj.updated_at | date:"dd MMMM, y" }}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row mt-3" *ngIf="proposal_status == 'ppt'">
+                <div class="col-md-6 pull-left">
+                  <span class="color-chng" *ngIf="UploadedpptList.length >0">Uploaded PPT</span>                  
+                </div>
+                
+              </div>
+
+              <div class="proposalList proposal-chng modal-body-change1" *ngIf="proposal_status == 'ppt'">
+
+                <div *ngFor="let obj of UploadedpptList;let i = index" [attr.data-index]="i" >
+                  <div class="proposalBox addShadow mr-3 mb-3 {{ obj.id }}" (click)="selectDiv2(obj,i)">
+                    <div class="row myHeight">
+                      <div class="col-3 text-center px-2">
+                        <div class="proposalBoxImg1">
+                          <img class="img-fluid" src="../../../assets/img/customer/PPT.svg">
+                          <label class="form-check-label" for="obj{{obj.status}}">
+                          <input
+                            class="form-check-input d-none ppt-checkbox"
+                            type="checkbox"
+                            id="obj{{obj.id}}"
+                            name="tagOptions"
+                            [checked]="obj.checked">
+
+                         </label>
+                        </div>
+                      </div>
+                      <div class="col-9 pl-0">
+                        <div class="proposalBoxBody">
+                          <h6 class="mb-0 mt-1 font-chng ">{{ obj.name | replaceChar }}</h6>
+                          <span class="mb-0">Last Updated:{{ obj.updated_at | date:"dd MMMM, y" }}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            <div class="col-md-8">
+              <div class="tableDiv modal-body-change1" *ngIf="ppt_value && ppt_value.length>0" >
+                <div class="table-responsive">
+                    <table class="table ">
+                      <thead class="thead-dark">
+                        <tr>
+                          <th>#</th>
+                          <th>TITLE</th>
+                          <th>UPDATED AT</th>
+
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let obj of ppt_value;let i = index" [attr.data-index]="i">
+
+                          <td>{{ i+1 }}</td>
+                          <td><a target="_blank" [routerLink]="['/projects',project_id,'presentation',obj.id,'edit']" routerLinkActive="active"  (click)="modalhide()">{{ obj.title }}</a></td>
+                          <td>{{ obj.updated_at | date:"dd MMMM, y @ h:mma"}}</td>
+
+
+
+                        </tr>
+                      </tbody>
+                    </table>
+
+                  </div>
+              </div>
+              <div class="tableDiv modal-body-change1" *ngIf="uploaded_ppt_value && uploaded_ppt_value.length>0" >
+                <div class="table-responsive">
+                    <table class="table ">
+                      <thead class="thead-dark">
+                        <tr>
+                          <th>#</th>
+                          <th>TITLE</th>
+                          <th>UPDATED AT</th>
+
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let obj of uploaded_ppt_value;let i = index" [attr.data-index]="i">
+
+                          <td>{{ i+1 }}</td>
+                          <td><a  (click)="modalhide()">{{ obj.name }}</a></td>
+                          <td>{{ obj.updated_at | date:"dd MMMM, y @ h:mma"}}</td>
+
+
+
+                        </tr>
+                      </tbody>
+                    </table>
+
+                  </div>
+              </div>
+
+              <div class="tableDiv modal-body-change1"  *ngIf="boqProducts && boqProducts.length>0">
+                <div class="table-responsive">
+                  <table class="table ">
+                    <thead class="thead-dark">
+                      <tr>
+                        <th scope="col" class="firstTh">#</th>
+                        <th scope="col">REFERENCE NUMBER</th>
+                        <th scope="col">STATUS</th>
+                        <th scope="col">PRICE</th>
+                        <th scope="col" *ngIf="proposal_type == 'final_design'">ALREADY DISCOUNTED PERCENT</th>
+                        <th scope="col">PERCENT DISCOUNT</th>
+                        <th scope="col">PROJECT MANAGEMENT FEE</th>
+                        <th scope="col">FINAL AMOUNT</th>
+                        <th class="lastTh"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr  *ngFor="let addedproduct of boqProducts; let i = index; " [attr.data-index]="i" class="box-list">
+                        <td>{{ i +1 }}</td>
+                        <td>{{addedproduct.reference_number}}</td>
+                        <td>{{ addedproduct.status }}</td>
+                        <td>{{ addedproduct.net_amount }}</td>
+                        <td *ngIf="proposal_type == 'final_design'">{{ addedproduct.discount_value }} %</td>
+                        <td id="prod_{{addedproduct.id}}">
+                          <input type="number" step="0.01" min="0"  max="10"  class="discountInput form-control" id="product_{{addedproduct.id}}" (input)="onInputDiscount($event.target.id,addedproduct,i,addedproduct.id)">
+                        </td>
+                        <td>{{ addedproduct.pm_fee || 0}}</td>
+                        <td>{{ final_amt[i] |  number : '1.2-2'}}</td>
+                        <td >
+                          <div id="dot_{{ addedproduct.id}}">
+                            <i class="ion-android-more-vertical  ss-3-dot-drop" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"></i>
+                            <div class="dropdown-menu pt-2 pb-2" style="font-size: 14px;">
+                              <a class="dropdown-item addCursor" (click)="deleteBoq(addedproduct)">Delete</a>
+                             <!--  <a class="dropdown-item addCursor" (click)="discountValue(addedproduct.id)">Discount</a> -->
+                            </div>
+                          </div>
+
+                        </td>
+                        <!-- <td> <i class="fa fa-trash deleteRow addCursor" id="delete_row{{i}}" (click)="removeProductToProposals(addedproduct.id)"></i></td> -->
+
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="col-md-12 not-found " *ngIf="boqProducts && boqProducts.length==0 && proposal_status == 'boq' ">
+                <div class="boq-img">
+                  <img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+                </div>
+                <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing to show...</p>
+              </div>
+              <div class="col-md-12 not-found " *ngIf="ppt_value && ppt_value.length==0 && proposal_status == 'ppt' ">
+                <div class="boq-img">
+                  <img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+                </div>
+                <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing to show...</p>
+              </div>
+
+            </div>
+
+
+          </div>
+        </div>
+      <div class="row">
+        <div class="col-md-4">
+
+        </div>
+        <div class="col-md-8 pull-left brd-chng" *ngIf="boqProducts && boqProducts.length>0">
+           <button class="btn  interalBtnColor addCursor mt-2 ml-3" (click)="saveProposal('draft')" >Draft</button>
+           <button class="btn  interalBtnColor addCursor mt-2" (click)="saveProposal()" >Save</button>
+
+        </div>
+
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Modal end here -->
+

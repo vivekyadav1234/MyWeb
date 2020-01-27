@@ -1,0 +1,166 @@
+<div class="row title">
+  <h3>Dashboard / <span>Profile</span></h3>
+</div>
+<div class="row bg_dashboard justify-content-center" *ngIf="profile">
+  <div class="col-12" *ngIf="erroralert">
+    <div class="alert-box grid-100" *ngIf="errorMessage">
+      <div class="alert alert-danger mt-3 text-center">
+        <a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a>
+        {{errorMessage}}
+      </div>
+    </div>
+  </div>
+  <div class="col-12" *ngIf="successalert">
+    <div class="alert-box grid-100" *ngIf="successMessage">
+      <div class="alert alert-success mt-3 text-center">
+        <a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+        {{successMessage}}
+      </div>
+    </div>
+  </div>
+  <div class="row justify-content-center mx-0">
+    <div class="col-9 px-2">
+
+
+        <div class="card text-center">
+          <div class="card-body card_main">
+            <button class="btn btn-sm btn-pink pull-right" [routerLink]="['/profile/edit/'+id]" routerLinkActive="active"><span><i class="fa fa-pencil">&nbsp;</i></span>Edit</button>
+            <form class="viewProfileForm">
+
+            <div class="row px-5">
+                <div class="col-md-4">
+                    <div class="fileinput fileinput-new text-center" data-provides="fileinput">
+                        <div class="fileinput-new thumbnail">
+                            <img src={{profile.avatar}}  class="profileImg" height="170px" width="170px" *ngIf="profile.avatar != '/images/original/missing.png'">
+                            <img src="assets/v3/img/profile.jpeg" class="profileImg" height="170px" width="170px" *ngIf="profile.avatar == '/images/original/missing.png'" >
+                        </div>
+                        <div class="fileinput-preview fileinput-exists thumbnail"></div>
+                        
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="row border border-dark rounded">
+                        <div class="col-md-12">
+                            <div class="row mt-4 justify-content-center">
+                                <div class="col-md-8">
+                                    <div class="form-group label-floating">
+                                        <label class="control-label float-left formTitle">Name</label>
+                                        <input type="text" class="form-control productInput" placeholder=" {{profile.name | ucwords}}" readonly/>
+                                        
+                                    </div>
+                                     <p *ngIf="name==''" class="text-danger pull-left">Name is required</p>
+                                   
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="form-group label-floating">
+                                        <label class="control-label float-left formTitle">Email address</label>
+                                        <input type="text" class="form-control"  [value]="profile.email" readonly>
+                                    </div>
+                                    
+                                </div>
+                                <div class="col-md-8" *ngIf="role == 'designer'">
+                                    <div class="form-group label-floating">
+                                        <label class="control-label float-left formTitle">Instagram Handle</label>
+                                        <input type="text" class="form-control productInput" placeholder="{{profile.instagram_handle}}" readonly/>
+                                
+                                    </div>
+                                    
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="form-group label-floating">
+                                        <label class="control-label float-left formTitle">Contact</label>
+                                        <input type="text" class="form-control productInput" placeholder="{{profile.contact != '' && profile.contact != null && profile.contact || 'Contact'}}" readonly/>
+                                    </div>
+
+                                    
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="form-group label-floating">
+                                        <label class="control-label float-left formTitle">Pin Code</label>
+                                        <input type="text" class="form-control productInput" placeholder="{{profile.pincode != '' && profile.pincode != null && profile.pincode || 'Pincode'}}" readonly/>
+                                        
+                                    </div>
+                                    
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="form-group label-floating">
+                                        <label class="control-label float-left formTitle">GST Number</label>
+                                        <input type="text" class="form-control productInput" placeholder="{{profile.gst_number != '' && profile.gst_number != null && profile.gst_number || 'GST'}}" readonly/>
+                                                     
+                                        
+                                    </div>
+                                    
+                                            
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="form-group label-floating">
+                                        <label class="control-label float-left formTitle">PAN</label>
+
+                                        <input type="text" class="form-control productInput" placeholder="{{profile.pan != '' && profile.pan != null && profile.pan || 'PAN'}}" readonly/>
+
+                                        
+                                    </div>
+
+                                   
+                                    
+                                </div>
+                                <div class="col-md-8">
+                                        <div class="form-group label-floating">
+                                                <label class="control-label float-left formTitle">Exophone</label>
+        
+                                                <input type="text" class="form-control productInput" placeholder="{{profile.exophone != '' && profile.exophone != null && profile.exophone || ''}}" disabled/>
+        
+                                                
+                                            </div>
+                                            <div class="form-group label-floating">
+                                                    <label class="control-label float-left formTitle">Extension</label>
+            
+                                                    <input type="text" class="form-control productInput" placeholder="{{profile.extension != '' && profile.extension != null && profile.extension || ''}}" disabled/>
+            
+                                                    
+                                                </div>
+                                        
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                           <p class="text-dark"> Address Proof </p><br>
+                                           <a href="{{profile.address_proof}}" *ngIf="!(profile.address_proof_content_type == 'image/png' || profile.address_proof_content_type == 'image/jpg' || profile.address_proof_content_type == 'image/jpeg' || profile.address_proof_content_type == 'image/svg' || profile.address_proof_content_type == null) " download>Download Address Proof</a>
+                                          <div class="upload_cv">
+                                            <a href="{{profile.address_proof}}" *ngIf="(profile.address_proof_content_type == 'image/png' || profile.address_proof_content_type == 'image/jpg' || profile.address_proof_content_type == 'image/jpeg' || profile.address_proof_content_type == 'image/svg' || profile.address_proof_content_type == null) " download>Download Address Proof</a></div>
+                                        </div>
+                                        <div class="col-md-6" *ngIf="role == 'designer'">
+                                            <p class="text-dark">Designer CV</p><br>
+                                            <div class="upload_cv"><a href="{{profile.designer_cv}}" download *ngIf="role == 'designer'">View CV</a></div>
+                                                 
+                                                
+                                            
+                                            
+                                            
+                                            
+                                        </div>
+                                        
+                                    </div>
+                                    
+                                </div>
+                                
+                            </div>
+                            
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+
+           
+            <div class="clearfix"></div>
+            </form>
+          </div>
+        </div>
+        
+
+    </div>
+  </div>
+</div>

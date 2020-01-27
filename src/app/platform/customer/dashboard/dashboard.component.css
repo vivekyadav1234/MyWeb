@@ -1,0 +1,286 @@
+.project-col{
+  background-color: #F3F3F3
+}
+
+.project-tag{
+  background-color: #DADADA;
+  padding: 1.2rem 1.5rem;
+  border-radius: 5px;
+  margin-right: 0.2rem;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.client-margin{
+  margin: 2rem 5rem;
+  background-color: #F3F3F3;
+}
+
+.boq-tag{
+  background-color: #DADADA;
+  border-radius: 5px;
+  padding: 3rem 2rem;
+  text-transform: uppercase;
+  text-align: center;
+  font-weight: 500;
+}
+
+.boq-status{
+  background-color: #ffffff;
+  flex: 0 0 74.5%;
+  max-width: 74.5%;
+  margin-left: 0.5%;
+  border-radius: 5px;
+  border: 1px solid #dadadab5;
+}
+
+.status-notifier{
+  position: absolute;
+  bottom: 0.6rem;
+  right: 0.6rem;
+}
+
+/*Custom code for stages*/
+
+.stage-1,.stage-2,.stage-3,.stage-4{
+  border: 1px solid #DAD4D4;
+  padding-top: 0.6rem;
+  border-radius: 50%;
+  text-align: center;
+  width: 3rem;
+  height: 3rem;
+  position: relative;
+  z-index: 2;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.boq-status input{
+  position: absolute;
+  opacity: 0;
+
+}
+
+.stage-1,.stage-2,.stage-3,.stage-4{
+
+}
+
+.progress-bar{
+  height: 0.1rem;
+  background-color: #900221;
+}
+
+.hide_div{
+  display: none;
+}
+
+/*Custom code for stages*/
+
+
+
+
+
+
+
+/*  Css FOr Invoice modal start here*/
+
+.border-right{
+  border-right: 2px solid black;
+
+}
+
+.logo{
+  padding: 17px 25px;
+    text-align: center;
+
+}
+
+.logo img{
+  width: 145px;
+
+}
+
+.quoteFont
+{
+  font-family: Courier;
+    text-align: center;
+    padding: 18px 24px;
+    font-size: 1.5rem;
+}
+.address{
+  text-align: center;
+    /* padding: 30px; */
+    font-size: .9rem;
+    padding-left: 30px;
+    padding-right: 30px;
+}
+p{
+  font-family: 'Helvetica';
+  font-size: 0.8rem;
+  word-wrap: break-word;
+}
+
+.table-bordered td, .table-bordered th {
+    border: 2px solid #0e1013;
+    font-size: .9rem;
+}
+.table-bordered {
+    border: 2px solid #1d1e1f;
+}
+.table td, .table th {
+    padding: 0.25rem;
+}
+.minTdWidth{
+  width: 30%;
+}
+.spanChange{
+  margin-left: -12px;
+}
+.rowChng td:nth-child(1) {
+  width: 60px;
+  
+  }
+.rowChng td:nth-child(2) {
+  width: 90px;
+  
+  }  
+
+.rowChng td:nth-child(3) {
+  width: 130px;
+  
+  }  
+.rowChng td:nth-child(4) {
+  width: 240px;
+  
+  }  
+.rowChng td:nth-child(5) {
+  width: 70px;
+  
+  }  
+table th{
+  text-align: center;
+}   
+.rowChng td{
+  font-family: 'Helvetica';
+  font-size: .7rem;
+} 
+
+.borders {
+  border:2px solid black;
+}
+.text{
+  text-align: center;
+    font-family: 'Helvetica';
+    font-size: .9rem;
+}
+.btn-red {
+  font-family: 'roboto';
+  background: darkred;
+  border: darkred;
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+.btn-reject{
+  background: #d6d6d6;
+    border: #d6d6d6;
+    color: gray;
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
+
+/* css for ppt modal starts from here*/
+.myCard{
+  border: none;
+  box-shadow: 0 0 6px #ccc;
+}
+.mainBody{
+  background-color: #fff;
+  box-shadow: 0 0px 4px #ccc;
+  padding: 20px 6px 10px 6px;
+  margin-bottom: 2.4rem;
+  min-height: 75vh;
+}
+
+.ppt,.boq{
+  padding: 6px;
+  border: 1px solid #eaeaea;
+}
+
+.project-tag, .boq-tag{
+  cursor: pointer;
+}
+
+.project-tag.active, .boq-tag.active{
+  background-color: #505050;
+  color: #ffffff;
+}
+
+.stages.active{
+  border-color: #930023;
+}
+
+.disabled{
+  cursor: not-allowed;
+}
+.text-change{
+  font-size: .8rem;
+  font-family: 'Helvetica';
+}
+
+.custom-close{
+  position: absolute;
+  right: -15px;
+  top: -15px;
+  border: 1px solid #bbb;
+  height: 3rem;
+  text-align: center;
+  width: 3rem;
+  border-radius: 50%;
+  background-color: #fff;
+  color: #54212d;
+  z-index: 9;
+}
+.quoteChng{
+  margin-left: -14px;
+  font-size: 1.3rem;
+  line-height: 45px;
+}
+.rowChng1{
+    font-family: 'Helvetica';
+    font-size: .7rem;
+}
+.productImage{
+  height: 150px;
+  width: 150px;
+}
+.bordrChng{
+  border: .5px solid;
+}
+.addCursor.active{
+  color: #980029;
+  border-bottom: 2px solid #980029;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+}
+.addCursor{
+    font-size: 14px;
+    /* font-family: bold; */
+    font-weight: bold;
+    
+
+}
+.border-change{
+  border-bottom: 1px solid gray;
+}
+.boq-img{
+  text-align: center;
+}
+
+.rejectBOQModalbtn{
+  background-color: darkred;
+  color: white;
+  cursor: pointer;
+}

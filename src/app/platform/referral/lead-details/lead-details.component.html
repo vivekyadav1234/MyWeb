@@ -1,0 +1,106 @@
+<div class="row ss-top-menu">
+	<div class="col-xl-9 col-lg-9 col-md-9 col-sm-9 col-xs-9">
+		<span class="ss-text-dark">Dashboard <i class="rightArrow fa fa-angle-right"></i> Leads </span>
+  	</div>
+</div>
+
+<div class="container-fluid mt-4">
+	<div class="row filterRow">
+		<div class="col-sm-11">
+			<div class="row my-2">
+				<div class="col-sm-2">
+					<p class="filterHeading">Lead Status</p>
+					<div id="dd0" class="wrapper-dropdown-1" tabindex="1" (click)="displayDropDown('dd0')">
+						<span class="spanText" id="dd0-text" *ngIf="checked_statuses.length==0">Select Status</span>
+						<span class="spanText" *ngIf="checked_statuses.length>0"><ng-container *ngFor="let status of checked_statuses">{{status | replaceChar}},</ng-container></span>
+					</div>
+					<ul class="dd-dropdown px-2 py-2 d-none" id="dd0-dropdown">
+			      <li *ngFor="let opt of statuslist" class="my-2">
+			      	<label class="checkbox-container">{{opt | replaceChar}}
+							  <input type="checkbox" value="{{opt}}" name="opt" class="" id="text{{opt.id}}" (change)="checkStatuses($event)" [checked]="isElementPresent(opt,checked_statuses)">
+							  <span class="checkbox-checkmark"></span>
+							</label>
+			      </li>
+			    </ul>
+				</div>
+				<div class="col-sm-3">
+					<p class="filterHeading">From Date</p>
+          <input type="date" class="form-control" style="font-size: 14px;" [(ngModel)]="from_date">
+				</div>
+				<div class="col-sm-3">
+					<p class="filterHeading">To Date</p>
+          <input type="date" class="form-control" style="font-size: 14px;" [(ngModel)]="to_date">
+				</div>
+				<div class="col-sm-4">
+					<div class="ss-searchbox">
+					  <i class="fa fa-search"></i>
+					  <input class="form-control" placeholder="Type in name, contact or email..." type="text" [(ngModel)]="search_string">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-1 text-center borderLeft">
+			<img src="assets/img/dashboard/submit.png" class="mt-4 addCursor" (click)="getLeads(1)" height="38px">
+		</div>
+	</div>
+</div>
+
+<div class="mt-4 container-set">
+	<div class="row">
+	    <div class="col-md-12">
+	      <div class="tableDiv table-responsive">
+	        <p class="text-center" *ngIf="filteredLeads &&  filteredLeads.length==0 ">No Leads</p>
+	        <div class='paginated_container' ng-controller='PaginatedUserListCtrl'>
+		        <table class="table" *ngIf="filteredLeads &&  filteredLeads.length>0" >
+		          <thead>
+		            <tr>
+		              <th class="text-center firstTh">#</th>
+
+		              <th>Name <i class="fa ml-2 fa-sort" *ngIf="column != 'name'" (click)="sortFunc(filteredLeads,{property: 'name', direction: '1'})"></i><i class="fa ml-2 fa-sort-asc" *ngIf="column == 'name' && direction=='1' " (click)="sortFunc(filteredLeads,{property: 'name', direction: '-1'})"></i><i class="fa ml-2 fa-sort-desc" *ngIf="column == 'name' && direction=='-1' " (click)="sortFunc(filteredLeads,{property: 'name', direction: '1'})"></i></th>
+
+		              <th class="minWidthForTd">Status <i class="fa ml-2 fa-sort" *ngIf="column != 'lead_status'" (click)="sortFunc(filteredLeads,{property: 'lead_status', direction: '1'})"></i><i class="fa ml-2 fa-sort-asc" *ngIf="column == 'lead_status' && direction=='1' " (click)="sortFunc(filteredLeads,{property: 'lead_status', direction: '-1'})"></i><i class="fa ml-2 fa-sort-desc" *ngIf="column == 'lead_status' && direction=='-1' " (click)="sortFunc(filteredLeads,{property: 'lead_status', direction: '1'})"></i></th>
+
+		              <th class="minWidthForTd">Role</th>
+		              <th class="minWidthForTd">Contact</th>
+		              <th class="minWidthForTd">Source</th>
+		              <th class="minWidthForTd">Campaign</th>
+		              <th class="minWidthForTd">Last Status Update </th>
+		              <th class="minWidthForTd">Acquisition Date</th>
+		              <th class="minWidthForTd lastTh">Assigned CS Agent</th>		            
+		            </tr>
+		          </thead>
+		          <tbody>
+		            <tr *ngFor="let data of filteredLeads | paginate: { itemsPerPage: per_page, currentPage: current_page, totalItems: total_page  } let i = index; " [attr.data-index]="i" id="filteredLeadRow{{i}}">
+		            	<td class="text-center">{{((current_page-1) * per_page) + (i+1)}}</td>
+		              	<td class="capitalize">
+		              		<ng-container *ngIf="data.lead_type =='customer' ">
+		              			<span *ngIf="data.name!=null">{{data.name}}</span><span *ngIf="data.name==null || data.name==''" (click)=" getCitiesForQuestionnaire(); passDataToModal(data.id,data.name,data.contact,data)" data-toggle="modal" data-target="#questionnaireModal"  style="color: #007bff;" class="addCursor">Unnamed</span>
+		              		</ng-container>
+		              		<ng-container  *ngIf="data.lead_type !='customer' ">
+		              			<span *ngIf="data.name!=null">{{data.name}}</span><span *ngIf="data.name==null || data.name==''">Unnamed</span>
+		              		</ng-container>
+		              	</td>
+		              	<td class="capitalize minWidthForTd">{{data.lead_status | replaceChar}}
+		              		<p *ngIf="data.lead_status=='follow up' || data.lead_status=='follow_up'">{{data.follow_up_time | date:'dd MMM, y , h:mm a'}}</p>
+		              		<p *ngIf="data.lead_status=='lost'" class="mt-1">(<span class="text-danger">Reason</span> - {{data.lost_reason | replaceChar}})</p>
+		              		<p *ngIf="data.lead_status=='lost' && data.lost_reason=='others'" class="mt-1">(<span class="text-danger">Remarks</span> - {{data.lost_remark}})</p>
+		              		<p *ngIf="data.lead_status=='follow up' || data.lead_status=='follow_up'" class="mt-1">(<span class="text-danger">Remarks</span> - {{data.remark}})</p>
+		              	</td>
+		              	<td class="capitalize minWidthForTd">{{data.lead_type}}</td>
+		              	<td class="minWidthForTd">{{data.contact}}</td>
+		              	<td class="minWidthForTd capitalize">{{data.lead_source | replaceChar}}</td>
+		              	<td class="minWidthForTd capitalize"><span *ngIf="data.lead_campaign!=null">{{data.lead_campaign | replaceChar}}</span><span *ngIf="data.lead_campaign==null">NA</span></td>
+		             	<td class="minWidthForTd">{{data.status_updated_at | date:'dd MMM, y , h:mm a'}}</td>
+		             	<td class="minWidthForTd">{{data.created_at | date:'dd MMM, y , h:mm a'}}</td>
+		             	<td class="minWidthForTd"><p *ngIf="data.agent==null">Not Assigned</p><p *ngIf="data.agent!=null">{{data.agent.uid}}</p></td>
+		            </tr>
+		          </tbody>
+		        </table>
+		        <div class="text-center" *ngIf="filteredLeads.length>0">
+		         <pagination-controls autoHide="true" (pageChange)="current_page = getLeads($event)"></pagination-controls>
+		        </div>
+		      </div>
+	      </div>
+	    </div>
+	</div>
+</div>

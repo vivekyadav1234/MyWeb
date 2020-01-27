@@ -1,0 +1,40 @@
+<div class="row card-header">
+  <h3>Create Section</h3>
+</div>
+<div class="row bg_dashboard justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-content">
+                <div class="tab-content">
+                    <div class="tab-pane active">
+                        <form [formGroup]="createCatalogueForm" (ngSubmit)="onSubmit(createCatalogueForm.value); createCatalogueForm.reset()" class="form-horizontal">
+                            <fieldset formArrayName="section" class="mb-5">
+                                <div class="form-group label-floating" *ngFor="let item of getJobAttributes(createCatalogueForm); let i=index" [formGroup]="item">
+                                    <div class="col-sm-12">
+                                        <i class="fa fa-minus-circle remove_button mr-5" (click)="createCatalogueForm.get('section').removeAt(i)"></i>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <label class="control-label">Name*</label>
+                                        <input type="text" class="form-control" placeholder="Enter Your Name" [attr.id]="'name'+i" formControlName="name">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="control-label">Description</label>
+                                        <textarea class="form-control" placeholder="Enter Description" [attr.id]="'description'+i" formControlName="description" ></textarea>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="control-label">Upload Image*</label>
+                                        <input type="file" class="form-control" [attr.id]="'attachment_file'+i" formControlName="attachment_file" (change)="onChange($event,i)">
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <button type="button" class="button mb-3"  (click)="pushJobAttributes(createCatalogueForm)">Add another section</button>
+                            <button type="submit" class="button mb-3 pull-right" [disabled]="createCatalogueForm?.invalid">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+

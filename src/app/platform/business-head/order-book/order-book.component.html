@@ -1,0 +1,165 @@
+<div class="row">
+	<div class="col-sm-12 bg-white">
+		<nav class="navbar navbar-expand-lg navbar-light">
+      <a class="navbar-brand">Arrivae Weekly Statistics</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+
+        </ul>
+        <form class="form-inline my-2 my-lg-0">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+              <a class="nav-link" [routerLink]="['/aws-dashboard']" routerLinkActive='active' (click)="selectNavBar('aws_nav')" [ngClass]="{'active': nav_select == 'fhi_nav'}">Graph View</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link " (click)="selectNavBar('fhi_nav')" [ngClass]="{'active': nav_select == 'fhi_nav'}" [routerLink]="['/aws/fhi-data']" routerLinkActive='active'>FHI Data</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" (click)="selectNavBar('mkw_nav')" [ngClass]="{'active': nav_select == 'mkw_nav'}" [routerLink]="['/aws/mkw-data']" routerLinkActive='active'>MKW Data</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" (click)="selectNavBar('order_book')" [ngClass]="{'active': nav_select == 'order_book'}" [routerLink]="['/aws/order-book']" routerLinkActive='active'>Order Book</a>
+            </li>
+
+          </ul>
+        </form>
+      </div>
+    </nav>
+		
+	</div>
+</div>
+<div class="container">
+  <div class="row">
+    <br>
+  </div>
+  <div class="row">
+    <div class="col-md-10">
+      <div class="row">
+        <div class="col-md-2 filter2">
+          <span class="fltype ml-3">Filter by TYPE</span>
+            <div class="floptions">
+			        <button type="button" class="btn  btn-sm col_buttons ml-3" name="button" (click)="FilterByType('fhi_data')" [ngClass]="{'active': filter_by_type == 'fhi_data'}">FHI</button>
+			        <button type="button" class="btn  btn-sm col_buttons ml-3" name="button" (click)="FilterByType('mkw_data')" [ngClass]="{'active': filter_by_type == 'mkw_data'}">MKW</button>
+			      </div>
+        </div>
+        
+        <div class="col-md-5 filter2">
+          <span class="fltype">Filter by DATE</span>
+          <span class="text-danger pull-right text-bold cursor-pointer mt-1" (click)="ClearDateFilter()" style="font-size: 10px">Clear</span>
+          <div class="floptions d-flex">
+          	 <input [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1" placeholder="From Date"  class=" rk-form-fontsize d-block rounded py-1 border" [(ngModel)]="from_date">
+			       <owl-date-time #dt1 [pickerType]="'calendar'"></owl-date-time> <span style="font-weight:lighter;" class="ml-2"> to </span>
+			       <input [owlDateTime]="dt2" [owlDateTimeTrigger]="dt2" placeholder="To Date"  class=" rk-form-fontsize d-block  rounded py-1 border ml-2" [(ngModel)]="to_date" [min]="from_date">
+			       <owl-date-time #dt2 [pickerType]="'calendar'" ></owl-date-time>
+			        <button class="btn btn-sm go-filter ml-3" (click)="submitByDate()">GO</button> 
+          </div>
+        </div>
+        <div class="col-md-10 filter2">
+          <span class="fltype">Filter by CITY</span>
+          <div class="floptions">
+            <button type="button" class="btn  btn-sm btn_chn" name="button"  (click)="SelectCity(2)" [ngClass]="{'active': city == 2}">Pune</button>
+            <button type="button" class="btn  btn-sm btn_chn" name="button"  (click)="SelectCity(1)" [ngClass]="{'active': city == 1}">Mumbai</button>
+            <button type="button" class="btn  btn-sm btn_chn" name="button"  (click)="SelectCity(3)" [ngClass]="{'active': city == 3}">Bangalore</button>
+            <button type="button" class="btn  btn-sm  btn_chn" name="button" (click)="SelectCity(10)" [ngClass]="{'active': city == 10}">Chennai</button>
+            <button type="button" class="btn  btn-sm  btn_chn" name="button" (click)="SelectCity(11)" [ngClass]="{'active': city == 11}">Kochi</button>
+          </div>
+        </div>
+      </div>
+      <div class="clearfix">
+        <br>
+      </div>
+      <div class="row" *ngIf="selected_cm_name">
+        <button type="button" class="btn  btn-sm  btn-cm" name="button">{{ SplitString(selected_cm_name) }}<span class="text-primary text-bold">Community Manager</span></button>       
+      </div>
+      <div class="clearfix">
+        <br>
+      </div>
+      <div class="row">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th  style="width:9%;">Lead ID</th>
+              <th  style="width:9%">Lead Name</th>
+              <th  style="width:9%;">Project Name</th>
+              <th  style="width:9%">BOQ Value</th>
+              <th  style="width:9%;">Discount</th>
+              <th  style="width:9%">Estimated COGS</th>
+              <th  style="width:9%;">Actual COGS</th>
+              <th  style="width:9%">Estimated Margin</th>
+              <th  style="width:9%;">Actual Margin</th>
+              <th  style="width:9%">Net Cash Collected</th>
+              <th  style="width:9%;">Payment To Vendors</th>
+              
+             
+            </tr>
+          </thead>
+          <tbody>
+             <tr *ngFor="let item of order_data | paginate: { itemsPerPage: per_page, currentPage: current_page, totalItems: total_page  };let i = index">
+                <td >{{ item.id }}</td>
+                <td >{{ item.name }}</td>
+                <td >{{ item.project_name }}</td>
+                <td >{{ item.boq_value }}</td>
+                <td >{{ item.discount }}</td>
+                <td >{{ item.estimated_cogs }}</td>
+                <td >{{ item.actual_cogs }}</td>
+                <td >{{ item.estimated_margin }}</td>
+                <td >{{ item.actual_margin }}</td>
+                <td >{{ item.cash_collected }}</td>
+                <td >{{ item.payment_to_vendors }}</td>
+            </tr>
+            
+          </tbody>
+        </table>
+        <div class="text-center m-auto" *ngIf="order_data && order_data.length >0">
+					<pagination-controls autoHide="true" (pageChange)="current_page = getOrderData($event)"></pagination-controls>
+				</div>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <div class="row">
+        <a class="clear_all float-left text-danger cursor-pointer" (click)="clearAllFilter()"> Clear All FILTERS</a>
+      </div>
+      <div class="clearfix">
+        <br>
+        <br>
+        <br>
+      </div>
+      <div class="row">
+        <div class="col-sm-10 p-1  bg-white border-new">
+           <span class="fltype">Filter by CM</span><span class="pull-right cursor-pointer"> <i class="fa {{arrowOne ? 'fa-angle-up' : 'fa-angle-down'}}" (click)="sHowSecondArrow()"></i></span>
+          
+        </div>
+        <div class="col-sm-10  p-0 bg-white col-chng" *ngIf="arrowOne">
+          <span class="clear_all cursor-pointer ml-2" (click)="clearFilter('cm')">Clear</span><br>
+          <ng-container *ngFor="let cms of cm_dropdownList">
+           <div class="hover-class p-0">
+           	 <span class="drop-new m-2"  (click)="SelectCm(cms)" [ngClass]="{'active': cm_id == cms.id}">{{SplitString(cms.itemName)}}</span><br>
+           </div>  
+          </ng-container>       
+        </div>
+      </div>
+      <div class="row mt-3">
+        <div class="col-sm-10 p-1  bg-white border-new">
+        	 <span class="fltype">Filter by DESIGNER</span><span class="pull-right cursor-pointer"> <i class="fa {{arrow ? 'fa-angle-up' : 'fa-angle-down'}}" (click)="sHowArrow()"></i></span>
+        	
+        </div>
+        <div class="col-sm-10  p-0 bg-white col-chng" *ngIf="arrow">
+        	<span class="clear_all cursor-pointer ml-2" (click)="clearFilter('designer')">Clear</span><br>
+          <ng-container *ngFor="let designers of designer_dropdownList">
+             <div class="hover-class p-0">
+             	<span class="drop-new m-2"  (click)="SelectDesigner(designers.id)" [ngClass]="{'active': designer_id == designers.id}">{{SplitString(designers.itemName)}}</span><br> 
+             	
+             </div> 
+          </ng-container>   
+        	
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+

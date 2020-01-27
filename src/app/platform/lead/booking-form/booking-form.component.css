@@ -1,0 +1,9 @@
+.border_upload{
+    border-bottom: 1px solid #dfdfdf;
+}
+.upload_width{
+    width: 12% !important;
+}
+.delete_button{
+    padding: 9px 18px !important; margin-top: 11px;
+}

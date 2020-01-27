@@ -1,0 +1,36 @@
+.bgColor{
+  background-color: #f3f5f7;
+  min-height: 90vh;
+}
+.innerDivBg{
+	background-color: #fff;
+	border-radius: 5px;
+	box-shadow: 0 1px 5px #ccc;
+}
+.innerDiv h1{
+	font-weight: 300;
+	font-size: 2.2rem;
+	color: #333;
+}
+.innerDiv p{
+	font-size: 17px;
+  color: #656565;
+  font-weight: 400;
+}
+.myCard{
+	border: none;
+}
+.myCardBody{
+
+}
+.myCardBody h5{
+	font-size: 18px;
+	letter-spacing: 1px;
+	color: #555;
+}
+.myCardBody p{
+	color: #666;
+}
+.myCardBody p b{
+	font-weight:500;
+}

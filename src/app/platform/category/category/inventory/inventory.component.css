@@ -1,0 +1,8 @@
+.pop{
+  position: unset;
+  font-size: 11px;
+}
+.table-width tr  th:first-child,
+.table-width tr td:first-child{
+	width: 20% !important;
+}

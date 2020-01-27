@@ -1,0 +1,536 @@
+
+<div class="row ss-top-menu">
+	<div class="col-sm-12"><span class="ss-text-dark rk-activeLink addCursor">Dashboard </span>
+  		<button class="btn designtoolBtn pull-right" *ngIf="role && (role=='designer' || role=='admin' || role=='design_head') ">
+  			<a href="http://house.infurnia.com/" target="_blank" class="pull-right" style="text-decoration: none;color: #8c031f;">Open  Design Tools
+  			</a>
+  		</button>
+  		<a class="addCursor float-right downloadBtn mr-2" (click)="downloadExcelBoqLineItems()">BOQ Line Items Report</a>
+			
+  		<a class="addCursor float-right downloadBtn mr-2" (click)="downloadExcelBoq()">Download BOQ Reports</a>
+  		<a class="addCursor float-right downloadBtn mr-2" (click)="downloadExcelReport()">Download Event Reports</a>
+  		<a class="addCursor float-right downloadBtn mr-2" (click)="downloadCallReport()">Download Call Report </a>
+
+			<a class="addCursor float-right downloadBtn mr-2" (click)="downloadPaymentReport()">Download Payment Report</a>
+			<button class="addCursor float-right downloadBtn mr-2" type="button" data-toggle="modal" data-target="#inviteChampionModal" (click)="organizationdashboardinvitechampions.getChampionList()" *ngIf = "is_champion=='true'">Invite Level 2 & Level 3 User</button>
+  	</div>
+</div>
+<div class="row" *ngIf="role == 'lead_head'">
+  <div class="col-12" *ngIf="erroralert">
+    <div class="alert-box grid-100" *ngIf="errorMessage">
+      <div class="alert alert-danger mt-3 text-center">
+        <a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a>
+        {{errorMessage}}
+      </div>
+    </div>
+  </div>
+  <div class="col-12" *ngIf="successalert">
+    <div class="alert-box grid-100" *ngIf="successMessage">
+      <div class="alert alert-success mt-3 text-center">
+        <a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+        {{successMessage}}
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container-set mt-4 filterRow body_height" *ngIf="role=='lead_head'">
+	<div class="row">
+		<div class="col-sm-11">
+			<div class="row" style="">
+				<ul class="nav nav-tabs tabs-chng ml-3 mt-1">
+				  	<li class="nav-item itm-chng">
+					    <angular2-multiselect [data]="dropdownList3" [(ngModel)]="selectedItems3" 
+					    [settings]="dropdownSettings3" 
+					    (onSelect)="onItemSelect($event,'LeadSource',0)" 
+					    (onDeSelect)="OnItemDeSelect($event,'LeadSource',0)"
+					    (onSelectAll)="onSelectAll($event,'LeadSource',0)"
+					    (onDeSelectAll)="onDeSelectAll($event,'LeadSource',0)"></angular2-multiselect>
+					</li>
+					<li  class="nav-item itm-chng">
+					    <angular2-multiselect [data]="dropdownList4" [(ngModel)]="selectedItems4" 
+					    [settings]="dropdownSettings4" 
+					    (onSelect)="onItemSelect($event,'Campaign',1)" 
+					    (onDeSelect)="OnItemDeSelect($event,'Campaign',1)"
+					    (onSelectAll)="onSelectAll($event,'Campaign',1)"
+					    (onDeSelectAll)="onDeSelectAll($event,'Campaign',1)"></angular2-multiselect>
+					</li>
+					<li class="nav-item itm-chng">
+					    <angular2-multiselect [data]="dropdownList5" [(ngModel)]="selectedItems5" 
+					    [settings]="dropdownSettings5" 
+					    (onSelect)="onItemSelect($event,'LeadType',2)" 
+					    (onDeSelect)="OnItemDeSelect($event,'LeadType',2)"
+					    (onSelectAll)="onSelectAll($event,'LeadType',2)"
+					    (onDeSelectAll)="onDeSelectAll($event,'LeadType',2)"></angular2-multiselect>
+					</li>
+					<li  class="nav-item itm-chng ml-1" style="padding: 5px 10px; max-width: 165px;" id="fromDateLi">
+					<!-- <input [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1" placeholder="From Date"class="form-control" [(ngModel)]="from_date" style="font-size: 12px">
+			        <owl-date-time #dt1 ></owl-date-time> -->
+			        	<span class="fromDateSpan addCursor" (click)="fromDate()">From Date <i class="fa fa-caret-down"></i></span>
+			        	<input type="date" name="from_date" [(ngModel)]="from_date" class="form-control frm-chng fromDate" min="{{from_date}}" style="font-size: 12px;padding: 5px 10px 5px 10px;">
+					</li>
+					<li class="nav-item itm-chng" style="padding: 5px 10px; max-width: 165px;" id="toDateLi">
+					<!-- <input [owlDateTime]="dt2" [owlDateTimeTrigger]="dt2" placeholder="To Date"class="form-control" [(ngModel)]="to_date" style="font-size: 12px">
+			        <owl-date-time #dt2 ></owl-date-time> -->
+			        	<span class="toDateSpan addCursor" (click)="toDate()">To Date <i class="fa fa-caret-down"></i></span>
+			        	<input type="date" name="to_date" [(ngModel)]="to_date" class="form-control frm-chng toDate" min="{{from_date}}" style="font-size: 12px;padding: 5px 10px 5px 10px;">
+					</li>
+				</ul>
+				<!-- <button (click)="filterData()">Filter</button> -->
+			</div>
+		</div>
+		<div class="col-sm-1 text-center">
+			<img src="assets/img/dashboard/submit.png" class="ml-1 sendIcon" (click)="filterData()" height="30px">
+		</div>
+	</div>
+</div>
+<div class="row body_height justify-content-center pt-3"  *ngIf=" (dashboardAccess.length>0) && (dashboardAccess.indexOf(role) > -1) ">
+	<div class="col-12" *ngIf="erroralert">
+		<div class="alert-box grid-100" *ngIf="errorMessage">
+			<div class="alert alert-danger mt-3 text-center">
+				<a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a>
+				{{errorMessage}}
+			</div>
+		</div>
+	</div>
+	<div class="col-12" *ngIf="successalert">
+		<div class="alert-box grid-100" *ngIf="successMessage">
+			<div class="alert alert-success mt-3 text-center">
+				<a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+				{{successMessage}}
+			</div>
+		</div>
+	</div>
+	<div class="col-sm-12 col-md-12 col-lg-6 my-5" *ngIf="projects?.length==0 && (createProjectAccess.length>0) && (createProjectAccess.indexOf(role) > -1) ">
+		<div class="boxAdd">
+		  <div class="sideBgAdd"></div>
+			  <div class="boxInnerAdd">
+			    <p class="addCursor addProject" [routerLink]="['/projects/create']" routerLinkActive="active"><i class="fa fa-plus mr-2" aria-hidden="true"></i>Create</p>
+			  </div>
+		</div>
+	</div>
+
+	<div class="col-sm-12 col-md-12 col-lg-6 my-5" *ngIf="projects?.length!=0 && (createProjectAccess.length>0) && (createProjectAccess.indexOf(role) > -1) ">
+		<div class="boxAdd">
+		  <div class="sideBgAdd"></div>
+			  <div class="boxInnerAdd">
+			    <p class="addCursor addProject" [routerLink]="['/projects/create']" routerLinkActive="active"><i class="fa fa-plus mr-2" aria-hidden="true"></i>Add</p>
+			  </div>
+		</div>
+	</div>
+
+	<div class="col-sm-12 col-md-12 col-lg-6 my-5" *ngFor="let project of projects">
+		<div class="box">
+		  <div class="sideBg"></div>
+			  <div class="boxInner" style="max-width: 15rem;">
+			    <ul>
+			      <li>
+			        <h3 class="addCursor card-text" [routerLink]="['projects/view/'+project.id]" routerLinkActive="active">{{project.name}}</h3>
+			      </li>
+			      <li>
+			        <p href="">{{project.created_at}}</p>
+			      </li>
+			    </ul>
+			  </div>
+		    <a><i class="deleteProject addCursor noFocus fa fa-trash" aria-hidden="true" (click)="confirmAndDelete(project.id)" *ngIf="(editprojectAccess.length>0) && (editprojectAccess.indexOf(role) > -1) "></i></a>
+		    <a class="pull-right schedulerLink addCursor noFocus" [routerLink]="['/scheduler/create']" routerLinkActive="active" [queryParams]="{project_id:project.id}" *ngIf="role && role=='admin'">Scheduler</a>
+		</div>
+	</div>
+</div>
+
+<div class="row body_height pt-3 leadheadDashboardContainer" *ngIf=" role && role=='lead_head' ">
+	<div class="col-lg-12 mt-2 mb-2">
+		<h5 class="titleText">Leads count by Status</h5>
+	</div>
+	<div class="col-sm-3 my-3">
+		<div class="card py-2 px-2">
+			<div class="mt-3 mb-4 ml-2 mr-1">
+				<div class="row">
+					<div class="col-4">
+						<img src="assets/v3/img/lost.svg" class="cardHeadingIcon">
+					</div>
+					<div class="col-8 d-flex align-items-center">
+		  				<span class="statusCardHeadingColor">All Leads</span>
+		  			</div>
+		  		</div>
+		    </div>
+		    <h1 class="card-title text-center statusCardTextColor mt-4 mb-5 addCursor" [routerLink]="['leads']"[queryParams]="{'lead_sources':JSON.stringify(lead_sources),'lead_campaigns':JSON.stringify(lead_campaigns),'lead_types':JSON.stringify(lead_types),'from_date':from_date,'to_date':to_date}">{{countres.total_leads}}</h1>
+		    <div class="ml-3 mr-2 statusCardContent">
+		    	<p>Count of all the leads which have been entered into the system till date.</p>
+		    </div>
+		</div>
+	</div>
+	<div class="col-sm-3 my-3">
+		<div class="card py-2 px-2">
+			<div class="mt-3 mb-4 ml-2 mr-1">
+				<div class="row">
+					<div class="col-4">
+						<img src="assets/v3/img/lost.svg" class="cardHeadingIcon">
+					</div>
+					<div class="col-8 d-flex align-items-center">
+				  		<span class="statusCardHeadingColor">Not Attempted</span>
+				  	</div>
+		  		</div>
+		    </div>
+		    <h1 class="card-title text-center statusCardTextColor mt-4 mb-5 addCursor" [routerLink]="['leads']" [queryParams]="{lead_status:'not_attempted','lead_sources':JSON.stringify(lead_sources),'lead_campaigns':JSON.stringify(lead_campaigns),'lead_types':JSON.stringify(lead_types),'from_date':from_date,'to_date':to_date}">{{countres.not_attempted+countres.not_claimed }} </h1>
+		    <div class="ml-3 mr-2 statusCardContent">
+		    	<p>The count shows the leads which are new in the system, and has not been claimed by any CS Agent.</p>
+		    </div>
+		</div>
+	</div>
+	<div class="col-sm-3 my-3">
+		<div class="card py-2 px-2">
+			<div class="mt-3 mb-4 ml-2 mr-1">
+				<div class="row">
+					<div class="col-4">
+						<img src="assets/v3/img/claim.svg" class="cardHeadingIcon">
+					</div>
+					<div class="col-8 d-flex align-items-center">
+		  				<span class="statusCardHeadingColor">Claimed</span>
+		  			</div>
+		  		</div>
+		    </div>
+		    <h1 class="card-title text-center statusCardTextColor mt-4 mb-5 addCursor" [routerLink]="['leads']" [queryParams]="{lead_status:'claimed','lead_sources':JSON.stringify(lead_sources),'lead_campaigns':JSON.stringify(lead_campaigns),'lead_types':JSON.stringify(lead_types),'from_date':from_date,'to_date':to_date}">{{countres.claimed}}</h1>
+		    <div class="ml-3 mr-2 statusCardContent">
+		    	<p>The count shows the leads which are new in the system, and has not been claimed by any CS Agent.</p>
+		    </div>
+		</div>
+	</div>
+	<!-- <div class="col-sm-3 my-3">
+		<div class="card py-2 px-2">
+			<div class="mt-3 mb-4 ml-2 mr-1">
+				<img src="assets/v3/img/NotClaimedLead.svg" class="cardHeadingIcon">
+		  		<span class="statusCardHeadingColor ml-4">Not Claimed</span>
+		    </div>
+		    <h1 class="card-title text-center statusCardTextColor mt-4 mb-5 addCursor" [routerLink]="['leads']" [queryParams]="{lead_status:'not_claimed'}">{{countres.not_claimed}}</h1>
+		    <div class="ml-3 mr-2 statusCardContent">
+		    	<p>The count shows the leads which are new in the system, and has not been claimed by any CS Agent.</p>
+		    </div>
+		</div>
+	</div> -->
+	<div class="col-sm-3 my-3">
+		<div class="card py-2 px-2">
+			<div class="mt-3 mb-4 mx-1">
+				<div class="row">
+					<div class="col-4">
+						<img src="assets/v3/img/qualified.svg" class="cardHeadingIcon">
+					</div>
+					<div class="col-8 d-flex align-items-center">
+		  				<span class="statusCardHeadingColor">
+		  				Qualified
+		  				</span>
+		  			</div>
+		  		</div>
+		  	</div>
+		    <h1 class="card-title text-center statusCardTextColor mt-4 mb-5 addCursor" [routerLink]="['leads']" [queryParams]="{lead_status:'qualified','lead_sources':JSON.stringify(lead_sources),'lead_campaigns':JSON.stringify(lead_campaigns),'lead_types':JSON.stringify(lead_types),'from_date':from_date,'to_date':to_date}">{{countres.qualified}}</h1>
+		    <div class="ml-3 mr-2 statusCardContent">
+		    	<p>The number of count shows that what number of leads are qualified.</p>
+		    </div>
+		</div>
+	</div>
+	<div class="col-sm-3 my-3">
+		<div class="card py-2 px-2 ">
+			<div class="mt-3 mb-4 mx-1">
+				<div class="row">
+					<div class="col-4">
+						<img src="assets/v3/img/notContactable.svg" class="cardHeadingIcon">
+					</div>
+					<div class="col-8 d-flex align-items-center">
+		  				<span class="statusCardHeadingColor">
+		  				Not Contactable
+		  				</span>
+		  			</div>
+		  		</div>
+				<!-- <img src="assets/v3/img/notContactable.svg" class="cardHeadingIcon">
+		  		<span class="statusCardHeadingColor ml-4">Not Contactable</span> -->
+		  	</div>
+		    <h1 class="card-title text-center statusCardTextColor mt-4 mb-5 addCursor" [routerLink]="['leads']" [queryParams]="{lead_status:'not_contactable','lead_sources':JSON.stringify(lead_sources),'lead_campaigns':JSON.stringify(lead_campaigns),'lead_types':JSON.stringify(lead_types),'from_date':from_date,'to_date':to_date}">{{countres.not_contactable}}</h1>
+			<div class="ml-3 mr-2 statusCardContent">
+				<p>The number of count shows the data of leads that are not contactable for some reasons.</p>
+			</div>
+		</div>
+	</div>
+	<div class="col-sm-3 my-3">
+		<div class="card py-2 px-2 ">
+			<div class="mt-3 mb-4 mx-1">
+				<div class="row">
+					<div class="col-4">
+						<img src="assets/v3/img/follow_up.svg" class="cardHeadingIcon">
+					</div>
+					<div class="col-8 d-flex align-items-center">
+		  				<span class="statusCardHeadingColor">
+		  				Follow Up
+		  				</span>
+		  			</div>
+		  		</div>
+				<!-- <img src="assets/v3/img/follow_up.svg" class="cardHeadingIcon">
+		  		<span class="statusCardHeadingColor ml-4">Follow Up</span> -->
+		  	</div>
+		    <h1 class="card-title text-center statusCardTextColor mt-4 mb-5 addCursor" [routerLink]="['leads']" [queryParams]="{lead_status:'follow_up','lead_sources':JSON.stringify(lead_sources),'lead_campaigns':JSON.stringify(lead_campaigns),'lead_types':JSON.stringify(lead_types),'from_date':from_date,'to_date':to_date}">{{countres.follow_up}}</h1>
+			<div class="ml-3 mr-2 statusCardContent">
+				<p>The number of count shows that how many leads needed to be followed up on.</p>
+			</div>
+		</div>
+	</div>
+	<div class="col-sm-3 my-3">
+		<div class="card py-2 px-2 ">
+			<div class="mt-3 mb-4 mx-1">
+				<div class="row">
+					<div class="col-4">
+						<img src="assets/v3/img/lost.svg" class="cardHeadingIcon">
+					</div>
+					<div class="col-8 d-flex align-items-center">
+		  				<span class="statusCardHeadingColor">
+		  				Lost
+		  				</span>
+		  			</div>
+		  		</div>
+				<!-- <img src="assets/v3/img/lost.svg" class="cardHeadingIcon">
+		  		<span class="statusCardHeadingColor ml-4">Lost </span> -->
+		  	</div>
+		    <h1 class="card-title text-center statusCardTextColor mt-4 mb-5 addCursor" [routerLink]="['leads']" style="color: red;" [queryParams]="{lead_status:'lost','lead_sources':JSON.stringify(lead_sources),'lead_campaigns':JSON.stringify(lead_campaigns),'lead_types':JSON.stringify(lead_types),'from_date':from_date,'to_date':to_date}">{{countres.lost}}</h1>
+		
+			<div class="ml-3 mr-2 statusCardContent">
+				<p>The number of count shows the leads which can not be further pursued.</p>
+			</div>
+		</div>
+	</div>
+	<div class="col-sm-3 my-3">
+		<div class="card py-2 px-2 ">
+			<div class="mt-3 mb-4 mx-1">
+				<div class="row">
+					<div class="col-4">
+						<img src="assets/v3/img/lost.svg" class="cardHeadingIcon">
+					</div>
+					<div class="col-8 d-flex align-items-center">
+		  				<span class="statusCardHeadingColor">
+		  				Lost after 5 Tries
+		  				</span>
+		  			</div>
+		  		</div>
+				<!-- <img src="assets/v3/img/lost.svg" class="cardHeadingIcon">
+		  		<span class="statusCardHeadingColor ml-4">Lost after 5 Tries </span> -->
+		  	</div>
+		    <h1 class="card-title text-center statusCardTextColor mt-4 mb-5 addCursor" [routerLink]="['leads']" style="color: red;" [queryParams]="{lead_status:'lost_after_5_tries','lead_sources':JSON.stringify(lead_sources),'lead_campaigns':JSON.stringify(lead_campaigns),'lead_types':JSON.stringify(lead_types),'from_date':from_date,'to_date':to_date}">{{countres.lost_after_5_tries}}</h1>
+		
+			<div class="ml-3 mr-2 statusCardContent">
+				<p>It indicates count of leads which were not contactable even after 5 call attempts.</p>
+			</div>
+		</div>
+	</div>
+<!-- 	<div class="col-sm-3 my-3">
+		<div class="card py-2 px-2 ">
+			<div class="mt-3 mb-4 mx-1">
+				<img src="assets/v3/img/escalator.svg" class="cardHeadingIcon">
+		  		<span class="statusCardHeadingColor ml-4">Escalated Leads </span>
+		  	</div>
+		    <h1 class="card-title text-center statusCardTextColor mt-4 mb-5 addCursor" [routerLink]="['/lead/escalated-leads']">{{escalatedLeadCount}}</h1>
+			<div class="ml-3 mr-2 statusCardContent">
+				<p>Number of leads on which no action has been taken in past 2 hours.</p>
+			</div>
+		</div>
+	</div> -->
+	<div class="col-sm-3 my-3">
+		<div class="card py-2 px-2 ">
+			<div class="mt-3 mb-4 mx-1">
+				<div class="row">
+					<div class="col-4">
+						<img src="assets/v3/img/dropped.svg" class="cardHeadingIcon">
+					</div>
+					<div class="col-8 d-flex align-items-center">
+		  				<span class="statusCardHeadingColor">
+		  				Dropped 
+		  				</span>
+		  			</div>
+		  		</div>
+				<!-- <img src="assets/v3/img/dropped.svg" class="cardHeadingIcon">
+		  		<span class="statusCardHeadingColor ml-4">Dropped </span> -->
+		  	</div>
+		    <h1 class="card-title text-center statusCardTextColor mt-4 mb-5 addCursor" [routerLink]="['leads']" style="color: red;" [queryParams]="{lead_status:'dropped','lead_sources':JSON.stringify(lead_sources),'lead_campaigns':JSON.stringify(lead_campaigns),'lead_types':JSON.stringify(lead_types),'from_date':from_date,'to_date':to_date}">{{countres.dropped}}</h1>
+			<div class="ml-3 mr-2 statusCardContent">
+				<p>Total leads that has been dropped.</p>
+			</div>
+		</div>
+	</div>
+	<div class="col-sm-3 my-3">
+		<div class="card py-2 px-2 ">
+			<div class="mt-3 mb-4 mx-1">
+				<div class="row">
+					<div class="col-4">
+						<img src="assets/v3/img/dropped.svg" class="cardHeadingIcon">
+					</div>
+					<div class="col-8 d-flex align-items-center">
+		  				<span class="statusCardHeadingColor">
+		  				Delayed Possession 
+		  				</span>
+		  			</div>
+		  		</div>
+				<!-- <img src="assets/v3/img/dropped.svg" class="cardHeadingIcon">
+		  		<span class="statusCardHeadingColor ml-4">Dropped </span> -->
+		  	</div>
+		    <h1 class="card-title text-center statusCardTextColor mt-4 mb-5 addCursor" [routerLink]="['leads']" style="color: red;" [queryParams]="{lead_status:'delayed_possession','lead_sources':JSON.stringify(lead_sources),'lead_campaigns':JSON.stringify(lead_campaigns),'lead_types':JSON.stringify(lead_types),'from_date':from_date,'to_date':to_date}">{{countres.delayed_possession}}</h1>
+			<div class="ml-3 mr-2 statusCardContent">
+				<p>Leads whose possession is delayed.</p>
+			</div>
+		</div>
+	</div>
+	<div class="col-sm-3 my-3">
+		<div class="card py-2 px-2 ">
+			<div class="mt-3 mb-4 mx-1">
+				<div class="row">
+					<div class="col-4">
+						<img src="assets/v3/img/dropped.svg" class="cardHeadingIcon">
+					</div>
+					<div class="col-8 d-flex align-items-center">
+		  				<span class="statusCardHeadingColor">
+		  				Delayed Project 
+		  				</span>
+		  			</div>
+		  		</div>
+				<!-- <img src="assets/v3/img/dropped.svg" class="cardHeadingIcon">
+		  		<span class="statusCardHeadingColor ml-4">Dropped </span> -->
+		  	</div>
+		    <h1 class="card-title text-center statusCardTextColor mt-4 mb-5 addCursor" [routerLink]="['leads']" style="color: red;" [queryParams]="{lead_status:'delayed_project','lead_sources':JSON.stringify(lead_sources),'lead_campaigns':JSON.stringify(lead_campaigns),'lead_types':JSON.stringify(lead_types),'from_date':from_date,'to_date':to_date}">{{countres.delayed_project}}</h1>
+			<div class="ml-3 mr-2 statusCardContent">
+				<p>Leads whose project is delayed.</p>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row justify-content-center pt-3 leadheadDashboardContainer" *ngIf=" role && role=='lead_head' ">
+	<div class="col-sm-12 mt-2 mb-4">
+		<h5 class="titleText">Leads count by Role</h5>
+	</div>
+	<div class="col-sm-3 my-3">
+		<div class="card py-2 px-2 ">
+			<div class="mt-3 mb-4 mx-1">
+				<div class="row">
+					<div class="col-4">
+						<img src="assets/v3/img/user.svg" class="cardHeadingIcon">
+					</div>
+					<div class="col-8 d-flex align-items-center">
+		  				<span class="statusCardHeadingColor">
+		  				Customer 
+		  				</span>
+		  			</div>
+		  		</div>
+				<!-- <img src="assets/v3/img/user.svg" class="cardHeadingIcon">
+		  		<span class="statusCardHeadingColor ml-4">Customer </span> -->
+		  	</div>
+		    <h1 class="card-title text-center statusCardTextColor mt-4 mb-5 addCursor" [routerLink]="['leads']" [queryParams]="{lead_type:'Customer','id':customer_typeid,'lead_sources':JSON.stringify(lead_sources),'lead_campaigns':JSON.stringify(lead_campaigns),'from_date':from_date,'to_date':to_date}">{{countres.converted_customer}}/{{countres.customer}}</h1>
+		    <div class="ml-3 mr-2 statusCardContent">
+				<p>The count shows that {{countres.converted_customer}} leads are converted out of {{countres.customer}} total leads</p>
+			</div>
+		</div>
+	</div>
+	<div class="col-sm-3 my-3">
+		<div class="card py-2 px-2 ">
+			<div class="mt-3 mb-4 mx-1">
+				<div class="row">
+					<div class="col-4">
+						<img src="assets/v3/img/user.svg" class="cardHeadingIcon">
+					</div>
+					<div class="col-8 d-flex align-items-center">
+		  				<span class="statusCardHeadingColor">
+		  				Designer 
+		  				</span>
+		  			</div>
+		  		</div>
+				<!-- <img src="assets/v3/img/user.svg" class="cardHeadingIcon">
+		  		<span class="statusCardHeadingColor ml-4">Designer </span> -->
+		  	</div>
+		    <h1 class="card-title text-center statusCardTextColor mt-4 mb-5 addCursor" [routerLink]="['leads']" [queryParams]="{lead_type:'Designer','id':designer_typeid,'lead_sources':JSON.stringify(lead_sources),'lead_campaigns':JSON.stringify(lead_campaigns),'from_date':from_date,'to_date':to_date}">{{countres.converted_designer}}/{{countres.designer}}</h1>
+		    <div class="ml-3 mr-2 statusCardContent">
+				<p>The count shows that {{countres.converted_designer}} leads are converted out of {{countres.designer}} total leads</p>
+			</div>
+		</div>
+	</div>
+	<div class="col-sm-3 my-3">
+		<div class="card py-2 px-2 ">
+			<div class="mt-3 mb-4 mx-1">
+				<!-- <img src="assets/v3/img/user.svg" class="cardHeadingIcon">
+		  		<span class="statusCardHeadingColor ml-4">Broker </span> -->
+		  		<div class="row">
+					<div class="col-4">
+						<img src="assets/v3/img/user.svg" class="cardHeadingIcon">
+					</div>
+					<div class="col-8 d-flex align-items-center">
+		  				<span class="statusCardHeadingColor">
+		  				Broker 
+		  				</span>
+		  			</div>
+		  		</div>
+		  	</div>
+		    <h1 class="card-title text-center statusCardTextColor mt-4 mb-5 addCursor" [routerLink]="['leads']" [queryParams]="{lead_type:'Broker','id':broker_typeid,'lead_sources':JSON.stringify(lead_sources),'lead_campaigns':JSON.stringify(lead_campaigns),'from_date':from_date,'to_date':to_date}">{{countres.converted_broker}}/{{countres.broker}}</h1>
+		    <div class="ml-3 mr-2 statusCardContent">
+				<p>The count shows that {{countres.converted_broker}} leads are converted out of {{countres.broker}} total leads</p>
+			</div>
+		</div>
+	</div>
+	<div class="col-sm-3 my-3">
+		<div class="card py-2 px-2 ">
+			<div class="mt-3 mb-4 mx-1">
+				<!-- <img src="assets/v3/img/user.svg" class="cardHeadingIcon">
+		  		<span class="statusCardHeadingColor ml-4">Manufacturer </span> -->
+		  		<div class="row">
+					<div class="col-4">
+						<img src="assets/v3/img/user.svg" class="cardHeadingIcon">
+					</div>
+					<div class="col-8 d-flex align-items-center" style="word-break:break-all;">
+		  				<span class="statusCardHeadingColor">
+		  				Manufacturer 
+		  				</span>
+		  			</div>
+		  		</div>
+		  	</div>
+		    <h1 class="card-title text-center statusCardTextColor mt-4 mb-5 addCursor" [routerLink]="['leads']" [queryParams]="{lead_type:'manufacturer','id':manufacturer_typeid,'lead_sources':JSON.stringify(lead_sources),'lead_campaigns':JSON.stringify(lead_campaigns),'from_date':from_date,'to_date':to_date}">{{countres.converted_manufacturer}}/{{countres.manufacturer}}</h1>
+		    <div class="ml-3 mr-2 statusCardContent">
+				<p>The count shows that {{countres.converted_manufacturer}} leads are converted out of {{countres.manufacturer}} total leads</p>
+			</div>
+		</div>
+	</div>
+	<!-- <div class="col-sm-3 my-3">
+		<div class="card py-2 px-2">
+		  	<h6 class="statusCardHeadingColor mt-2 mb-4 mx-1">Customer</h6>
+		    <span class="text-center my-2 statusCardTextColor4">Total : {{customerLeadCount}}</span>
+		    <span class=" text-center mb-2 statusCardTextColor3">Converted : {{convertedCustomerLeadCount}} </span>
+		</div>
+	</div> -->
+	<!-- <div class="col-sm-3 my-3">
+		<div class="card py-2 px-2">
+			<h6 class="statusCardHeadingColor mt-2 mb-4 mx-1">Designer</h6>
+		    <span class="text-center my-2 statusCardTextColor4">Total : {{designerLeadCount}}</span>
+		    <span class=" text-center mb-2 statusCardTextColor3">Converted : {{convertedDesignerLeadCount}} </span>
+		</div>
+	</div> -->
+	<!-- <div class="col-sm-3 my-3">
+		<div class="card py-2 px-2">
+		  	<h6 class="statusCardHeadingColor mt-2 mb-4 mx-1">Broker</h6>
+		    <span class=" text-center my-2 statusCardTextColor4">Total : {{brokerLeadCount}}</span>
+		    <span class="text-center mb-2 statusCardTextColor3">Converted : {{convertedBrokerLeadCount}} </span>
+		</div>
+	</div> -->
+	<!-- <div class="col-sm-3 my-3">
+		<div class="card py-2 px-2 ">
+		  	<h6 class="statusCardHeadingColor mt-2 mb-4 mx-1">Manufacturer</h6>
+		    <span class=" text-center my-2 statusCardTextColor4">Total : {{manufacturerLeadCount}}</span>
+		    <span class=" text-center mb-2 statusCardTextColor3">Converted : {{convertedManufacturerLeadCount}} </span>
+		</div>
+	</div> -->
+</div>
+
+<!-- Invite Champion Modal -->
+<div class="modal fade customModal" id="inviteChampionModal" tabindex="-1" role="dialog" aria-labelledby="inviteChampionModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title modalTitle" id="inviteChampionModalLabel">User Details</h5>
+      </div>
+
+      <div class="modal-body">
+        <app-invite-champions #organizationdashboardinvitechampions></app-invite-champions>
+      </div>
+    </div>
+  </div>
+</div>
+
+

@@ -1,0 +1,96 @@
+.filterRow{
+  background-color: #fff;
+}
+input {
+  outline: none;
+  border-color: #ccc!important;
+} 
+
+.sendIcon{
+  height: 31px;
+}
+:host ::ng-deep .selected-list .c-btn{
+	box-shadow: none!important;
+}
+:host ::ng-deep  .selected-list .fa-angle-down , .selected-list .fa-angle-up
+{
+  right: 0px !important;
+  margin-left: 30px;
+}
+:host ::ng-deep .custom-class-dropdown .c-btn {
+  font-size: 14px!important;
+  font-weight: 500;
+}
+:host ::ng-deep .selected-list .c-list, 
+:host ::ng-deep .custom-class-dropdown .selected-list .c-list .c-token .c-label{
+	width: 120px!important;
+  max-width: 120px!important;
+}
+
+.filterRow .row .col-sm-1{
+  padding: 10px 10px 0px 0px;
+  border-left: 1px solid #d3d3d3;
+}
+.filterRow .col-sm-11 {
+  padding: 10px 10px;
+}
+.card-row1 .card{
+	box-shadow: 0 0 5px 0 rgba(189, 189, 189, 0.5);
+}
+.card-row1 .card .count-text{
+	font-size: 35px;
+  font-weight: 500;
+  color: #444444;
+}
+.card-row1 .card .count-heading{
+	font-size: 18px;
+  font-weight: 500;
+  color: #8c031f;
+}
+.card-row2 .card .count-heading{
+	font-size: 18px;
+  font-weight: normal;
+  color: #8f0021;
+}
+.card-row2 .card .count-text{
+	/*font-size: 15px;*/
+  font-weight: normal;
+  color: #7f7f7f;
+}
+.card-row2 .card {
+	min-height: 153px;
+}
+.card-row3 {
+	background: #fff;
+}
+.button1{
+	border-radius: 4px;
+  background-color: #ffffff;
+  border: solid 1px #979797;
+}
+.active-btn{
+	border: solid 1px #8f0021;
+	color: #8f0021;
+}
+.card-row3 table th{
+	padding: 4px 10px;
+  background-color: #8b8b8b;
+  border: solid 1px #000000;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 400;
+}
+.card-row3 table td{
+	/*background-color: #ffffff;*/
+  border: solid 1px #000000;
+  padding: 4px 10px;
+  font-size: 14px;
+  font-weight: 400;
+}
+.card-row3 table tr:nth-child(even){
+    background-color: #f3f5f7;
+}
+.card-row3 table tr:nth-child(odd){
+    background-color: #fff;
+}
+    

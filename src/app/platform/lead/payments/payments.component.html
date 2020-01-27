@@ -1,0 +1,313 @@
+<div class="row ss-top-menu">
+  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6">
+    <span class="ss-link" style="vertical-align: -webkit-baseline-middle;" [routerLink]="['/']">Dashboard</span> 
+    <span style="vertical-align: -webkit-baseline-middle;"><i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-link" style="vertical-align: -webkit-baseline-middle;" routerLink="/community_manager/wip" *ngIf="(role=='city_gm' || role=='business_head' || role=='community_manager' || role=='design_manager')">Wip</span>
+    <span class="ss-link" style="vertical-align: -webkit-baseline-middle;" routerLink="/designer/wip" *ngIf="role=='designer'">Wip</span>
+    <span style="vertical-align: -webkit-baseline-middle;"><i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-link" style="vertical-align: -webkit-baseline-middle;" [routerLink]="['/community_manager/leads']" [queryParams]="{lead_status: lead_status}" *ngIf="(role=='city_gm' || role=='business_head' || role=='community_manager' || role=='design_manager')">Lead</span>
+    <span class="ss-link" style="vertical-align: -webkit-baseline-middle;" [routerLink]="['/designer/leads']" [queryParams]="{customer_status: lead_details.lead_status}" *ngIf="role=='designer' && lead_details">Lead </span>
+    <span style="vertical-align: -webkit-baseline-middle;"><i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;" *ngIf="lead_details && lead_details.user_reference">{{lead_details.user_reference.name}} - {{lead_details.project_details.name}}</span>
+  </div>
+</div>
+<div class="rk-ui-notification" *ngIf="successalert">
+  <span id="notificationMessageText">{{successMessage}}</span>
+  <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+<div class="row px-4">
+  <app-shared-top-menu [lead_id]='lead_id' [lead_details]='lead_details' [lead_status]='lead_status' [payment_tab]='"active"'></app-shared-top-menu>
+  <div class="col-12">
+    <div class="row mb-5">
+      <div class="col-md-12 bg-white pb-3">
+        <ul class="nav nav-tabs ss-nav-tabs" id="myTab" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active addCursor text-center mr-3" (click)="getSet('pre_10_percent')" [ngClass]="{'active': selectedSet == 'pre_10_percent'}">Initial Payment</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active addCursor text-center mr-3" (click)="getSet('10_50_percent')" [ngClass]="{'active': selectedSet == '10_50_percent'}">40% Payment</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active addCursor text-center mr-3" (click)="getSet('100_percent')" [ngClass]="{'active': selectedSet == '100_percent'}">Final 50% Payment</a>
+          </li>
+        </ul>
+
+        <div class="row mt-4">
+          <div class="col-md-12 text-right">
+            <button *ngIf="role == 'designer' || role=='city_gm' || role=='business_head' || role=='community_manager' || role=='design_manager'" type="button" class="btn btn-pink bt-boq" data-toggle="modal" data-target="#addPayment"  id="bt-disable" (click)="openAddPaymentModal()">Add Payment </button>
+            <button type="button" class="btn btn-pink bt-boq" data-toggle="modal" data-target="#paymentHistoryModal" (click)="getPaymentHistory()">Payment History </button>
+          </div>
+          <div class="col-md-12" >
+            <div class="tableDiv " *ngIf="approveList && approveList.length>0">
+              <div class="table-responsive">
+                <table class="table ">
+                  <thead class="thead-dark">
+                    <tr>
+                      <th scope="col" class="firstTh">#</th>
+                      <th scope="col">REFERENCE NUMBER</th>
+                      <th scope="col">FINAL BOQ Value</th>
+                      <th scope="col">PAID AMOUNT</th>
+                      <th class="lastTh"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                   <tr  *ngFor="let quotation of approveList; let i = index; " [attr.data-index]="i" class="box-list">
+                    <td>{{ i +1 }}</td>
+                    <td><a [routerLink]="['/lead/'+lead_id+'/project/'+project_id+'/boq_modular/'+quotation.id]" class="a_hrefLink" routerLinkActive='active' >{{quotation.reference_number}}</a></td>
+                    <td>{{ quotation.total_amount  |  number : '1.2-2' }}</td>
+                    <td>
+                      <span *ngIf="quotation.paid_amount != null">{{ quotation.paid_amount |  number : '1.2-2' }}<span style="color: #8F0020">({{ ((quotation.paid_amount/quotation.total_amount)*100) |  number : '1.2-2' }}%)</span></span>
+                      <span *ngIf="quotation.paid_amount == null">0</span>
+                    </td>
+                    
+                    <td style="display: inline-flex;">
+                      <div *ngIf="role == 'designer' || role=='city_gm' || role=='business_head' || role=='community_manager' || role=='design_manager'">
+                        <label class="form-check-label" for="proposal{{quotation.id}}" *ngIf="selectedSet != '100_percent'">
+                          <input
+                            class="form-check-input boq-checkbox"
+                            type="checkbox"
+                            id="proposal{{quotation.id}}"
+                            name="proposal{{quotation.id}}"
+                            [checked]="quotation.checked" (change)="onCheckChange($event)" value="{{quotation.id}}" [disabled]='quotation.copied == true' >
+                        </label>
+                        <label class="form-check-label" for="proposal{{quotation.id}}" *ngIf="selectedSet == '100_percent'">
+                          <input
+                            class="form-check-input boq-checkbox"
+                            type="checkbox"
+                            id="proposal{{quotation.id}}"
+                            name="proposal{{quotation.id}}"
+                            [checked]="quotation.checked" (change)="onCheckChange($event)" value="{{quotation.id}}" [disabled]='quotation.per_100_true == true' >
+                        </label>
+                      </div>
+                      <div *ngIf="(role=='city_gm' || role=='business_head' || role=='community_manager' || role=='design_manager') &&  selectedSet == 'pre_10_percent'">
+                        <input type="button" name="" class="btn btn-pink" value="Approve" (click) = "approveBoq(quotation.id)" *ngIf="!quotation.per_10_approved_by_id && quotation.is_have_approved_payments == true && quotation.ten_per_true == false" >
+                      </div>
+                      <div *ngIf="(role=='city_gm' || role=='business_head' || role=='community_manager' || role=='design_manager') &&  selectedSet == '10_50_percent'">
+
+                        <input type="button" name="" class="btn btn-pink" value="Approve" (click) = "approveBoq(quotation.id)" *ngIf="!quotation.per_50_approved_by_id && quotation.per_50_true == false && quotation.is_have_approved_payments == true" >
+                      </div>
+                    </td>
+                    <!-- <td>{{ proposal.discount_status }}</td> -->
+                  
+                  </tr>
+                      
+                  </tbody>
+                </table>  
+                <!-- <p>{{paymentForm.value | json}}</p> -->
+              </div>
+            </div>          
+          </div> 
+          <div class="col-md-12 not-found " *ngIf="approveList && approveList.length== 0">
+            <div class="boq-img">
+              <img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+            </div>
+            <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing to show...</p> 
+          </div> 
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div> 
+<!-- Modal create for payment -->
+<div id="addPayment" class="modal fade" role="dialog" data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog modal-lg">
+
+  
+    <div class="modal-content modal-change">
+      <div class="modal-header modal-header-chng">
+        <h4 class="modal-title modal-title-change">Add Payment Details</h4>
+        <div class="iconbox">
+          <button type="button" class="close close-icon" data-dismiss="modal" (click)="paymentReset()">&times;</button>
+        </div>
+      </div>
+      <div class="modal-body modal-body-change">
+        
+
+      <div class="row">
+        <div class="col-md-12">
+          <form [formGroup]="paymentForm">
+            <ng-container *ngIf="selectedSet != '100_percent'">
+              <input type="number" class="form-control mb-2" id="pending_amt" placeholder="Paid Amount" formControlName = "amount">
+            </ng-container>  
+            <ng-container *ngIf="selectedSet == '100_percent'">
+              <input type="number" class="form-control mb-2" id="pending_amt" placeholder="Paid Amount" formControlName = "amount" (input)="checkPendingAmt($event.target.id)">
+            </ng-container>  
+
+            <select formControlName = "mode_of_payment" class="form-control mb-2" (change) = "changePaymentMode($event)">
+              <option value="" [selected] = "true" disabled="true">Select Payment Mode</option>
+              <option value="NEFT/RTGS">NEFT/RTGS</option>
+              <option value="cheque">Cheque</option>
+            </select>
+
+            <input type="text" class="form-control mb-2 cheque-mode" placeholder="Bank Name" formControlName = "bank">
+            <input type="text" class="form-control mb-2 cheque-mode" placeholder="Branch Name" formControlName = "branch">
+            <label class="cheque-mode">Date of cheque</label>
+            <input type="date" class="form-control mb-2 cheque-mode" formControlName = "date_of_checque" >
+            <label class="cheque-mode">Upload Image*</label>
+            <label class="neft-mode">Upload Image</label>
+            <input type="file" class="form-control cheque-mode"  formControlName="image" (change)="onChange($event)">
+            <input type="file" style="margin-bottom: 1rem"class="form-control neft-mode"  formControlName="image" (change)="onChange($event)">
+            <label class="neft-mode">Transaction Number</label>
+            <input type="text" class="form-control mb-2 neft-mode" formControlName = "transaction_number">
+            <label class="neft-mode">Payment Date</label>
+            <input type="date" class="form-control mb-2 neft-mode" formControlName = "date">
+          </form>
+          <pre>
+            <!-- {{paymentForm.value | json}} -->
+          </pre>
+        </div>
+        <div class="col-md-12 text-right" >
+           <button class="btn  interalBtnColor addCursor mt-2" (click)="savePayment()" [disabled] = "!paymentForm.valid" >Add Payment</button>
+          
+        </div>
+       
+       
+      </div>
+    </div>
+
+  </div>
+ </div>
+</div>
+
+<!-- Modal end here -->
+
+<!--Payment history modal starts-->
+<div id="paymentHistoryModal" class="modal fade" role="dialog" data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content modal-change">
+      <div class="modal-header modal-header-chng">
+        <h4 class="modal-title modal-title-change">Payments History</h4>
+        <div class="iconbox">
+          <button type="button" class="close close-icon" data-dismiss="modal">&times;</button>
+        </div>
+      </div>
+      <div class="modal-body modal-body-change p-4">
+        <div class="row">
+          <div class="col-md-12 p-0">
+            <collapsible-table [type]="'accordion'" class="table Vborder" style="outline: none;border: none;">
+            <thead class="thead-dark Vfont">
+              <collapsible-table-row>
+                <th scope="col" class="firstTh">#</th>
+                <th scope="col">DATE/DATE OF CHEQUE</th>
+                <th scope="col">PAYMENT MODE</th>
+                <th scope="col">Date OF ADDING PAYMENTS</th>
+                <th scope="col">PAID AMT<br><span>(by customer)</span></th>
+                <th scope="col">TRANSACTION NUMBER</th>
+                <!-- <th scope="col">Cheque No / RTGS Slip</th> -->
+                <th scope="col">Finance Status </th>
+                <th scope="col">Finance Verification Date</th>
+                <th scope="col">PAYMENT TYPE</th>
+                <th scope="col">PREVIEW UPLOADED IMAGE</th>
+                <th scope="col"></th> 
+              </collapsible-table-row>
+            </thead>
+            <tbody>
+              <ng-container *ngFor="let history of payment_details_Arr; let i = index; " [attr.data-index]="i" >
+              <collapsible-table-row [detail]="detail1" (click)="getPaymentQuotation(history.id)" style="box-shadow:1px 1px 7px 0px #dadada; border-radius: 10px;">
+                <td class="capitalize">{{ i +1 }}</td>
+                <td class="capitalize">
+                  <span *ngIf="history.date">{{history.date | date}}</span>
+                  <span *ngIf="history.date_of_checque">{{history.date_of_checque|date}}</span>
+                </td>
+                <td *ngIf="history.mode_of_payment != 'cheque' ">{{history.mode_of_payment| replaceChar}}</td>
+                <td *ngIf="history.mode_of_payment == 'cheque' ">{{history.mode_of_payment| uppercase}}</td>
+                <td class="capitalize">{{history.created_at|date}}</td>
+                <td class="capitalize">{{history.amount}}</td>
+                <td class="capitalize" *ngIf="history.mode_of_payment == 'NEFT/RTGS' ">{{history.transaction_number}}</td>
+                <td class="capitalize" *ngIf="history.mode_of_payment != 'NEFT/RTGS' ">N/A</td>
+                <td class="capitalize"> {{history.finance_status}} </td>
+                <td class="capitalize" > {{history.finance_approved_at| date }}</td>
+                <td class="capitalize">{{history.payment_type | replaceChar}}</td>
+                <td class="capitalize text-center">
+                  <a *ngIf="history.mode_of_payment == 'cheque' && history.image !='/images/original/missing.png'" href="{{ history.image }}" target="_blank"  style="color: #8F0020;font-size: 20px; vertical-align: middle;"><i class="fas fa-image"></i></a>
+                  <a *ngIf="history.mode_of_payment != 'cheque'  && history.image !='/images/original/missing.png'" href="{{ history.image }}" target="_blank"  style="color: #8F0020;font-size: 20px;vertical-align: middle;"><i class="fas fa-image"></i></a>
+                </td>
+                <td class="capitalize"><span  *ngIf="history.finance_status=='Approved'" data-toggle="tooltip" title="Click Here To Download and Share Payment Receipt."><i class="fa fa-arrow-circle-down p-0" aria-hidden="true" data-toggle="modal" data-target="#PaymentReceipt" (click)="PaymentReceiptData(history.quotation_payments.boq_id,history,true)" style="font-size: 24px;vertical-align: middle;"></i></span></td>
+              </collapsible-table-row>
+              <collapsible-table-row-detail #detail1>
+                <table class="w-100">
+                  <tr class="table-row">
+                    <td scope="col">REF NO.</td>
+                    <!-- <td scope="col">LAST EDITED ON</td>
+                    <td scope="col">PRICE EXPIRY</td>
+                    <td scope="col">STATUS</td> -->
+                    <td scope="col">BOQ VALUE</td>
+                    <td scope="" class="m-0 pr-0">APPORTIONED PAYMENT VALUE</td>
+                  </tr>
+                  <tr *ngFor="let payment of payment_details ">
+                    <td class="capitalize">{{payment.boq_reference_number}}</td>
+                    <!-- <td>{{payment.boq_updated_at | date:'dd MMMM, y @ h:mma'}}</td>
+                    <td >{{payment.boq_expiration_date}}</td>
+                    <td>{{payment.boq_status}}</td> -->
+                    <td>{{payment.boq_total_amount}}</td>
+                    <td>{{payment.approtioned_payment_value |  number : '1.2-2' }}</td>
+                  </tr>
+                </table>
+              </collapsible-table-row-detail> 
+              </ng-container>
+            </tbody>     
+            </collapsible-table>   
+          </div>
+          <div class="col-md-12 not-found " *ngIf="payment_details_Arr && payment_details_Arr.length== 0">
+            <div class="boq-img">
+              <img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+            </div>
+            <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing to show...</p> 
+          </div> 
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--Payment history modal ends-->
+
+<!-- Payment Receipt -->
+<div id="PaymentReceipt" class="modal fade" role="dialog" data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog" style="max-width: 34%;">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" style="margin-left: 105px;">Download Billing Receipt</h5>
+        <button type="button" class="close" data-dismiss="modal" (click)="PaymentModalHide();">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form class="personal-data-form" [formGroup]="ReceiptForm">
+          <div class=""> 
+            <label class="d-flex">Customer Name:
+              <input class="form-control" placeholder="Customer name" type="text" formControlName="customer_name" style="margin-left:7px;" readonly>
+            </label>
+          </div>
+          <div class=""> 
+            <label class="d-flex">Amount:
+              <input class="form-control" placeholder="Amount" type="number" formControlName="amount" style="margin-left:37px;" readonly>
+            </label>
+          </div>
+          <div class="" *ngIf="this.details"> 
+            <label class="d-flex">Date:
+              <input [owlDateTime]="dt8" [owlDateTimeTrigger]="dt8" placeholder="Enter Date" formControlName="date" class="form-control"  style="margin-left:61px;" readonly>
+              <owl-date-time #dt8 [pickerType]="'calendar'" disabled></owl-date-time> 
+            </label>
+          </div>
+          <div class="" *ngIf="this.details && this.details.mode_of_payment == 'NEFT/RTGS'">
+            <label class="d-flex">NEFT/RTGS Trx No:
+              <input class="form-control" placeholder="RTGS Trx No" type="text" formControlName="rtgs_trx_no" style="margin-left:-10px;" readonly>
+            </label> 
+          </div>
+          <div class="" *ngIf="this.details && this.details.mode_of_payment == 'cheque'"> 
+            <label class="d-flex">Bank:
+              <input class="form-control" placeholder="Bank" type="text" formControlName="bank" style="margin-left:58px;" readonly>
+            </label>
+            <label class="d-flex">Branch:
+              <input class="form-control" placeholder="Branch" type="text" formControlName="branch" style="margin-left: 45px;" readonly>
+            </label> 
+          </div>
+        </form>
+        <div class="col-12 mt-5 text-right">
+          <i class="fa fa-arrow-circle-down p-0 mr-4 addCursor" (click)="getReceipt('')" style="font-size: 24px" data-toggle="tooltip" title="Click Here To Download Payment Receipt."></i>
+          <i class="fas fa-share addCursor" (click)="share('share')" style="font-size: 24px" data-toggle="tooltip" title="Click Here To Share Payment Receipt."></i>
+         </div>
+      </div>
+    </div>
+  </div>
+</div>

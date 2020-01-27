@@ -1,0 +1,75 @@
+<div class="row ss-top-menu">
+  <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-xs-4">
+    <span class="ss-text-light" style="vertical-align: -webkit-baseline-middle;">Dashboard </span>
+    <span style="vertical-align: -webkit-baseline-middle;"> <i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-text-light" style="vertical-align: -webkit-baseline-middle;">Requests </span>
+  </div>
+  <div class="col-xl-5 col-lg-5 col-md-5 col-sm-5 col-xs-5">
+    <div class="ss-searchbox">
+      <i class="fa fa-search"></i>
+      <input class="form-control" type="text" placeholder="Type in name, contact, status, role, date to search..." #search (keyup)="0">
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12" *ngIf="erroralert">
+    <div class="alert-box grid-100" *ngIf="errorMessage">
+      <div class="alert alert-danger mt-3 text-center">
+        <a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a>
+        {{errorMessage}}
+      </div>
+    </div>
+  </div>
+  <div class="col-12" *ngIf="successalert">
+    <div class="alert-box grid-100" *ngIf="successMessage">
+      <div class="alert alert-success mt-3 text-center">
+        <a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+        {{successMessage}}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row body_height justify-content-center">
+  <div class="col-12">
+    <h5 *ngIf="projectList && projectList.length ==0" class="text-center my-5">No projects Available</h5>
+    <div class="tableDiv">
+      <table class="table" *ngIf="projectList && projectList.length >0">
+        <thead class="ss-thead">
+          <tr>
+          	<th style="min-width: 1rem;" class="firstTh" ></th>
+            <th style="min-width: 1rem;">#</th>
+            <th>Name</th>
+            <th>community manager</th>
+            <th>designer</th>
+            <th>Status</th>
+            <th>Sub Status</th>
+            <th class="lastTh">Lead</th>
+          </tr>
+        </thead>
+        <tbody class="ss-tbody">
+          <tr *ngFor=" let obj of projectList; let i = index " class="{{obj.has_pending_site_measurment_request ? 'has_req' : 'no_req'}}">
+          	<td style="min-width: 1rem;">
+          		<i class="fa fa-dot-circle-o" style="color: red" *ngIf="obj.has_pending_site_measurment_request"></i><i class="fa fa-dot-circle-o" style="color: green" *ngIf="!obj.has_pending_site_measurment_request"></i>
+          	</td>
+            <td style="min-width: 1rem;">{{i+1}}</td>
+            <td class="btn-link" [routerLink]="['/list-request']" [queryParams]="{project_id: obj.id}" >{{obj.name}}</td>
+            <td>
+            	<span *ngIf="obj.community_manager">{{obj.community_manager.name}}({{obj.community_manager.email}})</span>
+            </td>
+            <td>
+            	<span *ngIf="obj.designer" >{{obj.designer.name}}({{obj.designer.email}})</span>
+            </td>
+            <td>{{obj.status}}</td>
+            <td>{{obj.sub_status}}</td>
+            <td>
+            	<span *ngIf="obj.user">{{obj.user.name}}</span>
+            </td>
+
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

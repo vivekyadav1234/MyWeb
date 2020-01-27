@@ -1,0 +1,286 @@
+<div class="row ss-top-menu">
+  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6">
+    <span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;">Actionable</span>
+  </div>
+  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6">
+  </div>
+</div>
+<div class="row">
+  <div class="col-12" *ngIf="erroralert">
+    <div class="alert-box grid-100" *ngIf="errorMessage">
+      <div class="alert alert-danger mt-3 text-center">
+        <a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a>
+        {{errorMessage}}
+      </div>
+    </div>
+  </div>
+  <div class="col-12" *ngIf="successalert">
+    <div class="alert-box grid-100" *ngIf="successMessage">
+      <div class="alert alert-success mt-3 text-center">
+        <a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+        {{successMessage}}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row p-3">
+  <div class="col-md-12 pt-3 pb-3 bg-white">
+    <div class="row">
+      <div class="col-md-8">
+        <span class="theme-font">Community Manager Today's Actionables </span>
+      </div>
+      <div class="col-md-4">
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-4">
+    <div class="ss-card p-4 cursor-pointer mt-3" [routerLink]="['/community_manager/actionable/list']" [queryParams]="{lead_category: 'leads_not_assigned'}">
+      <div class="ss-card-head pt-2 pb-4">
+        <span>
+          <img src="/assets/img/dashboard/qualified_assigned.png">
+        </span>
+        <span class="theme-font ml-4">
+          NOT ASSIGNED
+        </span>
+      </div>
+      <div class="ss-card-body text-center pt-5 pb-5">
+        <span class="h1">{{statusCountArr.leads_pending_to_assign}}</span>
+      </div>
+      <div class="ss-card-footer pt-4 pb-2">
+        <span> Leads pending to be assigned.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="ss-card p-4 cursor-pointer mt-3" [routerLink]="['/community_manager/actionable/list']" [queryParams]="{calls_for: 'follow_up_calls_for_today', 'agenda': 'follow_up'}">
+      <div class="ss-card-head pt-2 pb-4">
+        <span>
+          <img src="/assets/img/dashboard/qualified_assigned.png">
+        </span>
+        <span class="theme-font ml-4">
+          FOLLOW UP
+        </span>
+      </div>
+      <div class="ss-card-body text-center pt-5 pb-5">
+        <span class="h1">{{statusCountArr.follow_up_calls_for_today}}</span>
+      </div>
+      <div class="ss-card-footer pt-4 pb-2">
+        <span> Follow up leads to be called today.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="ss-card p-4 cursor-pointer mt-3" [routerLink]="['/community_manager/actionable/list']" [queryParams]="{calls_for: 'not_contactable_calls_for_today', 'agenda': 'follow_up_for_not_contactable'}">
+      <div class="ss-card-head pt-2 pb-4">
+        <span>
+          <img src="/assets/img/dashboard/qualified_assigned.png">
+        </span>
+        <span class="theme-font ml-4">
+          NOT CONTACTABLE
+        </span>
+      </div>
+      <div class="ss-card-body text-center pt-5 pb-5">
+        <span class="h1">{{statusCountArr.not_contactable_calls_for_today}}</span>
+      </div>
+      <div class="ss-card-footer pt-4 pb-2">
+        <span> Not contactable leads to be called today.</span>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="ss-card p-4 cursor-pointer mt-3" [routerLink]="['/community_manager/actionable/list']" [queryParams]="{calls_for: 'escalated_calls'}">
+      <div class="ss-card-head pt-2 pb-4">
+        <span>
+          <img src="/assets/img/dashboard/qualified_assigned.png">
+        </span>
+        <span class="theme-font ml-4">
+          ESCALATED CALLS
+        </span>
+      </div>
+      <div class="ss-card-body text-center pt-5 pb-5">
+        <span class="h1">{{statusCountArr.escalated_calls}}</span>
+      </div>
+      <div class="ss-card-footer pt-4 pb-2">
+        <span> Follow up and not contactable leads which were not called before today.</span>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="ss-card p-4 cursor-pointer mt-3" [routerLink]="['/community_manager/actionable/list']" [queryParams]="{meetings_for: 'community_manager'}">
+      <div class="ss-card-head pt-2 pb-4">
+        <span>
+          <img src="/assets/img/dashboard/qualified_assigned.png">
+        </span>
+        <span class="theme-font ml-4">
+          MEETING SCHEDULED
+        </span>
+      </div>
+      <div class="ss-card-body text-center pt-5 pb-5">
+        <span class="h1">{{statusCountArr.meeting_scheduled_today}}</span>
+      </div>
+      <div class="ss-card-footer pt-4 pb-2">
+        <span> Meeting fixed where community manager is the participant.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="ss-card p-4 cursor-pointer mt-3" [routerLink]="['/community_manager/actionable/list']" [queryParams]="{meetings_for: 'escalated_meetings_for_community_manager'}">
+      <div class="ss-card-head pt-2 pb-4">
+        <span>
+          <img src="/assets/img/dashboard/qualified_assigned.png">
+        </span>
+        <span class="theme-font ml-4">
+          MEETING ESCALATED
+        </span>
+      </div>
+      <div class="ss-card-body text-center pt-5 pb-5">
+        <span class="h1">{{statusCountArr.escalated_meetings_for_community_manager}}</span>
+      </div>
+      <div class="ss-card-footer pt-4 pb-2">
+        <span>  Meeting scheduled/ calls scheduled before today but still pending.</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="row p-3">
+  <div class="col-md-12 pt-3 pb-3 bg-white">
+    <div class="row">
+      <div class="col-md-8">
+        <span class="theme-font">Designer Today's Actionables </span>
+      </div>
+      <div class="col-md-4">
+        <select class="form-control col-sm-5" (change) = "filterDesigner($event)">
+          <option value="all">All</option>
+          <option *ngFor="let designer of designer_list" value="{{designer.id}}">
+            {{designer.name}} - {{designer.email}}
+          </option>
+        </select>
+        
+      </div>
+    </div>
+  </div>
+</div>
+<!-- [queryParams]="{'lead_sources':JSON.stringify(lead_sources),'lead_campaigns':JSON.stringify(lead_campaigns),'from_date':from_date,'to_date':to_date}" -->
+<div class="row">
+  <div class="col-md-4">
+    <div class="ss-card p-4 cursor-pointer mt-3" [routerLink]="['/community_manager/actionable/list']" [queryParams]="{'designer_id':filterDesID}">
+      <div class="ss-card-head pt-2 pb-4">
+        <span>
+          <img src="/assets/img/dashboard/qualified_assigned.png">
+        </span>
+        <span class="theme-font ml-4">
+          NO ACTION
+        </span>
+      </div>
+      <div class="ss-card-body text-center pt-5 pb-5">
+        <span class="h1">{{statusCountArr.designer_no_action_taken}}</span>
+      </div>
+      <div class="ss-card-footer pt-4 pb-2">
+        <span> Leads which have been assigned but no action is taken.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="ss-card p-4 cursor-pointer mt-3" [routerLink]="['/community_manager/actionable/list']" [queryParams]="{calls_for: 'designer_not_contactable_calls_for_today','designer_id':filterDesID,'agenda': 'follow_up_for_not_contactable'}">
+      <div class="ss-card-head pt-2 pb-4">
+        <span>
+          <img src="/assets/img/dashboard/qualified_assigned.png">
+        </span>
+        <span class="theme-font ml-4">
+          NOT CONTACTABLES
+        </span>
+      </div>
+      <div class="ss-card-body text-center pt-5 pb-5">
+        <span class="h1">{{statusCountArr.designer_not_contactable_calls_for_today}}</span>
+      </div>
+      <div class="ss-card-footer pt-4 pb-2">
+        <span> Not contactable leads which need to be called today.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="ss-card p-4 cursor-pointer mt-3" [routerLink]="['/community_manager/actionable/list']" [queryParams]="{calls_for: 'designer_follow_up_calls_for_today', 'agenda': 'follow_up' , 'designer_id':filterDesID}">
+      <div class="ss-card-head pt-2 pb-4">
+        <span>
+          <img src="/assets/img/dashboard/qualified_assigned.png">
+        </span>
+        <span class="theme-font ml-4">
+          FOLLOW UP
+        </span>
+      </div>
+      <div class="ss-card-body text-center pt-5 pb-5">
+        <span class="h1">{{statusCountArr.designer_follow_up_calls_for_today}}</span>
+      </div>
+      <div class="ss-card-footer pt-4 pb-2">
+        <span> Follow up leads which needs to be called today.</span>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="ss-card p-4 cursor-pointer mt-3" [routerLink]="['/community_manager/actionable/list']" [queryParams]="{calls_for: 'designer_escalated_calls','designer_id':filterDesID}">
+      <div class="ss-card-head pt-2 pb-4">
+        <span>
+          <img src="/assets/img/dashboard/qualified_assigned.png">
+        </span>
+        <span class="theme-font ml-4">
+          ESCALATED CALLS
+        </span>
+      </div>
+      <div class="ss-card-body text-center pt-5 pb-5">
+        <span class="h1">{{statusCountArr.designer_escalated_calls}}</span>
+      </div>
+      <div class="ss-card-footer pt-4 pb-2">
+        <span> Follow up and not contactable leads which are not called before today.</span>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="ss-card p-4 cursor-pointer mt-3" [routerLink]="['/community_manager/actionable/list']" [queryParams]="{meetings_for: 'designer','designer_id':filterDesID}">
+      <div class="ss-card-head pt-2 pb-4">
+        <span>
+          <img src="/assets/img/dashboard/qualified_assigned.png">
+        </span>
+        <span class="theme-font ml-4">
+          MEETING SCHEDULED
+        </span>
+      </div>
+      <div class="ss-card-body text-center pt-5 pb-5">
+        <span class="h1">{{statusCountArr.designer_meeting_scheduled}}</span>
+      </div>
+      <div class="ss-card-footer pt-4 pb-2">
+        <span> Meeting scheduled / Call scheduled.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="ss-card p-4 cursor-pointer mt-3" [routerLink]="['/community_manager/actionable/list']" [queryParams]="{meetings_for: 'escalated_meetings_for_designer','designer_id':filterDesID}">
+      <div class="ss-card-head pt-2 pb-4">
+        <span>
+          <img src="/assets/img/dashboard/qualified_assigned.png">
+        </span>
+        <span class="theme-font ml-4">
+          MEETING ESCALATED
+        </span>
+      </div>
+      <div class="ss-card-body text-center pt-5 pb-5">
+        <span class="h1">{{statusCountArr.escalated_meetings_for_designer}}</span>
+      </div>
+      <div class="ss-card-footer pt-4 pb-2">
+        <span>  Meeting scheduled/ calls scheduled before today but still pending.</span>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,22 @@
+<div class="col-12" *ngIf="erroralert">
+    <div class="alert-box grid-100" *ngIf="errorMessage">
+        <div class="alert alert-danger mt-3 text-center">
+            <a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a> {{errorMessage}}
+        </div>
+    </div>
+</div>
+<div class="col-12" *ngIf="successalert">
+    <div class="alert-box grid-100" *ngIf="successMessage">
+        <div class="alert alert-success mt-3 text-center">
+            <a class="close link" data-dismiss="alert" (click)="successalert=false">×</a> {{successMessage}}
+        </div>
+    </div>
+</div>
+
+
+<form [formGroup]="mom" class="mt-5 pt-5" (ngSubmit)="createMOM()">
+  <textarea formControlName = "mom_description" rows="4" cols="50" name="comment" placeholder="Enter Description..">
+  </textarea>
+  <br>
+  <button class="btn btn-pink" type="submit" (click)="createMOM()" [disabled]="!mom.valid">Submit</button>
+</form>

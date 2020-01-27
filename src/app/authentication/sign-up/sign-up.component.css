@@ -1,0 +1,7 @@
+.section1{
+  background-image: url('https://d2wtye2lnn1ee2.cloudfront.net/assets/v3/img/banner.jpg');
+  margin: -15px -30px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  min-height: 80vh;
+}

@@ -1,0 +1,68 @@
+.table{
+  border-collapse: separate;
+  border-spacing: 0 5px;
+}
+
+.table td{
+  padding: 0.7rem 0.75rem;
+  vertical-align: middle;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.7);
+  border: none;
+}
+.table th {
+  padding: .9rem;
+  vertical-align: middle;
+  border: none;
+  font-size: 14px;
+  color: #dedede;
+  background-color: #4a4a4a;
+}
+.form-control.lastTdEditFormInput {
+  width: 15rem;
+  display: inline-block
+}
+select.form-control:not([size]):not([multiple]) {
+    height: calc(2.25rem + 2px);
+}
+
+.container-set{
+  background-color: white;
+}
+#createpriorityModal h5{
+  color: #515151;
+  font-size: 18px;
+}
+#createpriorityModal .form-control{
+  display: inline-block;
+  width: 68%;
+  font-size: 14px;
+  border-radius: 2px;
+  letter-spacing: 0.4px;
+}
+#createpriorityModal label{
+  font-size: 15px;
+  font-weight: normal;
+  color: #515151;
+  width: 28%
+}
+.modal-header {
+    border-bottom: 1px solid #e9ecef;
+    padding-left: 26px
+}
+
+.modal-footer{
+  padding: 0px;
+}
+.modal-content{
+  top: 38px;
+  left: -45px;
+  border:none; 
+     border-radius: 0px; 
+}
+.rk-ui-notification{
+  z-index: 10000;
+}
+.rk-ui-notification.err{
+  z-index: 10000;
+}

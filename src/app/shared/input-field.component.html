@@ -1,0 +1,45 @@
+<div class="">
+    <span class="">
+        <!-- <i class="material-icons">{{icon}}</i> -->
+    </span>
+    <div class="">
+        <!-- <label class="control-label float-left">{{attribute}}</label> -->
+        <input id="{{attribute}}" type="{{type}}" [formControl]="control" class="form-control" name={{type}} placeholder="{{placeholder}}" (focus)="onFocus(attribute)">
+    </div>
+    <app-error-label [control]="control" [submitted]="submitted"></app-error-label>
+</div>
+<style type="text/css">
+	.form-control {
+		
+        margin: 30px 10px 10px;
+        width: 90%;
+        border: 1px solid;
+        padding: 10px 14px;
+        border-color: #f2f2f2;
+        border-radius: 0;
+        font-size: 16px;
+        font-family: Roboto;
+        /*font-weight: lighter;*/
+    }
+    input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+    .form-control:focus  {
+        border-color: black;
+    }
+    .control-label{
+        margin: 10px;
+    }
+    @media only screen and (max-width: 575px){
+    .form-control{
+        margin: 10 8px;
+        padding: 5px;
+    }
+    .control-label{
+        margin: 10px 0 0 10px;
+    }
+   
+    }
+</style>

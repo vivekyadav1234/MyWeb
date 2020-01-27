@@ -1,0 +1,47 @@
+<div class="row justify-content-center bgColor">
+	<div class="col-11">
+		<div class="innerDivBg my-4">
+			<div class="row " *ngIf="sharedFiles && sharedFiles.length > 0">
+		
+				<div class="col-md-4 mt-5 px-5" *ngFor="let boq of sharedFiles">
+                    <div class="card myCard mb-4">
+						
+					  	<img class="card-img-top px-2 pt-2 cursorPointer" src="https://5.imimg.com/data5/CW/YW/MY-418425/sliding-door-wardrobe-500x500.jpeg" alt="Card image cap">
+					 
+					  <div class="card-body py-2">
+					    <div class="card-text mb-0">
+					    	<div class="row">
+					    		<div class="col-sm-2 p-0">
+					    			<img src="../../../assets/img/customer/BOQ.png" class="img-fluid ppt mr-3" *ngIf="boq.upload_type == 'boq'">
+					    			<img src="../../../assets/img/customer/ppt.png" class="img-fluid ppt mr-3" *ngIf="boq.upload_type == 'ppt'">
+					    		</div>
+					    		<div class="col-sm-6 p-0 pt-2 cpitalize">
+					    			{{boq.upload_type }}
+					    			
+					    		</div>
+					    		<div class="col-sm-4">
+					    			<a class="btn btn-pink btn-chng pull-left" href="{{boq.upload}}" download target="_blank">
+					                  Download
+					                </a>
+					    		</div>
+					    	</div>
+					    </div>
+
+					  </div>
+					</div>
+			    </div>
+
+			</div>
+			<div class="row">
+				<div class="col-md-12 not-found " *ngIf="sharedFiles.length == 0">
+				            <div class="boq-img">
+				              <img src="../../../assets/img/customer/DESIGNPROPOSAL.png" style="height: 250px;width: 300px">
+				            </div>
+				            <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">No Shared Files Yet!!</p> 
+				           
+
+				</div>
+		    </div>		 
+		</div>
+	</div>
+</div>

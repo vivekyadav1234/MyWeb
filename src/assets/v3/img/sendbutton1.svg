@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48.1 (47250) - http://www.bohemiancoding.com/sketch -->
+    <title>Update</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Desktop-Copy-15" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-1118.000000, -386.000000)">
+        <g id="Group-3" transform="translate(-30.000000, 0.000000)">
+            <g id="row1" transform="translate(260.000000, 272.000000)">
+                <g id="Update" transform="translate(888.000000, 114.000000)">
+                    <circle id="Oval-2" fill="#8C031F" cx="10" cy="10" r="10"></circle>
+                    <g id="send-button" transform="translate(6.000000, 4.000000)" fill="#FFFFFF" fill-rule="nonzero">
+                        <polygon id="Shape" points="0 11 12 5.5 0 0 0 4.27777778 8.57142857 5.5 0 6.72222222"></polygon>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

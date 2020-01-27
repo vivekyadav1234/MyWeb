@@ -1,0 +1,349 @@
+
+
+<!-- <app-create-modular-quote></app-create-modular-quote> -->
+
+<!-- <app-create-loose-quote></app-create-loose-quote>
+<app-create-modular-quote></app-create-modular-quote> -->
+
+
+<div class="row ss-top-menu">
+  <div class="col-sm-12">
+    <span class="ss-link addCursor" routerLink="/" style="vertical-align: -webkit-baseline-middle;">Dashboard</span>
+    <span style="vertical-align: -webkit-baseline-middle;"> <i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-link capitalize addCursor" [routerLink]="['../../../../projects/view/'+projectId]" *ngIf="pname">{{pname}} <i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-link addCursor" (click) = "backClicked()" style="vertical-align: -webkit-baseline-middle;">BOQs</span>
+    <span style="vertical-align: -webkit-baseline-middle;" > <i class="rightArrow fa fa-angle-right"></i>  </span>
+    <span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;">Create</span>
+    <!-- <button class="btn btn-outline-secondary pull-right btn-lg bt-boq" type="button" data-toggle="modal" data-target="#addProductModal" (click)="getCatalogueProducts('all','all')">Add Product</button> -->
+  </div>
+</div>
+
+<div id="navcontainer">
+  <ul class="nav nav-tabs tabs-chng" id="myTab" role="tablist" *ngIf="selectedSections">
+    <li class="nav-item nav-items">
+      <a class="nav-link active addCursor text-center mr-3" (click)="getproductsOfSection('all','all')" [ngClass]="{'active': selectedsectionName == 'all'}">ALL</a>
+    </li>
+    <li class="nav-item nav-items" *ngFor="let sec of selectedSections">
+      <a class="nav-link addCursor text-center mr-3" (click)="getproductsOfSection(sec.name,sec.id)" [ngClass]="{'active': selectedsectionName == (sec.name) }">{{sec.name | uppercase}}</a>
+    </li>
+  </ul>
+</div>
+
+<div class="container-fluid container-set">
+  <div class="row" style="padding: 16px">
+    <div class="col-md-12 mb-2">
+      <!-- <a class="addCursor" data-toggle="modal" data-target="#addProductModal" (click)="getCatalogueProducts('all','all')" id="addProductBtn"><i class=" fa fa-plus mr-1"></i>Add Product</a> -->
+      <button class="btn pull-right btn-lg bt-boq" type="button" data-toggle="modal" data-target="#addProductModal" (click)="getCatalogueProducts('all','all')">Add Product</button>
+      <!-- <span class="pull-right">Total Amount : <i class="fa fa-inr mr-1"></i> {{totalAmt}}</span> -->
+    </div>
+    <div class="col-md-12 mt-2 text-center"  *ngIf="boqProducts && boqProducts.length==0 ">
+      No product has been added.
+    </div>
+    <div class="col-md-12" *ngIf="boqProducts && boqProducts.length>0">
+      <div class="tableDiv ">
+        <div class="table-responsive">
+          <table class="table ">
+            <thead class="thead-dark">
+              <tr>
+                <th scope="col" class="firstTh">#</th>
+                <th scope="col">NAME</th>
+                <th scope="col">FINISH</th>
+                <th scope="col">PRICE</th>
+                <th scope="col">QTY</th>
+                <th scope="col">TOTAL AMOUNT</th>
+                <th class="lastTh"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr  *ngFor="let addedproduct of boqProducts; let i = index; " [attr.data-index]="i" class="box-list">
+                <td>{{ i +1 }}</td>
+                <td>{{addedproduct.name}}</td>
+                <td>{{addedproduct.finish}}</td>
+                <td>{{addedproduct.sale_price}}</td>
+                <td><input type="number" name="quantity{{i}}" min="1" class="quantityInput form-control" id="product_{{addedproduct.id}}" value="{{ addedproduct.quantity }}" (input)="onInputQuantity($event.target.id,addedproduct)"></td>
+                <td><i class="fa fa-inr mr-1"></i>{{ addedproduct.quantity * addedproduct.sale_price}}</td>
+                <td>
+                  <i class="fa fa-trash deleteRow addCursor" id="delete_row{{i}}" (click)="removeProductToBoqs(addedproduct.id,addedproduct.name)"></i>
+                  <!-- <i class="mr-2 ion-android-more-vertical pull-right ss-3-dot-drop" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"></i>
+                  <div class="dropdown-menu pt-2 pb-2" style="font-size: 14px;">
+                   <a class="dropdown-item" (click)="removeProductToBoqs(addedproduct.id,addedproduct.name)">Remove Product</a>
+                  </div> -->
+                </td>
+              </tr>
+            </tbody>
+          </table>  
+        </div>
+      </div>
+      <div class="text-right">
+        <button class="btnCancel btnchng  mt-3 mr-1 addCursor" (click)="cancelBoq()">Cancel</button>
+        <button class=" mt-3 mr-1 cartBtn" (click)="createQuotation('draft')">SAVE AS DRAFT </button>
+        <button class="cartBtn mt-3" (click)="createQuotation('pending')">SAVE QUOTATION</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="ui-notification" *ngIf="notificationAlert">
+  <span id="notificationMessageText">{{product_notify_message}}</span>
+  <a class="close linknotification" (click)="notificationAlert=false">×</a>
+</div>
+<!-- add product Modal -->
+<div class="modal fade" id="addProductModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="ui-notification" *ngIf="notificationAlert">
+    <span id="notificationMessageText">{{product_notify_message}}</span>
+    <a class="close linknotification" (click)="notificationAlert=false">×</a>
+  </div>
+  <div class="modal-dialog my-2 mx-2" role="document">
+    <div class="modal-content" id="allproductsRow">
+      <div class="modal-header">
+        <div class="container-fluid">
+          <div class="row justify-content-center">
+            <div class="col-5">
+              <div class="ss-searchbox">
+                <i class="fa fa-search"></i>
+                <input class="form-control" type="text" placeholder="Type product name to search..." #search (keyup)="0">
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <span class="rk-textColor">Choose from :</span>
+              <select class="form-control selectCatalogue ml-2" (change)="setProductSource($event.target.value)">
+                <option value="catalogue" [selected]="product_source=='catalogue' ">Catalogue</option>
+                <option value="project" [selected]="product_source=='project' ">This Project</option>
+              </select>
+              <i class="downArrow fa fa-angle-down"></i>
+            </div>
+          </div>
+        </div>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closeModal()">
+            <span aria-hidden="true"><img src="../../../assets/img/cross-out.svg" style="width:15px;"></span>
+        </button>
+      </div>
+      <div class="modal-body pt-0">
+        <div class="row" *ngIf="product_source=='catalogue' ">
+          <div class="col-md-2">
+            <div class="mx-2 sec-chng">
+              <div class="mb-3">
+                <h6 class="rk-textColor py-2" style="border-bottom: 1px solid lightgray;">By Section<span class="pull-right">_</span></h6>
+                <div class="aa-text"><input type="radio" name="section" class="mr-1" value="all" [checked]="selectedsectionName =='all' " (click)="getCatalogueProducts('all','all')"> <span class="sideOption">All</span><span class="pull-right">{{totalProductCountForAll}}</span></div>
+                <div class="aa-text" *ngFor="let data of sections">
+                  <input type="radio" name="section" class="mr-1" value="{{data.name}"  [checked]="selectedsectionName == (data.name)" (click)="getCatalogueProducts((data.name),(data.id))"> <span class="sideOption">{{data.name}} </span><span class="pull-right">{{data.count}}</span>
+                </div>
+              </div>
+              <div class="mb-3" *ngIf="products_catalogue && subsections && subsections.length>0">
+                <h6 class="rk-textColor py-2" style="border-bottom: 1px solid lightgray;">By Category<span class="pull-right">-</span></h6>
+                <div class="aa-text" *ngFor="let subsec of subsections">
+                  <input type="radio" name="category" class="mr-1" value="{{subsec.id}}" (click)="getCatalogueSubsectionProducts(subsec.id,subsec.name)"> <span class="sideOption" >{{subsec.name}}</span><span class="pull-right">{{subsec.count}}</span>
+                  <br>
+                </div>
+              </div>
+              <div class="mb-3" *ngIf="products_catalogue && product_configurations && product_configurations.length>0">
+                <h6 class="rk-textColor py-2" style="border-bottom: 1px solid lightgray;">By Configurations<span class="pull-right">-</span></h6>
+                <div class="aa-text" *ngFor="let config_prod of product_configurations">
+                  <input type="radio" name="configuration" class="mr-1" value="{{config_prod.id}}" (click)="getCatalogueConfigurationProducts(config_prod.id,config_prod.name,products_catalogue.section.id)"> <span class="sideOption" >{{config_prod.name}}</span><span class="pull-right">{{config_prod.count}}</span>
+                  <br>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-10 bgColor">
+            <div class="row justify-content-center">
+              <div class="col-11">
+                <div class="row" *ngIf="products_catalogue && products_arr.length>0; else no_product">
+                  <div *ngIf="(products_arr | category: search.value).length == 0" class="col-md-12 text-center">
+                    <h5>No Product</h5>
+                  </div>
+                  <div class="col-sm-3" *ngFor="let product of products_arr | category: search.value">
+                    <div class="card card-chng mb-5">
+                      <img class="card-img-top" src="{{product.image_urls[0]}}" alt="No Image">
+                      <div class="card-body">
+                        <h6 class="card-title textColor1 rk-textColor">{{product.name}}</h6>
+                        <p class="card-text textColor2">Color : {{product.color}}</p>
+                        <p class="textColor2">Price : &#8377; {{product.price}}</p>
+                      </div>
+                      <button class="btn btn-block button" (click)="viewmoreProductDetails(product.id,selectedsectionId)">View More</button>
+                    </div>
+                  </div>
+                </div>
+                <ng-template #no_product></ng-template>
+                <div class="row" *ngIf="products_catalogue && products_arr.length==0 ">
+                  <p class="text-center">No product available</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row justify-content-center" *ngIf="product_source=='project' ">
+          <div class="col-md-10 mt-5">
+            <div class="row" *ngIf="products_catalogue && products_catalogue.products.length>0; else no_product">
+              <div *ngIf="(products_catalogue.products | category: search.value).length == 0" class="text-center col-md-12 mb-3">
+                   <h5> No Product</h5>
+              </div>
+              <div class="col-sm-3" *ngFor="let product of products_catalogue.products | category: search.value">
+                <div class="card mb-5">
+                  <img class="card-img-top" src="{{product.image_urls[0]}}" alt="No Image">
+                  <div class="card-body">
+                    <h6 class="card-title textColor1 rk-textColor">{{product.name}}</h6>
+                    <p class="card-text textColor2">Color : {{product.color}}</p>
+                    <p>Price : &#8377; {{product.price}}</p>
+                  </div>
+                  <button class="btn btn-block button" (click)="viewmoreProductDetails(product.id,product.section_id)">View More</button>
+                </div>
+              </div>
+            </div>
+            <ng-template #no_product><div class="text-center">No product available</div></ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-dialog my-1 mx-2" role="document">
+    <div class="modal-content modal-change" id="viewproductRow" style="display: 'none'!important">
+      <div class="modal-header" *ngIf="product_details">
+          <div class="col-sm-9">
+            <a (click)="backToProducts()" class="addCursor" style="color: #1caede;"><i class="fa fa-arrow-left mr-2"></i>Back to products</a>
+          </div>
+          <div class="col-sm-2 pull-right">
+            <button type="button" class="close addProductModalClose" data-dismiss="modal" aria-label="Close" (click)="closeModal()">
+              <span aria-hidden="true"><img src="../../../assets/img/cross-out.svg" style="width:20px;"></span>
+            </button>
+          </div>
+      </div>
+      <div class="modal-body" *ngIf="product_details">
+        <div class="row justify-content-center">
+          <div class="col-11">
+            <div class="row">
+              <div class="col-md-6 cl-chng"> 
+                <div class="row">
+                 <!--  <div class="col-md-4">
+                    <div class="row mt-4">
+                      <div class="col-md-12">
+                        <div class="card" style="width: 5.5rem;">
+                          <div class="card-body  body-chng">
+                            
+                            
+                           
+                          </div>
+                        </div>
+                      </div>
+                    </div> 
+                  </div>
+                 <div class="row">
+                    <div class="col-md-12">
+                      <div class="card" style="width: 5.5rem;">
+                        <div class="card-body  body-chng"> 
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="card" style="width: 5.5rem;">
+                        <div class="card-body  body-chng">
+                        </div>
+                      </div>
+                    </div> 
+                  </div>
+                   <div class="row">
+                    <div class="col-md-12">
+                      <div class="card" style="width: 5.5rem;">
+                        <div class="card-body  body-chng">
+                        </div>
+                      </div>
+                    </div>
+                  </div>  
+                  
+                </div> -->
+                <div class="col-md-8">
+                  <div class="mainDiv">
+                    <img class="addCursor mb-2" src="{{product_details.image_urls[0]}}" width="100%" height="400px;">
+                  </div>
+                </div>  
+              </div>
+            </div>  
+            <div class="col-md-6 cl-chngs" *ngIf="product_details">
+              <div class="row infos-change">
+                <div class="col-12">
+                    <div class="text-chng">
+                      <h4>{{ product_details.name }}</h4>
+                    </div>
+                  <div class="row">
+                    <div class="col-md-6 price-chng">
+                      Rs. {{ product_details.sale_price }}
+                    </div>
+                    <div class=" col-md-6 sku-chng">
+                      SKU Code : {{product_details.unique_sku}}
+                    </div>
+                  </div>
+                  <hr>
+                </div>
+              </div>
+              <div class="row p-0 img-chng">
+                <div class="col-md-3 mt-4 " *ngFor="let variation of product_variations" (click)="showVariationDetails(variation)">
+                  <div class="card" style="width: 5.5rem;">
+                    <div class="card-body  body-chng">
+                      <img src="{{variation.image_urls[0]}}" height="50px" width="50px">
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+              <br>
+              <form [formGroup]="modalQuantityandProductSelectionForm" (ngSubmit)="addProductToBoqs(product_details,modalQuantityandProductSelectionForm.value); " class="col-10 productDetailsSpan">
+                <label>Quantity : </label>
+                <input class="form-control ml-3" type="number" name="productQty" style="width: 30%; display: inline-block;" formControlName="productQty" min="1">
+                <button class="interalBtnColor skuBtn addCursor" type="submit">Select Product</button>
+              </form>
+            </div>
+          </div>   
+          <div class="row mt-5">
+            <div class="col-md-12 details-info">
+              <p class="marg-chng">Items Details</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <div class="row">
+                <div class="col-md-12 details-infos">
+                  <div class="text-infos">
+                    Product Information
+                  </div>
+                  <hr style="border-top: 2px dashed #a2a0a2;">
+                  <div class="row">
+                    <div class="col-md-4">
+                      <ul class="font-chng">
+                        <li class="mb-2">Color: {{ product_details.color}}</li>
+                        <li class="mb-2">Configuration: {{ product_details.product_config}}</li>
+                        <li>Measurement Unit: {{ product_details.measurement_unit}}</li>
+                      </ul>
+                    </div>
+                    <div class="col-md-4">
+                      <ul class="font-chng">
+                        <li class="mb-2">Lead Time: {{ product_details.lead_time}}</li>
+                        <li class="mb-2">Finish: {{ product_details.finish}}</li>
+                        <li>Dimension Remark: {{ product_details.dimension_remark}}</li>
+                      </ul>
+                    </div>
+                    <div class="col-md-4">
+                      <ul class="font-chng">
+                        <li class="mb-2">Dimension(mm): {{ product_details.width}}*{{ product_details.height}}*{{ product_details.length}}</li>
+                        <li class="mb-2">Material: {{ product_details.material}}</li>
+                        <li>Remarks: {{ product_details.remark}}</li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-12">
+                      <ul class="font-chng" style="margin-top: 0px;">
+                        <li>Warranty: {{ product_details.warranty}}</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div> 
+          </div>
+        </div>  
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,80 @@
+<div class="row ss-top-menu">
+  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6">
+    <span class="ss-text-light" style="vertical-align: -webkit-baseline-middle;">Project <i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;">Presentations</span>
+  </div>
+  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6">
+    <div class="row">
+      <div class="col-md-12">
+        <!-- <button class="btn btn-pink pull-right" [routerLink]="['/projects',project_id,'presentation','create']" routerLinkActive="active" *ngIf="project_id" type="button">
+          CREATE NEW PPT
+        </button> -->
+        <button type="button" *ngIf="project_id" class="btn btn-pink pull-right" data-toggle="modal" data-target="#pptModal">
+          CREATE NEW PPT
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row main-div-top-margin">
+  <div class="col-md-12 mt-3 text-center p-5" style="background-color: #fff;" *ngIf="presentationList.length <= 0">
+    <img src="../../../assets/img/nothing.png" />
+  </div>
+  <div class="col-md-4 mt-4" *ngFor="let presentation of presentationList">
+    <div class="card card-chng">
+      <img class="card-img-top" src="./assets/img/pptlogo.png" alt="Card image cap" style="max-height: 165px;">
+      <div class="card-block" style="padding: 1rem;">
+        <p class="card-text" style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap;border-bottom: 1px solid #e0e0e0;padding-bottom: 10px;">{{presentation.title}}</p>
+        <div class="row">
+          <div class="col-md-8">
+            <p class="mb-0" style="font-size:13px;">
+              <span>Created at: </span>
+              <span style="color: #7E7E7E;">{{presentation.created_at}}</span>
+            </p>
+            <p class="mb-0" style="font-size:13px;">
+              <span>Updated at: </span>
+              <span style="color: #7E7E7E;">{{presentation.updated_at}}</span>
+            </p>
+          </div>
+          <div class="col-md-4 divbutton">
+            <button class="btn btn-pink btn-chng pull-right" type="button" [routerLink]="['/projects',project_id,'presentation',presentation.id,'edit']" routerLinkActive="active">
+              View
+            </button>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="pptModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="border-bottom: 1px solid #e4e4e4;">
+        <h6 class="modal-title" id="exampleModalLabel">Choose from the given template : </h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card-deck">
+              <div class="card" [routerLink]="['/projects',project_id,'presentation','create']" [queryParams]="{theme: ''}" routerLinkActive="active" *ngIf="project_id" data-dismiss="modal" aria-label="Close">
+                <i class="ion-ios-plus-outline" style="margin: 50% 0;text-align: center;font-size: 2.5rem;color: #8f0521; cursor: pointer;"></i>
+              </div>
+              <div class="card">
+                <img class="card-img-top" src="./assets/img/ppt/thumbnail/theme1.jpg" alt="Card image cap">
+                <div class="card-block text-center p-4">
+                  <a class="btn btn-pink pl-5 pr-5" [routerLink]="['/projects',project_id,'presentation','create']" [queryParams]="{theme: 'theme1'}" routerLinkActive="active" *ngIf="project_id" data-dismiss="modal" aria-label="Close">Choose</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

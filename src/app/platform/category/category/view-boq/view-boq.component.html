@@ -1,0 +1,1575 @@
+<div class="row ss-top-menu">
+  <div class="col-sm-12">
+    <span class="ss-text-light" style="vertical-align: -webkit-baseline-middle;">Dashboard</span>
+    <span style="vertical-align: -webkit-baseline-middle;"> <i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-link addCursor" [routerLink]="['/projects']" style="vertical-align: -webkit-baseline-middle;">Projects</span>
+    <span style="vertical-align: -webkit-baseline-middle;" > <i class="rightArrow fa fa-angle-right"></i>  </span>
+    <span class="ss-text-dark capitalize" style="vertical-align: -webkit-baseline-middle;" *ngIf="pname">{{pname}}</span>
+    <span style="vertical-align: -webkit-baseline-middle;" > <i class="rightArrow fa fa-angle-right"></i>  </span>
+    <span class="ss-link addCursor" (click) = "backClicked()" style="vertical-align: -webkit-baseline-middle;">BOQs</span>
+    <span style="vertical-align: -webkit-baseline-middle;" > <i class="rightArrow fa fa-angle-right"></i>  </span>
+    <span class="ss-text-dark capitalize" style="vertical-align: -webkit-baseline-middle;" *ngIf="quotations">{{quotations.reference_number}}</span>
+  </div>
+</div>
+
+<div id="navcontainer">
+  <ul class="nav nav-tabs tabs-chng" id="myTab" role="tablist" *ngIf="selectedSections">
+    <li class="nav-item nav-items" *ngFor="let sec of selectedSections" >
+      <a class="nav-link addCursor text-center mr-3" [ngClass]="{'active': selectedsectionName == sec}" (click)="changeSectionTab(sec)">{{sec | replaceChar | uppercase}}</a>
+    </li>
+  </ul>
+</div>
+
+<div class="container-fluid container-set mb-3" [ngClass]="(selectedSections && selectedSections.length>0)?'d-block':'d-none'">
+  <!--Wardrobe starts-->
+  <div class="row rowContainer" style="padding: 16px;" id="globalVarRowForMW">
+    <div class="col-md-12" *ngIf="quotations">
+      <h6 class="mb-3 borderbottom pt-3 pb-3"><span class="mr-3">BOQ : {{quotations.reference_number}}</span><span class="pull-right">Total - &#8377; {{quotations.total_amount}}</span></h6>
+      <div class="col-md-12 borderbottom pt-1 pb-2 mb-3 addCursor" id="selectedGlobalVarLink"   data-toggle="modal" data-target="#selectedGlobalVarModal" style="color: #8c031f;" *ngIf="globalVarArr && boqConfigMWVal!=undefined" (click)="getBoqConfig('wardrobe')">Selected Global Variable</div>
+      <div id="accordion">
+        <div class="card mb-2" *ngFor="let selSpace of quotations.spaces; let k=index; ">
+          <div class="card-header" id="spaceCard{{k}}">
+              <h5 class="mb-0">
+                  <button class="btn btn-link addCursor" data-toggle="collapse" [attr.data-target]=" '#collapseSpaceCard'+k" aria-expanded="true" aria-controls="collapseOne">
+                  {{selSpace}}
+                  </button>
+                  <ng-container *ngFor="let key1 of Object.keys(quotations.space_amounts_wardrobe); let n =index; "><span *ngIf="key1==selSpace" style="font-size: 14px;" class="pull-right">Total - &#8377; {{quotations.space_amounts_wardrobe[key1]}}</span></ng-container>
+              </h5>
+          </div>
+          <div id="collapseSpaceCard{{k}}" class="collapse" [attr.aria-labelledby]="'spaceCard'+k" data-parent="#accordion">
+            <div class="card-body">
+              <ng-container *ngFor="let key of Object.keys(quotations.modular_jobs_wardrobe); let m =index; ">
+                <div *ngIf="key==selSpace" class="tableDiv mt-3">
+                  <table class="table">
+                      <thead class="thead-dark">
+                          <tr>
+                              <th class="firstTh">#</th>
+                              <th>Type</th>
+                              <th>Module</th>
+                              <th>Quantity</th>
+                              <th>Price</th>
+                              <th>Image</th>
+                              <th>customization</th>
+                              <th class="lastTh"></th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <ng-container *ngFor="let mod of quotations.modular_jobs_wardrobe[key]; let k=index; ">
+                              <tr *ngIf="!mod.combined">
+                                  <td>{{k+1}}</td>
+                                  <td>{{mod.module_type}}</td>
+                                  <td>{{mod.code}}</td>
+                                  <td>
+                                      <span class="moduleLineItemSpan{{k}}">{{mod.quantity}}</span>
+                                      <input type="number" name="" class="form-control d-none moduleLineItemInput{{k}}" [(ngModel)]="editModuleLineQty">
+                                  </td>
+                                  <td>{{mod.amount}}</td>
+                                  <td>
+                                      <img src="{{mod.module_image_url}}" *ngIf="mod.module_image_url" style="width: 100px;" onerror="this.src='./assets/img/no_image.svg';" alt="Missing Image">
+                                  </td>
+                                  <td>
+                                      <img src="assets/v3/img/gear.svg" (click)="getCustomizationOfModule(mod.id)" data-toggle="modal" data-target="#customizationModal">
+                                  </td>
+                                  <td><button class="btn_vendor" data-toggle="modal" data-target="#addVendorModal" (click)="openVendorModal(mod,'ModularJob')">Add Vendors</button></td>
+                              </tr>
+                              <tr id="package{{k}}" class="accordion-toggle addCursor" data-toggle="collapse" data-parent="#OrderPackages" [attr.data-target]="'.packageDetails'+k" *ngIf="mod.combined" (click)="showAccordion(k)" style="font-weight: normal;">
+                                  <td>{{k+1}}</td>
+                                  <td>Combined</td>
+                                  <td>{{mod.name}}</td>
+                                  <td>{{mod.quantity}}</td>
+                                  <td>{{mod.amount}}</td>
+                                  <td>
+                                      <img src="{{mod.module_image_url}}" *ngIf="mod.module_image_url" style="width: 100px;" onerror="this.src='./assets/img/no_image.svg';" alt="Missing Image">
+                                  </td>
+                                  <td></td>
+                                  <td></td>
+                              </tr>
+                              <tr class="d-none combmoduleAccordionRow{{k}}" id="combmoduleAccordionRow{{k}}" *ngIf="mod.combined">
+                                  <td colspan="8" class="hiddenRow" style="border: 1px solid #eceaea;border-radius: 5px;">
+                                      <div class="accordion-body collapse packageDetails{{k}}" id="accordion_{{k}}">
+                                          <table class="table">
+                                              <tr *ngFor="let cmod of mod.included_modules; let m=index; ">
+                                                  <td>{{m+1}}</td>
+                                                  <td>{{cmod.module_type}}</td>
+                                                  <td>{{cmod.code}}</td>
+                                                  <td>
+                                                      <span class="moduleLineItemSpan{{k}}{{m}}">{{cmod.quantity}}</span>
+                                                      <input type="number" name="" class="form-control d-none moduleLineItemInput{{k}}{{m}}" [(ngModel)]="editModuleLineQty">
+                                                  </td>
+                                                  <td>{{cmod.amount}}</td>
+                                                  <td>
+                                                      <img src="{{cmod.module_image_url}}" *ngIf="cmod.module_image_url" style="width: 100px;" onerror="this.src='./assets/img/no_image.svg';" alt="Missing Image">
+                                                  </td>
+                                                  <td>
+                                                      <img src="assets/v3/img/gear.svg" (click)="getCustomizationOfModule(cmod.id)" data-toggle="modal" data-target="#customizationModal">
+                                                  </td>
+                                                  <td><button class="btn_vendor" data-toggle="modal" data-target="#addVendorModal" (click)="openVendorModal(cmod,'ModularJob')">Add Vendors</button></td>
+                                              </tr>
+
+                                          </table>
+                                      </div>
+                                  </td>
+                              </tr>
+                          </ng-container>
+                      </tbody>
+                  </table>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--Kitchen starts-->
+  <div class="row d-none rowContainer" style="padding: 16px;" id="globalVarRowForMK">
+    <div class="col-md-12" *ngIf="quotations">
+      <h6 class="mb-3 borderbottom pt-3 pb-3"><span class="mr-3">BOQ : {{quotations.reference_number}}</span><span class="pull-right">Total - &#8377; {{quotations.total_amount}}</span></h6>
+      <div class="col-md-12 borderbottom pt-1 pb-2 mb-3 addCursor" id="selectedGlobalVarLink"   data-toggle="modal" data-target="#selectedGlobalVarModalMK" style="color: #8c031f;" *ngIf="globalVarArr && boqConfigMKVal!=undefined " (click)="getBoqConfig('kitchen')">Selected Global Variable</div>
+      <div class="col-md-12 borderbottom pt-3 pb-3"  *ngIf="quotations && quotations.countertop_cost!=0 && quotations.countertop_cost!=null">
+          <span class="addCursor" style="color: #8c031f;">Countertop -</span> <span class="capitalize" style="font-size: 14px;">{{quotations.countertop_details.countertop | replaceChar}} - &#8377; {{quotations.countertop_details.price}}</span>
+          <span class="addCursor ml-4" style="color: #8c031f;" *ngIf="quotations.countertop_details.countertop_width">Countertop Length - </span><span style="font-size: 14px;" *ngIf="quotations.countertop_details.countertop_width">{{quotations.countertop_details.countertop_width}} mm</span>
+      </div>
+      <div id="accordion">
+        <div class="card mb-2" *ngFor="let selSpaceMk of quotations.spaces_kitchen; let k1=index; ">
+          <div class="card-header" id="spaceCardMk{{k1}}">
+              <h5 class="mb-0">
+                  <button class="btn btn-link addCursor" data-toggle="collapse" [attr.data-target]=" '#collapseSpaceCardMk'+k1" aria-expanded="true" aria-controls="collapsetwo">
+                  {{selSpaceMk}}
+                  </button>
+                  <ng-container *ngFor="let key2 of Object.keys(quotations.space_amounts_kitchen); let n =index; "><span *ngIf="key2==selSpaceMk" style="font-size: 14px;" class="pull-right">Total - &#8377; {{quotations.space_amounts_kitchen[key2]}}</span></ng-container>
+              </h5>
+          </div>
+          <div id="collapseSpaceCardMk{{k1}}" class="collapse" [attr.aria-labelledby]="'spaceCardMk'+k1" data-parent="#accordionMk">
+            <div class="card-body">
+              <p *ngIf="Object.keys(quotations.modular_jobs_kitchen).length>0">Added Modules :</p>
+              <ng-container *ngFor="let key of Object.keys(quotations.modular_jobs_kitchen); let m1 =index; ">
+                <div *ngIf="key==selSpaceMk" class="tableDiv mt-3">
+                  <table class="table">
+                      <thead class="thead-dark">
+                          <tr>
+                              <th class="firstTh">#</th>
+                              <th>Kitchen Category</th>
+                              <th>Type</th>
+                              <th>Module</th>
+                              <th>Quantity</th>
+                              <th>Price</th>
+                              <th>Width</th>
+                              <th>Image</th>
+                              <th>customization</th>
+                              <th class="lastTh"></th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <tr *ngFor="let mod of quotations.modular_jobs_kitchen[key]; let k=index; ">
+                              <td>{{k+1}}</td>
+                              <td>{{mod.kitchen_category_name}}</td>
+                              <td>{{mod.module_type}}</td>
+                              <td>{{mod.code}} ({{mod.dimensions}})</td>
+                              <td>
+                                  <span class="moduleLineItemSpan{{k}}">{{mod.quantity}}</span>
+                                  <input type="number" name="" class="form-control d-none moduleLineItemInput{{k}}" [(ngModel)]="editModuleLineQty">
+                              </td>
+                              <td>{{mod.amount}}</td>
+                              <td>
+                                  <span class="moduleLineItemSpan{{k}}"><ng-container *ngIf="mod.custom_shelf_unit_width">{{mod.custom_shelf_unit_width}} mm</ng-container><ng-container *ngIf="!mod.custom_shelf_unit_width">NA</ng-container></span>
+                                  <input type="number" name="" class="form-control d-none moduleLineItemInput{{k}}" [(ngModel)]="editModuleLineWidth" *ngIf="mod.custom_shelf_unit_width">
+                                  <span class="d-none moduleLineItemInput{{k}}" *ngIf="!mod.custom_shelf_unit_width">NA</span>
+                              </td>
+                              <td>
+                                  <img src="{{mod.module_image_url}}" *ngIf="mod.module_image_url" style="width: 100px;" onerror="this.src='./assets/img/no_image.svg';" alt="Missing Image">
+                              </td>
+                              <td>
+                                <img src="assets/v3/img/gear.svg" (click)="getCustomizationOfModule(mod.id)" data-toggle="modal" data-target="#customizationModalMk" class="addCursor">
+                              </td>
+                              <td><button class="btn_vendor" data-toggle="modal" data-target="#addVendorModal" (click)="openVendorModal(mod,'ModularJob')">Add Vendors</button></td>
+                          </tr>
+                      </tbody>
+                  </table>
+                </div>
+              </ng-container>
+              <p *ngIf="Object.keys(quotations.appliance_jobs).length>0">Added Appliances :</p>
+              <ng-container *ngFor="let key6 of Object.keys(quotations.appliance_jobs); let m6 =index; ">
+                <div *ngIf="key6==selSpaceMk" class="tableDiv mt-3">
+                    <table class="table">
+                      <thead class="thead-dark">
+                          <tr>
+                              <th class="firstTh">#</th>
+                              <th>Appliance Type</th>
+                              <th>Appliance</th>
+                              <th>Make</th>
+                              <th>Vendor Sku</th>
+                              <th>Quantity</th>
+                              <th>Price</th>
+                              <th class="">Image</th>
+                              <th class="lastTh"></th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let appjob of quotations.appliance_jobs[key6]; let k=index; ">
+                          <td>{{k+1}}</td>
+                          <td>{{appjob.subcategory}}</td>
+                          <td>{{appjob.name}}</td>
+                          <td>{{appjob.make}}</td>
+                          <td>{{appjob.vendor_sku}}</td>
+                          <td>
+                              <span class="applianceLineItemSpan{{k}}">{{appjob.quantity}}</span>
+                              <input type="number" name="" class="form-control d-none applianceLineItemInput{{k}}" [(ngModel)]="editApplianceLineQty">
+                          </td>
+                          <td>{{appjob.amount}}</td>
+                          <td>
+                              <img src="{{appjob.image_url}}" *ngIf="appjob.image_url" style="width: 100px;" onerror="this.src='./assets/img/no_image.svg';" alt="Missing Image">
+                          </td>
+                          <td><button class="btn_vendor" data-toggle="modal" data-target="#addVendorModal" (click)="openVendorModal(appjob,'ApplianceJob')">Add Vendors</button></td>
+                        </tr>
+                      </tbody>
+                  </table>
+                </div>
+              </ng-container>
+              <p *ngIf="Object.keys(quotations.extra_jobs).length>0">Added Extras :</p>
+              <ng-container *ngFor="let key7 of Object.keys(quotations.extra_jobs); let m7 =index; ">
+                <div *ngIf="key7==selSpaceMk" class="tableDiv mt-3">
+                    <table class="table">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th class="firstTh">#</th>
+                                <th> Name</th>
+                                <th>Vendor Sku</th>
+                                <th>Make</th>
+                                <th>Specification</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                                <th class="">Image</th>
+                                <th class="lastTh"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let extrajob of quotations.extra_jobs[key7]; let k=index; ">
+                                <td>{{k+1}}</td>
+                                <td>{{extrajob.name}}</td>
+                                <td>{{extrajob.vendor_sku}}</td>
+                                <td>{{extrajob.make}}</td>
+                                <td>{{extrajob.specifications}}</td>
+                                <td>
+                                    <span class="extraLineItemSpan{{k}}">{{extrajob.quantity}}</span>
+                                    <input type="number" name="" class="form-control d-none extraLineItemInput{{k}}" [(ngModel)]="editExtraLineQty">
+                                </td>
+                                <td>{{extrajob.amount}}</td>
+                                <td>
+                                    <img src="{{extrajob.image_url}}" *ngIf="extrajob.image_url" style="width: 100px;" onerror="this.src='./assets/img/no_image.svg';" alt="Missing Image">
+                                </td>
+                                <td><button class="btn_vendor" data-toggle="modal" data-target="#addVendorModal" (click)="openVendorModal(extrajob,'ExtraJob')">Add Vendors</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--Kitchen ends-->
+
+  <!--Loose furniture start-->
+  <div class="row d-none rowContainer" style="padding: 16px" id="globalVarRowForLF">
+    <div class="col-md-12">
+      <h6 class="mb-3 borderbottom pt-3 pb-3" *ngIf="quotations"><span class="mr-3">BOQ : {{quotations.reference_number}}</span><span class="pull-right">Total - &#8377; {{quotations.total_amount}}</span></h6>
+    </div>
+    <div class="col-md-12 pt-3 pb-3" *ngIf="selectedSpacesArrLf && selectedSpacesArrLf.length>0">
+        <div id="accordionLf">
+            <div class="card mb-2" *ngFor="let selSpaceLf of selectedSpacesArrLf; let k2=index; ">
+                <div class="card-header" id="spaceCardLf{{k2}}">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link fontsize1 addCursor" data-toggle="collapse" [attr.data-target]=" '#collapseSpaceCardLf'+k2" aria-expanded="true" aria-controls="collapseOne" >
+                        {{selSpaceLf}}
+                        </button>
+                        <ng-container><span style="font-size: 14px;" class="pull-right">Total - &#8377; <span id="spacesLfTotal{{k2}}">{{getTotalOfLfSpaces(selSpaceLf,k2)}}</span></span></ng-container>
+                    </h5>
+                </div>
+
+                <div id="collapseSpaceCardLf{{k2}}" class="collapse" [attr.aria-labelledby]="'spaceCardLf'+k2" data-parent="#accordionLf">
+                    <div class="card-body">
+                        <div class="col-md-12 mt-2 text-center"  *ngIf="editBtnFlag && boqProducts && boqProducts.length==0 ">
+                          No product has been added.
+                        </div>
+                        <div class="" *ngIf="boqProducts && boqProducts.length>0">
+                            <div class="tableDiv ">
+                                <div class="">
+                                  <table class="table ">
+                                    <thead class="thead-dark">
+                                      <tr>
+                                        <th scope="col" class="firstTh">#</th>
+                                        <th scope="col">NAME</th>
+                                        <th scope="col">PRICE</th>
+                                        <th scope="col">QTY</th>
+                                        <th scope="col">TOTAL AMOUNT</th>
+                                        <th scope="col" class="">Product Image</th>
+                                        <th class="lastTh"></th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                        <ng-container *ngFor="let addedproduct of boqProducts; let i = index; " [attr.data-index]="i">
+                                            <tr class="box-list" *ngIf="addedproduct.space==selSpaceLf">
+                                                <td>{{ i +1 }}</td>
+                                                <td>{{addedproduct.name}}</td>
+                                                <!-- <td>{{addedproduct.finish}}</td> -->
+                                                <td><i class="fa fa-inr mr-1"></i>{{addedproduct.rate}}</td>
+                                                <td>
+                                                  <span *ngIf="!editBtnFlag">{{ addedproduct.quantity }}</span>
+                                                </td>
+                                                <td><i class="fa fa-inr mr-1"></i>{{ addedproduct.quantity * addedproduct.rate}}</td>
+                                                <td class="text-left">
+                                                <img class="" src="{{addedproduct.image_urls[0]}}" alt="No Image" height="100px" width="100px">
+                                                </td>
+                                                <td><button class="btn_vendor" data-toggle="modal" data-target="#addVendorModal" (click)="openVendorModal(addedproduct,'Boqjob')">Add Vendors</button></td>
+                                            </tr>
+                                       </ng-container>
+                                    </tbody>
+                                  </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+  <!--Loose furniture ends-->
+
+  <!--Services start-->
+  <div class="row d-none rowContainer" style="padding: 16px" id="globalVarRowForSERV">
+    <div class="col-md-12">
+      <h6 class="mb-3 borderbottom pt-3 pb-3" *ngIf="quotations"><span class="mr-3">BOQ : {{quotations.reference_number}}</span><span class="pull-right">Total - &#8377; {{quotations.total_amount}}</span></h6>
+    </div>
+    <div class="col-md-12 pt-3 pb-3" *ngIf="selectedSpacesArrSERV && selectedSpacesArrSERV.length>0">
+        <div id="accordionSERV">
+            <div class="card mb-2" *ngFor="let selSpaceSERV of selectedSpacesArrSERV; let k2=index; ">
+                <div class="card-header" id="spaceCardSERV{{k2}}">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link fontsize1 addCursor" data-toggle="collapse" [attr.data-target]=" '#collapseSpaceCardSERV'+k2" aria-expanded="true" aria-controls="collapseOne" >
+                        {{selSpaceSERV}}
+                        </button>
+                    </h5>
+                </div>
+
+                <div id="collapseSpaceCardSERV{{k2}}" class="collapse" [attr.aria-labelledby]="'spaceCardSERV'+k2" data-parent="#accordionSERV">
+                    <div class="card-body">
+                        <div class="col-md-12 mt-2 text-center"  *ngIf="editBtnFlag && boqServices_all && boqServices_all.length==0 ">
+                          No product has been added.
+                        </div>
+
+                        <div class="" *ngIf="boqServices_all && boqServices_all.length>0">
+                            <div class="tableDiv ">
+                                <div class="">
+                                  <table class="table ">
+                                    <thead class="thead-dark">
+                                      <tr>
+                                        <th scope="col" class="firstTh">#</th>
+                                        <th scope="col">ACTIVITY</th>
+                                        <th scope="col">BASE RATE</th>
+                                        <th scope="col">QTY</th>
+                                        <th scope="col">UNIT</th>
+                                        <th scope="col" class="">AMOUNT</th>
+                                        <th class="lastTh"></th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                        <ng-container *ngFor="let addedservice of boqServices_all; let i = index; " [attr.data-index]="i">
+                                            <tr class="box-list" *ngIf="addedservice.space==selSpaceSERV">
+                                                <td>{{ i+1 }}</td>
+                                                <td>{{addedservice.service_activity}}</td>
+                                                <td>
+                                                  <span class="service-edit-mode-off service-edit-mode-off-{{i}}">{{addedservice.base_rate}}</span>
+                                                  <span class="service-edit-mode-on service-edit-mode-on-{{i}}">
+                                                    <input type="number" name="" [attr.value] = 'addedservice.base_rate' class="form-control" (change) = "onBasePriceChange(i,$event)" >
+                                                  </span>
+                                                </td>
+
+                                                <td>
+                                                  <span class="service-edit-mode-off service-edit-mode-off-{{i}}">{{addedservice.quantity}}</span>
+                                                  <span class="service-edit-mode-on service-edit-mode-on-{{i}}">
+                                                     <input type="number" name="" [attr.value] = 'addedservice.quantity' class="form-control" (change) = "onQtyChange(i,$event)">
+                                                  </span>
+                                                </td>
+                                                <td>{{addedservice.unit}}</td>
+                                                <td>{{addedservice.amount}}</td>
+                                                <td><button class="btn_vendor" data-toggle="modal" data-target="#addVendorModal" (click)="openVendorModal(addedservice,'ServiceJob')">Add Vendors</button></td>
+                                            </tr>
+                                       </ng-container>
+                                    </tbody>
+                                  </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+  <!--Services ends-->
+  <!--Custom Elements-->
+  <div class="row d-none rowContainer" style="padding: 16px" id="globalVarRowForCustomElem">
+    <div class="col-md-12">
+      <h6 class="mb-3 borderbottom pt-3 pb-3" *ngIf="quotations"><span class="mr-3">BOQ : {{quotations.reference_number}}</span><span class="pull-right">Total - &#8377; {{quotations.total_amount}}</span></h6>
+    </div>
+      <div class="col-md-12 pt-3 pb-3" *ngIf=" selectedSpacesArrCustomEle && selectedSpacesArrCustomEle.length>0">
+          <div id="accordionCE">
+              <div class="card mb-2" *ngFor="let selSpaceCE of selectedSpacesArrCustomEle; let k8=index; ">
+                  <div class="card-header" id="spaceCardCE{{k8}}">
+                      <h5 class="mb-0">
+                          <button class="btn btn-link fontsize1 addCursor" data-toggle="collapse" [attr.data-target]=" '#collapseSpaceCardCE'+k8" aria-expanded="true" aria-controls="collapsetwo">
+                          {{selSpaceCE}}
+                          </button>
+                          <ng-container *ngFor="let key4 of Object.keys(quotations.space_amounts_custom); let n1 =index; "><span *ngIf="key4==selSpaceCE" style="font-size: 14px;" class="pull-right">Total - &#8377; {{quotations.space_amounts_custom[key4]}}</span></ng-container>
+                      </h5>
+                  </div>
+
+                  <div id="collapseSpaceCardCE{{k8}}" class="collapse" [attr.aria-labelledby]="'spaceCardCE'+k8" data-parent="#accordionCE">
+                      <div class="card-body">
+                          <ng-container *ngFor="let key of Object.keys(quotations.custom_jobs); let m1 =index; ">
+                              <div *ngIf="key==selSpaceCE" class="tableDiv mt-3">
+                                  <table class="table">
+                                      <thead class="thead-dark">
+                                          <tr>
+                                              <th class="firstTh">#</th>
+                                              <th>Name</th>
+                                              <th>Dimension</th>
+                                              <th>Core Material</th>
+                                              <th>Shutter Finish</th>
+                                              <th>Quantity</th>
+                                              <th>Price</th>
+                                              <th class="">Image</th>
+                                              <th class="lastTh"></th>
+                                          </tr>
+                                      </thead>
+                                      <tbody>
+                                          <tr *ngFor="let cj of quotations.custom_jobs[key]; let k=index; ">
+                                              <td>{{k+1}}</td>
+                                              <td>{{cj.name}}</td>
+                                              <td>{{cj.dimension}}</td>
+                                              <td>{{cj.core_material}} </td>
+                                              <td>{{cj.shutter_finish}} </td>
+                                              <td>
+                                                  <span class="customelemLineItemSpan{{k}}">{{cj.quantity}}</span>
+                                                  <input type="number" name="" class="form-control d-none customelemLineItemInput{{k}}" [(ngModel)]="editCustomElemLineQty" min="1">
+                                              </td>
+                                              <td>{{cj.amount}}</td>
+                                              <td>
+                                                  <img src="{{cj.photo}}" height="100px" width="100px" onerror="this.src='./assets/img/no_image.svg'" style="display: block;" *ngIf="cj.photo">
+                                              </td>
+                                              <td><button class="btn_vendor" data-toggle="modal" data-target="#addVendorModal" (click)="openVendorModal(cj,'CustomJob')">Add Vendors</button></td>
+                                          </tr>
+                                      </tbody>
+                                  </table>
+                              </div>
+                          </ng-container>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+  <!--Custom Elements Ends-->
+  <!--Other cost starts-->
+  <div class="row rowContainer" id="globalVarRowForOtherCosts">
+    <div class="col-md-12">
+      <div class="" id="addOthercostRow">
+        <div class=" pt-5">
+          <div class="">
+            <div class="">
+              <div class="row filterRow py-2 mx-1">
+                <div class="col-3">
+                  <div class="ss-searchbox d-inline-block">
+                    <i class="fa fa-search"></i>
+                    <input class="form-control" type="text" placeholder="Type in name, contact person,contact number, pan no.,email to search..." [(ngModel)]="searchstring_vendorFilter">
+                  </div>
+                </div>
+                <div class="col-3">
+                  <span class="filterHeading mr-1">Filter By </span>
+                  <select class="form-control d-inline filterSelectBox capitalize" (change)="getVendorSubCategories($event.target.value)" [(ngModel)]="category_id_vendorFilter">
+                    <option value="">Select Category</option>
+                    <option *ngFor="let cat of vendor_categories_arr" value="{{cat.id}}">{{cat.category_name}}</option>
+                  </select>
+                </div>
+                <div class="col-3">
+                  <span class="filterHeading mr-1">Filter By </span>
+                  <select class="form-control d-inline filterSelectBox capitalize" [(ngModel)]="sub_category_id_vendorFilter">
+                    <option value="">Select Sub Category</option>
+                    <option *ngFor="let subcat of vendor_subcategories_arr" value="{{subcat.id}}">{{subcat.category_name}}</option>
+                  </select>
+                </div>
+                <div class="col-2">
+                  <span class="filterHeading mr-1">Filter By </span>
+                  <select class="form-control d-inline filterSelectBox capitalize" [(ngModel)]="serviceable_city_id_vendorFilter">
+                    <option value="">Select City</option>
+                    <option *ngFor="let city of vendor_cities_arr" value="{{city.id}}">{{city.name}}</option>
+                  </select>
+                </div>
+                <div class="col-1">
+                  <div class="planeIcon d-inline-block addCursor" (click)="listVendors()">
+                    <img src="assets/v3/img/White_Arrow.svg" height="33px">
+                  </div>
+                </div>
+              </div>
+              <div class="row subitemRow py-2 mx-1">
+                <div class="col-md-4 borderRight tableDiv">
+                  <p class="subitemColHeading mt-2">Added Costs</p>
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th class="firstTh"></th>
+                        <th>SR NO.</th>
+                        <th>NAME</th>
+                        <th class="lastTh">
+                          <div class="addIconDiv addCursor" (click)="addSubitem('othercost')">
+                            <i class="fa fa-plus"></i>
+                          </div>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr class="d-none" id="addformrow_othercost">
+                        <td colspan="4">
+                          <form [formGroup]="addsubitemform" class="px-2 py-2">
+                            <input type="text" name="" class="form-control d-inline-block filterHeading" formControlName="element_name" style="width: 53%;" placeholder="Enter Name">
+                            <button class="rk-interalBtnColor addCursor" (click)="postjob_elements_of_BOQlineitem(addsubitemform.value,'othercost')" [disabled]="!addsubitemform.valid">ADD</button>
+                            <button class="rk-btnCancel addCursor" (click)="cancelsubitemrow('othercost')">CANCEL</button>
+                          </form>
+                        </td>
+                      </tr>
+                      <tr *ngIf="job_elements_arr && job_elements_arr.length==0">
+                        <td colspan="4">
+                          No cost added.
+                        </td>
+                      </tr>
+                      <tr *ngFor="let jobelem of job_elements_arr; let i=index;">
+                        <td>
+                          <input type="radio" value="{{jobelem.id}}" id="text{{jobelem.id}}" [(ngModel)]="selectedSubitem_modal" (change)="getDetailsOfJobelement(jobelem.id)" [checked]="jobelem_details && jobelem.id==jobelem_details.id"><label for="text{{jobelem.id}}"></label>
+                        </td>
+                        <td>{{i+1}}</td>
+                        <td class="capitalize">
+                          <span class="jobelemrowspan_{{i}}">{{jobelem.element_name}}</span>
+                          <input type="text" name="" class="form-control d-none jobelemrowinput_{{i}}" [(ngModel)]="editsubitem_name">
+                        </td>
+                        <td>
+                          <i class="ion-android-more-vertical ss-3-dot-drop jobelemrowspan_{{i}}" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"></i>
+                          <div class="dropdown-menu pt-2 pb-2" style="font-size: 14px;">
+                            <a class="dropdown-item addCursor" (click)="deleteSubitem(jobelem.id)">Delete</a>
+                            <a class="dropdown-item addCursor" (click)="editsubitem(i,jobelem)">Edit</a>
+                          </div>
+                          <button class="jobelemrowinput_{{i}} d-none rk-interalBtnColor addCursor" (click)="updatejobelement(jobelem.id)">Update</button>
+                          <button class="jobelemrowinput_{{i}} d-none rk-btnCancel addCursor" (click)="cancelsubItem(i,jobelem)">Cancel</button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="col-md-4 borderRight tableDiv">
+                  <p class="subitemColHeading mt-2">List of All Vendors</p>
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th class="firstTh">SR NO.</th>
+                        <th>NAME</th>
+                        <th>CONTACT PERSON</th>
+                        <th class="lastTh"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr  *ngFor="let vendor of vendorlist; let j=index;">
+                        <td>{{j+1}}</td>
+                        <td class="capitalize">{{vendor.name}}</td>
+                        <td class="capitalize">{{vendor.contact_person}}</td>
+                        <td>
+                          <button class="addVendorDetailsBtn" *ngIf="selectedSubitem_modal" (click)="openVendorForm('addvendorform',vendor,'othercost')"><i class="fa fa-plus"></i></button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="col-md-4" style="overflow-y: scroll!important;">
+                  <div id="addVendorFormRow_othercost" class="d-none">
+                    <p class="subitemColHeading mt-2" *ngIf="addVendorForm.controls['vendor_form_type'].value=='addvendorform' ">Add Vendors</p>
+                    <p class="subitemColHeading mt-2" *ngIf="addVendorForm.controls['vendor_form_type'].value=='updatevendorform' ">Edit Vendors</p>
+                    <div class="card">
+                      <div class="card-body">
+                        <form [formGroup]="addVendorForm">
+                          <div class="row">
+                            <div class="col-md-6">
+                              <label class="filterHeading vendorForm">Name :</label>
+                              <input type="text" name="" readonly formControlName="name" class="form-control filterHeading capitalize vendorForm">
+                            </div>
+                            <div class="col-md-6">
+                              <label class="filterHeading vendorForm">Contact Person :</label>
+                              <input type="text" name="" readonly formControlName="contact_person" class="form-control filterHeading vendorForm capitalize">
+                            </div>
+                            <div class="col-md-6 mt-4">
+                              <label class="filterHeading vendorForm">Tax Type<span class="text-danger">*</span> :</label>
+                              <select class="form-control filterHeading vendorForm" formControlName="tax_type" (change)="toggleTaxFields($event.target.value)">
+                                <option value="cgst_sgst">SGST & CGST</option>
+                                <option value="igst">IGST</option>
+                              </select>
+                            </div>
+                            <div class="col-md-6 mt-4">
+                              <label class="filterHeading vendorForm">Tax Percent<span class="text-danger">*</span> :</label>
+                              <input type="number" name="" formControlName="tax_percent" class="form-control filterHeading vendorForm" min="0" max="100">
+                            </div>
+                            <div class="col-md-6 mt-4 tax-types">
+                              <label class="filterHeading vendorForm">CGST<span class="text-danger">*</span> :</label>
+                              <input type="text" name="" readonly class="form-control filterHeading vendorForm cgst" min="0" max="100" value="{{setTaxTypes()}}">
+                            </div>
+                            <div class="col-md-6 mt-4 tax-types">
+                              <label class="filterHeading vendorForm">SGST<span class="text-danger">*</span> :</label>
+                              <input type="text" name="" readonly class="form-control filterHeading vendorForm sgst" min="0" max="100" value="{{setTaxTypes()}}">
+                            </div>
+                            <div class="col-md-6 mt-4">
+                              <label class="filterHeading vendorForm">Quantity<span class="text-danger">*</span> :</label>
+                              <input type="number" name="" formControlName="quantity" class="form-control filterHeading vendorForm" min="1">
+                            </div>
+                            <div class="col-md-6 mt-4">
+                              <label class="filterHeading vendorForm">Cost<span class="text-danger">*</span> :</label>
+                              <input type="number" name="" formControlName="cost" class="form-control filterHeading vendorForm" min="1">
+                            </div>
+                            <div class="col-md-6 mt-4">
+                              <label class="filterHeading vendorForm">Number :</label>
+                              <input type="text" name="" readonly formControlName="contact_number" class="form-control filterHeading vendorForm">
+                            </div>
+                            <div class="col-md-6 mt-4">
+                              <label class="filterHeading vendorForm">Total Amount :</label>
+                              <input type="text" name="" readonly formControlName="total_amt" class="form-control filterHeading vendorForm" value="{{calculateTotalAmt()}}">
+                            </div>
+                            <div class="col-md-6 mt-4">
+                              <label class="filterHeading vendorForm">Delivery Date :</label>
+                              <input type="date" name="" formControlName="deliver_by_date" class="form-control filterHeading vendorForm">
+                            </div>
+                            <div class="col-md-6 mt-4">
+                              <label class="filterHeading vendorForm">Description :</label>
+                              <textarea formControlName="description" class="form-control filterHeading vendorForm" rows="1"></textarea>
+                            </div>
+                            <div class="col-md-6 mt-4">
+                              <label class="filterHeading vendorForm">UOM :</label>
+                              <input type="text" formControlName="unit_of_measurement" class="form-control filterHeading vendorForm">
+                            </div>
+                            <div class="col-md-6 mt-4">
+                              <input type="checkbox" name="recommended" formControlName="recommended" class="mr-2"><span class="filterHeading vendorForm">Recommended</span>
+                            </div>
+                            <div _ngcontent-c8="" class="col-md-12 mt-4 text-right">
+                              <button class="rk-interalBtnColor addCursor" (click)="addVendor(addVendorForm.value,'othercost')" [disabled]="!addVendorForm.valid">Save Details</button>
+                            </div>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                  <div id="addedVendorsRow_othercost" *ngIf="jobelem_details" class="tableDiv">
+                    <p class="subitemColHeading mb-0 mt-2">Added Vendors</p>
+                    <span *ngIf="jobelem_details.job_element_vendor_details.length==0">No vendors added.</span>
+                    <ng-container *ngIf="jobelem_details.job_element_vendor_details.length>0">
+                      <collapsible-table [type]="'accordion'" bordered class="table" style="outline: none;border-collapse: separate; border-spacing: 0 5px;">
+                        <thead>
+                          <!-- <tr> -->
+                          <collapsible-table-row>
+                            <th class="firstTh">SR NO.</th>
+                            <th>NAME</th>
+                            <th>CONTACT PERSON</th>
+                            <th>RECOMMENDED</th>
+                            <th class="lastTh"></th>
+                          </collapsible-table-row>
+                          <!-- </tr> -->
+                        </thead>
+                        <tbody>
+                          <ng-container *ngFor="let item of jobelem_details.job_element_vendor_details; let k=index; " [attr.data-index]="k" >
+                            <collapsible-table-row [detail]="detail1" style="box-shadow: none;">
+                              <td>{{k+1}}</td>
+                              <td class="capitalize">{{item.vendor_name}}</td>
+                              <td class="capitalize">{{item.vendor_contact_person}}</td>
+                              <td class="capitalize">
+                                <span *ngIf="item.recommended"> Yes</span>
+                                <span *ngIf="!item.recommended">No</span>
+                              </td>
+                              <td>
+                                <i class="ion-android-more-vertical ss-3-dot-drop" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"></i>
+                                <div class="dropdown-menu pt-2 pb-2" style="font-size: 14px;">
+                                  <a class="dropdown-item addCursor" (click)="deleteVendor(item.vendor_id)">Delete</a>
+                                  <a class="dropdown-item addCursor" (click)="openVendorForm('updatevendorform',item,'othercost')">Edit</a>
+                                </div>
+                              </td>
+                            </collapsible-table-row>
+                            <collapsible-table-row-detail style="box-shadow: none;" #detail1>
+                              <div class="row">
+                                <div class="col-md-6">
+                                  <label class="filterHeading vendorForm ml-2 mt-3">Conatct No. :</label>
+                                  <p class="filterHeading vendorForm ml-2">{{item.vendor_contact_number}}</p>
+                                </div>
+                                <div class="col-md-6">
+                                  <label class="filterHeading vendorForm  mt-3">Tax Type:</label>
+                                  <p class="filterHeading vendorForm ">{{item.tax_type}}</p>
+                                </div>
+                                <div class="col-md-6">
+                                  <label class="filterHeading vendorForm  mt-3">Tax Percent:</label>
+                                  <p class="filterHeading vendorForm ">{{item.tax_percent}}</p>
+                                </div>
+                                <div class="col-md-6">
+                                  <label class="filterHeading vendorForm  mt-3">Quantity:</label>
+                                  <p class="filterHeading vendorForm ">{{item.quantity}}</p>
+                                </div>
+                                <div class="col-md-6">
+                                  <label class="filterHeading vendorForm ml-2">Cost :</label>
+                                  <p class="filterHeading vendorForm ml-2"><i class="fa fa-inr mr-1"></i>{{item.cost}}</p>
+                                </div>
+                                <div class="col-md-6">
+                                  <label class="filterHeading vendorForm">Final Amount :</label>
+                                  <p class="filterHeading vendorForm "><i class="fa fa-inr mr-1"></i>{{item.final_amount}}</p>
+                                </div>
+                                <div class="col-md-6">
+                                  <label class="filterHeading vendorForm ml-2">Delivery Date :</label>
+                                  <p class="filterHeading vendorForm ml-2">{{item.deliver_by_date | date:'dd MMMM, y'}}</p>
+                                </div>
+                                <div class="col-md-6">
+                                  <label class="filterHeading vendorForm">Description :</label>
+                                  <p class="filterHeading vendorForm">{{item.description}}</p>
+                                </div>
+                                <div class="col-md-6">
+                                  <label class="filterHeading vendorForm">UOM :</label>
+                                  <p class="filterHeading vendorForm">{{item.unit_of_measurement}}</p>
+                                </div>
+                              </div> 
+                            </collapsible-table-row-detail>
+                          </ng-container>
+                        </tbody>
+                      </collapsible-table>
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--Other cost ends-->
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="customizationModal" tabindex="-1" role="dialog" aria-labelledby="customizationModalLable" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Customize Elements</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" *ngIf="customizationModule_MW_details">
+        <form [formGroup]="customizationModule_MW_Form">
+            <div class="row">
+                <div class="col-md-6 mt-2">
+                    <label>Core Material</label>
+                    <input type="text" name="" class="form-control" formControlName="core_material" readonly *ngIf="!editBtnFlag">
+                </div>
+                <div class="col-md-6 mt-2">
+                    <label>Shutter Material</label>
+                    <input type="text" name="" class="form-control" formControlName="shutter_material" readonly *ngIf="!editBtnFlag">
+                </div>
+                <div class="col-md-6 mt-2">
+                    <label>Shutter Finish</label>
+                    <input type="text" name="" class="form-control" formControlName="shutter_finish" readonly *ngIf="!editBtnFlag">
+                </div>
+                <div class="col-md-6 mt-2">
+                    <label>Shutter Shade Code</label>
+                    <input type="text" name="" class="form-control" formControlName="shutter_shade_code" readonly *ngIf="!editBtnFlag">
+                    
+                    <input type="text" name="" class="form-control my-1" formControlName="cust_shutter_shade_code" placeholder="Enter custom shade code" readonly *ngIf="!editBtnFlag">
+                </div>
+                <div class="col-md-6 mt-2">
+                    <label>Edge Banding Shade Code</label>
+                    <input type="text" name="" class="form-control" formControlName="edge_banding_shade_code" readonly *ngIf="!editBtnFlag">
+                    
+                    <input type="text" name="" class="form-control my-1" formControlName="cust_edge_banding_shade_code" placeholder="Enter custom edge banding shade code" readonly *ngIf="!editBtnFlag">
+                </div>
+                <div class="col-md-6 mt-2">
+                    <label>Shutter Handle Code</label>
+                    <input type="text" name="" class="form-control" formControlName="shutter_handle_code" readonly *ngIf="!editBtnFlag">
+                </div>
+                <div class="col-md-6 mt-2">
+                    <label>Drawer Handle Code</label>
+                    <input type="text" name="" class="form-control" formControlName="door_handle_code" readonly *ngIf="!editBtnFlag">
+                </div>
+                <div class="col-md-6 mt-2">
+                    <label>Hinge Type</label>
+                    <input type="text" name="" class="form-control" formControlName="hinge_type" readonly *ngIf="!editBtnFlag">
+                </div>
+                <div class="col-md-6 mt-2">
+                    <label>Channel Type</label>
+                    <input type="text" name="" class="form-control" formControlName="channel_type" readonly *ngIf="!editBtnFlag">
+                </div>
+                <div class="col-md-6 mt-2">
+                    <label>Hardware Brand</label>
+                    <input type="text" name="" class="form-control" formControlName="hardware_brand" readonly *ngIf="!editBtnFlag">
+                </div>
+                <div class="col-md-6 mt-2">
+                    <label>Number Exposed Sites</label>
+                    <input type="number" name="" formControlName="number_exposed_sites" class="form-control" readonly *ngIf="!editBtnFlag">
+                </div>
+                <div class="col-md-12 mt-2">
+                  <fieldset formArrayName="addons">
+                      <div class="form-group row"
+                           *ngFor = "let item of customizationModule_MW_Form.get('addons')['controls']; let i=index "
+                           [formGroup]="item">
+                        <div class="col-sm-4">
+                          <label [attr.for]="'addon'+i">Addon </label>
+                          <select class="form-control" [attr.id]="'addon'+i" formControlName="id" *ngIf="!editBtnFlag" disabled readonly>
+                              <option>Select</option>
+                              <option *ngFor="let item_1 of customizationModule_MW_details.allowed_addons" value="{{item_1.id}}">{{item_1.name}} - {{item_1.code}}</option>
+                          </select>
+                        </div>
+                        <div class="col-sm-4">
+                          <label [attr.for]="'addon-quantity'+i">Quantity</label>
+                          <input type="number" class="form-control"
+                                 [attr.id]="'addon-quantity'+i" formControlName="quantity" readonly *ngIf="!editBtnFlag">
+                        </div>
+                        <div class="col-sm-3">
+                            <label [attr.for]="'addon-image'+i">Image</label>
+                            <img src="http://{{getformArray(customizationModule_MW_Form,'addons').controls[i]['controls'].image.value}}" height="100px" width="100px" onerror="this.src='./assets/img/no_image.svg'" style="display: block;" *ngIf="getformArray(customizationModule_MW_Form,'addons').controls[i]['controls'].image.value!=''">
+                        </div>
+                        <div class="col-sm-1 py-1">
+                        </div>
+                      </div>
+                  </fieldset>
+                </div>
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="customizationModalMk" tabindex="-1" role="dialog" aria-labelledby="customizationModalMkLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Customize Elements</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" *ngIf="globalVarArr">
+        <form [formGroup]="customizationModule_MK_Form">
+            <div class="row">
+                <div class="col-md-6 mt-2">
+                    <label>Core Material</label>
+                    <input type="text" name="" class="form-control" formControlName="core_material" readonly *ngIf="!editBtnFlag">
+                </div>
+                <div class="col-md-6 mt-2">
+                    <label>Shutter Material</label>
+                    <input type="text" name="" class="form-control" formControlName="shutter_material" readonly *ngIf="!editBtnFlag">
+                </div>
+                <div class="col-md-6 mt-2">
+                    <label>Shutter Finish</label>
+                    <input type="text" name="" class="form-control" formControlName="shutter_finish" readonly *ngIf="!editBtnFlag">
+                </div>
+                <div class="col-md-6 mt-2">
+                    <label>Shutter Shade Code</label>
+                    <input type="text" name="" class="form-control" formControlName="shutter_shade_code" readonly *ngIf="!editBtnFlag">
+                    <input type="text" name="" class="form-control my-1" formControlName="cust_shutter_shade_code" placeholder="Enter custom shade code" readonly *ngIf="!editBtnFlag">
+                </div>
+                <div class="col-md-6 mt-2">
+                    <label>Edge Banding Shade Code</label>
+                    <input type="text" name="" class="form-control" formControlName="edge_banding_shade_code" readonly *ngIf="!editBtnFlag">
+                    <input type="text" name="" class="form-control my-1" formControlName="cust_edge_banding_shade_code" placeholder="Enter custom edge banding shade code" readonly *ngIf="!editBtnFlag">
+                </div>
+                <div class="col-md-6 mt-2">
+                    <label>Drawer Handle Code</label>
+                    <input type="text" name="" class="form-control" formControlName="door_handle_code" readonly *ngIf="!editBtnFlag">
+                </div>
+                <div class="col-md-6 mt-2">
+                    <label>Hinge Type</label>
+                    <input type="text" name="" class="form-control" formControlName="hinge_type" readonly *ngIf="!editBtnFlag">
+                </div>
+                <div class="col-md-6 mt-2">
+                    <label>Channel Type</label>
+                    <input type="text" name="" class="form-control" formControlName="channel_type" readonly *ngIf="!editBtnFlag">
+                </div>
+                <div class="col-md-6 mt-2">
+                    <label>Hardware Brand</label>
+                    <input type="text" name="" class="form-control" formControlName="hardware_brand" readonly *ngIf="!editBtnFlag">
+                </div>
+                <div class="col-md-6 mt-2">
+                    <label>Skirting Config Type</label>
+                    <input type="text" name="" class="form-control" formControlName="skirting_config_type" readonly *ngIf="!editBtnFlag">
+                </div>
+                <div class="col-md-6 mt-2">
+                    <label>Skirting Config Height</label>
+                    <input type="text" name="" class="form-control" formControlName="skirting_config_height" readonly *ngIf="!editBtnFlag">
+                </div>
+                <div class="col-md-6 mt-2" *ngIf="customizationModule_MK_details">
+                    <label>Number Exposed Sites</label>
+                    <input type="number" name="" formControlName="number_exposed_sites" class="form-control" readonly *ngIf="!editBtnFlag">
+                </div>
+                <div class="col-md-12 mt-2" *ngIf="customizationModule_MK_details">
+                    <fieldset formArrayName="compulsory_addons" class="mx-3">
+                        <div class="form-group row fieldsetBorder"
+                           *ngFor = "let item2 of customizationModule_MK_Form.get('compulsory_addons')['controls']; let i=index "
+                           [formGroup]="item2">
+                            <div class="col-sm-4">
+                               <label [attr.for]="'compaddon-slot'+i">Slot *</label>
+                               <input type="text" name="" formControlName="slot"  class="form-control"
+                                 [attr.id]="'compaddon-slot'+i" readonly>
+                            </div>
+                            <div class="col-sm-4">
+                                <label [attr.for]="'compaddon'+i">Addon *</label>
+                                <textarea formControlName="name"  class="form-control"
+                                   [attr.id]="'compaddon'+i" readonly=""></textarea>
+                            </div>
+                            <div class="col-sm-4">
+                              <label [attr.for]="'compaddon-quantity'+i">Quantity*</label>
+                              <input type="number" class="form-control"
+                                 [attr.id]="'compaddon-quantity'+i" formControlName="quantity" readonly>
+                            </div>
+                            <div class="col-sm-4">
+                                <label [attr.for]="'compaddon-image'+i">Image</label>
+                                <img src="http://{{getformArray(customizationModule_MK_Form,'compulsory_addons').controls[i]['controls'].image.value}}" height="100px" width="100px" onerror="this.src='./assets/img/no_image.svg'" style="display: block;" *ngIf="getformArray(customizationModule_MK_Form,'compulsory_addons').controls[i]['controls'].image.value!=''">
+                            </div>
+                            <!--Addon for addons-->
+                            <div class="col-sm-12 mt-3">
+                                <fieldset formArrayName="addons_for_addons">
+                                    <div class="form-group row"
+                                         *ngFor = "let item_2 of getformArray(customizationModule_MK_Form,'compulsory_addons').controls[i]['controls'].addons_for_addons.controls; let i9=index "
+                                         [formGroup]="item_2">
+                                        <div class="col-sm-4">
+                                            <label [attr.for]="'addonforaddon'+i9">Addon *</label>
+                                            <textarea formControlName="name"  class="form-control"
+                                               [attr.id]="'addonforaddon'+i9" disabled readonly></textarea>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <label [attr.for]="'addonforaddon-quantity'+i9">Quantity*</label>
+                                            <input type="number" class="form-control"
+                                               [attr.id]="'addonforaddon-quantity'+i9" formControlName="quantity" *ngIf="editBtnFlag">
+
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <label [attr.for]="'addonforaddon-image'+i9">Image</label>
+                                            <img src="http://{{ getformArray(customizationModule_MK_Form,'compulsory_addons').controls[i]['controls'].addons_for_addons.controls[i9]['controls'].addon_image.value}}" height="80px" width="80px" onerror="this.src='./assets/img/no_image.svg'" style="display: block;" *ngIf="getformArray(customizationModule_MK_Form,'compulsory_addons').controls[i]['controls'].addons_for_addons.controls[i9]['controls'].addon_image.value!=''">
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+                            <!--Addon for addons-->
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="col-md-12 mt-1" *ngIf="customizationModule_MK_details">
+                    <fieldset formArrayName="addons">
+                        <div class="form-group row"
+                             *ngFor = "let item of customizationModule_MK_Form.get('addons')['controls']; let i=index "
+                             [formGroup]="item">
+                          <div class="col-sm-4">
+                            <label [attr.for]="'addon'+i">Addon </label>
+                            <textarea class="form-control" [attr.id]="'addon'+i" formControlName="name" readonly></textarea>
+                          </div>
+                          <div class="col-sm-4">
+                            <label [attr.for]="'addon-quantity'+i">Quantity</label>
+                            <input type="number" class="form-control"
+                                   [attr.id]="'addon-quantity'+i" formControlName="quantity" *ngIf="!editBtnFlag" readonly>
+                          </div>
+                          <div class="col-sm-3">
+                            <label [attr.for]="'addon-image'+i">Image</label>
+                            <img src="http://{{getformArray(customizationModule_MK_Form,'addons').controls[i]['controls'].image.value}}" height="100px" width="100px" onerror="this.src='./assets/img/no_image.svg'" style="display: block;" *ngIf="getformArray(customizationModule_MK_Form,'addons').controls[i]['controls'].image.value!=''">
+                          </div>
+                          <div class="col-sm-1 py-1">
+                          </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="selectedGlobalVarModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Selected Global Variables</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Category</th>
+                        <th>Type</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <!-- Modlar wardrobe-->
+                <tbody *ngIf="globalVarArr && boqConfigMWVal && boqConfigMWVal.category=='wardrobe' ">
+                    <tr>
+                        <td>1</td>
+                        <td>Core Material</td>
+                        <td>
+                           <span class="editRowSpan capitalize">{{boqConfigMWVal.core_material.name}}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Shutter Material</td>
+                        <td>
+                           <span class="editRowSpan capitalize">{{boqConfigMWVal.shutter_material.name}}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Shutter Finish</td>
+                        <td>
+                            <span class="editRowSpan capitalize">{{boqConfigMWVal.shutter_finish.name}}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td> Shutter Shade Code</td>
+                        <td>
+                           <span class="editRowSpan capitalize" *ngIf="!boqConfigMWVal.custom_shutter_shade_code">{{boqConfigMWVal.shutter_shade_code.code}}</span>
+                           <span class="editRowSpan capitalize" *ngIf="boqConfigMWVal.custom_shutter_shade_code">{{boqConfigMWVal.shutter_shade_code}}</span>
+
+                            <img src="{{boqConfigMWVal.shutter_shade_code.shade_image}}" class="my-1 editRowSpan" alt=" No Image" height="60px" width="100px" *ngIf="!boqConfigMWVal.custom_shutter_shade_code && boqConfigMWVal.shutter_shade_code.shade_image" onerror="this.src='./assets/img/no_image.svg'" />
+                        </td>
+                    </tr>
+                    <tr>
+                       <td>5</td>
+                       <td>Shutter Handle Code</td>
+                       <td>
+                           <span class="editRowSpan capitalize">{{boqConfigMWVal.shutter_handle_code}}</span>
+                       </td>
+                    </tr>
+                    <tr>
+                       <td>6</td>
+                       <td>Drawer Handle Code</td>
+                       <td>
+                           <span class="editRowSpan capitalize">{{boqConfigMWVal.door_handle_code}}</span>
+                       </td>
+                    </tr>
+                    <tr>
+                       <td>7</td>
+                       <td>Hardware Brand</td>
+                       <td>
+                           <span class="editRowSpan capitalize">{{boqConfigMWVal.brand.name}}</span>
+                       </td>
+                    </tr>
+                    <tr>
+                       <td>8</td>
+                       <td> Hinge Type</td>
+                       <td>
+                           <span class="editRowSpan capitalize">{{boqConfigMWVal.hinge_type}}</span>
+                       </td>
+                    </tr>
+                    <tr>
+                       <td>9</td>
+                       <td> Channel Type</td>
+                       <td>
+                           <span class="editRowSpan capitalize">{{boqConfigMWVal.channel_type}}</span>
+                       </td>
+                    </tr>
+                    <tr>
+                       <td>10</td>
+                       <td> Edge Banding Shade</td>
+                       <td>
+                           <span class="editRowSpan capitalize" *ngIf="!boqConfigMWVal.custom_edge_banding_shade_code">{{boqConfigMWVal.edge_banding_shade_code.code}}</span>
+                           <span class="editRowSpan capitalize" *ngIf="boqConfigMWVal.custom_edge_banding_shade_code">{{boqConfigMWVal.edge_banding_shade_code}}</span>
+                            <img src="{{boqConfigMWVal.edge_banding_shade_code.shade_image}}" class="my-1 editRowSpan" alt=" No Image" height="60px" width="100px" *ngIf="!boqConfigMWVal.custom_edge_banding_shade_code && boqConfigMWVal.edge_banding_shade_code.shade_image" onerror="this.src='./assets/img/no_image.svg'" />>
+                       </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="selectedGlobalVarModalMK" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Selected Global Variables</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Category</th>
+                        <th>Type</th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <!--Modular kitchen-->
+                <tbody *ngIf="globalVarArr && boqConfigMKVal && boqConfigMKVal.category=='kitchen' ">
+                    <tr>
+                        <td>1</td>
+                        <td>Type Of Kitchen</td>
+                        <td>
+                           <span class="editRowSpan capitalize">
+                                <ng-container *ngIf="boqConfigMKVal.civil_kitchen">Civil Kitchen</ng-container>
+                                <ng-container *ngIf="!boqConfigMKVal.civil_kitchen">Modular Kitchen</ng-container>
+                            </span>
+                        </td>
+                    </tr>
+                    <tr [ngClass]="(typeofkitchen_globalVar_MK===true || typeofkitchen_globalVar_MK==='true')?'d-print-table-cell':'d-none'">
+                        <td>2</td>
+                        <td>Depth(in mm)</td>
+                        <td>
+                            <span class="editRowSpan capitalize" *ngIf="boqConfigMKVal.civil_kitchen_parameters">
+                               {{ boqConfigMKVal.civil_kitchen_parameters.depth}}
+                            </span>
+                        </td>
+                    </tr>
+                    <tr [ngClass]="(typeofkitchen_globalVar_MK===true || typeofkitchen_globalVar_MK==='true')?'d-print-table-cell':'d-none'">
+                        <td>3</td>
+                        <td>Drawer 1 Height in mm(D1)</td>
+                        <td>
+                           <span class="editRowSpan capitalize" *ngIf="boqConfigMKVal.civil_kitchen_parameters">
+                               {{ boqConfigMKVal.civil_kitchen_parameters.drawer_height_1}}
+                            </span>
+                        </td>
+                    </tr>
+                    <tr [ngClass]="(typeofkitchen_globalVar_MK===true || typeofkitchen_globalVar_MK==='true')?'d-print-table-cell':'d-none'">
+                        <td>4</td>
+                        <td>Drawer 2 Height in mm(D2)</td>
+                        <td>
+                           <span class="editRowSpan capitalize" *ngIf="boqConfigMKVal.civil_kitchen_parameters">
+                               {{ boqConfigMKVal.civil_kitchen_parameters.drawer_height_2}}
+                            </span>
+                        </td>
+                    </tr>
+                    <tr [ngClass]="(typeofkitchen_globalVar_MK===true || typeofkitchen_globalVar_MK==='true')?'d-print-table-cell':'d-none'">
+                        <td>5</td>
+                        <td>Drawer 3 Height in mm(D3)</td>
+                        <td>
+                           <span class="editRowSpan capitalize" *ngIf="boqConfigMKVal.civil_kitchen_parameters">
+                               {{ boqConfigMKVal.civil_kitchen_parameters.drawer_height_3}}
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td *ngIf="typeofkitchen_globalVar_MK==true || typeofkitchen_globalVar_MK==='true'">6</td>
+                        <td *ngIf="typeofkitchen_globalVar_MK==false || typeofkitchen_globalVar_MK==='false'">2</td>
+                        <td>Core Material</td>
+                        <td>
+                           <span class="editRowSpan capitalize">{{boqConfigMKVal.core_material.name}}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td *ngIf="typeofkitchen_globalVar_MK==true || typeofkitchen_globalVar_MK==='true'">7</td>
+                        <td *ngIf="typeofkitchen_globalVar_MK==false || typeofkitchen_globalVar_MK==='false'">3</td>
+                        <td>Shutter Material</td>
+                        <td>
+                           <span class="editRowSpan capitalize">{{boqConfigMKVal.shutter_material.name}}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td *ngIf="typeofkitchen_globalVar_MK==true || typeofkitchen_globalVar_MK==='true'">8</td>
+                        <td *ngIf="typeofkitchen_globalVar_MK==false || typeofkitchen_globalVar_MK==='false'">4</td>
+                        <td>Shutter Finish</td>
+                        <td>
+                            <span class="editRowSpan capitalize">{{boqConfigMKVal.shutter_finish.name}}</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td *ngIf="typeofkitchen_globalVar_MK==true || typeofkitchen_globalVar_MK==='true'">9</td>
+                        <td *ngIf="typeofkitchen_globalVar_MK==false || typeofkitchen_globalVar_MK==='false'">5</td>
+                        <td> Shutter Shade Code</td>
+                        <td>
+                           <span class="editRowSpan capitalize" *ngIf="!boqConfigMKVal.custom_shutter_shade_code">{{boqConfigMKVal.shutter_shade_code.code}}</span>
+                           <span class="editRowSpan capitalize" *ngIf="boqConfigMKVal.custom_shutter_shade_code">{{boqConfigMKVal.shutter_shade_code}}</span>
+                            <img src="{{boqConfigMKVal.shutter_shade_code.shade_image}}" class="my-1 editRowSpan" alt=" No Image" height="60px" width="100px" *ngIf="!boqConfigMKVal.custom_shutter_shade_code && boqConfigMKVal.shutter_shade_code.shade_image" onerror="this.src='./assets/img/no_image.svg'" />
+                        </td>
+                    </tr>
+                    <tr>
+                       <td *ngIf="typeofkitchen_globalVar_MK==true || typeofkitchen_globalVar_MK==='true'">10</td>
+                        <td *ngIf="typeofkitchen_globalVar_MK==false || typeofkitchen_globalVar_MK==='false'">6</td>
+                       <td> Handle Code</td>
+                       <td>
+                           <span class="editRowSpan capitalize">{{boqConfigMKVal.door_handle_code}}</span>
+                       </td>
+                    </tr>
+                    <tr>
+                       <td *ngIf="typeofkitchen_globalVar_MK==true || typeofkitchen_globalVar_MK==='true'">11</td>
+                       <td *ngIf="typeofkitchen_globalVar_MK==false || typeofkitchen_globalVar_MK==='false'">7</td>
+                       <td>Hardware Brand</td>
+                       <td>
+                           <span class="editRowSpan capitalize">{{boqConfigMKVal.brand.name}}</span>
+                       </td>
+                    </tr>
+                    <tr>
+                       <td *ngIf="typeofkitchen_globalVar_MK==true || typeofkitchen_globalVar_MK==='true'">12</td>
+                       <td *ngIf="typeofkitchen_globalVar_MK==false || typeofkitchen_globalVar_MK==='false'">8</td>
+                       <td> Hinge Type</td>
+                       <td>
+                           <span class="editRowSpan capitalize">{{boqConfigMKVal.hinge_type}}</span>
+                       </td>
+                    </tr>
+                    <tr>
+                        <td *ngIf="typeofkitchen_globalVar_MK==true || typeofkitchen_globalVar_MK==='true'">13</td>
+                       <td *ngIf="typeofkitchen_globalVar_MK==false || typeofkitchen_globalVar_MK==='false'">9</td>
+                       <td> Channel Type</td>
+                       <td>
+                           <span class="editRowSpan capitalize">{{boqConfigMKVal.channel_type}}</span>
+                       </td>
+                    </tr>
+                    <tr>
+                       <td *ngIf="typeofkitchen_globalVar_MK==true || typeofkitchen_globalVar_MK==='true'">14</td>
+                       <td *ngIf="typeofkitchen_globalVar_MK==false || typeofkitchen_globalVar_MK==='false'">10</td>
+                       <td> Skirting Config Type</td>
+                       <td>
+                           <span class="editRowSpan capitalize">{{boqConfigMKVal.skirting_config_type}}</span>
+                       </td>
+                    </tr>
+                    <tr>
+                       <td *ngIf="typeofkitchen_globalVar_MK==true || typeofkitchen_globalVar_MK==='true'">15</td>
+                       <td *ngIf="typeofkitchen_globalVar_MK==false || typeofkitchen_globalVar_MK==='false'">11</td>
+                       <td> Skirting Config Height</td>
+                       <td>
+                           <span class="editRowSpan capitalize">{{boqConfigMKVal.skirting_config_height}}</span>
+                       </td>
+                    </tr>
+                    <tr>
+                       <td *ngIf="typeofkitchen_globalVar_MK==true || typeofkitchen_globalVar_MK==='true'">16</td>
+                       <td *ngIf="typeofkitchen_globalVar_MK==false || typeofkitchen_globalVar_MK==='false'">12</td>
+                       <td> Edge Banding Shade</td>
+                       <td>
+                           <span class="editRowSpan capitalize" *ngIf="!boqConfigMKVal.custom_edge_banding_shade_code">{{boqConfigMKVal.edge_banding_shade_code.code}}</span>
+                           <span class="editRowSpan capitalize" *ngIf="boqConfigMKVal.custom_edge_banding_shade_code">{{boqConfigMKVal.edge_banding_shade_code}}</span>
+                           
+                            <img src="{{boqConfigMKVal.edge_banding_shade_code.shade_image}}" class="my-1 editRowSpan" alt=" No Image" height="60px" width="100px" *ngIf="!boqConfigMKVal.custom_edge_banding_shade_code && boqConfigMKVal.edge_banding_shade_code.shade_image" onerror="this.src='./assets/img/no_image.svg'" />
+                       </td>
+                    </tr>
+                    <tr>
+                        <td *ngIf="typeofkitchen_globalVar_MK==true || typeofkitchen_globalVar_MK==='true'">17</td>
+                       <td *ngIf="typeofkitchen_globalVar_MK==false || typeofkitchen_globalVar_MK==='false'">13</td>
+                       <td> Countertop</td>
+                       <td>
+                           <span class="editRowSpan capitalize">{{boqConfigMKVal.countertop | replaceChar}}</span>
+                       </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Add vendor modal-->
+<div class="modal fade" id="addVendorModal" role="dialog" data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog pt-5">
+    <div class="modal-content">
+      <div class="modalHeader px-3 py-2">
+        <span *ngIf="moduledetils_vendormodal" class="capitalize">{{moduledetils_vendormodal.name}}</span>
+        <button type="button" class="close" data-dismiss="modal" (click)="closeVendorModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="row filterRow py-2 mx-1">
+          <div class="col-3">
+            <div class="ss-searchbox d-inline-block">
+              <i class="fa fa-search"></i>
+              <input class="form-control" type="text" placeholder="Type in name, contact person,contact number, pan no.,email to search..." [(ngModel)]="searchstring_vendorFilter">
+            </div>
+          </div>
+          <div class="col-3">
+            <span class="filterHeading mr-1">Filter By </span>
+            <select class="form-control d-inline filterSelectBox capitalize" (change)="getVendorSubCategories($event.target.value)" [(ngModel)]="category_id_vendorFilter">
+              <option value="">Select Category</option>
+              <option *ngFor="let cat of vendor_categories_arr" value="{{cat.id}}">{{cat.category_name}}</option>
+            </select>
+          </div>
+          <div class="col-3">
+            <span class="filterHeading mr-1">Filter By </span>
+            <select class="form-control d-inline filterSelectBox capitalize" [(ngModel)]="sub_category_id_vendorFilter">
+              <option value="">Select Sub Category</option>
+              <option *ngFor="let subcat of vendor_subcategories_arr" value="{{subcat.id}}">{{subcat.category_name}}</option>
+            </select>
+          </div>
+          <div class="col-2">
+            <span class="filterHeading mr-1">Filter By </span>
+            <select class="form-control d-inline filterSelectBox capitalize" [(ngModel)]="serviceable_city_id_vendorFilter">
+              <option value="">Select City</option>
+              <option *ngFor="let city of vendor_cities_arr" value="{{city.id}}">{{city.name}}</option>
+            </select>
+          </div>
+          <div class="col-1">
+            <div class="planeIcon d-inline-block addCursor" (click)="listVendors()">
+              <img src="assets/v3/img/White_Arrow.svg" height="33px">
+            </div>
+          </div>
+        </div>
+        <div class="row subitemRow py-2 mx-1">
+          <div class="col-md-4 borderRight tableDiv">
+            <p class="subitemColHeading mt-2">Added Subitems</p>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th class="firstTh"></th>
+                  <th>SR NO.</th>
+                  <th>NAME</th>
+                  <th class="lastTh">
+                    <div class="addIconDiv addCursor" (click)="addSubitem()">
+                      <i class="fa fa-plus"></i>
+                    </div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="d-none" id="addformrow">
+                  <td colspan="4">
+                    <form [formGroup]="addsubitemform" class="px-2 py-2">
+                      <input type="text" name="" class="form-control d-inline-block filterHeading" formControlName="element_name" style="width: 60%;" placeholder="Enter Subitem Name">
+                      <button class="rk-interalBtnColor addCursor" (click)="postjob_elements_of_BOQlineitem(addsubitemform.value)" [disabled]="!addsubitemform.valid">ADD</button>
+                      <button class="rk-btnCancel addCursor" (click)="cancelsubitemrow()">CANCEL</button>
+                    </form>
+                  </td>
+                </tr>
+                <tr *ngIf="job_elements_arr && job_elements_arr.length==0">
+                  <td colspan="4">
+                    No subitem added.
+                  </td>
+                </tr>
+                <tr *ngFor="let jobelem of job_elements_arr; let i=index;">
+                  <td>
+                    <input type="radio" value="{{jobelem.id}}" id="text{{jobelem.id}}" [(ngModel)]="selectedSubitem_modal" (change)="getDetailsOfJobelement(jobelem.id)" [checked]="jobelem_details && jobelem.id==jobelem_details.id"><label for="text{{jobelem.id}}"></label>
+                  </td>
+                  <td>{{i+1}}</td>
+                  <td class="capitalize">
+                    <span class="jobelemrowspan_{{i}}">{{jobelem.element_name}}</span>
+                    <input type="text" name="" class="form-control d-none jobelemrowinput_{{i}}" [(ngModel)]="editsubitem_name">
+                  </td>
+                  <td>
+                    <i class="ion-android-more-vertical ss-3-dot-drop jobelemrowspan_{{i}}" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"></i>
+                    <div class="dropdown-menu pt-2 pb-2" style="font-size: 14px;">
+                      <a class="dropdown-item addCursor" (click)="deleteSubitem(jobelem.id)">Delete</a>
+                      <a class="dropdown-item addCursor" (click)="editsubitem(i,jobelem)">Edit</a>
+                    </div>
+                    <button class="jobelemrowinput_{{i}} d-none rk-interalBtnColor addCursor" (click)="updatejobelement(jobelem.id)">Update</button>
+                    <button class="jobelemrowinput_{{i}} d-none rk-btnCancel addCursor" (click)="cancelsubItem(i,jobelem)">Cancel</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="col-md-4 borderRight tableDiv">
+            <p class="subitemColHeading mt-2">List of All Vendors</p>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th class="firstTh">SR NO.</th>
+                  <th>NAME</th>
+                  <th>CONTACT PERSON</th>
+                  <th class="lastTh"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr  *ngFor="let vendor of vendorlist; let j=index;">
+                  <td>{{j+1}}</td>
+                  <td class="capitalize">{{vendor.name}}</td>
+                  <td class="capitalize">{{vendor.contact_person}}</td>
+                  <td>
+                    <button class="addVendorDetailsBtn" *ngIf="selectedSubitem_modal" (click)="openVendorForm('addvendorform',vendor)"><i class="fa fa-plus"></i></button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="col-md-4" style="overflow-y: scroll!important;">
+            <div id="addVendorFormRow" class="d-none">
+              <p class="subitemColHeading mt-2" *ngIf="addVendorForm.controls['vendor_form_type'].value=='addvendorform' ">Add Vendors</p>
+              <p class="subitemColHeading mt-2" *ngIf="addVendorForm.controls['vendor_form_type'].value=='updatevendorform' ">Edit Vendors</p>
+              <div class="card">
+                <div class="card-body">
+                  <form [formGroup]="addVendorForm">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <label class="filterHeading vendorForm">Name :</label>
+                        <input type="text" name="" readonly formControlName="name" class="form-control filterHeading capitalize vendorForm">
+                      </div>
+                      <div class="col-md-6">
+                        <label class="filterHeading vendorForm">Contact Person :</label>
+                        <input type="text" name="" readonly formControlName="contact_person" class="form-control filterHeading vendorForm capitalize">
+                      </div>
+                      <div class="col-md-6 mt-4">
+                        <label class="filterHeading vendorForm">Tax Type<span class="text-danger">*</span> :</label>
+                        <select class="form-control filterHeading vendorForm" formControlName="tax_type" (change)="toggleTaxFields($event.target.value)">
+                          <option value="cgst_sgst">SGST & CGST</option>
+                          <option value="igst">IGST</option>
+                        </select>
+                      </div>
+                      <div class="col-md-6 mt-4">
+                        <label class="filterHeading vendorForm">Tax Percent<span class="text-danger">*</span> :</label>
+                        <input type="number" name="" formControlName="tax_percent" class="form-control filterHeading vendorForm" min="0" max="100">
+                      </div>
+                      <div class="col-md-6 mt-4 tax-types">
+                        <label class="filterHeading vendorForm">CGST<span class="text-danger">*</span> :</label>
+                        <input type="text" name="" readonly class="form-control filterHeading vendorForm cgst" min="0" max="100" value="{{setTaxTypes()}}">
+                      </div>
+                      <div class="col-md-6 mt-4 tax-types">
+                        <label class="filterHeading vendorForm">SGST<span class="text-danger">*</span> :</label>
+                        <input type="text" name="" readonly class="form-control filterHeading vendorForm sgst" min="0" max="100" value="{{setTaxTypes()}}">
+                      </div>
+                      <div class="col-md-6 mt-4">
+                        <label class="filterHeading vendorForm">Quantity<span class="text-danger">*</span> :</label>
+                        <input type="number" name="" formControlName="quantity" class="form-control filterHeading vendorForm" min="1">
+                      </div>
+                      <div class="col-md-6 mt-4">
+                        <label class="filterHeading vendorForm">Cost<span class="text-danger">*</span> :</label>
+                        <input type="number" name="" formControlName="cost" class="form-control filterHeading vendorForm" min="1">
+                      </div>
+                      <div class="col-md-6 mt-4">
+                        <label class="filterHeading vendorForm">Number :</label>
+                        <input type="text" name="" readonly formControlName="contact_number" class="form-control filterHeading vendorForm">
+                      </div>
+                      <div class="col-md-6 mt-4">
+                        <label class="filterHeading vendorForm">Total Amount :</label>
+                        <input type="text" name="" readonly formControlName="total_amt" class="form-control filterHeading vendorForm" value="{{calculateTotalAmt()}}">
+                      </div>
+                      <div class="col-md-6 mt-4">
+                        <label class="filterHeading vendorForm">Delivery Date :</label>
+                        <input type="date" name="" formControlName="deliver_by_date" class="form-control filterHeading vendorForm">
+                      </div>
+                      <div class="col-md-6 mt-4">
+                        <label class="filterHeading vendorForm">Description :</label>
+                        <textarea formControlName="description" class="form-control filterHeading vendorForm" rows="1"></textarea>
+                      </div>
+                      <div class="col-md-6 mt-4">
+                        <label class="filterHeading vendorForm">UOM :</label>
+                        <input type="text" formControlName="unit_of_measurement" class="form-control filterHeading vendorForm">
+                      </div>
+                      <div class="col-md-6 mt-4">
+                        <input type="checkbox" name="recommended" formControlName="recommended" class="mr-2"><span class="filterHeading vendorForm">Recommended</span>
+                      </div>
+                      <div _ngcontent-c8="" class="col-md-12 mt-4 text-right">
+                        <button class="rk-interalBtnColor addCursor" (click)="addVendor(addVendorForm.value)" [disabled]="!addVendorForm.valid">Save Details</button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <div id="addedVendorsRow" *ngIf="jobelem_details" class="tableDiv">
+              <p class="subitemColHeading mb-0 mt-2">Added Vendors</p>
+              <span *ngIf="jobelem_details.job_element_vendor_details.length==0">No vendors added.</span>
+              <ng-container *ngIf="jobelem_details.job_element_vendor_details.length>0">
+                <collapsible-table [type]="'accordion'" bordered class="table" style="outline: none;border-collapse: separate; border-spacing: 0 5px;">
+                  <thead>
+                    <!-- <tr> -->
+                    <collapsible-table-row>
+                      <th class="firstTh">SR NO.</th>
+                      <th>NAME</th>
+                      <th>CONTACT PERSON</th>
+                      <th>RECOMMENDED</th>
+                      <th class="lastTh"></th>
+                    </collapsible-table-row>
+                    <!-- </tr> -->
+                  </thead>
+                  <tbody>
+                    <ng-container *ngFor="let item of jobelem_details.job_element_vendor_details; let k=index; " [attr.data-index]="k" >
+                      <collapsible-table-row [detail]="detail1" style="box-shadow: none;">
+                        <td>{{k+1}}</td>
+                        <td class="capitalize">{{item.vendor_name}}</td>
+                        <td class="capitalize">{{item.vendor_contact_person}}</td>
+                        <td class="capitalize">
+                          <span *ngIf="item.recommended"> Yes</span>
+                          <span *ngIf="!item.recommended">No</span>
+                        </td>
+                        <td>
+                          <i class="ion-android-more-vertical ss-3-dot-drop" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"></i>
+                          <div class="dropdown-menu pt-2 pb-2" style="font-size: 14px;">
+                            <a class="dropdown-item addCursor" (click)="deleteVendor(item.vendor_id)">Delete</a>
+                            <a class="dropdown-item addCursor" (click)="openVendorForm('updatevendorform',item)">Edit</a>
+                          </div>
+                        </td>
+                      </collapsible-table-row>
+                      <collapsible-table-row-detail style="box-shadow: none;" #detail1>
+                        <div class="row">
+                          <div class="col-md-6">
+                            <label class="filterHeading vendorForm ml-2 mt-3">Conatct No. :</label>
+                            <p class="filterHeading vendorForm ml-2">{{item.vendor_contact_number}}</p>
+                          </div>
+                          <div class="col-md-6">
+                            <label class="filterHeading vendorForm  mt-3">Tax Type:</label>
+                            <p class="filterHeading vendorForm ">{{item.tax_type}}</p>
+                          </div>
+                          <div class="col-md-6">
+                            <label class="filterHeading vendorForm  mt-3">Tax Percent:</label>
+                            <p class="filterHeading vendorForm ">{{item.tax_percent}}</p>
+                          </div>
+                          <div class="col-md-6">
+                            <label class="filterHeading vendorForm  mt-3">Quantity:</label>
+                            <p class="filterHeading vendorForm ">{{item.quantity}}</p>
+                          </div>
+                          <div class="col-md-6">
+                            <label class="filterHeading vendorForm ml-2">Cost :</label>
+                            <p class="filterHeading vendorForm ml-2"><i class="fa fa-inr mr-1"></i>{{item.cost}}</p>
+                          </div>
+                          <div class="col-md-6">
+                            <label class="filterHeading vendorForm">Final Amount :</label>
+                            <p class="filterHeading vendorForm "><i class="fa fa-inr mr-1"></i>{{item.final_amount}}</p>
+                          </div>
+                          <div class="col-md-6">
+                            <label class="filterHeading vendorForm ml-2">Delivery Date :</label>
+                            <p class="filterHeading vendorForm ml-2">{{item.deliver_by_date | date:'dd MMMM, y'}}</p>
+                          </div>
+                          <div class="col-md-6">
+                            <label class="filterHeading vendorForm">Description :</label>
+                            <p class="filterHeading vendorForm">{{item.description}}</p>
+                          </div>
+                          <div class="col-md-6">
+                            <label class="filterHeading vendorForm">UOM :</label>
+                            <p class="filterHeading vendorForm">{{item.unit_of_measurement}}</p>
+                          </div>
+                        </div> 
+                      </collapsible-table-row-detail>
+                    </ng-container>
+                  </tbody>
+                </collapsible-table>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" (click)="closeVendorModal()">Close</button>
+      </div>
+    </div>
+    
+  </div>
+</div>
+
+
+<div class="rk-ui-notification" *ngIf="successalert">
+  <span id="notificationMessageText">{{successMessage}}</span>
+  <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+<div class="rk-ui-notification err" *ngIf="erroralert">
+  <span id="notificationMessageText">{{errorMessage}}</span>
+  <a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>

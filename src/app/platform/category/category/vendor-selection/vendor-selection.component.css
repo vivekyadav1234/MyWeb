@@ -1,0 +1,170 @@
+
+.category-btn:disabled {
+    background: #dddddd!important;
+}
+.filterRow {
+  border-radius: 4px;
+  background-color: #d5d9da;
+  box-shadow: 0 0 0 0 #bdbdbd;
+}
+.filterHeading {
+  font-size: 14px
+}
+.filterRow .ss-searchbox{
+  width: 94%
+}
+.filterRow .filterSelectBox{
+  width: 62%;
+  font-size: 13px;
+}
+.filterRow div[class*=col-]{
+	background-color: #d5d9da;
+}
+.planeIcon{
+	background-color: #d5d9da;
+}
+.active-text{
+	color: #8c031f!important;
+	font-weight: bold;
+}
+.boqSpanText:hover{
+	color: #8c031f!important;
+	font-weight: bold;
+}
+[type="radio"]:checked,
+[type="radio"]:not(:checked) {
+    position: absolute;
+    left: -9999px;
+}
+[type="radio"]:checked + label,
+[type="radio"]:not(:checked) + label
+{
+    position: relative;
+    cursor: pointer;
+}
+[type="radio"]:checked + label:before,
+[type="radio"]:not(:checked) + label:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 14px;
+    height: 14px;
+    border: 1px solid #ddd;
+    border-radius: 100%;
+    background: #fff;
+}
+[type="radio"]:not(:checked) + label:after {
+    opacity: 0;
+    -webkit-transform: scale(0);
+    transform: scale(0);
+}
+[type="radio"]:checked + label:after {
+    opacity: 1;
+    -webkit-transform: scale(1);
+    transform: scale(1);
+}
+[type="radio"]:checked + label:after,
+[type="radio"]:not(:checked) + label:after {
+    content: '';
+    width: 8px;
+    height: 8px;
+    background: #8c031f;
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    border-radius: 100%;
+    -webkit-transition: all 0.2s ease;
+    transition: all 0.2s ease;
+}
+.addVendorDetailsBtn {
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+  background: #8c031f;
+  outline: none;
+  color: #fff;
+}
+.tableBodyScroll{
+    border-collapse: collapse!important;
+}
+.tableBodyScroll tbody {
+  display: block;
+  max-height: 250px;
+  overflow-y: scroll;
+}
+
+.tableBodyScroll thead,
+.tableBodyScroll tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+  box-shadow: none!important;
+}
+.tableBodyScroll tbody tr {
+   border: 1px solid #f5f3f3; 
+}
+.rk-ui-notification, .rk-ui-notification.err{
+  z-index: 1060;
+}
+.collapse-close-btn{
+  color: #8c031f;
+  font-size: 40px;
+  font-weight: 300;
+}
+.table th{
+  min-width:0rem!important;
+}
+.circularIcon .fa{
+  left: 0px!important;
+}
+#addVendorModal .modal-dialog{
+  max-width: 98%;
+}
+#addVendorModal .modal-content{
+  border: none;
+  border-radius: 0px;
+}
+#addVendorModal .modalHeader {
+  border-bottom: solid 1px #e8e6e6;
+}
+#addVendorModal .modalHeader span {
+  font-size: 23px;
+  font-weight: 300;
+}
+.nothing-to-show{
+  font-size: 21px;
+  text-align: center;
+  color: dimgray
+}
+.btn{
+  cursor:pointer;
+}
+#addVendorModal{
+width:85%!important;
+}
+.vendor-list:hover{
+  color: #8c031f!important;
+	font-weight: bold;
+}
+.rk-interalBtnColor:disabled,
+.rk-interalBtnColor[disabled]{
+  opacity: 0.5;
+  cursor: not-allowed !important;
+}
+.btn-pink.active{
+ background: gray !important;
+ border: 1px solid gray !important;
+}
+.minWidth{
+  width: 300px !important;
+}
+.close-icon{
+  margin-left: 17.5rem;
+  margin-top: 0.1rem;
+  color: darkred;
+  font-size: 1.1rem;
+}
+.an-tbody div{
+   padding-top: 0rem;
+}

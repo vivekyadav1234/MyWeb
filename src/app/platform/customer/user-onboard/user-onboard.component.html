@@ -1,0 +1,109 @@
+<div class="marginTop row">
+  <div class="col-12" *ngIf="erroralert">
+    <div class="alert-box grid-100" *ngIf="errorMessage">
+      <div class="alert alert-danger mt-3 text-center">
+        <a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a>
+        {{errorMessage}}
+      </div>
+    </div>
+  </div>
+  <div class="col-12" *ngIf="successalert">
+    <div class="alert-box grid-100" *ngIf="successMessage">
+      <div class="alert alert-success mt-3 text-center">
+        <a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+        {{successMessage}}
+      </div>
+    </div>
+  </div>
+</div>
+
+<section>
+  <div class="row justify-content-md-center">
+    <div class="col-md-8">
+
+
+     <section>
+       <h2>UserOnboard: </h2>
+       <hr>
+     </section>
+
+     <section>
+       <form (ngSubmit)="onSubmit(createOnboardForm.value); createOnboardForm.reset()" #createOnboardForm="ngForm" class="form-horizontal" enctype="multipart/form-data">
+           <div class="form-group label-floating">
+             <label class="control-label" for="food">Food: </label>
+             <select class="form-control" id="food" required name="food" #food="ngModel" ngModel>
+               <option> Roti </option>
+               <option>Rice</option>
+             </select>
+           </div>
+           <div>
+             <label for="food_type">Food type: </label>
+             <select class="form-control" id="food_type" required name="food_type" #food_type="ngModel" ngModel>
+               <option value="fried"> Fried </option>
+               <option value="non_fried">Non-fried</option>
+             </select>
+
+           </div>
+           <div>
+             <label for="family_size">Family size: </label>
+             <input type="number" class="form-control" id="family_size" required name="family_size" #family_size="ngModel" ngModel>
+           </div>
+           <div>
+             <label for="utensil_used">Utensil Used: </label>
+             <select class="form-control" id="utensil_used" required name="utensil_used" #utensil_used="ngModel" ngModel>
+               <option value="less"> Less </option>
+               <option value="more">More</option>
+             </select>
+           </div>
+           <div>
+             <label for="vegetable_cleaning">Vegetable cleaning: </label>
+             <select class="form-control" id="vegetable_cleaning" required name="vegetable_cleaning" #vegetable_cleaning="ngModel" ngModel>
+               <option value="less"> Less </option>
+               <option value="more">More</option>
+             </select>
+           </div>
+           <div>
+             <label for="cleaning_frequency">Cleaning frequency: </label>
+             <select class="form-control" id="cleaning_frequency" required name="cleaning_frequency" #cleaning_frequency="ngModel" ngModel>
+               <option value="less"> Less </option>
+               <option value="more">More</option>
+             </select>
+           </div>
+           <div>
+             <label for="storage_utensils">Storage utensils: </label>
+             <select class="form-control" id="storage_utensils" required name="storage_utensils" #storage_utensils="ngModel" ngModel>
+               <option value="less"> Less </option>
+               <option value="more">More</option>
+             </select>
+
+           </div>
+           <div>
+             <label for="kind_of_food">Kind of food: </label>
+             <select class="form-control" id="kind_of_food" required name="kind_of_food" #kind_of_food="ngModel" ngModel>
+               <option value="veg"> Veg </option>
+               <option value="non_veg">Non-veg</option>
+             </select>
+
+           </div>
+           <div>
+             <label for="size_of_utensils">Size of utensils: </label>
+             <select class="form-control" id="size_of_utensils" required name="size_of_utensils" #size_of_utensils="ngModel" ngModel>
+               <option value="less"> Less </option>
+               <option value="more">More</option>
+             </select>
+
+           </div>
+           <div>
+             <label for="habit">Habit: </label>
+             <select class="form-control" id="habit" required name="habit" #habit="ngModel" ngModel>
+               <option value="enjoy_cooking"> Enjoy cooking </option>
+               <option value="maid_for_cooking">Maid</option>
+             </select>
+           </div>
+           <button type="submit" class="mt10 btn btn-primary">Update details</button>
+
+       </form>
+     </section>
+   </div>
+  </div>
+</section>

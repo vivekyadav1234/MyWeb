@@ -1,0 +1,26 @@
+.notFound{
+    height: 75vh;
+}
+.notFoundInner{
+    position: absolute;
+    margin: auto;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-width: 28rem;
+    height: 15rem;
+    text-align: center;
+}
+.notFound h1{
+	font-family: monospace;
+    font-size: 8rem;
+    color: #b5b5b5;
+    margin: 0;
+}
+.notFound p{
+    font-family: monospace;
+    font-size: 2rem;
+    color: #777777;
+    margin-top: -1rem;
+}

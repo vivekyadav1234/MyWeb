@@ -1,0 +1,331 @@
+<div class="row">
+  <div class="col-md-12 text-left">
+    <a class="select text-center">
+     <span class=" ">{{ line_item_in_po.reference_number }} </span>
+    </a>    
+  </div>
+  <div class="col-12 mt-3" *ngIf="(vendor_list && vendor_list.length > 0) || (purchase_order_list && purchase_order_list.length > 0)">
+    <div class="project-table">
+      <table class="table table-main">
+        <tbody >
+          <ng-container *ngFor="let obj of vendor_list">
+            <tr class="tr-shadow tr-bckclr"   *ngIf="obj.element_count != 0">
+              <td></td>
+              <td colspan= "1" class="firstTd font-weight-bold text-left">{{ obj.name }}</td>
+              <td colspan= "4"  class="text-left">Value (Rs {{ obj.total_value |  number : '1.2-2' }})</td>
+              <td class="text-left"><input type="checkbox" class="form-check-input" value="" id="checkAll-{{ obj.id }}" (change)="toggleAll($event,obj)" [(ngModel)]="obj.checked"></td>
+              <td ><button class="btn btn-primary btn-custom" type="button"  (click)="CreateModal(obj.vendor_data)">Create PO</button></td>
+              <td class="lastTd" (click)="toggleRow(obj)"><i class="fa fa-angle-up" style="font-size: 25px;" *ngIf="rowSelected ==  obj.id"></i><i class="fa fa-angle-down" style="font-size: 25px;" *ngIf="rowSelected !=  obj.id"></i></td>
+            </tr>         
+            <ng-container *ngIf="rowSelected ==  obj.id">
+              <tr class="expand" *ngFor="let item of  itemList;let j = index">
+                <td class="change-back"></td>
+                <td colspan= "1" class="text-left">{{ j+1 }} &nbsp;&nbsp;{{ item.job_element_name }}</td>
+                <td class="capitalize">{{ item.quantity }} {{ item.unit_of_measurement | replaceChar}}</td>
+                <td>{{ item.tax_percent}}%</td>
+                <td>{{ item.cost |  number : '1.2-2'}}</td>
+                <td>{{ item.final_amount |  number : '1.2-2' }}</td>
+                <td colspan="3" class="text-left"><input type="checkbox" class="form-check-input" value="" id="checkItem-{{item.job_element_id}}" (change)="toggleItem($event,item,obj)" [(ngModel)]="item.checked"></td>
+              </tr>
+            </ng-container>  
+          </ng-container>  
+          <ng-container *ngFor="let obj of purchase_order_list">
+            <tr class="tr-shadow tr-bckclr"   *ngIf="obj.po_details.job_elements.length > 0">
+              <td></td>
+              <td colspan= "1" class="firstTd font-weight-bold text-left">{{ obj.po_details.vendor_name }}</td>
+              <td colspan= "4"  class="text-left">Value (Rs {{ obj.po_details.total |  number : '1.2-2' }})</td>
+              <td class="text-left">{{ obj.po_details.reference_no}}&nbsp;&nbsp;{{ obj.po_details.created_at |  date:'dd/MM/yyyy - h:mm a'}}</td>
+              <td >
+                <ng-container *ngIf="obj.po_details.status == 'released'">
+                  <button class="btn  btn-modify" type="button"  (click)="modifyPO(obj.po_details.id)"  *ngIf="!obj.po_details.modifying">Modify</button>
+                  <button class="btn  btn-cancel" type="button"  (click)="cancelPurchaseOrder(obj.po_details.id)" >Cancel</button>
+                  <button class="btn  btn-prev" type="button"   data-toggle="modal"
+                  data-target="#poPreviewModal" (click)="getPOPdfForPreview(obj.po_details.id)">preview</button>
+                </ng-container>
+                <ng-container *ngIf="obj.po_details.status == 'cancelled'">
+                  <span class="text-danger text-bold">Order Cancelled</span>
+                </ng-container>
+                <ng-container *ngIf="obj.po_details.status == 'pending' && !obj.po_details.modifying">
+                  <button class="btn  btn-modify" type="button"  (click)="modifyPO(obj.po_details.id)" *ngIf="!obj.po_details.modifying">Modify</button>
+                  <button class="btn  btn-rel" type="button"  (click)="releasePO(obj.po_details.id)" >Release</button>
+                  <button class="btn  btn-cancel" type="button"  (click)="cancelPurchaseOrder(obj.po_details.id)" >Cancel</button>
+                  <button class="btn  btn-prev" type="button"   data-toggle="modal"
+                  data-target="#poPreviewModal" (click)="getPOPdfForPreview(obj.po_details.id)">preview</button>
+                </ng-container>
+                 <ng-container *ngIf="obj.po_details.status == 'modified'">
+                  <button class="btn  btn-rel" type="button"  (click)="releaseModifiedPO(obj.po_details.id)" >Release Modified PO</button>
+                  <button class="btn  btn-cancel" type="button"  (click)="cancelPurchaseOrder(obj.po_details.id)" >Cancel</button>
+                  <button class="btn  btn-prev" type="button"   data-toggle="modal"
+                  data-target="#poPreviewModal" (click)="getPOPdfForPreview(obj.po_details.id)">preview</button>
+                 </ng-container> 
+                 <ng-container *ngIf="obj.po_details.status == 'pending' && obj.po_details.modifying">
+                  <span class="text-danger text-bold">Modifying..</span>
+                  <button class="btn  btn-cancel" type="button"  (click)="cancelPurchaseOrder(obj.po_details.id)" >Cancel PO</button>
+                 </ng-container> 
+                 <i *ngIf="obj.po_details.tag_snag"  data-toggle="tooltip" title="Tag Snag: Yes " class="fa fa-tag" style="font-size:28px;color:#8E1E28;vertical-align:middle;padding-left:0.3rem"></i>
+              </td>
+              <td class="lastTd" (click)="toggleRowPO(obj)"><i class="fa fa-angle-up" style="font-size: 25px;" *ngIf="rowSelected ==  obj.po_details.id"></i><i class="fa fa-angle-down" style="font-size: 25px;" *ngIf="rowSelected !=  obj.po_details.id"></i></td>
+            </tr>
+
+         
+            <ng-container *ngIf="rowSelected ==  obj.po_details.id">
+              <tr class="expand" *ngFor="let item of  itemList;let j = index">
+                <td class="change-back"></td>
+                <td colspan= "1" class="text-left back-green">{{ j+1 }} &nbsp;&nbsp;{{ item.sli_name }}</td>
+                <td class="text-left back-green">{{ item.quantity |  number : '1.2-2'  }} {{ item.unit }}</td>
+                <td class="back-green">{{ item.tax}}%</td>
+                <td class="back-green">{{ item.rate |  number : '1.2-2'}}</td>
+                <td class="back-green">{{ item.final_amount  |  number : '1.2-2'}}</td>
+                <td colspan="3" class="back-green"></td>
+            </tr>
+            </ng-container>  
+          </ng-container>  
+            
+          
+        </tbody>
+
+      </table>
+    </div>
+      
+  </div>
+  <div class="col-md-12 not-found " *ngIf="vendor_list && vendor_list.length ==0 && purchase_order_list && purchase_order_list.length==0">
+    <div class="boq-img">
+      <img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+    </div>
+    <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing to show...</p>
+  </div>
+  
+</div>
+<!-- The First Modal Start-->
+<div class="modal" id="CreatePOModal">
+  <div class="modal-dialog modal-centered-on-screen modal-lg">
+    <div class="modal-content">
+      <!-- Modal Header -->
+      <div class="modal-header modal-header pl-5">
+        <h4 class="modal-title wine-red fs">Preview and Release</h4>
+        <button type="button" class="close pr-4 wine-red" data-dismiss="modal" (click)="resetForm()">&times;</button>
+      </div>
+      
+      <!-- Modal body -->
+      <div class="modal-body">
+        <form [formGroup]="milestoneForm" (ngSubmit)="finalsubmission()">
+          <!-- <pre>{{ milestoneForm.value |json}}</pre> -->
+          <!-- Small -->
+ 
+          <div class="row">
+            <div class="col-md-6">
+              <div class="row">
+                <div class="col-md-12" style="margin-bottom: 1rem;">
+                  <label class="input-label">
+                     <select id="billingList" class="form-control easy-drop-down btn4" id="modal-game-options" (change)="setShippingAddress($event);">
+                         <option selected>Saved Shipping Addresses</option>
+                         <option value="{{ item.label }}" *ngFor="let item of address_list">{{ item.label }}</option>
+                        
+                     </select>
+                 </label>
+                </div>
+                <div [hidden]="!(selectAddressBilling==='Saved Billing Addresses')" class="col-md-12 fcw cursor-pointer" style="text-align: left;margin-left: 2rem;">
+                  <p (click)="showBillingAddress()">+ Add New Shipping Address</p>
+                </div>
+                <div class="col-md-12" *ngIf="selectAddressBilling!='Saved Billing Addresses'||showBillAddress" style="text-align: left">
+                  <textarea  class="form-control" formControlName="shipping_address" rows="4" placeholder="Shipping Address" ></textarea>
+                  <div class="row">
+                    <div class="col-12 form-group">
+                      <label>Contact Name</label>
+                      <input class="form-control" formControlName="contact_person" placeholder="Contact Name"  >
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-12 form-group">
+                      <label>Contact Number</label>
+                      <input class="form-control" type="number" formControlName="contact_number" placeholder="Contact Number" >
+                    </div>
+                  </div>                      
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="row">
+                <div class="col-md-12" style="margin-bottom: 1rem;">
+                  <label class="input-label">                     
+                     <select id="shippingList" class="form-control easy-drop-down btn4"  (change)="setBillingAddress($event)">
+                         <option selected>Saved Billing Addresses</option>
+                         <option value="{{ bill.label }}" *ngFor="let bill of address_list_billing">{{ bill.label }}</option>
+                         
+                     </select>
+                 </label>
+                </div>
+                <div [hidden]="!(selectAddressShipping==='Saved Shipping Addresses') " class="col-md-12 fcw cursor-pointer" style="text-align: left;margin-left: 2rem;">
+                  <p (click)="showShippingAddress()">+ Add New Billing Address</p>
+                </div>
+                <div class="col-md-12" style="text-align: left;" *ngIf="showShipAddress">
+                  <textarea  class="form-control" formControlName="billing_address" rows="4" placeholder="Billing Address" ></textarea>
+                  <div class="row">
+                  <div class="col-12 form-group">
+                    <label>Contact Name</label>
+                    <input class="form-control" formControlName="billing_contact_person" placeholder="Contact Name" >
+                  </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-12 form-group">
+                      <label>Contact Number</label>
+                      <input class="form-control" type="number" formControlName="billing_contact_number" placeholder="Contact Number" >
+                    </div>
+                  </div>
+                  
+                </div>
+              </div>
+            </div> 
+          </div>
+
+          <div *ngIf="showShipAddress" class="row" style="margin-bottom: 2.875rem;">
+            <div class="col-md-12" style="text-align: left;">
+              <label class="checkbox-inline fcw" style="margin-right: 0rem;">
+                <input class="form-control" type="checkbox" formControlName="sameAddress" (change)="mergeAddressesAction()">
+              </label>
+              <span style="font-weight:800;">Use the Billing Address as shipping Address?</span>
+            </div>
+          </div>
+          <div formArrayName="milestone_elements" *ngFor="let item of milestoneForm.get('milestone_elements')['controls']; let i = index;">
+            <div class="row" [formGroupName]="i">
+              <div class="col-12 form-group">
+                <label class="pull-left font-weight-bold">Milestone: {{i+1}}</label>
+                <span class="pull-right addCursor text-danger" (click)="removeMilestoneElement(i)"><i class="fa fa-minus-circle minus-icon"></i></span>
+                <input class="form-control" type="number" formControlName="percentage_amount" placeholder="% Amount">
+                <input [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1" placeholder="Enter Date" formControlName="estimate_date" class="form-control">
+                <owl-date-time #dt1 [pickerType]="'calendar'" [startView]="'month'"></owl-date-time> 
+                <textarea class="form-control" rows="2" formControlName="description" placeholder="enter description"></textarea>
+              </div>
+            </div>
+            <br>
+          </div>
+          <div class="row ml-4">
+            <i class="fa fa-plus pull-left mt-1 text-primary"></i><span class="addMilestoneBtn addCursor cursorChange pull-left cursor-pointer text-primary" (click)="addMilestoneElement()">Add Milestone<span class="text-danger hideAsteriskIcon ml-2">*</span></span>
+          </div>
+          <div class="row" style="margin-top:2rem!important">
+            <div class="col-6 ml-4 form-group" style="text-align:left">
+              <label class="customLabel">Choose GST<span class="text-danger hideAsteriskIcon ml-2">*</span></label>
+              <div class="form-check">
+                <label class="form-check-label lableSize labelColor mb-2 mr-4" *ngFor="let item of gst_list">
+                  <input class="form-check-input" type="radio" value="{{item}}" formControlName="vendor_gst">
+                  {{item}}
+                </label>
+              </div>
+            </div>
+          
+          <!-- Tag Snag -->
+          
+            <div class="col-5 form-group" style="text-align:left">
+              <label style="padding-right:1rem;" class="customLabel">Tag Snag<span  class="text-danger hideAsteriskIcon ml-2">*</span></label>
+              <div style="display:inline" class="form-check">
+                <label class="form-check-label lableSize labelColor mb-2 mr-4">
+                  <input class="form-check-input" type="radio" value="true" formControlName="tag_snag">
+                  Yes
+                </label>
+                <label class="form-check-label lableSize labelColor mb-2 mr-4">
+                  <input class="form-check-input" type="radio" value="false" formControlName="tag_snag">
+                  No
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="row" style="margin-bottom: 3rem;">
+            <div class="col-md-12">
+              <button type="submit" class="btn btn-secondary" style="height: 50px;width: 133px;margin-top:1.2rem;" [disabled]="!
+            milestoneForm.valid"  id="milestoneSubmitBtn">Submit</button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
+<!-- The First Modal End-->
+<div class="modal fade" id="previewModal">
+  <div class="modal-dialog">
+    <div class="modal-content modal-md">
+      <div class="modal-header mrl-3">
+        <h4 class="modal-title wine-red">Preview and Release</h4>
+        <button type="button" class="close wine-red" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+      </div>
+      <div class="modal-body mrl-3">
+        <div class="row">
+          <div class="col-md-12">
+            <p class="final-body-head">Preview PO</p>
+          </div>
+        </div>
+        <!-- <div class="row">
+          <div class="col-md-12 text-align-left">
+            <p class="m-0">Details</p>
+            <p class="txt-bld">Details of the PO</p>
+          </div>
+        </div> -->
+        <div class="row">
+          <div class="col-md-12 text-align-left">
+            <p class="m-0">Billing Address</p>
+            <p class="txt-bld">{{ milestoneForm.controls['shipping_address'].value }}</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 text-align-left">
+            <p class="m-0">Shipping Address</p>
+            <p class="txt-bld">{{ milestoneForm.controls['billing_address'].value }}</p>
+          </div>
+        </div>
+        <div class="project-table">
+          <table class="table">
+            <tbody>
+              <tr class="no-brd">
+                <td class="text-left">Amount</td>
+                <td class="font-weight-bold">1200000.00</td>
+              </tr>
+              <tr class="no-brd">
+                <td class="text-left">GST</td>
+                <td class="font-weight-bold">{{ milestoneForm.controls['vendor_gst'].value}}</td>
+              </tr>
+              <tr class="no-brd">
+                <td class="text-left">+Extras</td>
+                <td class="font-weight-bold">5464.00</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="cust-modal-footer text-center">
+        <button type="submit" class="btn btn-secondary btn1" id="final-submission" (click)="finalsubmission();" data-dismiss="modal">Next</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<div class="rk-ui-notification" *ngIf="successalert">
+    <span id="notificationMessageText">{{successMessage}}</span>
+    <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+<div class="rk-ui-notification err" *ngIf="erroralert">
+    <span id="notificationMessageText">{{errorMessage}}</span>
+    <a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+<div class="modal" id="poPreviewModal">
+  <div class="modal-dialog modal-lg" style="max-width:890px">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Preview PO</h4>
+        <button type="button" class="close" data-dismiss="modal" (click)="deletePOPreviewPdf(po_preview_pdf_url_without_base_url)">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div *ngIf="isLoaded" style="text-align: center;">
+            <button class="btn btn-pink" (click)="prevPage()" [disabled]="page === 1">Prev</button>
+              <span>{{ page }} / {{ totalPages }}</span>
+            <button class="btn btn-pink" (click)="nextPage()" [disabled]="page === totalPages">Next</button>
+        </div>
+        <iframe *ngIf="po_preview_pdf_url" [src]="po_preview_pdf_url | safePipe:'resourceUrl'" width = "850" height = "600">
+       </iframe>
+      </div>
+    </div>
+
+  </div>
+</div>

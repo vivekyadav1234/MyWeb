@@ -1,0 +1,640 @@
+<!--Notificatio-->
+
+<div class="rk-ui-notification" *ngIf="successalert">
+  <span id="notificationMessageText">{{successMessage}}</span>
+  <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+<div class="rk-ui-notification err" *ngIf="erroralert">
+  <span id="notificationMessageText">{{errorMessage}}</span>
+  <a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+<!--Add btn-->
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-lg-12 col-md-12 mt-3">
+			<button class="btn addCursor" (click)="getProcurementList()" data-toggle="modal" data-target="#addSli">+ Add New</button>
+			<!--Table start-->
+			<table class="table mt-3" style="background-color: transparent;" *ngIf="wipData && wipData.length>0">
+				<tr style="border:1px solid">
+					<th class="tableheadColor border-top-0 tableth11rem" style="border-left: 1px solid">Item</th>
+					<th class="tableheadColor border-top-0 tableth2rem">Quantity</th>
+					<th class="tableheadColor border-top-0 tableth6rem">UOM</th>
+					<th class="tableheadColor border-top-0">Vendor</th>
+					<th class="tableheadColor border-top-0 tableth10rem">Rate</th>
+					<th class="tableheadColor border-top-0 tableth6rem">GST</th>
+					<th class="tableheadColor border-top-0 tableth5rem">Tax</th>
+					<th class="tableheadColor border-top-0 thBorderRightRadius">Total Amount</th>
+          <th class="tableheadColor border-top-0 thBorderRightRadius">PO Name</th>
+          <th class="tableheadColor border-top-0 thBorderRightRadius">Created At</th>
+          <th class="tableheadColor border-top-0 thBorderRightRadius">Status</th>
+					<th class="last-th border-top-0" style="border-right: 1px solid"></th>
+				</tr>
+
+				<tbody style="border-top: 2px solid black;">
+					<ng-container *ngFor="let item of wipData;let j = index">
+						<tr>
+							<td class="indicatorRow" colspan="10">
+								<div class="boqIndicator capitalize btn pl-3 pr-3 text-center" *ngIf="item.vendor_name"><input type="checkbox" class="form-check-input ml-0 mt-0" id="checkall{{item.vendor_id}}" name="selectAll" [(ngModel)]="item.checked" (change)="toggleAll(item,$event,item.vendor_id)" *ngIf="item.over_all_status == 'pending'"><span class="ml-4">{{item.vendor_name}}</span></div>
+								<button class="btn btn-success pull-right addCursor" (click) = "CreateModal(item.vendor_name,item.vendor_address,item.vendor_contact,item.vendor_email,item.vendor_gst_reg_no,item.vendor_pan_no,item.vendor_id)" *ngIf="item.over_all_status == 'pending'">Release PO</button>
+							</td>
+						</tr>
+						<tr *ngFor="let item_data of item.wip_slis" class="bg-white" style="font-size: 14px;">
+							<td><input type="checkbox" class="form-check-input-chng" id="check{{item_data.id}}" [(ngModel)]="item_data.checked" id="checkItem" (change)="toggleItem($event,item_data,item,item.vendor_id,item_data.id)" *ngIf="item_data.attributes.status == 'pending' || item_data.attributes.status == 'modify_po' || item_data.attributes.status == 'cancelled'">{{item_data.attributes.sli_name}} <i *ngIf="item_data.attributes.po_tag_snag"  data-toggle="tooltip" title="Tag Snag: Yes " class="fa fa-tag" style="font-size:28px;color:#8E1E28;vertical-align:middle"></i></td>
+							<td>{{item_data.attributes.quantity | number: '.1-2'}}</td>
+							<td>{{item_data.attributes.unit | replaceChar}}</td>
+							<td class="capitalize">{{item_data.attributes.vendor_name}}</td>
+							<td>&#8377;{{item_data.attributes.rate | number: '.1-2'}}</td>
+							<td class="text-uppercase">{{item_data.attributes.tax_type}}</td>
+							<td>{{item_data.attributes.tax}}%</td>
+							<td>&#8377;{{item_data.attributes.amount | number: '.1-2'}}</td>
+              <td>{{item_data.attributes.po_name}}</td>
+              <td>{{item_data.attributes.po_created_at }}</td>
+              <td>{{item_data.attributes.status | replaceChar}}</td>
+
+							<td><button class="btn btn-sm btn-pink" data-toggle="modal" data-target="#viewOptionsModal" (click)="getSLIOptions(item_data)" style="font-size: 9px" *ngIf="item_data.attributes.vendor_product_id">View<br>Alternatives</button><i class='fa fa-pencil text-danger mx-1 addCursor' (click)="editSli(item_data.attributes.id,item_data.attributes.quantity,item_data.attributes.tax_type,item_data.attributes.tax);" data-toggle="modal" data-target="#editSliModal" *ngIf="item_data.attributes.status == 'pending' || item_data.attributes.status == 'modify_po' || item_data.attributes.status == 'cancelled'"></i><i class="fa fa-times text-danger mx-1 addCursor" (click)="removeSliItem(item_data.attributes.id)" *ngIf="item_data.attributes.status == 'pending' || item_data.attributes.status == 'modify_po' || item_data.attributes.status == 'cancelled'"></i></td>
+						</tr>
+					</ng-container>
+				</tbody>
+			</table>
+
+
+
+			<!--pagination-->
+			<!-- <div class="text-center">
+        <pagination-controls autoHide="true" (pageChange)="current_page = getWipTableData($event)"></pagination-controls>
+      </div> -->
+		</div>
+
+		<div class="col-md-12 not-found" *ngIf="wipData && wipData.length==0">
+	    <div class="boq-img text-center justify-content-center">
+	      <img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+	    </div>
+	    <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing to show...</p>
+	  </div>
+	</div>
+</div>
+
+<!----------------------------------------------------------------------------------------------->
+
+
+
+<!--Modals starts-->
+
+<!--Add SLi modal start-->
+<div class="modal" id="addSli"  data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog modal-width-change">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header pl-5">
+        <h4 class="modal-title pl-2 pt-3">Add  SLI</h4>
+        <button type="button" class="close" data-dismiss="modal" (click)="resetAddSli()">&times;</button>
+      </div>
+      <div class="row justify-content-center">
+          <div class="col-4 text-center btn btn-light cursor-pointer" [ngClass]="{'tabActive':automated_sli == true}" (click)="getProcurementList();">From Master SLI</div>
+          <div class="col-4 text-center btn btn-light active cursor-pointer" [ngClass]="{'tabActive':automated_sli == false}" (click)="automated_sli=false">Custom SLI</div>                  
+      </div>
+
+
+      <!-- Modal body -->
+      <div class="modal-body" *ngIf="!automated_sli">
+
+        <form [formGroup]="add_Sli"  (ngSubmit)="addSliForm(add_Sli.value)">
+          <!-- <pre>{{ add_Sli.value | json }}</pre> -->
+          <fieldset formArrayName="custom_slis">
+            <table class="mt-4" class="modal-table ml-5">
+              <tr>
+                <th class="border-0 warm-grey pl-4">Sli Name</th>
+                <th class="border-0 warm-grey pl-4">Quantity</th>
+                <th class="border-0 warm-grey pl-4">Unit</th>
+                <th class="border-0 warm-grey pl-4">Rate</th>
+                <th class="border-0 warm-grey pl-4">Tax Type</th>
+                <th class="border-0 warm-grey pl-4">Tax %</th>
+                <th class="border-0 warm-grey">Select a vendor</th>
+                <th class="border-0 warm-grey"></th>
+              </tr>
+
+              <tr *ngFor="let item of getAttributes(add_Sli); let i=index" [formGroup]="item">
+                <td class="width2rem border-0 pt-0">
+                  <input class="editQuantityInput pl-2" type="text" name="sli name" formControlName="name" style="width: 190px"/>
+                </td>
+
+                <td class="width2rem border-0 pt-0">
+                  <input class="editUnitInput  pull-left pl-2" type="number" name="quantity" formControlName="quantity" style="width: 90px"/>
+                </td>
+
+                <td class="width2rem border-0 pt-0">
+                  <label  class="label3">
+                    <select class="form-control easy-drop-down btn6 capitalize" formControlName="unit">
+                      <option value="null" disabled="true" [selected]="true">Unit</option>
+                      <option *ngFor="let uom of uom_list" value="{{ uom }}">{{ uom | replaceChar }}</option>
+                      
+                      
+                    </select>
+                  </label>
+
+
+
+                </td>
+
+                <td class="width2rem border-0 pt-0">
+                  <input class="editUnitInput  rateInput pull-left pl-3" type="number" name="rate" formControlName="rate"/>
+                </td>
+                <td class="width2rem border-0 pt-0">
+                  <label  class="label3">
+                    <select class="form-control  easy-drop-down btn6" formControlName="tax_type">
+                      <option value="null" disabled="true" [selected]="true">Choose</option>
+                      <option value="cgst-sgst">SGST & CGST</option>
+                      <option value="igst">IGST</option>
+                    </select>
+                  </label>
+                </td>
+                <td class="width2rem border-0 pt-0">
+                  <input class="editUnitInput  pull-left pl-3" type="number" name="tax" formControlName="tax"/>
+                </td>
+
+                <td class="width2rem border-0 pt-0">
+                  <label >
+                  <!--   <select class="form-control easy-drop-down btn5" formControlName="vendor_id">
+                      <option value="null" disabled="true" [selected]="true">Select Vendor</option>
+                      <option *ngFor="let item of vendor_list" value="{{item.id}}" >{{ item.name}}</option>
+                      
+                      
+                    </select> -->
+                    <ng-select  class="d-flex" formControlName="vendor_id" placeholder="Select Vendor" style="width: 9rem">
+                      <ng-option *ngFor="let item of vendor_list" value="{{item.id}}">{{item.name}}</ng-option>
+                    </ng-select>
+                  </label>
+                </td>
+                <td class="border-0">
+                  <!-- <i class="fa fa-trash  iconBox pull-right cursor-pointer" (click)="add_Sli.get('custom_slis').removeAt(i)" *ngIf="add_Sli.get('custom_slis').length > 1"></i> -->
+                  <img src="./assets/img/finance/close.png" class="cross-img mb-4 cursor-pointer" (click)="add_Sli.get('custom_slis').removeAt(i)" *ngIf="add_Sli.get('custom_slis').length > 1" >
+                </td>
+              </tr>
+            </table>
+            <div class="row line-chng">
+              <div class="col-md-12 mt-2"> 
+                <div class="change-div pl-2 text-left">
+                 <a (click)="pushAttributes(add_Sli)" class="addIcon cursor-pointer text-primary">+ Add Another</a>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 mb-4 mt-5 pt-3 text-center">
+              <button class="btn updateBtn cursor-pointer" type="submit" [disabled]="!
+              add_Sli.valid">Add</button>
+            </div>
+          </fieldset>
+        </form>
+      </div>
+      <!-- For Master SLI -->
+      <div class="modal-body"  *ngIf="automated_sli">
+        <div class="p-2 mt-3" id="automatedSliForm" >
+          <div class="row filterRow py-2 mx-1">
+            <div class="col-4 mb-0 pt-2 pb-2">
+              <span class="filterHeading mr-1">MLI Type </span>
+              <ng-select class="d-lg-block capitalize" (change)="getMasterLineItems($event)" placeholder="MLI Type" >
+                <!-- <option value="">Select MLI Type</option> -->
+                <ng-option *ngFor="let type of mli_type_list" value="{{type.value}}">{{type.name}}</ng-option>
+              </ng-select>
+            </div>
+            <div class="col-4 pt-2 pb-2 mb-0">
+              <span class="filterHeading mr-1">MLI </span>
+              <ng-select class="d-lg-block capitalize" (change)="getVendorProductsList($event)" placeholder="MLI">
+                <!-- <option value="">Select MLI</option> -->
+                <ng-option *ngFor="let mli of mli_list" value="{{mli.id }}">{{mli.mli_name}}</ng-option>
+              </ng-select>
+            </div>
+            <div class="col-4 pt-2 pb-2 mb-0">
+              <span class="filterHeading mr-1" >SLI </span>
+              <ng-select class="d-lg-block capitalize" (change)="getDetailsOfVendorProduct($event,sli)" placeholder="SLI" >
+                <!-- <option value="">Select SLI</option> -->
+                <ng-option *ngFor="let sli of vendor_products_list" value="{{sli.id}}">{{sli.sli_name}}</ng-option>
+              </ng-select>
+            </div>
+          </div>
+          <form [formGroup]="sublineItemForm">
+            <!-- <pre>{{ sublineItemForm.value | json }}</pre> -->
+            <div class="form-control-group">
+              <div class="row justify-content-center">
+                <div class="d-inline-block col-5">
+                  <label class="filterHeading1">Name </label>
+                  <input name="sublineItem" disabled placeholder="Enter Name" class="form-control col-sm-12 d-inline-block mb-4" formControlName="name" />
+                </div>
+                <div class="d-inline-block col-5">
+                  <label class="filterHeading1">Rate </label>
+                  <input name="sublineItem" disabled type="number" placeholder="Enter Rate" class="form-control col-sm-12 d-inline-block mb-4 " formControlName="rate" />
+                </div>
+                <div class="d-inline-block col-5">
+                  <label class="filterHeading1">Unit </label>
+                  <input name="sublineItem" disabled placeholder="Enter Name" class="form-control col-sm-12 d-inline-block mb-4" formControlName="unit" />
+                  
+                </div>
+                <div class="d-inline-block col-5">
+                  <label class="filterHeading1">Quantity </label>
+                  <input name="sublineItem" type="number" placeholder="Enter Quantity" class="form-control col-sm-12 d-inline-block mb-4" formControlName="quantity" />
+                </div>
+                <div class="d-inline-block col-5">
+                  <label class="filterHeading1">Tax Type </label>
+                  
+                  <select class="form-control  easy-drop-down btn6 btn9" formControlName="tax_type">
+                    <option value="null" disabled="true" [selected]="true">Choose</option>
+                    <option value="cgst-sgst">SGST & CGST</option>
+                    <option value="igst">IGST</option>
+                  </select>
+                  
+                </div>
+                <div class="d-inline-block col-5">
+                  <label class="filterHeading1">Tax Percent </label>
+                  <input name="tax_percent" type="number" placeholder="Enter Percent" class="form-control col-sm-12 d-inline-block mb-4" formControlName="tax_percent" />
+                </div>
+              </div>
+
+              <button (click)="addSublineItem()" class="btn category-btn d-block m-auto mt-5 p-2 rounded" [disabled]="!
+              sublineItemForm.valid">Add</button>
+            </div>
+          </form>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+<!--Add New modal end-->
+
+
+<!----------------------------------------------------------------------------------------------->
+
+
+
+
+<!-- The Edit Modal -->
+<div class="modal" id="editSliModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Edit Slis</h4>
+        <button type="button" class="close" data-dismiss="modal" (click) = "resetForm()">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <form [formGroup]="update_Sli_Form">
+          <div class="form-control-group">
+            <div class="row justify-content-center">
+              <div class="d-inline-block col-5">
+                <label class="filterHeading1">Quantity </label>
+                <input name="sublineItem" type="number" placeholder="Enter Quantity" class="form-control col-sm-12 d-inline-block mb-4" formControlName="quantity" />
+              </div>
+              <div class="d-inline-block col-5">
+                <label class="filterHeading1">Tax Type </label>
+                
+                <select class="form-control" formControlName="tax_type">
+                  <option value="null" disabled="true" [selected]="true">Choose</option>
+                  <option value="cgst-sgst">SGST & CGST</option>
+                  <option value="igst">IGST</option>
+                </select>
+                
+              </div>
+              <div class="d-inline-block col-5">
+                <label class="filterHeading1">Tax Percent </label>
+                <input name="tax" type="number" placeholder="Enter Percent" class="form-control col-sm-12 d-inline-block mb-4" formControlName="tax" />
+              </div>
+            </div>
+
+            <button (click)="updateSlis()" class="btn btn-pink d-block m-auto mt-5 p-2 rounded" [disabled]="!update_Sli_Form.valid">Update</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!--Edit Modal-->
+
+<!----------------------------------------------------------------------------------------------->
+
+
+<!-- Po release modal-->
+<div class="modal" id="CreatePOModal">
+  <div class="modal-dialog modal-centered-on-screen modal-lg">
+    <div class="modal-content">
+      <!-- Modal Header -->
+      <div class="modal-header modal-header pl-5">
+        <h4 class="modal-title wine-red fs">PO Release</h4>
+        <button type="button" class="close pr-4 wine-red" data-dismiss="modal" (click)="resetForm()">&times;</button>
+      </div>
+      
+      <!-- Modal body -->
+      <div class="modal-body">
+        <form [formGroup]="milestoneForm">
+          <div class="pl-4 row">
+            <div class="col-md-6">
+              <!-- <pre>{{ milestoneForm.value | json }}</pre> -->
+              <div class="row">
+                <div class="col-md-12" style="margin-bottom: 1rem;">
+                  <label class="input-label selectBilling">
+                     <select id="billingList" class="form-control easy-drop-down" id="modal-game-options" (change)="setBillingAddress($event);">
+                       <option selected>Saved Billing Addresses</option>
+                       <option value="{{ item.address_name }}" *ngFor="let item of address_list">{{ item.address_name }}</option>
+                     </select>
+                 </label>
+                </div>
+                <div [hidden]="!(selectAddressBilling==='Saved Billing Addresses')" class="col-md-12 fcw cursor-pointer text-danger" style="text-align: left;">
+                  <p (click)="showBillingAddress()">+ Add New Billing Address</p>
+                </div>
+                <div class="col-md-12" *ngIf="selectAddressBilling!='Saved Billing Addresses'||showBillAddress" style="text-align: left">
+                  <textarea  class="form-control" formControlName="billing_address" rows="4" placeholder="Billing Address" [readonly]="selectAddressBilling!='Saved Billing Addresses'"></textarea>
+                  <div class="row">
+                    <div class="col-12 form-group">
+                      <label>Contact Name</label>
+                      <input class="form-control" formControlName="billing_contact_person" placeholder="Contact Name">
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-12 form-group">
+                      <label>Contact Number</label>
+                      <input class="form-control" type="number" formControlName="billing_contact_number" placeholder="Contact Number">
+                    </div>
+                  </div>                      
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="row">
+                <div class="col-md-12" style="margin-bottom: 1rem;">
+                  <label class="input-label selectBilling">                     
+                   <select id="shippingList" class="form-control easy-drop-down  text"  (change)="setShippingAddress($event)">
+                     <option selected>Saved Shipping Addresses</option>
+                     <option value="{{ bill.Shipping_address_name }}" *ngFor="let bill of address_list_billing">{{ bill.Shipping_address_name }}</option>   
+                   </select>
+                 	</label>
+                </div>
+                <div [hidden]="!(selectAddressShipping==='Saved Shipping Addresses') " class="col-md-12 fcw cursor-pointer text-danger" style="text-align:">
+                  <p (click)="showShippingAddress()">+ Add New Shipping Address</p>
+                </div>
+                <div class="col-md-12" style="text-align: left;" *ngIf="showShipAddress">
+                  <textarea  class="form-control" formControlName="shipping_address" rows="4" placeholder="Shipping Address" [readonly]="selectAddressShipping!='Saved Shipping Addresses'"></textarea>
+                  <div class="row">
+                  <div class="col-12 form-group">
+                    <label>Contact Name</label>
+                    <input class="form-control" formControlName="contact_person" placeholder="Contact Name">
+                  </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-12 form-group">
+                      <label>Contact Number</label>
+                      <input class="form-control" type="number" formControlName="contact_number" placeholder="Contact Number">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div> 
+          </div>
+          <div *ngIf="showShipAddress" class="row" style="margin-bottom: 2.875rem;">
+            <div class="col-md-12" style="text-align: left;margin-left: 2rem;">
+              <input class="" type="checkbox" formControlName="sameAddress" (change)="mergeAddressesAction()" style="margin-right: 0.5rem;" >
+              <span style="font-weight:800;">Use the Billing Address as shipping Address?</span>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-6 form-group ml-4">
+              <label class="customLabel">Choose GST<span class="text-danger hideAsteriskIcon ml-2">*</span></label>
+              <div class="form-check">
+                <label class="form-check-label lableSize labelColor mb-2 mr-4" *ngFor="let item of gst_list">
+                  <input class="form-check-input" type="radio" value="{{item}}" formControlName="vendor_gst">
+                  {{item}}
+                </label>
+                
+              </div>                          
+            </div> 
+            <div *ngIf="showTagSnagOption" class="col-5 form-group" style="text-align:left">
+              <label style="padding-right:1rem;" class="customLabel">Tag Snag<span  class="text-danger hideAsteriskIcon ml-2">*</span></label>
+              <div style="display:inline" class="form-check">
+                <label class="form-check-label lableSize labelColor mb-2 mr-4">
+                  <input class="form-check-input" type="radio" value="true" formControlName="tag_snag">
+                  Yes
+                </label>
+                <label class="form-check-label lableSize labelColor mb-2 mr-4">
+                  <input class="form-check-input" type="radio" value="false" formControlName="tag_snag">
+                  No
+                </label>
+              </div>
+            </div>              
+          </div>
+          <div class="row" *ngIf="project_type != 'maintenance'">
+            <div class="col-6 ml-4 form-group">
+              <label class="customLabel">Search Lead<span class="text-danger hideAsteriskIcon ml-2">*</span></label>
+              <input type="text" name="lead" formControlName="lead_id" class="form-control" id="leadId">                        
+            </div>  
+            <div class="col-md-5">
+              <button class="btn btn-sm btn-pink  pull-left" (click)="getLeadListForRelease()" style="margin-top: 2.1rem">Enter</button>
+              
+            </div>
+            <div class="col-6 ml-4 form-group" *ngIf="lead_details && !lead_not_found">
+              <label class="customLabel">Lead Name<span class="text-danger hideAsteriskIcon ml-2">*</span></label>
+              <input type="text" name="lead"  class="form-control" readonly="" value="{{lead_details.name}}">                        
+            </div>  
+            <div class="col-5 form-group" *ngIf="lead_details && !lead_not_found">
+              <label class="customLabel">Lead Email<span class="text-danger hideAsteriskIcon ml-2">*</span></label>
+              <input type="text" name="lead" value="{{lead_details.email}}" class="form-control"  readonly="">
+                                      
+            </div>  
+           <!--  <div class="col-6 form-group" *ngIf="lead_details && !lead_not_found">
+              <label class="customLabel">Lead Type<span class="text-danger hideAsteriskIcon ml-2">*</span></label>
+              <input type="text" name="lead" value="{{lead_details.lead_type}}" class="form-control"  readonly="">
+                                      
+            </div> --> 
+            <div class="col-12" *ngIf="lead_not_found && enter_submit">
+              <span class="text-danger">{{ lead_not_found_message }}</span>
+            </div>         
+          </div>
+          <div class="mb-3 mt-4 row">
+            <div class="col-md-12 text-center">
+              <button type="submit" class="btn btn-pink" style="height: 50px;width: 133px;margin-top:1.2rem;" (click) = "poSubmission()" [disabled]="!
+            	milestoneForm.valid">Add & Next</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Po release Modal End-->
+
+
+<!----------------------------------------------------------------------------------------------->
+<!-- Modal For Wip Release -->
+<div class="modal fade InvoiceModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content" id="modalInvoiceId">
+      <!-- <button type="button" class="close custom-close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button -->
+      <div class="modal-body px-5" style="font-size: 14px">
+        <div class="row">
+          <!-- <div class="col-md-6">
+            <span class="text-head pull-right">Date:- 8/303/2020</span>
+          </div> -->
+          
+        </div>
+        <div class="row border border-dark">
+          <div class="bg-success col-lg-12 text-center">Purchase Order</div>
+          <div class="col-md-6">
+            <span class="font-weight-bold">Billing Address</span>:<br>{{ milestoneForm.controls['billing_address'].value }}
+            <p class="mb-0">Contact Person:{{ milestoneForm.controls['billing_contact_person'].value }}</p>
+            <p class="mb-0">Contact Number:{{ milestoneForm.controls['billing_contact_number'].value }}</p>
+            
+          </div>
+          <div class="col-md-6" style="border-left: 1px solid">
+            <span class="font-weight-bold">Details:</span>
+            <p class="mb-0">Date:{{todayDate}}</p>
+            <p class="text-capitalize mb-0">Contact Person:{{ milestoneForm.controls['contact_person'].value }}</p>
+            <p class="text-capitalize mb-0">Lead ID:{{ leadId }}</p>
+            <p class="text-capitalize mb-0" *ngIf="lead_details">Lead Name:{{ lead_details.name }}</p>
+            
+          </div>
+          
+        </div>
+        <div class="row border border-dark border-top-0">
+          <div class="col-md-6">
+            <span class="font-weight-bold">To,</span>
+            <p class="mb-0"><span class="font-weight-bold">Consigner Name:</span><span>{{vendorName}}</span></p> 
+            <p class="mb-0 text-capitalize">Consigner Address:{{vendorAddress}}</p>
+            <p class="mb-0">Email Id:{{vendorEmail}}</p>
+            <p class="mb-0">Contact Number:{{vendorContact}}</p>
+            <p class="mb-0">GST No:{{milestoneForm.controls['vendor_gst'].value}}</p>
+            <p class="mb-0">PAN No:{{vendorPan}}</p>
+          </div>
+          <div class="col-md-6" style="border-left: 1px solid">
+            <span class="font-weight-bold">Shipping Address:</span> <br>{{ milestoneForm.controls['shipping_address'].value }}
+            <p class="mb-0">Contact Person:{{ milestoneForm.controls['contact_person'].value }}</p>
+            <p class="mb-0">Contact Number:{{ milestoneForm.controls['contact_number'].value }}</p>
+            
+          </div>
+          
+        </div>
+        <div class="row mt-3">
+          <table class="table1 table-bordered">
+            <thead>
+              <th scope="col">Sr. No.</th>
+              <th scope="col">Item</th>
+              <th scope="col">Quantity</th>
+              <th scope="col">UOM</th>
+              <th scope="col">Rate</th>
+              <th scope="col">GST</th>
+              <th scope="col">Tax</th>
+              <th scope="col">Total Amount</th>
+              
+            </thead>
+            <tbody>
+              <tr class="rowChng" *ngFor="let item of selectedItemToSubmit;let j=index">
+                <td class="text-center">{{ j +1 }}</td>
+                <td class="text-center">{{ item.sli_name}}</td>
+                <td class="text-center">{{ item.quantity}}</td>
+                <td>{{ item.unit | replaceChar}}</td>
+                <td class="pl-2">&#8377;{{ item.rate | number: '.1-2'}}</td>
+                <td class="text-uppercase">{{ item.tax_type}}</td>
+                <td class="pl-2">{{ item.tax}}%</td>
+                <td class="pl-2">{{ item.amount | number: '.1-2'}}</td>      
+              </tr>
+            </tbody>
+          </table>
+          <div class="col-md-12">
+              <span class="pull-right" style="margin-bottom: 1rem;"><strong>Net Amount:</strong> {{ amount_total | number: '.1-2' }}</span>
+              
+          </div>
+        </div>
+        <div class="row" style="border: 1px solid">
+          <div class="col-lg-12 mt-1">
+            <p class="font-weight-bold mb-0">Terms and Conditions</p>
+            <p class="mb-0">1) The Above Rates & Included Material with Labour. (Only Kitchen Wall Tiles, 3D Stone Design Tile & Quartz).</p>
+            <p class="mb-0">2) Bill Chalan Should be Mentioned The Relevant PO No. & Date.</p>
+            <p class="mb-0">3) Delivery Chalan Should be Signed by the Site Engineer/Site Supervisor.</p>
+            <p class="mb-0">4) Bill Should be Prepared in Favour of 'Singularity Furniture Private Limited'</p>
+          </div>
+        </div>
+
+        <div class="row" style="border: 1px solid">
+          <div class="col-lg-6 mt-1">
+            <p class="mb-0"><span class="font-weight-bold">Raised By:</span></p>
+            <p class="mt-5 mb-0"><span class="font-weight-bold">Accounts Approval:</span></p>
+          </div>
+
+          <div class="col-lg-6 mt-1">
+            <p class="mb-0"><span class="font-weight-bold">For Singularity Furniture Private Limited</span></p>
+            <p class="mt-5 mb-0"><span class="font-weight-bold">Authorised Signatory:</span></p>
+          </div>
+        </div>
+      </div> 
+      <div class="modal-footer">
+        <div class="row mt-2">
+          <div class="col-md-12">
+            <div class="back-trans">
+              <button class="btn text-success font-weight-bold pull-right cursor-pointer"  (click)="submitForRelease()">Release</button>
+              <button class="btn text-danger font-weight-bold pull-right cursor-pointer mr-3" (click)="cancelSubmitPo()">Cancel</button> 
+            </div> 
+          </div> 
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--  -->
+<!--viewOptionsModal-->
+<div class="modal fade m-auto" id="viewOptionsModal" role="dialog">
+  <div class="modal-dialog modal-lg mt-5 pt-4">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="">
+        <div class="pull-right m-2">
+          <button type="button" class="close pull-right" data-dismiss="modal">&times;</button>
+        </div>
+      </div>
+      <div class="modal-body">
+        <div class="row filterRow py-2 mx-1">
+          <div class="tableDiv project-table w-100">
+            <table class="table" *ngIf="sli_options_list && sli_options_list.length > 0">
+              <thead class="ss-thead">
+                <tr class="viewOptions">
+                  <th class="firstTh">SLI Name</th>
+                  <th>Price</th>
+                  <th>Unit</th>
+                  <th>Vendor Name</th>
+                  <th class="lastTh"> </th>
+                </tr>
+              </thead>
+              <tbody>
+                <ng-container *ngIf="sli_options_list && sli_options_list.length > 0">
+                  <tr *ngFor="let option of sli_options_list">
+                    <td class="capitalize">{{option.sli_name}}</td>
+                    <td>{{option.rate}}</td>
+                    <td>{{option.unit}}</td>
+                    <td class="capitalize">{{option.vendor_name}}</td>
+                    <td>
+                      <button *ngIf="selectedProduct.id != option.id" (click)="changeViewOption(option.id)" class="btn category-btn cursor-pointer rounded">Select</button>
+                      <span *ngIf="selectedProduct.id == option.id">
+                        <i class="fa fa-check-circle" style="font-size: 37px;color: #53a019;"></i>
+                      </span>
+                    </td>
+                  </tr>
+                </ng-container>
+              </tbody>
+            </table>
+          </div>
+          <ng-container class="mx-auto" *ngIf="sli_options_list && sli_options_list.length === 0">
+            <div class="bg-white boq-img col-12 d-inline-block text-center">
+              <img src="../../../assets/img/desktop.png">
+            </div>
+            <p class="col-12 nothing-to-show text-center">Nothing to show...</p>
+          </ng-container>
+        </div>
+        <div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+

@@ -1,0 +1,99 @@
+<div class="rk-ui-notification err" *ngIf="erroralert" style="z-index: 10000;">
+  <span id="notificationMessageText">{{errorMessage}}</span>
+  <a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+<div class="rk-ui-notification" *ngIf="successalert" style="z-index: 10000;">
+  <span id="notificationMessageText">{{successMessage}}</span>
+  <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+<div class="row mt-4 right-section pdf-file-section">
+  <!-- <div class="col-md-12">
+    <button type="button" *ngIf="project_id" class="btn btn-pink pull-right" data-toggle="modal" data-target="#pptModal">
+      UPLOAD PPT FILE
+    </button>
+  </div> -->
+  <div class="col-md-12 mt-5 text-center p-5" style="background-color: #fff;" *ngIf="pdfFileList.length <= 0">
+    <img src="../../../assets/img/no_image.svg" class="img-fluid">
+  </div>
+  <div class="col-md-12 mt-5">
+    <div class="row">
+      <div class="col-md-4 mt-4">
+        <div class="card card-chng">
+          <!-- <i class="fa fa-trash trash-card" (click) = "deleteObject(obj.id)" *ngIf="role =='community_manager' && obj.shared_with_customer != true" ></i> -->
+          <div class="text-right"> <a data-tooltip="Share PDF"><i class="fa fa-share-alt trash-card cursor-pointer mt-1 mr-2" (click) = "confirmAndShare('file_booklet.pdf')" style="font-size: 1.5rem; color: #8F0020;"></i></a></div>
+        	<!-- <a data-trigger="hover" title="Name" class="pop col-xs-6 p-0 w-50 text-left" 
+                              (mouseenter)="openpopup($event)"></a> -->
+          <img onerror="this.src='../../../assets/img/no_image.svg';" class="card-img-top img-fluid" src="" alt="Card image cap" style="max-height: 165px;" />                 
+          <!-- <img class="card-img-top img-fluid" src="{{obj.ppt_file}}" alt="Card image cap" style="max-height: 165px;"> -->
+          <div class="card-block" style="padding: 1rem;">
+            <p class="card-text" style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap;border-bottom: 1px solid #e0e0e0;padding-bottom: 10px;">Arrivae PDF</p>
+            <div class="row">
+              <div class="col-md-12">
+                <p class="mb-0" style="font-size:13px;">
+                  <span> </span>
+                </p>
+                <p class="mb-0 mt-2" style="font-size:13px;">
+                  <span>File Name: </span>
+                  <span style="color: #7E7E7E;">Arrivae PDF</span>
+                </p>
+              </div>
+              <div class="col-md-12 divbutton mt-2">
+                <button class="btn btn-pink category-btn mr-4 mt-2 pull-right text-white" (click)="showPDF()" data-toggle="modal" data-target="#pdfViewerModal">View PDF</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="col-md-4 mt-4">
+        <div class="card card-chng">
+          <!-- <i class="fa fa-trash trash-card" (click) = "deleteObject(obj.id)" *ngIf="role =='community_manager' && obj.shared_with_customer != true" ></i> -->
+          <div class="text-right"> <a data-tooltip="Share PDF"><i class="fa fa-share-alt trash-card cursor-pointer mt-1 mr-2" (click) = "confirmAndShare('Customisation_booklet_A4.pdf')" style="font-size: 1.5rem; color: #8F0020;"></i></a></div>
+        	<!-- <a data-trigger="hover" title="Name" class="pop col-xs-6 p-0 w-50 text-left" 
+                              (mouseenter)="openpopup($event)"></a> -->
+          <img onerror="this.src='../../../assets/img/no_image.svg';" class="card-img-top img-fluid" src="" alt="Card image cap" style="max-height: 165px;" />                 
+          <!-- <img class="card-img-top img-fluid" src="{{obj.ppt_file}}" alt="Card image cap" style="max-height: 165px;"> -->
+          <div class="card-block" style="padding: 1rem;">
+            <p class="card-text" style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap;border-bottom: 1px solid #e0e0e0;padding-bottom: 10px;">Arrivae PDF</p>
+            <div class="row">
+              <div class="col-md-12">
+                <p class="mb-0" style="font-size:13px;">
+                  <span></span>
+                </p>
+                <p class="mb-0 mt-2" style="font-size:13px;">
+                  <span>File Name: </span>
+                  <span style="color: #7E7E7E;">Arrivae PDF</span>
+                </p>
+              </div>
+              <div class="col-md-12 divbutton mt-2">
+                <button class="btn btn-pink category-btn mr-4 mt-2 pull-right text-white" (click)="showPDFcustome()" data-toggle="modal" data-target="#pdfViewerModal">View PDF</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- I frame pdf view modal box -->
+<div class="modal" id="pdfViewerModal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">View PDF</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div *ngIf="isLoaded" style="text-align: center;">
+            <button class="btn btn-pink" (click)="prevPage()" [disabled]="page === 1">Prev</button>
+              <span>{{ page }} / {{ totalPages }}</span>
+            <button class="btn btn-pink" (click)="nextPage()" [disabled]="page === totalPages">Next</button>
+        </div>
+        <iframe *ngIf="pdf_url" [src]="pdf_url | safePipe:'resourceUrl'" width = "850" height = "650" style="background-color:red">
+       </iframe>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,89 @@
+.table_head{
+	color: #a5a5a5;
+	font-size: 14px;
+ font-weight: 600;
+ font-style: normal;
+ font-stretch: normal;
+ line-height: 1.29;
+}
+
+.btn-red{
+	background-color: #fff6f8;
+	/*font-family: SourceSansPro;*/
+}
+
+.btn-green{
+	background-color: rgba(44, 201, 144, 0.1);
+	/*font-family: SourceSansPro;*/
+}
+
+.btn-yellow{
+	background-color: rgba(255, 195, 0, 0.16);
+	/*font-family: SourceSansPro;*/
+}
+
+.fontsize14{
+	font-size: 14px;
+	/*font-family: SourceSansPro;*/
+}
+
+.fontsize12{
+	font-size: 12px;
+	/*font-family: SourceSansPro;*/
+}
+
+.request-btn{
+  border-radius: 17px;
+  background-color: #ffffff;
+  border: 1px solid #8d0528;
+  color: #8d0528;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+}
+.expanded-col{
+	display: none;
+}
+
+.rowpadding{
+  padding-bottom: .5em !important;
+}
+
+.requestDonebtn{
+  width: 131px;
+  height: 58px;
+  font-weight: 600;
+  font-size: 20px;
+}
+
+.requestloseBtn{
+	width: 16.3px;
+  height: 16.3px;
+  color: #8d0528;
+}
+
+.newIndicator{
+  width: 10px;
+  height: 10px;
+  box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+  background-color: #ffc300;
+  border-radius: 20px;
+  border: 1px solid #707070;
+}
+
+.requestModal{
+  width: 638px;
+  height: 347px;
+}
+
+.thBorderLeftRadius{
+  border-top-left-radius: 5px !important;
+  border-bottom-left-radius: 5px !important;
+}
+.thBorderRightRadius{
+  border-top-right-radius: 5px !important;
+  border-bottom-right-radius: 5px !important;
+}
+.tableth10rem{
+  width: 10rem !important;
+}

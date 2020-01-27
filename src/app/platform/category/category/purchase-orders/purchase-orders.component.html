@@ -1,0 +1,58 @@
+<!--Header of page-->
+<div class="row ss-top-menu">
+  <div class="col-xl-5 col-lg-5 col-md-5 col-sm-5 col-xs-5">
+    <span class="ss-text-light" style="vertical-align: -webkit-baseline-middle;">Dashboard <i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;">Bulk PO</span>
+  </div>
+</div>
+
+<!--Rest of Content-->
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-lg-12 col-md-12 pl-0">
+			<!--Cards-->
+			<div class="task-cards d-flex negMargin10">
+				<a class="nav-link ss-nav-link card p-3 addCursor" id="custom-element-approvals-tab"
+	      (click)="activateTab('wip_orders')" [ngClass]="{'active': selectedTab == 'wip_orders'}">
+	        <div class="card-footer border-top-0 text-center bg-white m-auto">
+	          WIP Orders
+	        </div>
+	      </a>
+
+	      <a class="nav-link ss-nav-link card p-3 ml-2 addCursor" id="custom-element-approvals-tab"
+	      (click)="activateTab('released_orders')" [ngClass]="{'active': selectedTab == 'released_orders'}">
+	        <div class="card-footer border-top-0 text-center bg-white m-auto">
+	          Released Orders
+	        </div>
+	      </a>
+
+	      <a class="nav-link ss-nav-link card p-3 ml-2 addCursor" id="custom-element-approvals-tab"
+	      (click)="activateTab('inventory')" [ngClass]="{'active': selectedTab == 'inventory'}">
+	        <div class="card-footer border-top-0 text-center bg-white m-auto">
+	          Inventory
+	        </div>
+	      </a>
+			</div>
+
+      <!--Tabs-->
+      <div class="row" *ngIf="this.selectedTab == 'wip_orders'">
+		    <div class="component-parent w-100">
+		      <app-wip-orders></app-wip-orders>
+		    </div>
+		  </div>
+
+		  <div class="row" *ngIf="this.selectedTab == 'released_orders'">
+		    <div class="component-parent w-100">
+		      <app-released-order></app-released-order>
+		    </div>
+		  </div>
+
+
+		  <div class="row" *ngIf="this.selectedTab == 'inventory'">
+	      <div class="component-parent w-100">
+          <app-inventory></app-inventory>
+        </div>
+		  </div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,135 @@
+<div class="row ss-top-menu">
+    <div class="col-xl-5 col-lg-5 col-md-5 col-sm-5 col-xs-5">
+      <span class="ss-text-light" style="vertical-align: -webkit-baseline-middle;">Dashboard <i class="rightArrow fa fa-angle-right"></i> </span>
+      <span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;">Master Line Item</span>
+    </div>
+  </div>
+  
+  <div class="rk-ui-notification" *ngIf="successalert">
+    <span id="notificationMessageText">{{successMessage}}</span>
+    <a class="close rk-linknotification" (click)="successalert=false">×</a>
+  </div>
+  <div class="rk-ui-notification err" *ngIf="erroralert">
+    <span id="notificationMessageText">{{errorMessage}}</span>
+    <a class="close rk-linknotification" (click)="erroralert=false">×</a>
+  </div>
+  
+  <div class="row px-4">
+      <div class="col-md-12 p-0 mt-4">
+        <ul class="nav nav-tabs ss-nav-tabs mt-0 justify-content-center" id="myTab" role="tablist">
+          <li class="nav-item ">
+            <a class="nav-link ss-nav-link " id="master-data-tab" data-toggle="tab" href="#master_data" role="tab" aria-controls="master_data" aria-selected="true" routerLink="/manage_master_data">MASTER DATA</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link ss-nav-link" id="master-element-tab" data-toggle="tab" href="#master_element" role="tab" aria-controls="master_element" aria-selected="false" routerLink="/manage_master_element">MASTER ELEMENT</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link ss-nav-link" id="mapping-tab" data-toggle="tab" href="#mapping" role="tab" aria-controls="mapping" aria-selected="false" routerLink="/manage_mapping">MAPPING</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link ss-nav-link" id="master-service-tab" data-toggle="tab" href="#master_service" role="tab" aria-controls="master_service" aria-selected="false" routerLink="/manage_services">MANAGE SERVICES</a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link ss-nav-link capitalize active" id="master-service-tab" data-toggle="tab" href="#master_line_item" role="tab" aria-controls="master_line_item" aria-selected="false" routerLink="/master_line_item">MASTER LINE ITEM</a>
+            </li>
+        </ul>
+      </div>
+      </div>
+<div class="">
+  <div class="col-12">
+      <div class="row filterRow py-2 mx-1">
+          <div class="col-4 py-0 mb-0">
+              <span class="filterHeading mr-1">MLI Type </span>
+              <select class="form-control d-inline filterSelectBox capitalize" (change)="getMasterLineItems(1)" [(ngModel)]="mli_type">
+                  <option value="">Select MLI Type</option>
+                  <option value="indoline">Indoline</option>
+                  <option value="lakhs_modular">Lakhs Modular</option>
+                  <option value="loose_furniture">Loose Furniture</option>
+              </select>
+          </div>
+  </div>
+    <div class="pt-4 w-100">
+        <div class="">
+            <div class="col-12">
+                <div class="tableDiv project-table">
+                    <table class="table">
+                        <thead class="ss-thead">
+                            <tr>
+                                <th class="firstTh">MLI NAME</th>
+                                <th>CREATION TIME</th>
+                                <th>UPDATION TIME</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <ng-container *ngIf="mli_list && mli_list.length > 0">
+                                <tr class="ss-tbody" *ngFor="let obj of mli_list 
+                                | paginate: { itemsPerPage: per_page, currentPage: current_page, totalItems: total_page  }; 
+                                let i = index" [attr.data-index]="i" class="addCursor" (click)="getMasterLineItemDetails(obj.id);" 
+                                data-toggle="modal" data-target="#viewProductModal">
+                                    <td class="capitalize">{{obj.mli_name}}</td>
+                                    <td>{{obj.created_at | date:'dd MMMM, y , h:mm a'}}</td>
+                                    <td>{{obj.updated_at | date:'dd MMMM, y , h:mm a'}}</td>
+                                </tr>
+                            </ng-container>
+                            <ng-container>
+                                <tr *ngIf="mli_list && mli_list.length === 0">
+                                    <td colspan="2">
+                                        <div class="col-12 not-found" *ngIf="mli_list && mli_list.length===0 ">
+                                            <div class="boq-img text-center">
+                                                <img src="../../../assets/img/desktop.png">
+                                            </div>
+                                            <p class="pb-4 nothing-to-show">Nothing to show...</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </ng-container>
+
+                        </tbody>
+                    </table>
+                    <div class="text-center" *ngIf="mli_list && mli_list.length >0">
+                        <pagination-controls autoHide="true" (pageChange)="current_page = getMasterLineItems($event)"></pagination-controls>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade m-auto" role="dialog" id="viewProductModal" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <button type="button" class="close addCursor" data-dismiss="modal">&times;</button>
+                    </div>
+                </div>
+                <div class="boqlist-row mx-0" *ngIf="master_line_item">
+                        <div class="col-5 d-inline-block p-0">
+                            <span class="font-weight-bold">Master Line Item Name</span>
+                        </div>
+                        <div class="col-6 d-inline-block p-0">
+                            <span>
+                                <span>{{master_line_item.mli_name}}</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <h5 class="bg-light font-weight-normal mt-5 ml-3">Dynamic Attributes:</h5>
+                <div class="boqlist-row mx-0" *ngIf="master_line_item && master_line_item.dynamic_attributes && master_line_item.dynamic_attributes.length > 0">
+                    <div class="" *ngFor="let product of master_line_item.dynamic_attributes">
+                        <div class="col-5 d-inline-block p-0">
+                            <span class="ml-5">{{product.attr_name | replaceChar}}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 not-found" *ngIf="master_line_item && master_line_item.dynamic_attributes && master_line_item.dynamic_attributes.length == 0">
+                        <div class="boq-img text-center">
+                            <img src="../../../assets/img/desktop.png">
+                        </div>
+                        <p class="pb-4 nothing-to-show">Nothing to show...</p>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,76 @@
+<div class="rk-ui-notification err" *ngIf="erroralert" style="z-index: 10000;">
+  <span id="notificationMessageText">{{errorMessage}}</span>
+  <a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+<div class="rk-ui-notification" *ngIf="successalert" style="z-index: 10000;">
+  <span id="notificationMessageText">{{successMessage}}</span>
+  <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+<div class="row mt-4 right-section boq-section">
+  <div class="col-md-12">
+    <button type="button" *ngIf="project_id" class="btn btn-pink pull-right" data-toggle="modal" data-target="#linemarkingModal">
+      UPLOAD LINE MARKING FILE
+    </button>
+  </div>
+  <div class="col-md-12 mt-5 text-center p-5" style="background-color: #fff;" *ngIf="boqFileList && boqFileList.length == 0">
+    <img src="../../../assets/img/nothing.png" class="img-fluid">
+  </div>
+  <div class="col-md-12 mt-5">
+    <div class="row">
+      <div class="col-md-4 mt-4" *ngFor="let obj of boqFileList">
+        <div class="card card-chng">
+
+          <i class="fa fa-trash trash-card" (click) = "deleteObject(obj.id)" *ngIf="role =='community_manager' && obj.shared_with_customer != true" ></i>
+          <img onerror="this.src='./assets/img/no_image.svg';" class="card-img-top img-fluid" src="{{obj.line_marking_url}}" alt="Card image cap" style="max-height: 165px;" />
+          <div class="card-block" style="padding: 1rem;">
+            <p class="card-text addCursor" data-toggle="tooltip" title="{{obj.name}}" style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap;border-bottom: 1px solid #e0e0e0;padding-bottom: 10px;">{{obj.name}}</p>
+            <div class="row">
+              <div class="col-md-12">
+                <p class="mb-0" style="font-size:13px;">
+                  <span style="display: flex;"> Description:<span class="pl-1 addCursor" data-toggle="tooltip" title="{{obj.description}}" style="width: 157px;vertical-align: bottom;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">{{obj.description}}</span>
+                  </span>
+                </p>
+              </div>
+              <div class="col-md-12 divbutton mt-2">
+                <a class="btn btn-pink btn-chng pull-right" href="{{obj.line_marking_url}}" download target="_blank">
+                  Download
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Start ppt modal -->
+<div class="modal fade" id="linemarkingModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="border-bottom: 1px solid #e4e4e4;">
+        <h6 class="modal-title" id="exampleModalLabel">Upload Line Marking File : </h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+            <form (ngSubmit)="onSubmit(createBoqForm.value); createBoqForm.reset()" #createBoqForm="ngForm" class="form-horizontal" enctype="multipart/form-data">
+              <div class="form-group">
+                <label for="name" class="ss-form-label">Line Marking Name</label>
+                <input type="text" class="form-control ss-form-control" id="name" placeholder="A proper name for Line Marking file" required name="name" #name="ngModel" ngModel>
+                <label for="details" class="ss-form-label mt-4">Line Marking Detail</label>
+                <textarea class="form-control ss-form-control" id="details" name="details" #details="ngModel" rows="5" ngModel placeholder="Please tell something about this Line Marking"></textarea>
+                <label for="boq_file" class="ss-form-label mt-4">Line Marking File</label>
+                <input type="file" class="form-control ss-form-control" (change)="onChange($event)" name="boq_file" ngModel #boq_file="ngModel" id="boq_file"accept="application/pdf,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" multiple="multiple">
+                <button type="submit" class="btn btn-pink button_emi pull-right mt-4" [disabled]="!createBoqForm.valid || basefile == undefined"> Submit </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

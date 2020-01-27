@@ -1,0 +1,61 @@
+<div class="row title">
+  <h3>Dashboard / <span>Project Management</span></h3>
+  <input class="searchBox addCursor" #search (keyup)="0">
+  <p class="searchIcon"><i class="fa fa-search" aria-hidden="true"></i></p>
+</div>
+
+<div class="marginTop row">
+	<div class="col-12" *ngIf="erroralert">
+		<div class="alert-box grid-100" *ngIf="errorMessage">
+			<div class="alert alert-danger mt-3 text-center">
+				<a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a>
+				{{errorMessage}}
+			</div>
+		</div>
+	</div>
+	<div class="col-12" *ngIf="successalert">
+		<div class="alert-box grid-100" *ngIf="successMessage">
+			<div class="alert alert-success mt-3 text-center">
+				<a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+				{{successMessage}}
+			</div>
+		</div>
+	</div>
+
+</div>
+
+<div class="row body_height justify-content-center">
+  <div class="col-12 table-responsive p-0">
+    <table class="table table-hover" *ngIf="projects">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Project Name</th>
+          <th>Customer Details</th>
+          <th>Designer Status</th>
+          <th>Designer Email</th>
+          <th class="actionCol text-center">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor=" let obj of projects | category :search.value; let i = index" [attr.data-index]="i">
+          <td>{{obj.id}}</td>
+          <td class="capitalize">{{obj.name}}</td>
+          <td><span class="capitalize">{{obj.user.name}}</span> - {{obj.user.email}}</td>
+          <td *ngIf="obj.assigned == true">Assigned</td>
+          <td *ngIf="obj.assigned == false">Not Assigned</td>
+          <td style=" max-width: 38em;
+          word-wrap: break-word;" >{{obj.assigned_to}}</td>
+          <td>
+            <select class="custom-select"  (change)="onDropdownChange($event.target.value,obj.id)" id="assigndropdown{{obj.id}}">
+              <option>Assign To Designer</option>
+              <option *ngFor="let des of designerList" value={{des.id}}>{{des.name | ucwords}} - {{des.email}}</option>
+            </select>
+            <button class="button" (click)="assignProjectToDesigner(obj.id,i)">Go</button>
+            <!-- <p id="validationMsgDisplay" class="text-danger"></p> -->
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

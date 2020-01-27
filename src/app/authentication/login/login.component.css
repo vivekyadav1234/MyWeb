@@ -1,0 +1,87 @@
+.topSpace{
+  height: 70vh;
+}
+.bgSection {
+    min-height: 35rem;
+}
+.button_emi {
+	float: left;
+	padding:11px;
+	width: 100%;
+	letter-spacing: 1px;
+}
+
+.alert {
+  color: #000;
+}
+.positionAbsolute{
+  position: absolute;
+}
+.error {
+  color: #ff4e4e;
+}
+.formHeading {
+	font-family: Roboto;
+}
+ .field_with_errors {
+    border-bottom: 1px solid #e90000;
+  }
+  .field_with_errors::-webkit-input-placeholder {
+  	color: #e90000;
+  }
+ /* .text-danger {
+  	font-size: 60%;
+  }*/
+  .link {
+  	cursor: pointer;
+    position: relative;
+    z-index: 1;
+  }
+  .text-danger {
+    position: relative;
+    top: 0;
+    left: 0;
+  }
+.forgot{
+  float: right;
+  margin-top: 10px;
+  cursor: pointer;
+}
+.close:focus{
+  outline: none;
+}
+.title_nav{
+  position: fixed;
+  z-index: 1001;
+  width: 100%;
+}
+.brand{
+  background-color: #fff;
+  border-bottom: 1px solid #ccc;
+  text-align: center;
+  /*padding: 10px 6px;*/
+  position: fixed;
+  width: 100%;
+  z-index: 100;
+  top: 0;
+}
+/*.brand img{
+  width: 111px;
+  margin-left: -11%;
+}*/
+.brand p{
+  color: #000;
+  position: absolute;
+  right: 20px;
+  top: 5px;
+  font-size: 12px;
+}
+#logoContainer {
+  margin-left: -15px!important;
+}
+.loginOTP{
+  margin-top: 10px;
+  float: left;
+  cursor: pointer;
+  color: #8c031f!important;
+}

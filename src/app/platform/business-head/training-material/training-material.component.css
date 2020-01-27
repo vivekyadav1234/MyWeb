@@ -1,0 +1,237 @@
+.bt-boq{
+    background: #EBF0F1;
+    color: #93001E;
+    font-size: 15px;
+    cursor: pointer;
+    font-weight: bold;
+    width: max-content;
+    border-color: darkred;
+}
+.row.pt-4.pb-4.ml-3.mr-3 {
+    margin-top: 20px;
+}
+.col-4 {
+    -ms-flex: 0 0 33.333333%;
+    flex: 0 0;
+    max-width: 33.333333%;
+}
+.nav-link {
+  display: inline;
+}
+.modal-header-chng{
+ background-image: url("../../../../assets/img/customer/image7.png");
+ height: 130px;
+}
+.modal-title-change{
+  color: white;
+
+}
+.iconbox{
+  border-radius: 50%;
+  background: white;
+  width: 24px;
+  height: 25px;
+  opacity: 0.7;
+}
+.close-icon{
+  float: center;
+  font-size: 24px;
+  font-weight: 400;
+  padding-right: 5px;
+}
+.modal-body-change{
+  background: white;
+  padding-bottom: 0;
+}
+.an-textColor{
+  color: #212529;
+  font-weight: 400;
+  font-size: 16px;
+  margin-left: 10px;
+}
+.footer-chng{
+  border-top:none;
+}
+.footer-change{
+	background: darkred;
+	justify-content: center;
+	color: white;
+}
+.selected-list[_ngcontent-c9] .c-btn[_ngcontent-c9]{
+  box-shadow: none !important;
+}
+
+.navcontainer-chnage{
+margin-top: 40px;
+}
+
+/* Checking table*/
+.table{
+  border-collapse: separate;
+  border-spacing: 0 5px;
+}
+.table td{
+    padding: 0.7rem 0.75rem;
+    vertical-align: middle;
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.7);
+    border: none;
+}
+.table th {
+    padding: .9rem;
+    vertical-align: middle;
+    border: none;
+    font-size: 12px;
+    text-transform: uppercase;
+    color: #fff;
+    background-color: #5A5A5A;
+}
+.tableDiv tbody{
+  background-color: #fff;
+}
+.tableDiv{
+  box-shadow: 1px 1px 7px 0px #dadada;
+  border-radius: 5px;
+}
+.firstTh{
+  border-radius: 5px 0 0 0;
+}
+.lastTh{
+  border-radius: 0px 5px 0 0;
+}
+.ss-form-control{
+  height: 45px;
+}
+.ng-star-inserted{
+  box-shadow: none !important;
+}
+.heading-change{
+    margin-left: 23px;
+    margin-top: 18px;
+    font-family: 'roboto';
+    margin-bottom: 18px;
+    color: gray;
+    font-weight: 400;
+}
+.download-change{
+  float: right;
+    color: #ad1313;
+    margin-top: 5px;
+    font-weight: 200px;
+    font-weight: 300;
+}
+.row-change{
+  padding: 0 30px;
+}
+.footer-changes{
+  background-color: #920a0a;
+  margin-top: 1rem;
+  color: white;
+  font-size: 25px;
+  font-weight: 200;
+
+}
+.text-chng{
+  background-color: white;
+    color: #a21b1b !important;
+    border-top: 1px solid;
+    cursor: pointer;
+}
+a{
+  cursor: pointer;
+}
+.style-chng{
+  padding: 30px;
+}
+
+@keyframes alertAnim {
+    from {
+        opacity:0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity:1;
+        transform: translateY(0);
+    }
+}
+.alert {
+    background: #f5e6e8;
+    padding: 7px;
+    font-size: .9em;
+    margin-bottom: 20px;
+    display: inline-block;
+    animation: 2s alertAnim forwards;
+}
+.container-set-change{
+  background: #e6e4e4;
+  border-radius: 5px;
+}
+.ss-searchbox{
+  margin-top: 15px;
+  margin-bottom: 15px;
+  margin-left: 22px;
+  background: white;
+}
+.warning{
+  color: red;
+}
+a:hover, a:visited, a:link, a:active {
+  text-decoration: none;
+}
+
+.controls {
+  margin-bottom: 10px;
+}
+
+.collapse-group {
+  padding: 10px;
+  border: 1px solid darkgrey;
+  margin-bottom: 10px;
+}
+
+.panel-title .trigger:before {
+  content: '\e082';
+  font-family: 'Glyphicons Halflings';
+  vertical-align: text-bottom;
+}
+
+.panel-title .trigger.collapsed:before {
+  content: '\e081';
+}
+video{
+    display: block;
+    width: 100%;
+    height: 240px;
+    background-color: #000;
+}
+.videoDiv img{
+    position: absolute;
+}
+.btn-pdf{
+  position: absolute;
+  top: 45%;
+  left: 36%;
+  opacity: .8;
+}
+#outerContainer #mainContainer div.toolbar {
+  display: none !important; /* hide PDF viewer toolbar */
+}
+#outerContainer #mainContainer #viewerContainer {
+  top: 0 !important; /* move doc up into empty bar space */
+}
+.text-sub{
+    font-size: 1rem;
+    font-weight: 400;
+    color: #9b4e4e;
+    text-decoration: underline;
+}
+.bg-span{
+  background: #fbeff2;
+}
+.pdf-page-change{
+  color: #8F0020;
+  font-size:40px;
+  width:100%;
+  cursor: pointer;
+}
+

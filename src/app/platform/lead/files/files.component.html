@@ -1,0 +1,114 @@
+<div class="row ss-top-menu">
+  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6">
+    <span class="ss-text-light ss-link" style="vertical-align: -webkit-baseline-middle;" [routerLink]="['/']">Dashboard</span>
+    <span style="vertical-align: -webkit-baseline-middle;"><i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-text-light ss-link" style="vertical-align: -webkit-baseline-middle;" [routerLink]="['/community_manager/leads']" [queryParams]="{lead_status: lead_status}" *ngIf="(role=='city_gm' || role=='business_head' || role=='community_manager' || role=='design_manager')">Lead</span>
+    <span class="ss-link" style="vertical-align: -webkit-baseline-middle;" [routerLink]="['/designer/leads']" [queryParams]="{customer_status: lead_details.lead_status}" *ngIf="role=='designer' && lead_details">Lead </span>
+    <span *ngIf="lead_details" class="capitalize" style="vertical-align: -webkit-baseline-middle;"><i class="rightArrow fa fa-angle-right"></i> {{lead_details.lead_status | replaceChar}}</span>
+    <!-- <span style="vertical-align: -webkit-baseline-middle;" *ngIf="lead_details.user_reference"><i class="rightArrow fa fa-angle-right"></i> </span> -->
+    <span style="vertical-align: -webkit-baseline-middle;"><i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-text-dark capitalize" style="vertical-align: -webkit-baseline-middle;" *ngIf="lead_details && lead_details.user_reference">{{lead_details.user_reference.name}}</span>
+  </div>
+</div>
+
+<div class="rk-ui-notification err" *ngIf="erroralert" style="z-index: 10000;">
+  <span id="notificationMessageText">{{errorMessage}}</span>
+  <a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+<div class="rk-ui-notification" *ngIf="successalert" style="z-index: 10000;">
+  <span id="notificationMessageText">{{successMessage}}</span>
+  <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+
+<div class="row px-4">
+  <app-shared-top-menu [lead_id]='lead_id' [lead_details]='lead_details' [lead_status]='lead_status' [files_tab]='"active"'></app-shared-top-menu>
+  <div class="col-12 bg-white mb-3">
+    <app-sms-call></app-sms-call>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="row">
+          <div class="col-md-3 inc-side-panel pt-5 pb-5">
+            <ul>
+              <li class="mb-5">
+                  <span>File Explorer</span>
+              </li>
+              <li class="cursor-pointer inc-link" (click)="displaySection('floorplan-section')" [ngClass]="{'active': state == 'floorplan-section'}">
+                <span>
+                  <img class="mr-2" src="./assets/img/folder.png">
+                </span>
+                <span> Floor Plan / Layout</span>
+              </li>
+              <li class="cursor-pointer inc-link" (click)="displaySection('site-section')"[ngClass]="{'active': state == 'site-section'}">
+                <span>
+                  <img class="mr-2" src="./assets/img/folder.png">
+                </span>
+                <span>Site Measurement</span>
+              </li>
+              <li class="cursor-pointer inc-link" (click)="displaySection('cad-section')" [ngClass]="{'active': state == 'cad-section'}">
+                <span>
+                  <img class="mr-2" src="./assets/img/folder.png">
+                </span>
+                <span>CAD Drawings</span>
+              </li>
+              <li class="cursor-pointer inc-link" (click)="displaySection('ppt-section')" [ngClass]="{'active': state == 'ppt-section'}">
+                <span>
+                  <img class="mr-2" src="./assets/img/folder.png">
+                </span>
+                <span>PPT</span>
+              </li>
+              <li class="cursor-pointer inc-link" (click)="displaySection('pdf-file-section')" [ngClass]="{'active': state == 'pdf-file-section'}">
+                <span>
+                  <img class="mr-2" src="./assets/img/folder.png">
+                </span>
+                <span>Files</span>
+              </li>
+              <li class="cursor-pointer inc-link" (click)="displaySection('warranty-document-section')" [ngClass]="{'active': state == 'warranty-document-section'}">
+                <span>
+                  <img class="mr-2" src="./assets/img/folder.png">
+                </span>
+                <span>Warranty Document</span>
+              </li>
+              <li class="cursor-pointer inc-link" (click)="displaySection('elevation-section')" [ngClass]="{'active': state == 'elevation-section'}">
+                <span>
+                  <img class="mr-2" src="./assets/img/folder.png">
+                </span>
+                <span>Elevations</span>
+              </li>
+              <li class="cursor-pointer inc-link" (click)="displaySection('reference-section')" [ngClass]="{'active': state == 'reference-section'}">
+                <span>
+                  <img class="mr-2" src="./assets/img/folder.png">
+                </span>
+                <span>Reference Files</span>
+              </li>
+               <li class="cursor-pointer inc-link" (click)="displaySection('threed-section')" [ngClass]="{'active': state == 'threed-section'}">
+                <span>
+                  <img class="mr-2" src="./assets/img/folder.png">
+                </span>
+                <span>3-D Files</span>
+              </li>
+              <li class="cursor-pointer inc-link" (click)="displaySection('boq-section')" [ngClass]="{'active': state == 'boq-section'}">
+                <span>
+                  <img class="mr-2" src="./assets/img/folder.png">
+                </span>
+                <span>Line Marking</span>
+              </li>
+            </ul>
+          </div>
+          <div class="col-md-9">
+            <app-files-floorplan [floorplans_list] = 'floorplans_list' ></app-files-floorplan>
+            <app-files-site-measurement [siteRequestList] = 'siteRequestList'></app-files-site-measurement>
+            <app-files-cad [cadElevationList] = 'cadElevationList'></app-files-cad>
+            <app-files-elevation [elevationFileList]= 'elevationFileList'></app-files-elevation>
+            <app-file-ppt [pptFileList] = 'pptFileList'></app-file-ppt>
+            <app-file-boq [boqFileList] = 'boqFileList'></app-file-boq>
+            <app-file-pdf [pdfFileList] = 'pdfFileList'></app-file-pdf>
+            <app-files-reference-image [referenceImageList]= 'referenceImageList'></app-files-reference-image>
+            <app-files-threed-image [threeDImageList]="threeDImageList"></app-files-threed-image>
+            <app-file-warranty [project_id] = 'project_id'></app-file-warranty>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

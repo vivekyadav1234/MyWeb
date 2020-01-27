@@ -1,0 +1,15 @@
+.form-container{
+	background: white;
+}
+.cursor-disable{
+	cursor: not-allowed;
+}
+.count-heading-color{
+	color: #777474;
+}
+.count-para-color{
+	color: #848484;
+}
+.borderTop{
+	border-top: 1px solid #d3d3d3;
+}

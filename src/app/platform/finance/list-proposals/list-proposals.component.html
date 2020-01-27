@@ -1,0 +1,44 @@
+<div class="row ss-top-menu">
+	<div class="col-xl-9 col-lg-9 col-md-9 col-sm-9 col-xs-9">
+		<span class="ss-text-light addCursor" routerLink="/">Dashboard <i class="rightArrow fa fa-angle-right"></i></span>
+    	<span class="ss-text-dark capitalize addCursor" *ngIf="projectName" routerLink="/">{{projectName}} <i class="rightArrow fa fa-angle-right"></i></span> 
+    	<span class="ss-text-dark">List of Proposals</span>
+  	</div>
+</div>
+
+<div class="mt-4 container-set">
+	<div class="row">
+	    <div class="col-md-12">
+	      <div class="tableDiv table-responsive">
+	        <table class="table">
+	          <thead>
+	            <tr>
+	            	<th class="firstTh"></th>
+	              <th class="text-center">#</th>
+	              <th>Name</th>
+	              <th>Created Date</th>
+	              <th>Type</th>
+	              <th>Status</th>
+	              <th>Total Amount</th>
+	              <th>Paid Amount</th>
+	              <th class="lastTh">Pending Amount</th>
+	            </tr>
+	          </thead>
+	          <tbody>
+	            <tr *ngFor="let proposal of  proposalList; let i=index; ">
+	            	<td><i class="fa fa-dot-circle-o" style="color: green" *ngIf="proposal.payment_varified==true"></i><i class="fa fa-dot-circle-o" style="color: red" *ngIf="proposal.payment_varified==false"></i></td>
+	            	<td class="text-center ">{{i+1}} </td>
+              	<td class="capitalize addCursor" routerLink="/project/{{project_id}}/proposal/{{proposal.id}}/list-boqs" style="color: blue;" [queryParams]="{project_name: projectName,proposal_name:proposal.proposal_name}">{{proposal.proposal_name | replaceChar}}</td>
+              	<td class="">{{proposal.created_at | date:'dd/MMM/yyy h:mm a'}}</td>
+              	<td class="capitalize">{{proposal.proposal_type | replaceChar}}</td>
+              	<td class="capitalize minWidthForTd">{{proposal.proposal_status | replaceChar}}</td>
+              	<td class="minWidthForTd"><i class="fa fa-inr mr-1"></i> {{proposal.payment_details.total_amount}}</td>
+              	<td class="minWidthForTd"><i class="fa fa-inr mr-1"></i> {{proposal.payment_details.paid_amount}}</td>
+              	<td class="minWidthForTd"><i class="fa fa-inr mr-1"></i> {{proposal.payment_details.balance}}</td> 
+	            </tr>
+	          </tbody>
+	        </table>
+	      </div>
+	    </div>
+	</div>
+</div>

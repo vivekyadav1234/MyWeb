@@ -1,0 +1,317 @@
+<form [formGroup]="bookingForm" style="border: 1px solid #e8e8e8;" class="mt-4">
+  <div class="col-sm-12 pt-2 pb-2" style="background-color: #efefef;font-size: 19px;font-weight: 600;color: #8f0521;">
+    Client Details
+  </div>
+  <div class="form-group row m-0">
+    <div class="col-md-4 mt-4">
+      <label class="customLabel"><strong>Flat no.</strong></label>
+      <input type="text" class="form-control" formControlName="flat_no" placeholder="">
+    </div>
+    <div class="col-md-4 mt-4">
+      <label class="customLabel"><strong>Floor No.</strong></label>
+      <input type="text" class="form-control" formControlName="floor_no" placeholder="">
+    </div>
+    <div class="col-md-4 mt-4">
+      <label class="customLabel"><strong>Building Name</strong></label>
+      <input type="text" class="form-control" formControlName="building_name" placeholder="">
+    </div>
+
+    <div class="col-md-4 mt-4">
+      <label class="customLabel"><strong>Location</strong></label>
+      <input type="text" class="form-control" formControlName="location" placeholder="">
+    </div>
+    <div class="col-md-4 mt-4">
+      <label class="customLabel"><strong>City</strong></label>
+      <input type="text" class="form-control" formControlName="city" placeholder="">
+    </div>
+    <div class="col-md-4 mt-4">
+      <label class="customLabel"><strong>Pincode</strong></label>
+      <input type="text" class="form-control" formControlName="pincode" placeholder="">
+    </div>
+    <div class="type-data form-check form-check-inline w-100 ml-3 mt-3">
+      <label class="customLabel"><strong>Project/Flat Possession:</strong></label>
+      <div class="form-group">
+        <input type="radio" class="form-check-input ml-3" formControlName="possession_by" value="less_than_90_days">
+        <label class="form-check-label pl-5 pr-4">Less than 90 days</label>
+      </div>
+      <div class="form-group">
+        <input type="radio" class="form-check-input ml-3" formControlName="possession_by" value="more_than_90_days">
+        <label class="form-check-label pl-5 pr-4">More than 90 days</label>
+      </div>
+    </div>
+
+    <div class="type-data form-check form-check-inline w-100 ml-3 mt-3">
+      <label class="customLabel"><strong>Profession:</strong></label>
+      <div class="form-group">
+        <input type="radio" class="form-check-input ml-3" formControlName="profession" value="salaried">
+        <label class="form-check-label pl-5 pr-4">Salaried</label>
+      </div>
+      <div class="form-group">
+        <input type="radio" class="form-check-input ml-3" formControlName="profession" value="business">
+        <label class="form-check-label pl-5 pr-4">Business</label>
+      </div>
+      <div class="form-group">
+        <input type="radio" class="form-check-input ml-3" formControlName="profession" value="other">
+        <label class="form-check-label pl-5 pr-4">Other</label>
+      </div>
+    </div>
+
+    <div class="col-md-4 mt-4">
+      <label class="customLabel"><strong>Post/Designation:</strong></label>
+      <input type="text" class="form-control" formControlName="designation" placeholder="">
+    </div>
+    <div class="col-md-4 mt-4">
+      <label class="customLabel"><strong>Company's Name:</strong></label>
+      <input type="text" class="form-control" formControlName="company" placeholder="">
+    </div>
+
+    <div class="type-data form-check form-check-inline w-100 ml-3 mt-3">
+      <label class="customLabel"><strong>Professional Details:</strong></label>
+      <div class="form-group">
+        <input type="radio" class="form-check-input ml-3" formControlName="professional_details" value="it">
+        <label class="form-check-label pl-5 pr-4">IT</label>
+      </div>
+      <div class="form-group">
+        <input type="radio" class="form-check-input ml-3" formControlName="professional_details" value="ites/bpo">
+        <label class="form-check-label pl-5 pr-4">ITES/BPO</label>
+      </div>
+      <div class="form-group">
+        <input type="radio" class="form-check-input ml-3" formControlName="professional_details" value="doctor">
+        <label class="form-check-label pl-5 pr-4">Doctor</label>
+      </div>
+      <div class="form-group">
+        <input type="radio" class="form-check-input ml-3" formControlName="professional_details" value="govt_services/psu">
+        <label class="form-check-label pl-5 pr-4">Govt. Services/PSU</label>
+      </div>
+      <div class="form-group">
+        <input type="radio" class="form-check-input ml-3" formControlName="professional_details" value="banking_and_finance">
+        <label class="form-check-label pl-5 pr-4">Banking and Finance</label>
+      </div>
+      <div class="form-group">
+        <input type="radio" class="form-check-input ml-3" formControlName="professional_details" value="manufacturing/distribution">
+        <label class="form-check-label pl-5 pr-4">Manufacturing/Distribution</label>
+      </div>
+      <div class="form-group">
+        <input type="radio" class="form-check-input ml-3" formControlName="professional_details" value="other">
+        <label class="form-check-label pl-5 pr-4">Other</label>
+      </div>
+      <div class="form-group" *ngIf="bookingForm.value.professional_details == 'other'">
+        <label class="customLabel"><strong>Other, Please Specify</strong></label>
+        <textarea class="form-control" formControlName="other_professional_details" placeholder=""></textarea>
+      </div>
+    </div>
+
+    <div class="type-data form-check form-check-inline w-100 ml-3 mt-3">
+      <label class="customLabel"><strong>Annual Income (INR - in Lacs):</strong></label>
+      <div class="form-group">
+        <input type="radio" class="form-check-input ml-3" formControlName="annual_income" value="less_than_15">
+        <label class="form-check-label pl-5 pr-4">Less than 15</label>
+      </div>
+      <div class="form-group">
+        <input type="radio" class="form-check-input ml-3" formControlName="annual_income" value="16_25">
+        <label class="form-check-label pl-5 pr-4">16-25</label>
+      </div>
+      <div class="form-group">
+        <input type="radio" class="form-check-input ml-3" formControlName="annual_income" value="26_35">
+        <label class="form-check-label pl-5 pr-4">26-35</label>
+      </div>
+      <div class="form-group">
+        <input type="radio" class="form-check-input ml-3" formControlName="annual_income" value="36_50">
+        <label class="form-check-label pl-5 pr-4">36-50</label>
+      </div>
+      <div class="form-group">
+        <input type="radio" class="form-check-input ml-3" formControlName="annual_income" value="51_and_above">
+        <label class="form-check-label pl-5 pr-4">51 and above</label>
+      </div>
+    </div>
+
+    <div class="col-md-4 mt-4">
+      <label class="customLabel"><strong>Landline:</strong></label>
+      <input type="text" class="form-control" formControlName="landline" placeholder="">
+    </div>
+    <div class="col-md-4 mt-4">
+      <label class="customLabel"><strong>Mobile(1)</strong></label>
+      <input type="text" class="form-control" formControlName="primary_mobile" placeholder="">
+    </div>
+    <div class="col-md-4 mt-4">
+      <label class="customLabel"><strong>Mobile(2)</strong></label>
+      <input type="text" class="form-control" formControlName="secondary_mobile" placeholder="">
+    </div>
+
+    <div class="col-md-6 mt-4">
+      <label class="customLabel"><strong>Email(1)</strong></label>
+      <input type="text" class="form-control" formControlName="primary_email" placeholder="">
+    </div>
+    <div class="col-md-6 mt-4">
+      <label class="customLabel"><strong>Email(2)</strong></label>
+      <input type="text" class="form-control" formControlName="secondary_email" placeholder="">
+    </div>
+    <div class="col-md-8 mt-4 mb-3">
+      <label class="customLabel"><strong>Current Address:</strong></label>
+      <textarea class="form-control" formControlName="current_address"></textarea>
+    </div>
+
+  </div>
+
+  <div class="col-sm-12 pt-2 pb-2" style="background-color: #efefef;font-size: 19px;font-weight: 600;color: #8f0521;">
+    Order Details
+  </div>
+  <div class="form-group row m-0">
+    <div class="col-md-8 mt-4">
+      <label class="customLabel"><strong>Order Value:</strong></label>
+      <input type="text" class="form-control" formControlName="order_value" placeholder="">
+    </div>
+    <div class="col-md-8 mt-4 mb-3">
+      <label class="customLabel"><strong>Order Date:</strong></label>
+      <input type="date" class="form-control" formControlName="order_date" placeholder="">
+    </div>
+    <div class="col-md-12 mt-4 mb-3">
+      <label class="customLabel"><strong>Billing Address</strong></label>
+      <div class="d-flex"> 
+        <input type="radio" class="" formControlName="address_type" placeholder="" value = "shipping_address" (click) = "selectAddress(1)">
+        <label class="form-check-label pr-4">Same as Shipping address</label>
+        <input type="radio" class="" placeholder="" formControlName="address_type" value = "communication_address" (click) = "selectAddress(2)">
+        <label class="form-check-label pr-4">Same as Communication address</label>
+        <input type="radio" class="" placeholder="" formControlName="address_type" value = "billing_address" (click) = "selectAddress(3)">
+        <label class="form-check-label pr-4">Enter Billing address</label> 
+      </div>
+    </div>
+    <div class="col-md-4 mt-4 mb-3">
+      <textarea type="text" class="form-control nameInput" formControlName="billing_address" rows="3" cols="50"></textarea>
+    </div>
+
+    <div class="col-lg-12">
+      <div class="row">
+        <div class="col-md-6 mt-4 mb-3">
+          <label class="customLabel"><strong>Billing Name:</strong></label>
+          <input type="text" class="form-control" formControlName="billing_name" placeholder="">
+        </div>
+
+        <div class="col-md-6 mt-4 mb-3">
+          <label class="customLabel"><strong>GST Number:</strong></label>
+          <input type="text" class="form-control" formControlName="gst_number" placeholder="">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <button class="btn btn-pink float-right mb-3 mt-3 mr-3" value="submit" (click)="bookingFormSubmit()">Submit</button>
+      <button class="btn btn-pink float-right mb-3 mt-3 mr-4" *ngIf="!formEmpty" (click)="downloadBookingForm()">Download Booking Form</button>
+    </div>
+  </div>
+  
+<div *ngIf="!formEmpty">
+  <div class="col-sm-12 pt-2 pb-2" style="background-color: #efefef;font-size: 19px;font-weight: 600;color: #8f0521;">
+    Upload Signed Booking Form
+  </div>  
+<div class="col-sm-12 border_upload">
+  <div class="form-group"> 
+    <!-- <label class="piform col-sm-6 pl-0 pb-2 mt-4 upload_width">Upload</label> -->
+    <input type="file" class="pi-file mt-4" (change) = "updateFile($event)" id="uploadInput">
+    <button class="btn btn-pink" (click)="uploadFileEvent()" disabled type="upload">Upload</button>
+  </div>
+</div>
+</div>
+<div class="pt-4 w-100" *ngIf="!formEmpty">
+     <div class="">
+         <div class="col-12">
+             <div class="tableDiv project-table">
+                 <table class="table">
+                     <thead class="ss-thead">
+                         <tr>
+                             <th class="firstTh text-left">File Name</th>
+                             <th class="text-left">Uploaded Time</th>
+                             <th colspan="2" class="text-center lastTh">Actions</th>
+                         </tr>
+                     </thead>
+                     <tbody>
+                         <ng-container *ngIf="file_list && file_list.length > 0">
+                               <tr class="ss-tbody" *ngFor="let obj of file_list
+                               | paginate: { itemsPerPage: per_page, currentPage: current_page, totalItems: total_page  };
+                               let i = index" [attr.data-index]="i" class="addCursor">
+                                   <td class="capitalize">{{obj.attachment_file_file_name}}</td>
+                                   <td class="capitalize">{{obj.created_at | date:'dd MMMM, y , h:mm a'}}</td>
+                                   <td class="capitalize text-center">
+                                     <a href="{{obj.url}}" class="btn btn-pink" target="_blank">Download</a>
+                                   </td>
+                                   <td class="capitalize text-center btn btn-pink delete_button" (click)="deleteFile(obj.id)">Delete</td>
+                                                              </tr>
+                         </ng-container>
+                         <ng-container>
+                             <tr *ngIf="file_list && file_list.length === 0">
+                                 <td colspan="2">
+                                     <div class="col-12 not-found" *ngIf="file_list && file_list.length===0 ">
+                                         <div class="boq-img text-center">
+                                             <img src="../../../assets/img/desktop.png">
+                                         </div>
+                                         <p class="pb-4 nothing-to-show">Nothing to show...</p>
+                                     </div>
+                                 </td>
+                             </tr>
+                         </ng-container>
+
+                     </tbody>
+                 </table>
+             </div>
+         </div>
+     </div>
+    </div>
+    <div class="rk-ui-notification" *ngIf="successalert">
+      <span id="notificationMessageText">{{successMessage}}</span>
+      <a class="close rk-linknotification" (click)="successalert=false">×</a>
+    </div>
+    <div class="rk-ui-notification err" *ngIf="erroralert">
+      <span id="notificationMessageText">{{errorMessage}}</span>
+      <a class="close rk-linknotification" (click)="erroralert=false">×</a>
+    </div>
+</form>
+
+<style>
+  .nothing-to-show{
+     font-size: 21px;
+     text-align: center;
+     color: dimgray
+   }
+   .btn{
+     cursor:pointer;
+   }
+   .table th{
+     min-width:0rem!important;
+   }
+   .table{
+     border-collapse: separate;
+     border-spacing: 0 5px;
+   }
+   .table td{
+       padding: 0.7rem 0.75rem;
+       vertical-align: middle;
+       font-size: 14px;
+       color: rgba(0, 0, 0, 0.7);
+       border: none;
+   }
+   .table th {
+       padding: .9rem;
+       vertical-align: middle;
+       border: none;
+       font-size: 12px;
+       text-transform: uppercase;
+       color: #fff;
+       background-color: #5A5A5A;
+   }
+   .tableDiv tbody{
+     background-color: #fff;
+   }
+   .tableDiv tbody tr{
+     box-shadow: 1px 1px 7px 0px #dadada;
+     border-radius: 5px;
+   }
+   .firstTh{
+     border-radius: 5px 0 0 0;
+   }
+   .lastTh{
+     border-radius: 0px 5px 0 0;
+   }
+  </style>
+  
+  

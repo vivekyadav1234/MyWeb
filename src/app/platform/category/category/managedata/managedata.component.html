@@ -1,0 +1,824 @@
+<div class="row ss-top-menu">
+    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-xs-3">
+        <span class="ss-text-light" style="vertical-align: -webkit-baseline-middle;">Dashboard <i class="rightArrow fa fa-angle-right"></i> </span>
+         <span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;">Manage Data</span>
+  </div>
+    <div class="col-xl-9 col-lg-9 col-md-9 col-sm-9 col-xs-9">
+		<!-- <a class="addCursor float-right downloadBtn mr-2" data-toggle="modal" data-target="#addNewLeadModal">Add Lead</a> -->
+		<a class="addCursor float-right downloadBtn mr-2" (click)="downloadOltReport()">  Panel OLT Report</a>
+		<a class="addCursor float-right downloadBtn mr-2" (click)="downloadExcelBoqLineItems()">  BOQ LineItem Report</a>
+        <a class="addCursor float-right downloadBtn mr-2" (click)="downloadCustomReport()">  Custom Element Report</a>
+       <a class="addCursor float-right downloadBtn mr-2" (click)="downloadpoReport()"> PO Report</a>
+		<!-- <a class="addCursor float-right downloadBtn mr-2" data-toggle="modal" data-target="#inviteChampionModal" (click)="getChampionList()">Invite Champion</a> -->
+		<a class="addCursor float-right downloadBtn mr-2" (click)="downloadSliReport()">  SLI Report</a>
+		<a class="addCursor float-right downloadBtn mr-2" data-toggle="modal" data-target="#inviteChampionModal" (click)="categoryinvitechampions.getChampionList()" *ngIf = "is_champion=='true'">Invite Level 2 & Level 3 User</a>
+    </div>
+</div>
+
+<div class="rk-ui-notification" *ngIf="successalert">
+  <span id="notificationMessageText">{{successMessage}}</span>
+  <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+<div class="rk-ui-notification err" *ngIf="erroralert">
+  <span id="notificationMessageText">{{errorMessage}}</span>
+  <a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+
+
+<div class="row px-4">
+  	<div class="col-md-12 p-0 mt-4">
+	    <ul class="nav nav-tabs ss-nav-tabs mt-0 justify-content-center" id="myTab" role="tablist">
+	      <li class="nav-item ">
+	        <a class="nav-link ss-nav-link active" id="master-data-tab" data-toggle="tab" href="#master_data" role="tab" aria-controls="master_data" aria-selected="true" routerLink="/manage_master_data">MASTER DATA</a>
+	      </li>
+	      <li class="nav-item">
+	        <a class="nav-link ss-nav-link" id="master-element-tab" data-toggle="tab" href="#master_element" role="tab" aria-controls="master_element" aria-selected="false" routerLink="/manage_master_element">MASTER ELEMENT</a>
+	      </li>
+	      <li class="nav-item">
+	        <a class="nav-link ss-nav-link" id="mapping-tab" data-toggle="tab" href="#mapping" role="tab" aria-controls="mapping" aria-selected="false" routerLink="/manage_mapping">MAPPING</a>
+	      </li>
+	      <li class="nav-item">
+	        <a class="nav-link ss-nav-link capitalize" id="master-service-tab" data-toggle="tab" href="#master_service" role="tab" aria-controls="master_service" aria-selected="false" routerLink="/manage_services">MANAGE SERVICES</a>
+				</li>
+				<li class="nav-item">
+						<a class="nav-link ss-nav-link capitalize" id="master-service-tab" data-toggle="tab" href="#master_line_item" role="tab" aria-controls="master_line_item" aria-selected="false" routerLink="/master_line_item">MASTER LINE ITEM</a>
+					</li>
+	    </ul>
+  	</div>
+  	<div class="col-12 bg-white">
+	    <div class="row mb-5">
+	      	<div class="col-md-12">
+	        	<div class="row mt-4 pb-3" id="row1">
+	          		<div class="col-md-12 px-5 py-3">
+	            		<span class="mr-3">Master Data : </span>
+			            <select class="form-control" (change)="setActiveForm($event.target.value)">
+			            	<option disabled value="">Select</option>
+			            	<option value="core_materials" [selected]="activeDropDownVal=='core_materials' ">Core Materials</option>
+			            	<option value="shutter_finishes" [selected]="activeDropDownVal=='shutter_finishes' ">Shutter Finish</option>
+			            	<option value="brands" [selected]="activeDropDownVal=='brands' ">Brand</option>
+			            	<option value="shades" [selected]="activeDropDownVal=='shades' ">Shades</option>
+			            	<option value="skirting_config" [selected]="activeDropDownVal=='skirting_config' ">Skirting Config</option>
+			            	<option value="category" [selected]="activeDropDownVal=='category' ">Kitchen Category</option>
+			            	<option value="core_material_price" [selected]="activeDropDownVal=='core_material_price' ">Core Material Price</option>
+			            	<option value="edgebanding_shades" [selected]="activeDropDownVal=='edgebanding_shades' ">Edge Banding Shades</option>
+			            	<option value="kitchenappliances" [selected]="activeDropDownVal=='kitchenappliances' ">Kitchen Appliances</option>
+			            </select>
+	          		</div>
+	        	</div>
+	        	<div class="col-md-12 text-center p-5" *ngIf="initLoader">
+	            	<div class="ss-spinner ss-spinner--orange">
+		              <div class="ss-spinner__item1"></div>
+		              <div class="ss-spinner__item2"></div>
+		              <div class="ss-spinner__item3"></div>
+		              <div class="ss-spinner__item4"></div>
+	            	</div>
+          		</div>
+		        <div class="container-fluid container-set" id="corematerialrow">
+		          <div class="row" style="padding: 16px;">
+		            <div class="col-md-5">
+		              	<div class="tableDiv">
+		              		<h5 class="textHeadingColor mt-3">Added Core Materials : </h5><br/>
+			                <div class="table-responsive mt-3 col-7 p-0" *ngIf="core_materials">
+			                	<button class="addButton addCursor" (click)="showaddCorematForm()"><i class="fa fa-plus"></i></button>
+			                  	<table class="table mb-0">
+				                    <thead class="">
+				                      <tr>
+				                        <th scope="col" class="pl-2 py-2">#</th>
+				                        <th scope="col" class="py-2">Name</th>
+				                        <th class="py-2"></th>
+				                      </tr>
+				                    </thead>
+				                    <tbody>
+				                      <tr  *ngFor="let coremat of core_materials; let i = index" [attr.data-index]="i" class="box-list">
+				                        <td class="pl-2">{{ i+1 }}</td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ coremat.name}}</span>
+				                        	<input type="text" name="name" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editCoreMatName">
+				                        </td>
+				                        <td>
+				                        	<button class="d-none editRowInput{{i}} rk-interalBtnColor mx-2 editRowButton" (click)="updateCoreMaterial(i,coremat.id)"><i class="fa fa-paper-plane"></i></button>
+	                								<button class="d-none editRowInput{{i}} rk-btnCancel addCursor" (click)="cancelEditCorematerialRow(i)">Cancel</button>
+				                        	<i class="ion-android-more-vertical  ss-3-dot-drop editRowSpan{{i}}" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"></i>
+				                          	<div class="dropdown-menu pt-2 pb-2" style="font-size: 14px;">
+				                            	<a class="dropdown-item addCursor" (click)="deleteCoremat(coremat.id)">Delete</a>
+				                            	<a class="dropdown-item addCursor" (click)="editCorematRow(i,coremat)">Edit</a>
+				                          	</div>
+				                        </td>
+				                      </tr>
+				                    </tbody>
+			                  	</table>
+			                </div> 
+		              	</div>
+		            </div>
+		            <div class="col-md-1"></div>
+		            <div class="col-md-6 d-none" id="addcorematerialFormRow">
+		            	<h5 class="textHeadingColor mt-3">Add New Core Materials : </h5>
+		            	<form [formGroup]="addCoreMaterialForm" (ngSubmit)="addCoremat(addCoreMaterialForm.value);" class="mt-5 col-9 p-0" id="addCoreMaterialForm">
+		            		<input type="text" class="form-control" name="" formControlName="name" placeholder="Enter core material name...">
+		            		<div *ngIf="addCoreMaterialForm.controls['name'].errors && !addCoreMaterialForm.controls['name'].pristine" class="text-danger">
+		                  		<div [hidden]="!addCoreMaterialForm.controls['name'].errors.required">Name is required.</div>
+		                	</div>
+		            		<button type="submit" class="pull-right mt-3 submitButton" [disabled]="!addCoreMaterialForm.valid" >Submit</button>
+		            	</form>
+		            </div>
+		          </div>  
+		        </div>
+
+		        <div class="container-fluid container-set d-none" id="shutter_finisherow">
+		          <div class="row" style="padding: 16px;">
+		            <div class="col-md-6">
+		              	<div class="tableDiv">
+		              		<h5 class="textHeadingColor mt-3">Added Shutter Finishes : </h5><br/>
+			                <div class="table-responsive mt-3 col-9 p-0" *ngIf="shutter_finishes">
+			                	<button class="addButton addCursor" (click)="showaddShutterFinishesForm()"><i class="fa fa-plus"></i></button>
+			                  	<table class="table mb-0">
+				                    <thead class="">
+				                      <tr>
+				                        <th scope="col" class="pl-2 py-2">#</th>
+				                        <th scope="col" class="py-2">Name</th>
+				                        <th scope="col" class="py-2">Rate(INR)</th>
+				                        <th class="py-2"></th>
+				                      </tr>
+				                    </thead>
+				                    <tbody>
+				                      <tr  *ngFor="let sf of shutter_finishes; let i = index" [attr.data-index]="i" class="box-list">
+				                        <td class="pl-2">{{ i+1 }}</td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ sf.name}}</span>
+				                        	<input type="text" name="name" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editSFName">
+				                        </td>
+				                        <td class="">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ sf.price}}</span>
+				                        	<input type="number" name="rate" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editSFRate" style="width: 80px;">
+				                        </td>
+				                        <td>
+				                        	<button class="d-none editRowInput{{i}} rk-interalBtnColor mx-2 editRowButton" (click)="updateShutterFinishes(i,sf.id)"><i class="fa fa-paper-plane"></i></button>
+	                						<button class="d-none editRowInput{{i}} rk-btnCancel addCursor" (click)="cancelEditShutterFinishesRow(i)">Cancel</button>
+				                        	<i class="ion-android-more-vertical  ss-3-dot-drop editRowSpan{{i}}" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"></i>
+				                          	<div class="dropdown-menu pt-2 pb-2" style="font-size: 14px;">
+				                            	<a class="dropdown-item addCursor" (click)="deleteShutterFinishes(sf.id)">Delete</a>
+				                            	<a class="dropdown-item addCursor" (click)="editShutterFinishesRow(i,sf)">Edit</a>
+				                          	</div>
+				                        </td>
+				                      </tr>
+				                    </tbody>
+			                  	</table>
+			                </div> 
+		              	</div>
+		            </div>
+		            <div class="col-md-1"></div>
+		            <div class="col-md-5 d-none" id="addshutter_finisheFormRow">
+		            	<h5 class="textHeadingColor mt-3">Add New Shutter Finish : </h5>
+		            	<form [formGroup]="addShutterFinishForm" (ngSubmit)="addShutterFinish(addShutterFinishForm.value);" class="mt-5 col-9 p-0" id="addShutterFinishForm">
+		            		<input type="text" class="form-control" name="" formControlName="name" placeholder="Enter Shutter Finish Name...">
+		            		<div *ngIf="addShutterFinishForm.controls['name'].errors && !addShutterFinishForm.controls['name'].pristine" class="text-danger">
+		                  		<div [hidden]="!addShutterFinishForm.controls['name'].errors.required">Name is required.</div>
+		                	</div><br/>
+		                	<input type="number" class="form-control" name="" formControlName="price" placeholder="Enter Rate..." min="0">
+		            		<!-- <div *ngIf="addShutterFinishForm.controls['price'].errors && !addShutterFinishForm.controls['price'].pristine" class="text-danger">
+		                  	<div [hidden]="!addShutterFinishForm.controls['price'].errors.required">Rate is required.</div>
+		                	</div> -->
+		            		<button type="submit" class="pull-right mt-3 submitButton" [disabled]="!addShutterFinishForm.valid" >Submit</button>
+		            	</form>
+		            </div>
+		          </div>  
+		        </div>
+
+		        <div class="container-fluid container-set d-none" id="skirtingconfigrow">
+		          <div class="row" style="padding: 16px;">
+		            <div class="col-md-6" style="margin-right: 15px;">
+		              	<div class="tableDiv">
+		              		<h5 class="textHeadingColor mt-3">Added Skirting Config : </h5><br/>
+			                <div class="table-responsive mt-3 col-11 p-0" *ngIf="skirting_config">
+			                	<button class="addButton addCursor" (click)="showaddSkirtingConfigForm()"><i class="fa fa-plus"></i></button>
+			                  	<table class="table mb-0">
+				                    <thead class="">
+				                      <tr>
+				                        <th scope="col" class="pl-2 py-2">#</th>
+				                        <th scope="col" class="py-2">Type</th>
+				                        <th scope="col" class="py-2">Height (mm)</th>
+				                        <th scope="col" class="py-2">Price (INR)</th>
+				                        <th class="py-2"></th>
+				                      </tr>
+				                    </thead>
+				                    <tbody>
+				                      <tr  *ngFor="let sc of skirting_config; let i = index" [attr.data-index]="i" class="box-list">
+				                        <td class="pl-2">{{ i+1 }}</td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ sc.skirting_type}}</span>
+				                        	<input type="text" name="type" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editSCType">
+				                        </td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ sc.skirting_height}}</span>
+				                        	<input type="number" name="height" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editSCHeight" style="width: 90px;">
+				                        </td>
+				                        <td class="">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ sc.price}}</span>
+				                        	<input type="number" name="rate" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editSCPrice" style="width: 90px;">
+				                        </td>
+				                        <td>
+				                        	<button class="d-none editRowInput{{i}} rk-interalBtnColor mx-2 editRowButton" (click)="updateSkirtingConfig(i,sc.id)"><i class="fa fa-paper-plane"></i></button>
+	                						<button class="d-none editRowInput{{i}} rk-btnCancel addCursor" (click)="cancelEditSkirtingConfigRow(i)">Cancel</button>
+				                        	<i class="ion-android-more-vertical  ss-3-dot-drop editRowSpan{{i}}" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"></i>
+				                          	<div class="dropdown-menu pt-2 pb-2" style="font-size: 14px;">
+				                            	<a class="dropdown-item addCursor" (click)="deleteSkirtingConfig(sc.id)">Delete</a>
+				                            	<a class="dropdown-item addCursor" (click)="editSkirtingConfigRow(i,sc)">Edit</a>
+				                          	</div>
+				                        </td>
+				                      </tr>
+				                    </tbody>
+			                  	</table>
+			                </div> 
+		              	</div>
+		            </div>
+		            <div class="col-md-1"></div>
+		            <div class="col-md-5 d-none" id="addskirtingconfigFormRow">
+		            	<h5 class="textHeadingColor mt-3">Add New Skirting Config : </h5>
+		            	<form [formGroup]="addSkirting_configForm" (ngSubmit)="addSkirtingConfig(addSkirting_configForm.value);" class="mt-5 col-9 p-0">
+		            		<input type="text" class="form-control" name="" formControlName="skirting_type" placeholder="Enter Skirting Type...">
+		            		<div *ngIf="addSkirting_configForm.controls['skirting_type'].errors && !addSkirting_configForm.controls['skirting_type'].pristine" class="text-danger">
+		                  		<div [hidden]="!addSkirting_configForm.controls['skirting_type'].errors.required">Type is required.</div>
+		                	</div><br/>
+		                	<input type="number" class="form-control" name="" formControlName="skirting_height" placeholder="Enter Skirting Height..." min="0">
+		            		<div *ngIf="addSkirting_configForm.controls['skirting_height'].errors && !addSkirting_configForm.controls['skirting_height'].pristine" class="text-danger">
+		                  		<div [hidden]="!addSkirting_configForm.controls['skirting_height'].errors.required">Height is required.</div>
+		                	</div><br/>
+		                	<input type="number" class="form-control" name="" formControlName="price" placeholder="Enter Price..." min="0">
+		            		<div *ngIf="addSkirting_configForm.controls['price'].errors && !addSkirting_configForm.controls['price'].pristine" class="text-danger">
+		                  		<div [hidden]="!addSkirting_configForm.controls['price'].errors.required">Price is required.</div>
+		                	</div>
+		            		<button type="submit" class="pull-right mt-3 submitButton" [disabled]="!addSkirting_configForm.valid" >Submit</button>
+		            	</form>
+		            </div>
+		          </div>  
+		        </div>
+
+		        <div class="container-fluid container-set d-none" id="shaderow">
+		          <div class="row" style="padding: 16px;">
+		            <div class="col-md-6" style="margin-right: 15px;">
+		              	<div class="tableDiv">
+		              		<h5 class="textHeadingColor mt-3">Added Shades : </h5><br/>
+			                <div class="table-responsive mt-3 col-11 p-0" style="overflow-y: auto;" *ngIf="shades">
+			                	<button class="addButton addCursor mt-1" (click)="showaddShadesForm()"><i class="fa fa-plus"></i></button>
+			                  	<table class="table mb-0 mt-5">
+				                    <thead class="">
+				                      <tr>
+				                        <th scope="col" class="pl-2 py-2">#</th>
+				                        <th>Image</th>
+				                        <th scope="col" class="py-2">Name</th>
+				                        <th scope="col" class="py-2">Code</th>
+				                        <th scope="col" class="py-2">Edge Banding Shade</th>
+				                        <th scope="col" class="py-2">Edge Banding Shade Image</th>
+				                        <th class="py-2"></th>
+				                      </tr>
+				                    </thead>
+				                    <tbody>
+				                      <tr  *ngFor="let shd of shades; let i = index" [attr.data-index]="i" class="box-list">
+				                        <td class="pl-2">{{ i+1 }}</td>
+				                        <td>
+				                        	<img src="{{shd.shade_image}}" *ngIf="shd.shade_image" style="width: 100px;" onerror="this.src='./assets/img/no_image.svg';" alt="Missing Image">
+				                        	<input type="file" name="shade_image" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editShadeImg" (change) = "addAttachment($event)" >
+				                        </td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ shd.name}}</span>
+				                        	<input type="text" name="type" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editShadeName">
+				                        </td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ shd.code}}</span>
+				                        	<input type="text" name="height" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editShadeCode" style="width: 90px;">
+				                        </td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize"><ng-container *ngIf="shd.edge_banding_shade">{{ shd.edge_banding_shade.name}} - {{ shd.edge_banding_shade.code}}</ng-container></span>
+				                        	<select name="" [(ngModel)]="editShade_EdgebandingCode" class="d-none editRowInput{{i}} inputSize" >
+				                        		<option>Select Edge banding shade</option>
+				                        		<option value="{{ebshd.id}}" *ngFor="let ebshd of edgebinding_shades">{{ebshd.name}} - {{ebshd.code}}</option>
+				                        	</select>
+				                        </td>
+				                        <td>
+				                        	<span class="editRowSpan{{i}} capitalize"><ng-container *ngIf="shd.edge_banding_shade"><img src="{{shd.edge_banding_shade.shade_image}}" *ngIf="shd.edge_banding_shade.shade_image" style="width: 100px;" onerror="this.src='./assets/img/no_image.svg';" alt="Missing Image"></ng-container></span>
+				                        	<span class="d-none editRowInput{{i}}"></span>
+				                        </td>
+				                        <td>
+				                        	<button class="d-none editRowInput{{i}} rk-interalBtnColor mx-2 editRowButton" (click)="updateShade(i,shd.id)"><i class="fa fa-paper-plane"></i></button>
+	                								<button class="d-none editRowInput{{i}} rk-btnCancel addCursor" (click)="cancelEditShadeRow(i)">Cancel</button>
+				                        	<i class="ion-android-more-vertical  ss-3-dot-drop editRowSpan{{i}}" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"></i>
+				                          	<div class="dropdown-menu pt-2 pb-2" style="font-size: 14px;">
+				                            	<a class="dropdown-item addCursor" (click)="deleteShade(shd.id)">Delete</a>
+				                            	<a class="dropdown-item addCursor" (click)="editShadeRow(i,shd)">Edit</a>
+				                          	</div>
+				                        </td>
+				                      </tr>
+				                    </tbody>
+			                  	</table>
+			                </div> 
+		              	</div>
+		            </div>
+		            <div class="col-md-1"></div>
+		            <div class="col-md-5 d-none" id="addshadeFormRow">
+		            	<h5 class="textHeadingColor mt-3">Add New Shade : </h5>
+		            	<form [formGroup]="addShadeForm" (ngSubmit)="addShade(addShadeForm.value);" class="mt-5 col-9 p-0">
+		            		<input type="text" class="form-control" name="" formControlName="name" placeholder="Enter Shade Name...">
+		            		<div *ngIf="addShadeForm.controls['name'].errors && !addShadeForm.controls['name'].pristine" class="text-danger">
+		                  		<div [hidden]="!addShadeForm.controls['name'].errors.required">Name is required.</div>
+		                	</div><br/>
+		                	<input type="text" class="form-control" name="" formControlName="code" placeholder="Enter code...">
+		            		<div *ngIf="addShadeForm.controls['code'].errors && !addShadeForm.controls['code'].pristine" class="text-danger">
+		                  		<div [hidden]="!addShadeForm.controls['code'].errors.required">Code is required.</div>
+		                	</div><br>
+		                <select formControlName="edge_banding_shade_id" class="form-control">
+		                	<option disabled="" value="">Select Edge Banding Shade</option>
+		                	<option *ngFor="let edgeshd of edgebinding_shades" value="{{edgeshd.id}}">{{edgeshd.name}} - {{edgeshd.code}}</option>
+		                </select>
+		                <br>
+		                <label>Upload Shade Image</label>
+		                <input type="file" formControlName="shade_image" (change) = "addAttachment($event)" >
+		            		<button type="submit" class="pull-right mt-3 submitButton" [disabled]="!addShadeForm.valid" >Submit</button>
+		            	</form>
+		            </div>
+		          </div>  
+		        </div>
+
+		        <div class="container-fluid container-set d-none" id="brandrow">
+		          <div class="row" style="padding: 16px;">
+		            <div class="col-md-6" style="margin-right: 15px;">
+		              	<div class="tableDiv">
+		              		<h5 class="textHeadingColor mt-3">Added Brands : </h5><br/>
+			                <div class="table-responsive mt-3 col-11 p-0" *ngIf="brands">
+			                	<button class="addButton addCursor" (click)="showaddBrandsForm()"><i class="fa fa-plus"></i></button>
+			                  	<table class="table mb-0">
+				                    <thead class="">
+				                      <tr>
+				                        <th scope="col" class="pl-2 py-2">#</th>
+				                        <th scope="col" class="py-2">Name</th>
+				                        <th scope="col" class="py-2">Hardware</th>
+				                        <th scope="col" class="py-2">Add on</th>
+				                        <th class="py-2"></th>
+				                      </tr>
+				                    </thead>
+				                    <tbody>
+				                      <tr  *ngFor="let brd of brands; let i = index" [attr.data-index]="i" class="box-list">
+				                        <td class="pl-2">{{ i+1 }}</td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ brd.name}}</span>
+				                        	<input type="text" name="type" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editBrandName">
+				                        </td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">
+				                        		<ng-container *ngIf="brd.hardware==true ">Yes</ng-container>
+				                        		<ng-container *ngIf="brd.hardware==false ">No</ng-container>
+				                        	</span>
+				                        	<!-- <input type="text" name="hardware" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editBrandHardware" style="width: 90px;"> -->
+				                        	<select [(ngModel)]="editBrandHardware" class="d-none editRowInput{{i}} inputSize">
+				                        		<option value="true" [selected]="editBrandHardware==true ">Yes</option>
+				                        		<option value="false" [selected]="editBrandHardware==false ">No</option>
+				                        	</select>
+				                        </td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">
+				                        		<ng-container *ngIf="brd.addon==true ">Yes</ng-container>
+				                        		<ng-container *ngIf="brd.addon==false ">No</ng-container>
+				                        	</span>
+				                        	<!-- <input type="text" name="addon" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editBrandAddon" style="width: 90px;"> -->
+				                        	<select [(ngModel)]="editBrandAddon" class="d-none editRowInput{{i}} inputSize">
+				                        		<option value="true" [selected]="editBrandAddon==true ">Yes</option>
+				                        		<option value="false" [selected]="editBrandAddon==false ">No</option>
+				                        	</select>
+				                        </td>
+				                        <td>
+				                        	<button class="d-none editRowInput{{i}} rk-interalBtnColor mx-2 editRowButton" (click)="updateBrand(i,brd.id)"><i class="fa fa-paper-plane"></i></button>
+	                						<button class="d-none editRowInput{{i}} rk-btnCancel addCursor" (click)="cancelEditBrandRow(i)">Cancel</button>
+				                        	<i class="ion-android-more-vertical  ss-3-dot-drop editRowSpan{{i}}" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"></i>
+				                          	<div class="dropdown-menu pt-2 pb-2" style="font-size: 14px;">
+				                            	<a class="dropdown-item addCursor" (click)="deleteBrand(brd.id)">Delete</a>
+				                            	<a class="dropdown-item addCursor" (click)="editBrandRow(i,brd)">Edit</a>
+				                          	</div>
+				                        </td>
+				                      </tr>
+				                    </tbody>
+			                  	</table>
+			                </div> 
+		              	</div>
+		            </div>
+		            <div class="col-md-1"></div>
+		            <div class="col-md-5 d-none" id="addbrandFormRow">
+		            	<h5 class="textHeadingColor mt-3">Add New Brand : </h5>
+		            	<form [formGroup]="addBrandForm" (ngSubmit)="addBrand(addBrandForm.value);" class="mt-5 col-9 p-0">
+		            		<input type="text" class="form-control" name="" formControlName="name" placeholder="Enter Brand Name...">
+		            		<div *ngIf="addBrandForm.controls['name'].errors && !addBrandForm.controls['name'].pristine" class="text-danger">
+		                  		<div [hidden]="!addBrandForm.controls['name'].errors.required">Name is required.</div>
+		                	</div><br/>
+		                	<select class="form-control" formControlName="hardware">
+		                		<option disabled value="">Select Hardware</option>
+		                		<option value="true">Yes</option>
+		                		<option value="false">No</option>
+		                	</select><br/>
+		                	<select class="form-control" formControlName="addon">
+		                		<option disabled value="">Select Addon</option>
+		                		<option value="true">Yes</option>
+		                		<option value="false">No</option>
+		                	</select>
+		                	<!-- <input type="text" class="form-control" name="" formControlName="code" placeholder="Enter Skirting Height..."> -->
+		            		<button type="submit" class="pull-right mt-3 submitButton" [disabled]="!addBrandForm.valid" >Submit</button>
+		            	</form>
+		            </div>
+		          </div>  
+		        </div>
+
+		        <div class="container-fluid container-set d-none" id="categoryrow">
+		          <div class="row" style="padding: 16px;">
+		            <div class="col-md-5">
+		              	<div class="tableDiv">
+		              		<h5 class="textHeadingColor mt-3">Added Categories : </h5><br/>
+			                <div class="table-responsive mt-3 col-7 p-0" *ngIf="categories">
+			                	<button class="addButton addCursor" (click)="showaddCategoryForm()"><i class="fa fa-plus"></i></button>
+			                  	<table class="table mb-0">
+				                    <thead class="">
+				                      <tr>
+				                        <th scope="col" class="pl-2 py-2">#</th>
+				                        <th scope="col" class="py-2">Name</th>
+				                        <th class="py-2"></th>
+				                      </tr>
+				                    </thead>
+				                    <tbody>
+				                      <tr  *ngFor="let cat of categories; let i = index" [attr.data-index]="i" class="box-list">
+				                        <td class="pl-2">{{ i+1 }}</td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ cat.name}}</span>
+				                        	<input type="text" name="name" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editCategoryName">
+				                        </td>
+				                        <td>
+				                        	<button class="d-none editRowInput{{i}} rk-interalBtnColor mx-2 editRowButton" (click)="updateCategory(i,cat.id)"><i class="fa fa-paper-plane"></i></button>
+	                						<button class="d-none editRowInput{{i}} rk-btnCancel addCursor" (click)="cancelEditCategoryRow(i)">Cancel</button>
+				                        	<i class="ion-android-more-vertical  ss-3-dot-drop editRowSpan{{i}}" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"></i>
+				                          	<div class="dropdown-menu pt-2 pb-2" style="font-size: 14px;">
+				                            	<a class="dropdown-item addCursor" (click)="deleteCategory(cat.id)">Delete</a>
+				                            	<a class="dropdown-item addCursor" (click)="editCategoryRow(i,cat)">Edit</a>
+				                          	</div>
+				                        </td>
+				                      </tr>
+				                    </tbody>
+			                  	</table>
+			                </div> 
+		              	</div>
+		            </div>
+		            <div class="col-md-1"></div>
+		            <div class="col-md-6 d-none" id="addcategoryFormRow">
+		            	<h5 class="textHeadingColor mt-3">Add New Category : </h5>
+		            	<form [formGroup]="addCategoryForm" (ngSubmit)="addCategory(addCategoryForm.value);" class="mt-5 col-9 p-0">
+		            		<input type="text" class="form-control" name="" formControlName="name" placeholder="Enter category name...">
+		            		<div *ngIf="addCategoryForm.controls['name'].errors && !addCategoryForm.controls['name'].pristine" class="text-danger">
+		                  <div [hidden]="!addCategoryForm.controls['name'].errors.required">Name is required.</div>
+		                </div>
+		            		<button type="submit" class="pull-right mt-3 submitButton" [disabled]="!addCategoryForm.valid" >Submit</button>
+		            	</form>
+		            </div>
+		          </div>  
+		        </div>
+
+		        <!-- Core Material Price -->
+
+		        <div class="container-fluid container-set d-none" id="corematerialpricerow">
+		          <div class="row" style="padding: 16px;">
+		            <div class="col-md-5">
+		              	<div class="tableDiv">
+		              		<h5 class="textHeadingColor mt-3">Added Core Material Price : </h5><br/>
+			                <div class="table-responsive mt-3 col-12 p-0" *ngIf="core_material_prices">
+			                	<button class="addButton addCursor" (click)="showaddCmpForm()"><i class="fa fa-plus"></i></button>
+			                  	<table class="table mb-0">
+				                    <thead class="">
+				                      <tr>
+				                        <th scope="col" class="pl-2 py-2">#</th>
+				                        <th scope="col" class="py-2">Core material</th>
+				                        <th scope="col" class="py-2">Thickness(mm)</th>
+				                        <th scope="col" class="py-2">Price (INR)</th>
+				                        <th class="py-2"></th>
+				                      </tr>
+				                    </thead>
+				                    <tbody>
+				                      <tr  *ngFor="let cmp of core_material_prices; let i = index" [attr.data-index]="i" class="box-list">
+				                        <td class="pl-2">{{ i+1 }}</td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ cmp.core_material_name}}</span>
+
+				                        	<select name="core_material_id" [(ngModel)]="editCoreMaterialName" class="d-none editRowInput{{i}} inputSize" >
+				                        		<option>Select Core Materials</option>
+				                        		<option value="{{cm.id}}" *ngFor="let cm of core_materials">{{cm.name}}</option>
+				                        	</select>
+				                        </td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ cmp.thickness}}</span>
+				                        	<input type="text" name="name" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editCmpThickness">
+				                        </td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ cmp.price}}</span>
+				                        	<input type="text" name="name" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editCmpPrice">
+				                        </td>
+				                        <td>
+				                        	<button class="d-none editRowInput{{i}} rk-interalBtnColor mx-2 editRowButton" (click)="updateCmp(i,cmp.id)"><i class="fa fa-paper-plane"></i></button>
+	                						<button class="d-none editRowInput{{i}} rk-btnCancel addCursor" (click)="cancelEditCmpRow(i)">Cancel</button>
+				                        	<i class="ion-android-more-vertical  ss-3-dot-drop editRowSpan{{i}}" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"></i>
+				                          	<div class="dropdown-menu pt-2 pb-2" style="font-size: 14px;">
+				                            	<a class="dropdown-item addCursor" (click)="deleteCmp(cmp.id)">Delete</a>
+				                            	<a class="dropdown-item addCursor" (click)="editCmpRow(i,cmp)">Edit</a>
+				                          	</div>
+				                        </td>
+				                      </tr>
+				                    </tbody>
+			                  	</table>
+			                </div> 
+		              	</div>
+		            </div>
+		            <div class="col-md-1"></div>
+		            <div class="col-md-6 d-none" id="addcmpFormRow">
+		            	<h5 class="textHeadingColor mt-3">Add New Cmp : </h5>
+		            	<form [formGroup]="addCmpForm" (ngSubmit)="addCmp(addCmpForm.value);" class="mt-5 col-9 p-0">
+		            		<select class="form-control" name="" formControlName="core_material_id">
+		            			<option>Select Core Material</option>
+		            			<option *ngFor="let cm of core_materials" value="{{cm.id}}">{{cm.name}}</option>
+		            		</select>
+		            		<input type="text" class="form-control mt-2" name="" formControlName="thickness" placeholder="Enter core material thickness...">
+		            		<input type="text" class="form-control mt-2" name="" formControlName="price" placeholder="Enter core material price...">
+		            		<div *ngIf="addCmpForm.controls['thickness'].errors && !addCmpForm.controls['thickness'].pristine" class="text-danger">
+		                  <div [hidden]="!addCmpForm.controls['thickness'].errors.required">Thickness is required.</div>
+		                </div>
+		            		<button type="submit" class="pull-right mt-3 submitButton" [disabled]="!addCmpForm.valid" >Submit</button>
+		            	</form>
+		            </div>
+		          </div>  
+		        </div>
+
+		        <!--Edge banding shade-->
+		        <div class="container-fluid container-set d-none" id="edgebandingshaderow">
+		          <div class="row" style="padding: 16px;">
+		            <div class="col-md-6" style="margin-right: 15px;">
+		              	<div class="tableDiv">
+		              		<h5 class="textHeadingColor mt-3">Added Edge Banding Shades : </h5><br/>
+			                <div class="table-responsive mt-3 col-11 p-0" style="overflow-y: auto;" *ngIf="edgebinding_shades">
+			                	<button class="addButton addCursor mt-1" (click)="showaddEdgebandingShadesForm()"><i class="fa fa-plus"></i></button>
+			                  	<table class="table mb-0 mt-5">
+				                    <thead class="">
+				                      <tr>
+				                        <th scope="col" class="pl-2 py-2">#</th>
+				                        <th>Image</th>
+				                        <th scope="col" class="py-2">Name</th>
+				                        <th scope="col" class="py-2">Code</th>
+				                        <th class="py-2"></th>
+				                      </tr>
+				                    </thead>
+				                    <tbody>
+				                      <tr  *ngFor="let edgebandingshd of edgebinding_shades; let i = index" [attr.data-index]="i" class="box-list">
+				                        <td class="pl-2">{{ i+1 }}</td>
+				                        <td>
+				                        	<img src="{{edgebandingshd.shade_image}}" *ngIf="edgebandingshd.shade_image" style="width: 100px;" onerror="this.src='./assets/img/no_image.svg';" alt="Missing Image">
+				                        	<input type="file" name="shade_image" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editEdgebandingShadeImg" (change) = "addAttachment($event)" >
+				                        </td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ edgebandingshd.name}}</span>
+				                        	<input type="text" name="type" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editEdgebandingShadeName">
+				                        </td>
+				                        <td class="capitalize">
+				                        	<span class="editRowSpan{{i}} capitalize">{{ edgebandingshd.code}}</span>
+				                        	<input type="text" name="height" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editEdgebandingShadeCode" style="width: 90px;">
+				                        </td>
+				                        <td>
+				                        	<button class="d-none editRowInput{{i}} rk-interalBtnColor mx-2 editRowButton" (click)="updateEdgebandingShade(i,edgebandingshd.id)"><i class="fa fa-paper-plane"></i></button>
+	                						<button class="d-none editRowInput{{i}} rk-btnCancel addCursor" (click)="cancelEditEdgebandingShadeRow(i)">Cancel</button>
+				                        	<i class="ion-android-more-vertical  ss-3-dot-drop editRowSpan{{i}}" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"></i>
+				                          	<div class="dropdown-menu pt-2 pb-2" style="font-size: 14px;">
+				                            	<a class="dropdown-item addCursor" (click)="deleteEdgebandingShade(edgebandingshd.id)">Delete</a>
+				                            	<a class="dropdown-item addCursor" (click)="editEdgebandingShadeRow(i,edgebandingshd)">Edit</a>
+				                          	</div>
+				                        </td>
+				                      </tr>
+				                    </tbody>
+			                  	</table>
+			                </div> 
+		              	</div>
+		            </div>
+		            <div class="col-md-1"></div>
+		            <div class="col-md-5 d-none" id="addedgebandingshadeFormRow">
+		            	<h5 class="textHeadingColor mt-3">Add New Edge Banding Shade : </h5>
+		            	<form [formGroup]="addEdgeBandingShadeForm" (ngSubmit)="addEdgeBandingShade(addEdgeBandingShadeForm.value);" class="mt-5 col-9 p-0">
+		            		<input type="text" class="form-control" name="" formControlName="name" placeholder="Enter Shade Name..."><br/>
+		                <input type="text" class="form-control" name="" formControlName="code" placeholder="Enter code...">
+		            		<div *ngIf="addEdgeBandingShadeForm.controls['code'].errors && !addEdgeBandingShadeForm.controls['code'].pristine" class="text-danger">
+		                  		<div [hidden]="!addEdgeBandingShadeForm.controls['code'].errors.required">Code is required.</div>
+		                	</div><br>
+		                	<input type="file" formControlName="shade_image" (change) = "addAttachment($event)" >
+		            		<button type="submit" class="pull-right mt-3 submitButton" [disabled]="!addEdgeBandingShadeForm.valid" >Submit</button>
+		            	</form>
+		            </div>
+		          </div>  
+		        </div>
+
+		        <!--Kitchen appliance-->
+		        <div class="container-fluid container-set d-none" id="kitchen_appliancerow">
+              <div class="row" style="padding: 16px;">
+                <div class="col-md-6" style="margin-right: 15px;">
+                    <div class="tableDiv">
+                        <h5 class="textHeadingColor mt-3">Added Kitchen appliances : </h5><br/>
+                        <div class="table-responsive mt-3 col-11 p-0" style="overflow-y: auto;" *ngIf="kitchen_appliances">
+                            <button class="addButton addCursor mt-1" (click)="showaddKitchen_applianceForm()"><i class="fa fa-plus"></i></button>
+                            <table class="table mb-0 mt-5">
+                                <thead class="">
+                                  <tr>
+                                    <th scope="col" class="pl-2 py-2">#</th>
+                                    <th>Image</th>
+                                    <th scope="col" class="py-2">Name</th>
+                                    <th scope="col" class="py-2">Code</th>
+                                    <th scope="col" class="py-2">Make</th>
+                                    <th scope="col" class="py-2">Price</th>
+                                    <th scope="col" class="py-2">Appliance Type</th>
+                                    <th scope="col" class="py-2">Vendor Sku</th>
+                                    <th class="py-2"></th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr  *ngFor="let kit_app of kitchen_appliances; let i = index" [attr.data-index]="i" class="box-list">
+                                    <td class="pl-2">{{ i+1 }}</td>
+                                    <td>
+                                        <img src="{{kit_app.appliance_image}}" *ngIf="kit_app.appliance_image" style="width: 100px;" onerror="this.src='./assets/img/no_image.svg';" alt="Missing Image">
+                                        <input type="file" name="appliance_image" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editKitchen_appliance_Img" (change) = "addAttachment($event)" >
+                                    </td>
+                                    <td class="capitalize">
+                                        <span class="editRowSpan{{i}} capitalize">{{ kit_app.name}}</span>
+                                        <input type="text" name="type" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editKitchen_appliance_Name">
+                                    </td>
+                                    <td class="capitalize">
+                                        <span class="editRowSpan{{i}} capitalize">{{ kit_app.code}}</span>
+                                        <input type="text" name="height" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editKitchen_appliance_Code">
+                                    </td>
+                                    <td class="capitalize">
+                                        <span class="editRowSpan{{i}} capitalize">{{ kit_app.make}}</span>
+                                        <input type="text" name="height" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editKitchen_appliance_make">
+                                    </td>
+                                    <td class="">
+                                        <span class="editRowSpan{{i}} capitalize">{{ kit_app.price}}</span>
+                                        <input type="text" name="height" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editKitchen_appliance_price">
+                                    </td>
+                                    <td class="capitalize">
+                                        <span class="editRowSpan{{i}} capitalize">{{ kit_app.module_type}}</span>
+                                        <select name="" [(ngModel)]="editKitchen_appliance_module_type_id" class="d-none editRowInput{{i}} inputSize" >
+                                          <option value="" disabled>Select Appliance Type</option>
+                                          <option value="{{mtk.id}}" *ngFor="let mtk of moduletypes_kitchen_appliances">{{mtk.name}}</option>
+                                        </select>
+                                    </td>
+                                    <td class="capitalize">
+                                        <span class="editRowSpan{{i}} capitalize">{{ kit_app.vendor_sku}}</span>
+                                        <input type="text" name="height" class="d-none editRowInput{{i}} inputSize" [(ngModel)]="editKitchen_appliance_vendor_sku">
+                                    </td>
+                                    <td>
+                                        <button class="d-none editRowInput{{i}} rk-interalBtnColor mx-2 editRowButton" (click)="updateKitchen_appliance(i,kit_app.id)"><i class="fa fa-paper-plane"></i></button>
+                                                <button class="d-none editRowInput{{i}} rk-btnCancel addCursor" (click)="cancelEditKitchen_applianceRow(i)">Cancel</button>
+                                        <i class="ion-android-more-vertical  ss-3-dot-drop editRowSpan{{i}}" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"></i>
+                                        <div class="dropdown-menu pt-2 pb-2" style="font-size: 14px;">
+                                            <a class="dropdown-item addCursor" (click)="deleteKitchen_appliance(kit_app.id)">Delete</a>
+                                            <a class="dropdown-item addCursor" (click)="editKitchen_applianceRow(i,kit_app)">Edit</a>
+                                        </div>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                            </table>
+                        </div> 
+                    </div>
+                </div>
+                <div class="col-md-1"></div>
+                <div class="col-md-5 d-none" id="addkitchen_applianceFormRow">
+                    <h5 class="textHeadingColor mt-3">Add New Kitchen Appliance : </h5>
+                    <form [formGroup]="addKitchenApplianceForm" (ngSubmit)="addKitchen_appliance(addKitchenApplianceForm.value);" class="mt-5 col-9 p-0">
+                        <input type="text" class="form-control" name="" formControlName="name" placeholder="Enter Name...">
+                        <div *ngIf="addKitchenApplianceForm.controls['name'].errors && !addKitchenApplianceForm.controls['name'].pristine" class="text-danger">
+                            <div [hidden]="!addKitchenApplianceForm.controls['name'].errors.required">Name is required.</div>
+                        </div><br/>
+                        <input type="text" class="form-control" name="" formControlName="code" placeholder="Enter code...">
+                        <div *ngIf="addKitchenApplianceForm.controls['code'].errors && !addKitchenApplianceForm.controls['code'].pristine" class="text-danger">
+                            <div [hidden]="!addKitchenApplianceForm.controls['code'].errors.required">Code is required.</div>
+                        </div><br>
+                        <input type="text" class="form-control" name="" formControlName="make" placeholder="Enter make..."><br>
+                        <input type="number" class="form-control" name="" formControlName="price" placeholder="Enter price..." min="0"><br>
+                        <input type="text" class="form-control" name="" formControlName="vendor_sku" placeholder="Enter vendor sku..."><br>
+                        <select formControlName="module_type_id" class="form-control">
+                            <option disabled="" value="">Select Appliance Type</option>
+                            <option *ngFor="let mtk of moduletypes_kitchen_appliances" value="{{mtk.id}}">{{mtk.name}}</option>
+                        </select>
+                        <br>
+                    <label>Upload Appliance Image</label>
+                    <input type="file" formControlName="appliance_image" (change) = "addAttachment($event)" >
+                        <button type="submit" class="pull-right mt-3 submitButton" [disabled]="!addKitchenApplianceForm.valid" >Submit</button>
+                    </form>
+                </div>
+              </div>  
+            </div>
+
+	     	</div>
+	    </div>
+  	</div>
+</div>
+
+ <!-- Invite Champion Modal -->
+ <div class="modal fade customModal" id="inviteChampionModal" tabindex="-1" role="dialog" aria-labelledby="inviteChampionModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title modalTitle" id="inviteChampionModalLabel">User Details</h5>
+      </div>
+
+      <div class="modal-body">
+        <app-invite-champions #categoryinvitechampions></app-invite-champions>
+      </div>
+    </div>
+  </div>
+</div> 
+
+
+		<div class="modal fade customModal" id="addNewLeadModal" tabindex="-1" role="dialog" aria-labelledby="addNewLeadModalLabel" aria-hidden="true">
+				<div class="modal-dialog modal-lg" role="document">
+					<form (ngSubmit)="addLeadFormSubmit(addLeadForm.value); " [formGroup]="addLeadForm" class="form-horizontal" enctype="multipart/form-data" id="addLeadForm">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h5 class="modal-title modalTitle" id="exampleModalLabel"> Lead Details</h5>
+									</div>
+									<div class="modal-body">
+										<div class="row mx-2">
+											<div class="col-sm-10 col-md-6 mb-2">
+												<div class="form-group">
+													<label class="text-left">Name </label>
+													<input type="text" class="form-control" name="name" placeholder="Enter Lead Name" formControlName="name">
+												</div>
+											</div>
+											<div class="col-sm-10 col-md-6 mb-2">
+												<div class="form-group">
+													<label class="text-left">Lead Email </label>
+													<input type="email" class="form-control" name="email" placeholder="Enter Lead Email" formControlName="email">
+													<div *ngIf="addLeadForm.controls['email'].errors && !addLeadForm.controls['email'].pristine" class="text-danger">
+														<div [hidden]="addLeadForm.controls['email'].valid || addLeadForm.controls['email'].errors.required">Enter valid email.</div>
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-10 col-md-6 mb-2">
+												<div class="form-group">
+													<label class="text-left">Lead Contact <span>*</span></label>
+													<input type="number" class="form-control" name="contact" placeholder="Enter Lead Contact" formControlName="contact" required min="0" (keydown)="numberCheck($event)">
+													<div *ngIf="addLeadForm.controls['contact'].errors && !addLeadForm.controls['contact'].pristine" class="text-danger">
+														<div [hidden]="!addLeadForm.controls['contact'].errors.required">Contact is required.</div>
+													</div>
+												</div>
+											</div>
+											<div class="col-sm-10 col-md-6 mb-2">
+												<div class="form-group">
+													<label class="text-left">Pincode</label>
+													<input type="number" class="form-control" name="pincode" placeholder="Enter Lead Pincode" formControlName="pincode" min="0" (keydown)="numberCheck($event)">
+												</div>
+											</div>
+			
+											<div class="col-sm-10 col-md-6">
+												<div class="form-group">
+													<label class="text-left">Select Lead Type <span>*</span></label>
+													<select formControlName="lead_type_id" class="form-control" (change)="onChangeOfLeadType($event.target.value)">
+														<option value="" disabled>Select</option>
+														<option value="{{type.id}}" *ngFor="let type of lead_types">{{type.name}}</option>
+													</select>
+												</div>
+											</div>
+											<div class="col-sm-10 col-md-6">
+												<div class="form-group">
+													<label class="text-left">Select Lead Source <span>*</span></label>
+													<select formControlName="lead_source_id" class="form-control capitalize">
+														<option value="" disabled>Select</option>
+														<option value="{{src.id}}" *ngFor="let src of lead_sources">{{src.name | replaceChar}}</option>
+													</select>
+												</div>
+											</div>
+											<div class="col-sm-10 col-md-6">
+												<div class="form-group">
+													<label class="text-left">Select Lead Campaign </label>
+													<select formControlName="lead_campaign_id" class="form-control capitalize">
+														<option value="" disabled>Select</option>
+														<option value="{{camp.id}}" *ngFor="let camp of lead_campaigns">{{camp.name | replaceChar}}</option>
+													</select>
+												</div>
+											</div>
+											<div class="col-sm-10 col-md-6 mb-2" *ngIf="addLeadForm.controls['lead_type_name'].value=='designer'">
+												<div class="form-group">
+													<label class="text-left">Instagram Id</label>
+													<input type="text" class="form-control" name="instagram_handle" placeholder="Enter Instagram Id" formControlName="instagram_handle">
+												</div>
+											</div>
+											<div class="col-sm-10 col-md-6 mb-2" *ngIf="addLeadForm.controls['lead_type_name'].value=='designer'">
+												<div class="form-group">
+													<label class="text-left">Upload CV</label>
+													<input type="file" name="" class="form-control" (change)="uploadCV($event)" name="attachment_file">
+												</div>
+											</div>
+											<div class="col-sm-12 mt-3 text-right">
+												<div class="mt-3">
+												<button type="submit" [disabled]="!addLeadForm.valid" class="rk-interalBtnColor addCursor">Add</button>
+												<button class="cancle ml-3 addCursor rk-btnCancel" data-dismiss="modal">Cancel</button>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+						</form>
+				</div>
+			</div>

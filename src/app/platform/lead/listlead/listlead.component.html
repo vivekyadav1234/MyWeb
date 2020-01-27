@@ -1,0 +1,1060 @@
+<div class="row ss-top-menu">
+  <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-xs-3">
+    <span class="ss-text-light" style="vertical-align: -webkit-baseline-middle;">Dashboard <i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;">{{lead_source | replaceChar | ucwords}} Leads</span>
+  </div>
+  <div class="col-xl-5 col-lg-5 col-md-5 col-sm-5 col-xs-5">
+    <div class="ss-searchbox">
+      <i class="fa fa-search"></i>
+      <input class="form-control" type="text" placeholder="Type in name, contact, status, role, date to search..." #search (keyup)="0">
+    </div>
+  </div>
+  <div class="col-sm-4">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="dropdown pull-right">
+          <button class="btn btn-pink dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Action
+          </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item" data-toggle="modal" data-target="#addNewLeadModal">Add Lead</a>
+            <!-- <a class="dropdown-item" data-toggle="modal" data-target="#exampleModal">Upload Excel</a> -->
+            <a class="dropdown-item addCursor" (click)="exportLeads()">Download Lead</a>
+          </div>
+        </div>
+      </div>
+      <!-- <div class="col-md-8"></div> -->
+    </div>
+  </div>
+</div>
+
+<div class="marginTop row">
+  <div class="col-12" *ngIf="erroralert">
+    <div class="alert-box grid-100" *ngIf="errorMessage">
+      <div class="alert alert-danger mt-3 text-center">
+        <a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a>
+        {{errorMessage}}
+      </div>
+    </div>
+  </div>
+  <div class="col-12" *ngIf="successalert">
+    <div class="alert-box grid-100" *ngIf="successMessage">
+      <div class="alert alert-success mt-3 text-center">
+        <a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+        {{successMessage}}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row justify-content-end">
+  <div class="col-md-6">
+    <div class="filterMainDiv">
+      <span class="ss-text-dark mr-2">Filter By</span>
+      <select class="filterSelect form-control" (change)="filterColumDropdownChange($event.target.value)" [(ngModel)]="filtercol1Val" id="filter1dropdown">
+        <!-- <option value="" disabled>Select Column</option> -->
+        <option value="all"><span class="capitalize" selected>All</span></option>
+        <option value="user_type"><span class="capitalize">Role</span></option>
+        <option value="lead_status"><span class="capitalize">Status</span></option>
+        <option value="source"><span class="capitalize">Lead Type</span></option>
+        <option value="lead_source"><span class="capitalize">Lead Source</span></option>
+        <option value="created_at"><span class="capitalize">Date of Acquisition</span></option>
+      </select>
+      <i class="downArrow fa fa-angle-down"></i>
+      <select class="filterSelect form-control" [(ngModel)]="filtercol2Val" (change)="filterColum2DropdownChange($event.target.value)" id="filter2dropdown" style="display: none">
+        <option disabled value="">Select</option>
+        <option *ngFor="let item of filtercol2Arr"  value="{{item}}"><span class="capitalize">{{item | replaceChar | ucwords}}</span></option>
+      </select>
+      <i class="downArrow fa fa-angle-down" id="downArrow" style="display: none"></i>
+      <div style="display: none;" id="fromDateFilter"><label>From Date</label><input type="date" name="" [(ngModel)]="fromDateFilter"></div>
+      <div style="display: none;" id="toDateFilter"><label>To Date</label><input type="date" name="" [(ngModel)]="toDateFilter" [min]="fromDateFilter"></div>
+      <button class="filterBtn" (click)="filterSubmit()">GO</button>
+    </div>
+  </div>
+</div>
+
+<div class="row body_height justify-content-center">
+  <div class="col-12">
+    <h5 *ngIf="leads && leads.length ==0" class="text-center my-5">No Leads Available</h5>
+    <div class="tableDiv">
+      <table class="table" *ngIf="leads && leads.length >0">
+        <thead class="ss-thead">
+          <tr>
+            <th class="firstTh">Serial No.</th>
+            <th>Lead Id</th>
+            <th class="addCursor" (click)="sort('name')">Name <i class="fa ml-2" [ngClass]="{'fa-sort': column != 'name', 'fa-sort-asc': (column == 'name' && !isDesc), 'fa-sort-desc': (column == 'name' && isDesc) }" aria-hidden="true"></i></th>
+            <th class="addCursor" (click)="sort('lead_status')">Status <i class="fa ml-2" [ngClass]="{'fa-sort': column != 'lead_status', 'fa-sort-asc': (column == 'lead_status' && !isDesc), 'fa-sort-desc': (column == 'lead_status' && isDesc) }" aria-hidden="true"></i></th>
+
+            <th class="addCursor" (click)="sort('updated_at')">Last Status Update <i class="fa ml-2" [ngClass]="{'fa-sort': column != 'updated_at', 'fa-sort-asc': (column == 'updated_at' && !isDesc), 'fa-sort-desc': (column == 'updated_at' && isDesc) }" aria-hidden="true"></i></th>
+
+            <th class="addCursor" (click)="sort('user_type')">Role <i class="fa ml-2" [ngClass]="{'fa-sort': column != 'user_type', 'fa-sort-asc': (column == 'user_type' && !isDesc), 'fa-sort-desc': (column == 'user_type' && isDesc) }" aria-hidden="true"></i></th>
+            <th>Acquisition Date</th>
+            <th>Assign Agent</th>
+            <!-- <th>Assign CS Agent</th> -->
+            <th class="lastTh" style="min-width: 17rem;">Follow Up</th>
+          </tr>
+        </thead>
+        <tbody class="ss-tbody">
+          <tr *ngFor="let lead of leads | category: search.value | sort: {property: column, direction: direction}; let i = index" [attr.data-index]="i">
+            <td>{{i+1}}</td>
+            <td>#{{lead.id}}</td>
+            <td class="capitalize"><a class="addCursor" href="" data-toggle="modal" data-target="#leadDetailsModal" (click)="viewLeadDetails(lead.id)">{{lead.name}}</a></td>
+            <td class="capitalize">{{lead.lead_status | replaceChar}}</td>
+            <td class="capitalize">{{lead.updated_at}}</td>
+            <td class="capitalize">{{lead.user_type}}</td>
+            <td>
+              <p class="mb-0">{{lead.created_at}}</p>
+              <p class="mb-0" style="font-size:12px; color:#bbb;">({{lead.hours_ago}})</p>
+            </td>
+            <!-- <td *ngIf="lead.agent != null">{{lead.agent.name}}</td> -->
+            <td style="min-width: 15rem;">
+              <div class="row p-0">
+                <div class="col-md-9 pt-0 pb-0">  
+                  <select class="ss-select"  (change)="onDropdownChange(lead.id,$event.target.value,i)" id="assigndropdown{{lead.id}}" *ngIf="((leadActionAccess.length>0) && (leadActionAccess.indexOf(role) > -1)) && ((lead.lead_status =='not_attempted' || lead.lead_status =='not_claimed') && lead.user_type=='customer' )">
+                    <option>Assign To CS Agent</option>
+                    <option *ngFor="let agent of csagentList" value={{agent.id}}>{{agent.name}} - {{agent.email}}</option>
+                  </select>
+                  <span *ngIf="lead.agent != null">{{lead.agent.name}}</span>
+                  <div style="clear:both; padding:0; margin:0;"></div>
+                  <span *ngIf="lead.agent == null">Unassigned</span>
+                </div>
+                <div class="col-md-3 pt-0 pb-0">
+                  <i class="ion-android-send ss-send-circle" (click)="assignLeadToAgent(lead.id,i)" *ngIf="(lead.lead_status =='not_attempted' || lead.lead_status =='not_claimed') && lead.user_type=='customer' "></i>
+                </div>
+              </div>
+            </td>
+            <!-- <td *ngIf="lead.agent == null">Unassigned</td>
+            <td *ngIf=" (leadActionAccess.length>0) && (leadActionAccess.indexOf(role) > -1) ">
+              <select class="form-control myForm-control col-9 d-inline-block"  (change)="onDropdownChange(lead.id,$event.target.value,i)" id="assigndropdown{{lead.id}}" *ngIf="(lead.lead_status =='not_attempted' || lead.lead_status =='not_claimed') && lead.user_type=='customer' ">
+                <option>Assign To CS Agent</option>
+                <option *ngFor="let agent of csagentList" value={{agent.id}}>{{agent.name}} - {{agent.email}}</option>
+              </select>
+              <i class="downArrow fa fa-angle-down" *ngIf="(lead.lead_status =='not_attempted' || lead.lead_status =='not_claimed') && lead.user_type=='customer' "></i>
+            </td> -->
+            <td>
+              <p class="mb-0 pull-left">{{lead.follow_up_time}}</p>
+              <i class="ion-android-more-vertical pull-right ss-3-dot-drop" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" *ngIf=" (leadActionAccess.length>0) && (leadActionAccess.indexOf(role) > -1) && (lead.lead_status != 'qualified')"></i>
+              <div class="dropdown-menu dropdown-menuV" *ngIf="(leadActionAccess.length>0) && (leadActionAccess.indexOf(role) > -1)" style="font-size: 14px;">
+                <a class="dropdown-item"  [routerLink]="['/lead/edit/'+lead.id]" routerLinkActive='active' *ngIf="lead.lead_status != 'qualified'">
+                  <i class="ion-edit"></i>
+                  Edit
+                </a>
+                <a class="dropdown-item" style="cursor:pointer" (click)="deleteLead(lead.id)" *ngIf="lead.lead_status != 'qualified'">
+                  <i class="ion-ios-trash"></i>
+                  Delete
+                </a>
+              </div>
+            </td>
+
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <form (ngSubmit)="submitExcelUpload(); uploadExcelForm.reset()" #uploadExcelForm="ngForm" class="form-horizontal" enctype="multipart/form-data">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Upload Lead Excel</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-10 col-md-6" *ngIf="erroralertmodal">
+            <div class="alert-box grid-100" *ngIf="errorMessagemodal">
+              <div class="alert alert-danger mt-3 text-center">
+                  <a class="close link" data-dismiss="alert"  (click)="erroralertmodal=false">×</a>
+                  {{errorMessagemodal}}
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-10 col-md-6" *ngIf="successalertmodal">
+            <div class="alert-box grid-100" *ngIf="successMessagemodal">
+              <div class="alert alert-success mt-3 text-center">
+                  <a class="close link" data-dismiss="alert"  (click)="successalertmodal=false">×</a>
+                  {{successMessagemodal}}
+              </div>
+            </div>
+          </div>
+            <div class="form-group col-sm-10">
+              <!-- <label class="text-left">Upload Lead Excel*</label> -->
+              <input class="form-control" type="file" (change)="onChange($event)" name="attachment_file" ngModel #attachment_file="ngModel">
+            </div>
+            <p id="extErrorMsg" class="text-danger d-none col-sm-10">Check File extension (File should be in xls or xlsx format).</p>
+            <p class="col-sm-10">Note* - only .xlsx or .xls files are allowed.  </p>
+            <div class="form-group col-sm-10">
+              <label class="text-left">Select Lead Source <span>*</span></label>
+              <select class="form-control" name="sourceOfBulkLeads" [(ngModel)]="sourceOfBulkLeads">
+                <option value="" disabled>Select Lead Source</option>
+                <option value="weddingz_team">Weddingz Team</option>
+                <option value="hfc">HFC</option>
+                <option value="broker">Broker</option>
+                <option value="housing_finance">Housing Finance</option>
+                <option value="digital_marketing">Digital Marketing</option>
+                <option value="referral">Referral</option>
+              </select>
+            </div>
+            <hr class="my-3">
+            <div class="text-right col-sm-10">
+              <button type="submit" class="button_emi" [disabled]="basefile==undefined">Upload</button>
+              <button class="ml-2 cancel" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+      </div>
+    </div>
+    </form>
+  </div>
+</div>
+
+
+
+
+<!--Lead Modal -->
+
+<div class="modal fade" id="leadDetailsModal" tabindex="-1" role="dialog" aria-labelledby="leadDetailsModalTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="btnGroup">
+          <button class="upload0 actBtn" (click)="Details()">Lead Details</button>
+          <button class="upload1" (click)="Questionarrie(leadDetails.id)" *ngIf="leadDetails && leadDetails.user_type =='customer'">Questionnaire</button>
+        </div>
+        <h5 class="modal-title mt-5 addClass" id="exampleModalLabel">Lead Details</h5>
+        <h5 class="modal-title mt-5 addClass1 hideClass" id="exampleModalLabel" *ngIf="leadDetails && leadDetails.user_type =='customer'">Questionnaire</h5>
+        <button type="button" class="close close1" data-dismiss="modal" aria-label="Close" (click)="getLeadListFromService()">
+          <!-- <span aria-hidden="true">&times;</span> -->
+          <img class="close" (click)="closeModal()" data-dismiss="modal" src="https://www.homepolish.com/assets/close-ee1bfd7a4473933b6dd934b2c284dc856361b63581c8f43b8cdc1abe07c91765.svg">
+        </button>
+      </div>
+
+      <div class="modal-body leadView" *ngIf="leadDetails">
+          <div class="col-12" *ngIf="successalertmodal">
+            <div class="alert-box grid-100" *ngIf="successMessagemodal">
+              <div class="alert alert-success mt-3 text-center">
+                <a class="close link" data-dismiss="alert"  (click)="successalertmodal=false">×</a>
+                {{successMessagemodal}}
+              </div>
+            </div>
+          </div>
+          <div class="col-12" *ngIf="erroralertmodal">
+            <div class="alert-box grid-100" *ngIf="errorMessagemodal">
+              <div class="alert alert-danger mt-3 text-center">
+                <a class="close link" data-dismiss="alert"  (click)="erroralertmodal=false">×</a>
+                {{errorMessagemodal}}
+              </div>
+            </div>
+          </div>
+        <div class="row addClass">
+          <div class="col-sm-10 col-md-5">
+            <div class="form-group">
+              <label>Lead Name</label>
+              <input type="text" class="form-control" placeholder="{{leadDetails.name}}" readonly>
+            </div>
+          </div>
+          <div class="col-sm-10 col-md-5">
+            <div class="form-group">
+              <label>Lead Contact</label>
+              <input type="text" class="form-control" value="{{leadDetails.contact}}" [(ngModel)]="leadContact">
+            </div>
+          </div>
+          <div class="col-sm-10 col-md-5">
+            <div class="form-group">
+              <label>Date Of Acquisition (dd-mm-yyyy)</label>
+              <input type="text" class="form-control" placeholder="{{leadDetails.created_at}}" readonly>
+            </div>
+          </div>
+          <div class="col-sm-10 col-md-5">
+            <div class="form-group">
+              <label>Lead Source</label>
+              <input type="text" class="form-control" placeholder="{{leadDetails.lead_source | replaceChar}}" readonly>
+            </div>
+          </div>
+          <div class="col-sm-10 col-md-5">
+            <div class="form-group">
+              <label>Lead Role</label>
+              <input type="text" class="form-control" placeholder="{{leadDetails.user_type}}" readonly>
+            </div>
+          </div>
+          <div class="col-sm-10 col-md-5">
+            <div class="form-group">
+              <label>Lead Status</label>
+              <input type="text" class="form-control" placeholder="{{leadDetails.lead_status | replaceChar}}" readonly>
+            </div>
+          </div>
+          <div class="col-sm-10 col-md-5">
+            <div class="form-group" *ngIf="leadDetails.lead_status=='follow_up'">
+              <label>Follow up time</label>
+              <input type="text" class="form-control" placeholder="{{leadDetails.follow_up_time | date:'dd/MM/yyyy @ h:mma'}}" readonly>
+            </div>
+          </div>
+          <div class="col-sm-10 col-md-5">
+             <div class="form-group" *ngIf="leadDetails.lead_status=='lost'">
+              <label>Remarks</label>
+              <input type="text" class="form-control" placeholder="{{leadDetails.lost_remark}}" readonly>
+            </div>
+          </div>
+          <div class="col-sm-10 col-md-5">
+            <div class="form-group">
+              <label>Lead Email</label>
+              <input type="text" class="form-control" value="{{leadDetails.email}}" [(ngModel)]="leadEmail">
+            </div>
+          </div>
+          <div class="col-sm-10 col-md-5">
+            <div class="form-group">
+              <label>Pincode</label>
+              <input type="text" class="form-control" placeholder="{{leadDetails.pincode}}" readonly>
+            </div>
+          </div>
+          <div class="col-10">
+            <div class="form-group">
+              <form [formGroup]="leadStatusUpdateForm">
+                <div class="row">
+                  <div class="col-6">
+                    <label>Change Status</label>
+                    <select class="form-control" (change)="setLeadStatus($event.target.value)" formControlName="lead_status">
+                      <option value="" disabled [selected]="leadDetails.lead_status !='qualified' && leadDetails.lead_status!='follow_up' && leadDetails.lead_status!='lost' && leadDetails.lead_status!='not_contactable'">Select Status</option>
+                      <!-- <option value="not_attempted">Not Attempted</option> -->
+                      <!-- <option value="not_claimed">Not Claimed</option> -->
+                      <option value="qualified" [selected]="leadDetails.lead_status=='qualified'">Qualified</option>
+                      <option value="follow_up" [selected]="leadDetails.lead_status=='follow_up'">Follow Up</option>
+                      <option value="lost" [selected]="leadDetails.lead_status=='lost'">Lost</option>
+                      <option value="not_contactable" [selected]="leadDetails.lead_status=='not_contactable'">Not Contactable</option>
+                      <!-- <option value="lost_after_5_tries">Lost after 5 Tries</option> -->
+                    </select>
+                  </div>
+                  <div class="col-6" id="datetime" style="display: none;">
+                    <div class="form-group">
+                      <label>Follow up time</label>
+                      <input class="form-control" type="datetime-local" formControlName="follow_up_time">
+                    </div>
+                  </div>
+                  <div class="col-6" style="display: none;" id="lostremark">
+                    <div class="form-group">
+                      <label >Remarks</label>
+                      <textarea class="form-control" rows="2" formControlName="lost_remark"></textarea>
+                    </div>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <button class="button_emi" (click)="updateStatus(leadStatusUpdateForm.value,leadDetails.id)" [disabled]="!leadStatusUpdateForm.valid">Update</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="row QualificationDiv addClass1 hideClass">
+          <!-- <div class="col-12" *ngIf="erroralertmodal">
+            <div class="alert-box grid-100" *ngIf="errorMessagemodal">
+              <div class="alert alert-danger mt-3 text-center">
+                <a class="close link" data-dismiss="alert" (click)="erroralertmodal=false">×</a>
+                {{errorMessagemodal}}
+              </div>
+            </div>
+          </div>
+          <div class="col-12" *ngIf="successalertmodal">
+            <div class="alert-box grid-100" *ngIf="successMessagemodal">
+              <div class="alert alert-success mt-3 text-center">
+                <a class="close link" data-dismiss="alert" (click)="successalertmodal=false">×</a>
+                {{successMessagemodal}}
+              </div>
+            </div>
+          </div> -->
+          <form [formGroup]="leadquestionnaire" (ngSubmit)="postRecordNotesQuestionnaire(leadDetails.id,leadquestionnaire.value);" *ngIf="note_records && note_records.length == 0 && leadDetails && leadDetails.user_type =='customer'">
+            <div class="row justify-content-center">
+              <div class="col-11">
+                <div class="row">
+                  <div class="col-sm-10 col-md-5">
+                    <div class="form-group">
+                      <label class="customLabel">Project Name</label>
+                      <input type="text" class="form-control" placeholder="Your answer" formControlName="project_name">
+                    </div>
+                  </div>
+
+                  <div class="col-sm-10 col-md-5">
+                    <label class="customLabel">Call Back Day <span>*</span></label>
+                    <div class="form-check">
+                      <input type="date" name="" formControlName="call_back_day" class="form-control">
+                    </div>
+                  </div>
+
+                  <div class="col-sm-10 col-md-5">
+                    <label class="customLabel">Call Back Time <span>*</span></label>
+                    <div class="form-check">
+                      <select formControlName="call_back_time" class="form-control">
+                        <option value="" disabled>Choose</option>
+                        <option value="10:00 AM">10:00 AM</option>
+                        <option value="10:30 AM">10:30 AM</option>
+                        <option value="11:00 AM">11:00 AM</option>
+                        <option value="11:30 AM">11:30 AM</option>
+                        <option value="12:00 PM">12:00 PM</option>
+                        <option value="12:30 PM">12:30 PM</option>
+                        <option value="1:00 PM">1:00 PM</option>
+                        <option value="1:30 PM">1:30 PM</option>
+                        <option value="2:00 PM">2:00 PM</option>
+                        <option value="2:30 PM">2:30 PM</option>
+                        <option value="3:00 PM">3:00 PM</option>
+                        <option value="3:30 PM">3:30 PM</option>
+                        <option value="4:00 PM">4:00 PM</option>
+                        <option value="4:30 PM">4:30 PM</option>
+                        <option value="5:00 PM">5:00 PM</option>
+                        <option value="5:30 PM">5:30 PM</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-10 col-md-5">
+                    <div class="form-group">
+                      <label class="customLabel">Location <span>*</span></label>
+                      <input type="text" class="form-control" placeholder="Your answer" formControlName="location">
+                    </div>
+                  </div>
+
+                  <div class="col-sm-10 col-md-10 mt-4">
+                    <label class="customLabel">City <span>*</span></label>
+                    <div class="form-check">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="Mumbai" formControlName="city">
+                        Mumbai
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="Pune" formControlName="city">
+                        Pune
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="Ahmedabad" formControlName="city">
+                        Ahmedabad
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="Other" formControlName="city">
+                        Other:
+                      </label>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-10 col-md-10 mt-4">
+                    <label class="customLabel">Project Type <span>*</span></label>
+                    <div class="form-check">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="Residential" formControlName="project_type">
+                        Residential
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="Offices" formControlName="project_type">
+                        Offices
+                      </label>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-10 col-md-10 mt-4">
+                    <label class="customLabel">Type of Accommodation <span>*</span></label>
+                    <div class="form-check">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="Studio Apartment" formControlName="accomodation_type">
+                        Studio Apartment
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="1RK" formControlName="accomodation_type">
+                        1RK
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="1BHK" formControlName="accomodation_type">
+                        1BHK
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="1.5BHK" formControlName="accomodation_type">
+                        1.5BHK
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="2BHK" formControlName="accomodation_type">
+                        2BHK
+                      </label>
+                       <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="2.5BHK" formControlName="accomodation_type">
+                        2.5BHK
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="3BHK" formControlName="accomodation_type">
+                        3BHK
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="3.5BHK" formControlName="accomodation_type">
+                        3.5BHK
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="4BHK" formControlName="accomodation_type">
+                        4BHK
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="4.5BHK" formControlName="accomodation_type">
+                        4.5BHK
+                      </label>
+                       <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="5BHK" formControlName="accomodation_type">
+                        5BHK
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="Villa" formControlName="accomodation_type">
+                        Villa
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="Bungalow" formControlName="accomodation_type">
+                        Bungalow
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="Office Space" formControlName="accomodation_type">
+                        Office Space
+                      </label>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-10 col-md-10 mt-4">
+                    <label class="customLabel">Scope of work <span>*</span></label>
+                    <div class="form-check">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="checkbox" value="Complete interiors (e.g. Tiling/Ceiling/Painting)" (change)="onCheckChange($event,'scope_of_work')">
+                        Complete interiors (e.g. Tiling/Ceiling/Painting)
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="checkbox" value="Renovation of specific area like Kitchen/Wardrobe" (change)="onCheckChange($event,'scope_of_work')">
+                        Renovation of specific area like Kitchen/Wardrobe
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="checkbox" value="Full House Furniture" (change)="onCheckChange($event,'scope_of_work')">
+                        Full House Furniture
+                      </label>
+                      <label class="form-check-label">
+                        <input type="checkbox" class="form-check-input" value="Modular Kitchen" (change)="onCheckChange($event,'scope_of_work')">
+                        Modular Kitchen
+                      </label>
+                      <label class="form-check-label">
+                        <input type="checkbox" class="form-check-input" value="Modular Wardrobe" (change)="onCheckChange($event,'scope_of_work')">
+                        Modular Wardrobe
+                      </label>
+                      <label class="form-check-label">
+                        <input type="checkbox" class="form-check-input" value="Loose Furniture" (change)="onCheckChange($event,'scope_of_work')">
+                        Loose Furniture
+                      </label>
+                      <label class="form-check-label">
+                        <input type="checkbox" class="form-check-input" value="Remarks" (change)="onCheckChange($event,'scope_of_work')">Remarks <input type="text" class="ml-2" formControlName="remarks_of_sow" placeholder="Enter Remarks Here">
+                      </label>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-10 col-md-10 mt-4">
+                    <label class="customLabel">Possession status <span>*</span></label>
+                    <div class="form-check">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="Possession Taken" formControlName="possession_status" (click)="possesionStatusSelected('Possession Taken','leadQuestionnaire')">
+                        Possession Taken
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="Awaiting Possession" formControlName="possession_status" (click)="possesionStatusSelected('Awaiting Possession','leadQuestionnaire')">
+                        Awaiting Possession (If Yes, please fill the date of possession below on "other")
+                      </label>
+                    </div>
+                  </div>
+                  <div class="col-sm-10 col-md-5 mt-4" id="possesiondate" style="display: none;">
+                    <label class="customLabel">Select Possession Month and Year <span>*</span></label>
+                    <div class="form-check"><input class="form-check-input form-control ml-2" type="date" formControlName="possession_status_date"></div>
+                  </div>
+                  <div class="col-sm-10 col-md-5 mt-4">
+                    <div class="form-group">
+                      <label class="customLabel">Home Value(In Rs Lacs)</label>
+                      <input type="number" class="form-control" placeholder="Home value" formControlName="home_value" (keydown)="numberCheck($event)">
+                    </div>
+                  </div>
+                  <div class="col-sm-10 col-md-5 mt-4">
+                    <div class="form-group">
+                      <label class="customLabel">Budget Value(In Rs Lacs)</label>
+                      <input type="number" class="form-control" placeholder="Budget value" formControlName="budget_value" (keydown)="numberCheck($event)">
+                    </div>
+                  </div>
+                  <div class="col-sm-10 col-md-10 mt-4">
+                    <label class="customLabel">Do you have a home loan against the property? <span>*</span></label>
+                    <div class="form-check">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="Yes" formControlName="have_homeloan">
+                        Yes
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="No" formControlName="have_homeloan">
+                        No
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="Doesn't want to disclose" formControlName="have_homeloan">
+                        Doesn't want to disclose
+                      </label>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-10 col-md-10 mt-4">
+                    <label class="customLabel">Do you have a floor plan? <span>*</span></label>
+                    <div class="form-check">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="Yes" formControlName="have_floorplan" (click)="fpQuestionnaireSelected('yes')">
+                        Yes
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="No" formControlName="have_floorplan" (click)="fpQuestionnaireSelected('no')">
+                        No
+                      </label>
+                    </div>
+                  </div>
+                  <div class="col-sm-10 col-md-10 mt-4" id="floorplanQuestionnaire" style="display: none;">
+                    <label class="customLabel">Upload Floorplan</label>
+                    <div class="form-check">
+                      <input class="form-control" type="file" (change)="onQuestionnaireFloorplanChange($event)" name="floorplan_attachment_file" ngModel #floorplan_attachment_file="ngModel" [ngModelOptions]="{standalone: true}">
+                    </div>
+                    <p id="extErrorMsg" class="text-danger d-none col-sm-10">Check File extension (File should be in proper image format).</p>
+                    <p class="col-sm-10">Note* - only image files are allowed.  </p>
+                  </div>
+                  <div class="col-sm-10 col-md-5 mt-4">
+                    <label class="customLabel">Additional Comments</label>
+                    <div class="form-check">
+                      <textarea rows="2" class="form-control" formControlName="additional_comments"></textarea>          
+                    </div>
+                  </div>
+                  <!-- <div class="col-sm-12 col-md-12 mt-4 ml-0">
+                      <div class="form-group col-md-12">
+                          <button type="button" class="btn btn-pink addCursor" (click)="addAlternateNumberForm()">Add Alternate Number List Lead</button>
+                      </div>
+                      <div *ngIf="showAlternateForm">
+                      <div *ngFor="let field of fields" class="col-6 d-inline-block mb-3">
+                          <app-dynamic-form [field]="field" [form]="alternateNumberForm"></app-dynamic-form>
+                      </div>
+                    </div>
+                    </div> -->
+                  <div class="col-sm-12 col-md-12">
+                      <button type="submit" class="mt-4 button_emi" [disabled]="!leadquestionnaire.valid">Submit</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+
+          <!-- update lead questionnaire-->
+           <form [formGroup]="updateLeadquestionnaireForm" (ngSubmit)="updateRecordNotesQuestionnaire(leadDetails.id,updateLeadquestionnaireForm.value);" *ngIf="note_records && note_records.length != 0 && leadDetails && leadDetails.user_type =='customer'">
+            <div class="row justify-content-center">
+              <div class="col-11">
+                <div class="row">
+
+                  <div class="col-sm-10 col-md-5">
+                    <div class="form-group">
+                      <label class="customLabel">Customer Name<span>*</span></label>
+                      <input type="text" class="form-control" formControlName="customer_name">
+                    </div>
+                  </div>
+
+                  <div class="col-sm-10 col-md-5">
+                    <div class="form-group">
+                      <label class="customLabel">Customer Phone No<span>*</span></label>
+                      <input type="number" class="form-control" formControlName="phone">
+                    </div>
+                  </div>
+
+                  <div class="col-sm-10 col-md-5">
+                    <div class="form-group">
+                      <label class="customLabel">Project Name</label>
+                      <input type="text" class="form-control" formControlName="project_name">
+                    </div>
+                  </div>
+
+                  <div class="col-sm-10 col-md-5">
+                    <label class="customLabel">Call Back Day <span>*</span></label>
+                    <div class="form-check">
+                      <input type="date" name="" formControlName="call_back_day" class="form-control">
+                    </div>
+                  </div>
+
+                  <div class="col-sm-10 col-md-5">
+                    <label class="customLabel">Call Back Time <span>*</span></label>
+                    <div class="form-check">
+                      <select formControlName="call_back_time" class="form-control">
+                        <option value="" disabled>Choose</option>
+                        <option value="10:00 AM">10:00 AM</option>
+                        <option value="10:30 AM">10:30 AM</option>
+                        <option value="11:00 AM">11:00 AM</option>
+                        <option value="11:30 AM">11:30 AM</option>
+                        <option value="12:00 PM">12:00 PM</option>
+                        <option value="12:30 PM">12:30 PM</option>
+                        <option value="1:00 PM">1:00 PM</option>
+                        <option value="1:30 PM">1:30 PM</option>
+                        <option value="2:00 PM">2:00 PM</option>
+                        <option value="2:30 PM">2:30 PM</option>
+                        <option value="3:00 PM">3:00 PM</option>
+                        <option value="3:30 PM">3:30 PM</option>
+                        <option value="4:00 PM">4:00 PM</option>
+                        <option value="4:30 PM">4:30 PM</option>
+                        <option value="5:00 PM">5:00 PM</option>
+                        <option value="5:30 PM">5:30 PM</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-10 col-md-5">
+                    <div class="form-group">
+                      <label class="customLabel">Location<span>*</span></label>
+                      <input type="text" class="form-control" placeholder="Your answer" formControlName="location">
+                    </div>
+                  </div>
+
+                  <div class="col-sm-10 col-md-10 mt-4">
+                    <label class="customLabel">City<span>*</span></label>
+                    <div class="form-check">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="Mumbai" formControlName="city">
+                        Mumbai
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="Pune" formControlName="city">
+                        Pune
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="Ahmedabad" formControlName="city">
+                        Ahmedabad
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="Other" formControlName="city">
+                        Other:
+                      </label>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-10 col-md-10 mt-4">
+                    <label class="customLabel">Project Type<span>*</span></label>
+                    <div class="form-check">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="Residential" formControlName="project_type">
+                        Residential
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="Offices" formControlName="project_type">
+                        Offices
+                      </label>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-10 col-md-10 mt-4">
+                    <label class="customLabel">Type of Accommodation<span>*</span></label>
+                    <div class="form-check">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="Studio Apartment" formControlName="accomodation_type">
+                        Studio Apartment
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="1RK" formControlName="accomodation_type">
+                        1RK
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="1BHK" formControlName="accomodation_type">
+                        1BHK
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="1.5BHK" formControlName="accomodation_type">
+                        1.5BHK
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="2BHK" formControlName="accomodation_type">
+                        2BHK
+                      </label>
+                       <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="2.5BHK" formControlName="accomodation_type">
+                        2.5BHK
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="3BHK" formControlName="accomodation_type">
+                        3BHK
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="3.5BHK" formControlName="accomodation_type">
+                        3.5BHK
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="4BHK" formControlName="accomodation_type">
+                        4BHK
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="4.5BHK" formControlName="accomodation_type">
+                        4.5BHK
+                      </label>
+                       <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="5BHK" formControlName="accomodation_type">
+                        5BHK
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="Villa" formControlName="accomodation_type">
+                        Villa
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="Bungalow" formControlName="accomodation_type">
+                        Bungalow
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="Office Space" formControlName="accomodation_type">
+                        Office Space
+                      </label>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-10 col-md-10 mt-4">
+                    <label class="customLabel">Scope of work<span>*</span></label>
+                    <div class="form-check">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="checkbox" value="Complete interiors (e.g. Tiling/Ceiling/Painting)" (change)="onCheckChange($event,'scope_of_work')" [checked]="(note_records[0] && note_records[0]['scope_of_work']!=null && note_records[0]['scope_of_work'].indexOf('Complete interiors (e.g. Tiling/Ceiling/Painting)') >=0) || (note_records && note_records['scope_of_work']!=null && note_records['scope_of_work'].indexOf('Complete interiors (e.g. Tiling/Ceiling/Painting)') >=0)">
+                        Complete interiors (e.g. Tiling/Ceiling/Painting)
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="checkbox" value="Renovation of specific area like Kitchen/Wardrobe" (change)="onCheckChange($event,'scope_of_work')" [checked]="(note_records[0] && note_records[0]['scope_of_work']!=null && note_records[0]['scope_of_work'].indexOf('Renovation of specific area like Kitchen/Wardrobe') >=0) || (note_records && note_records['scope_of_work']!=null && note_records['scope_of_work'].indexOf('Renovation of specific area like Kitchen/Wardrobe') >=0)">
+                        Renovation of specific area like Kitchen/Wardrobe
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="checkbox" value="Full House Furniture" (change)="onCheckChange($event,'scope_of_work')" [checked]="(note_records[0] && note_records[0]['scope_of_work']!=null && note_records[0]['scope_of_work'].indexOf('Full House Furniture') >=0) || (note_records && note_records['scope_of_work']!=null && note_records['scope_of_work'].indexOf('Full House Furniture') >=0)">
+                        Full House Furniture
+                      </label>
+                      <label class="form-check-label">
+                        <input type="checkbox" class="form-check-input" value="Modular Kitchen" (change)="onCheckChange($event,'scope_of_work')" [checked]="(note_records[0] && note_records[0]['scope_of_work']!=null && note_records[0]['scope_of_work'].indexOf('Modular Kitchen') >=0 )|| (note_records && note_records['scope_of_work']!=null && note_records['scope_of_work'].indexOf('Modular Kitchen') >=0)">
+                        Modular Kitchen
+                      </label>
+                      <label class="form-check-label">
+                        <input type="checkbox" class="form-check-input" value="Modular Wardrobe" (change)="onCheckChange($event,'scope_of_work')" [checked]="(note_records[0] && note_records[0]['scope_of_work']!=null && note_records[0]['scope_of_work'].indexOf('Modular Wardrobe') >=0) || (note_records && note_records['scope_of_work']!=null && note_records['scope_of_work'].indexOf('Modular Wardrobe') >=0)">
+                        Modular Wardrobe
+                      </label>
+                      <label class="form-check-label">
+                        <input type="checkbox" class="form-check-input" value="Loose Furniture" (change)="onCheckChange($event,'scope_of_work')" [checked]="(note_records[0] && note_records[0]['scope_of_work']!=null && note_records[0]['scope_of_work'].indexOf('Loose Furniture') >=0) || (note_records && note_records['scope_of_work']!=null && note_records['scope_of_work'].indexOf('Loose Furniture') >=0)">
+                        Loose Furniture
+                      </label>
+                      <label class="form-check-label">
+                        <input type="checkbox" class="form-check-input" value="Remarks" (change)="onCheckChange($event,'scope_of_work')" [checked]="(note_records[0] && note_records[0]['scope_of_work']!=null && note_records[0]['scope_of_work'].indexOf('Remarks') >=0) || (note_records && note_records['scope_of_work']!=null && note_records['scope_of_work'].indexOf('Remarks') >=0)">Remarks <input type="text" class="ml-2" formControlName="remarks_of_sow" placeholder="Enter Remarks Here">
+                      </label>
+                     <!--  <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="Other" formControlName="scope_of_work">
+                        Other:
+                      </label> -->
+                    </div>
+                  </div>
+
+                  <div class="col-sm-10 col-md-10 mt-4">
+                    <label class="customLabel">Possession status<span>*</span></label>
+                    <div class="form-check">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="Possession Taken" formControlName="possession_status" (click)="possesionStatusSelected('Possession Taken','updateQuestionnaire')">
+                        Possession Taken
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="Awaiting Possession" formControlName="possession_status" (click)="possesionStatusSelected('Awaiting Possession','updateQuestionnaire')">
+                        Awaiting Possession (If Yes, please fill the date of possession below on "other")
+                      </label>
+                      <!-- <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="Other" formControlName="possession_status">
+                        Other:
+                      </label> -->
+                    </div>
+                  </div>
+
+                  <div class="col-sm-10 col-md-5 mt-4 possesiondateupdateClass" id="possesiondateupdate" *ngIf="note_records[0]['possession_status']=='Awaiting Possession' || updateLeadquestionnaireForm.controls['possession_status'].value=='Awaiting Possession'">
+                    <label class="customLabel">Select Possession Month and Year <span>*</span></label>
+                    <div class="form-check"><input class="form-check-input form-control ml-2" type="date" formControlName="possession_status_date"></div>
+                  </div>
+                  <div class="col-sm-10 col-md-5 mt-4">
+                    <div class="form-group">
+                      <label class="customLabel">Home Value(In Rs. Lacs)</label>
+                      <input type="number" class="form-control" placeholder="Home value" formControlName="home_value" (keydown)="numberCheck($event)">
+                    </div>
+                  </div>
+                  <div class="col-sm-10 col-md-5 mt-4">
+                    <div class="form-group">
+                      <label class="customLabel">Budget Value(In Rs. Lacs)</label>
+                      <input type="number" class="form-control" placeholder="Budget value" formControlName="budget_value" (keydown)="numberCheck($event)">
+                    </div>
+                  </div>
+
+                  <div class="col-sm-10 col-md-10 mt-4">
+                    <label class="customLabel">Do you have a home loan against the property?<span>*</span></label>
+                    <div class="form-check">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="Yes" formControlName="have_homeloan">
+                        Yes
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="No" formControlName="have_homeloan">
+                        No
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="Doesn't want to disclose" formControlName="have_homeloan">
+                        Doesn't want to disclose
+                      </label>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-10 col-md-10 mt-4">
+                    <label class="customLabel">Do you have a floor plan?<span>*</span></label>
+                    <div class="form-check">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="Yes" formControlName="have_floorplan" (click)="fpQuestionnaireSelected('yes')">
+                        Yes
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="No" formControlName="have_floorplan" (click)="fpQuestionnaireSelected('no')">
+                        No
+                      </label>
+                    </div>
+                  </div>
+                  <div class="col-sm-10 col-md-10 mt-4" *ngIf="updateLeadquestionnaireForm.controls['lead_floorplan'].value != '/images/original/missing.png' && updateLeadquestionnaireForm.controls['have_floorplan'].value=='Yes'">
+                    <label class="customLabel">Uploaded Floorplan</label>
+                    <div class="form-check">
+                      <a href="{{updateLeadquestionnaireForm.controls['lead_floorplan'].value}}" target="_blank"  style="color: #007bff">View Floorplan </a>
+                    </div>
+                  </div>
+                  <div class="col-sm-10 col-md-10 mt-4" *ngIf="updateLeadquestionnaireForm.controls['lead_floorplan'].value == '/images/original/missing.png' && updateLeadquestionnaireForm.controls['have_floorplan'].value=='Yes'">
+                    <label class="customLabel">Uploaded Floorplan</label>
+                    <div class="form-check">
+                      <span class="text-danger">Floorplan Not Available</span>
+                    </div>
+                  </div>
+                  <div class="col-sm-10 col-md-10 mt-4" id="floorplanQuestionnaire" *ngIf=" updateLeadquestionnaireForm.controls['have_floorplan'].value=='Yes'">
+                      <label class="customLabel">Update Floorplan</label>
+                      <div class="form-check">
+                        <input class="form-control" type="file" (change)="onQuestionnaireFloorplanChange($event)" name="floorplan_attachment_file" ngModel #floorplan_attachment_file="ngModel" [ngModelOptions]="{standalone: true}">
+                      </div>
+                      <p id="extErrorMsg" class="text-danger d-none col-sm-10">Check File extension (File should be in proper image format).</p>
+                      <p class="col-sm-10">Note* - only image files are allowed.  </p>
+                  </div>
+
+                  <div class="col-sm-10 col-md-5 mt-4">
+                    <label class="customLabel">Additional Comments</label>
+                    <div class="form-check">
+                      <textarea rows="2" class="form-control" formControlName="additional_comments"></textarea>          
+                    </div>
+                  </div>
+                  <!-- <div class="col-sm-12 col-md-12 mt-4 ml-0">
+                      <div class="form-group col-md-12">
+                          <button type="button" class="btn btn-pink addCursor" (click)="addAlternateNumberForm()">Add Alternate Number List Lead Update</button>
+                      </div>
+                      <div *ngIf="showAlternateForm">
+                      <div *ngFor="let field of fields" class="col-6 d-inline-block mb-3">
+                          <app-dynamic-form [field]="field" [form]="alternateNumberForm"></app-dynamic-form>
+                      </div>
+                    </div>
+                    </div> -->
+                  <div class="col-sm-12 col-md-12">
+                    <button class="mt-4 button_emi" type="submit" [disabled]="!updateLeadquestionnaireForm.valid">Update</button>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add lead modal -->
+<div class="modal fade customModal" id="addNewLeadModal" tabindex="-1" role="dialog" aria-labelledby="addNewLeadModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <form (ngSubmit)="addLeadFormSubmit(addLeadForm.value);" [formGroup]="addLeadForm" class="form-horizontal" enctype="multipart/form-data">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add Lead</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="addLeadForm.reset(); addLeadForm.controls['user_type'].setValue(''); ">
+          <!-- <span aria-hidden="true">&times;</span> -->
+          <img class="close" data-dismiss="modal" src="https://www.homepolish.com/assets/close-ee1bfd7a4473933b6dd934b2c284dc856361b63581c8f43b8cdc1abe07c91765.svg">
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-12" *ngIf="erroralertmodal">
+            <div class="alert-box grid-100" *ngIf="errorMessagemodal">
+              <div class="alert alert-danger mt-3 text-center">
+                <a class="close link" data-dismiss="alert" (click)="erroralertmodal=false">×</a>
+                {{errorMessagemodal}}
+              </div>
+            </div>
+          </div>
+          <div class="col-12" *ngIf="successalertmodal">
+            <div class="alert-box grid-100" *ngIf="successMessagemodal">
+              <div class="alert alert-success mt-3 text-center">
+                <a class="close link" data-dismiss="alert"  (click)="successalertmodal=false">×</a>
+                {{successMessagemodal}}
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-10 col-md-5">
+            <div class="form-group">
+              <label class="text-left">Name <span>*</span></label>
+              <input type="text" class="form-control" name="name" placeholder="Enter Lead Name" formControlName="name" required>
+              <div *ngIf="addLeadForm.controls['name'].errors && !addLeadForm.controls['name'].pristine" class="text-danger">
+                <div [hidden]="!addLeadForm.controls['name'].errors.required">Name is required.</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-10 col-md-5">
+            <div class="form-group">
+              <label class="text-left">Contact <span>*</span></label>
+              <input type="number" class="form-control" name="contact" placeholder="Enter Lead Contact" formControlName="contact" required min="0" (keydown)="numberCheck($event)">
+              <div *ngIf="addLeadForm.controls['contact'].errors && !addLeadForm.controls['contact'].pristine" class="text-danger">
+                <div [hidden]="!addLeadForm.controls['contact'].errors.required">Contact is required.</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-10 col-md-5">
+            <div class="form-group">
+              <label class="text-left">Pincode</label>
+              <input type="number" class="form-control" name="pincode" placeholder="Enter Lead Pincode" formControlName="pincode" min="0" (keydown)="numberCheck($event)">
+            </div>
+          </div>
+          <div class="col-sm-10 col-md-5">
+            <div class="form-group">
+              <label class="text-left">Email <span>*</span></label>
+              <input type="text" class="form-control" name="email" placeholder="Enter Lead Email" formControlName="email" required>
+              <div *ngIf="addLeadForm.controls['email'].errors && !addLeadForm.controls['email'].pristine" class="text-danger">
+                <div [hidden]="!addLeadForm.controls['email'].errors.required">Email is required.</div>
+                <div [hidden]="addLeadForm.controls['email'].valid || addLeadForm.controls['email'].errors.required">Enter valid email.</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-10 col-md-5">
+            <div class="form-group">
+              <label class="text-left">Select User Type <span>*</span></label>
+              <select formControlName="user_type" class="form-control">
+                <option value="" disabled>Select User Type</option>
+                <option value="customer">Customer</option>
+                <option value="designer">Designer</option>
+                <option value="broker">Broker</option>
+                <option value="manufacturer">Manufacturer</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-sm-10 col-md-5">
+            <div class="form-group">
+              <label class="text-left">Select Lead <span>*</span></label>
+              <select formControlName="lead_source" class="form-control">
+                <option value="" disabled>Select Lead Source</option>
+                <option value="weddingz_team">Weddingz Team</option>
+                <option value="hfc">HFC</option>
+                <option value="broker">Broker</option>
+                <option value="housing_finance">Housing Finance</option>
+                <option value="digital_marketing">Digital Marketing</option>
+                <option value="referral">Referral</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-sm-10 mt-5 text-right">
+            <div class="mt-3">
+            <button type="submit" class="button" [disabled]="!addLeadForm.valid">Add</button>
+            <button class="cancel ml-3" data-dismiss="modal">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,109 @@
+<div class="row">
+
+<div class="marginTop row">
+  <div class="col-12" *ngIf="erroralert">
+  	<div class="alert-box grid-100" *ngIf="errorMessage">
+  		<div class="alert alert-danger mt-3 text-center">
+  			<a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a>
+  			{{errorMessage}}
+  		</div>
+  	</div>
+  </div>
+  <div class="col-12" *ngIf="successalert">
+  	<div class="alert-box grid-100" *ngIf="successMessage">
+  		<div class="alert alert-success mt-3 text-center">
+  			<a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+  			{{successMessage}}
+  		</div>
+  	</div>
+  </div>
+</div>
+    <div class="col-md-12">
+        <div class="card" *ngIf="onboardobj">
+            <div class="card-header card-header-icon" data-background-color="orange">
+                <i class="material-icons">perm_identity</i>
+            </div>
+            <div class="card-content">
+                <h4 class="card-title">
+                    View Details
+                </h4>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group label-floating">
+                                <label class="control-label">bowl_type</label>
+                                {{onboardobj.bowl_type}}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group label-floating">
+                                <label class="control-label">chimney</label>
+                                {{onboardobj.chimney}}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group label-floating">
+                                <label class="control-label">chimney_type</label>
+                                {{onboardobj.chimney_type}}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group label-floating">
+                                <label class="control-label">cleaning_frequency</label>
+                                {{onboardobj.cleaning_frequency}}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group label-floating">
+                                <label class="control-label">drain_board</label>
+                                {{onboardobj.drain_board}}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group label-floating">
+                                <label class="control-label">family_size</label>
+                                {{onboardobj.family_size}}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group label-floating">
+                                <label class="control-label">dustbin</label>
+                                {{onboardobj.dustbin}}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group label-floating">
+                                <label class="control-label">food</label>
+                                {{onboardobj.food}}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group label-floating">
+                                <label class="control-label">food_type</label>
+                                {{onboardobj.food_type}}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group label-floating">
+                                <label class="control-label">hob</label>
+                                {{onboardobj.hob}}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group label-floating">
+                                <label class="control-label">habit</label>
+                                {{onboardobj.habit}}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group label-floating">
+                                <label class="control-label">light</label>
+                                {{onboardobj.light}}
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+
+</div>

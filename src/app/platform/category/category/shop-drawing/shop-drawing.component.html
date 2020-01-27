@@ -1,0 +1,72 @@
+<div class="row ss-top-menu">
+  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6">
+    <span class="ss-text-light ss-link" style="vertical-align: -webkit-baseline-middle;" [routerLink]="['/']">Dashboard</span> 
+    <span style="vertical-align: -webkit-baseline-middle;"><i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-link" style="vertical-align: -webkit-baseline-middle;">Projects</span>
+  </div>
+</div>
+<div class="row px-4">
+
+	 <div class="col-12">
+		<div class="row mb-5">
+			<div class="col-md-12  pb-3">
+				<div class="row mt-4">
+
+					<div class="col-md-12" >
+						<div class="tableDiv " >
+							<div class="table-responsive">
+								<table class="table ">
+										<thead class="thead-dark">
+												<tr>
+												<th scope="col" class="firstTh">#</th>
+												<th scope="col">PROJECT NAME</th>
+												<th scope="col">PROJECT ID</th>
+												<th scope="col">LEAD NAME</th>
+												<th scope="col">LEAD ID</th>
+												<th scope="col">DESIGNER ASSIGNED</th>
+												<th scope="col">COMMUNITY MANAGER</th>
+												<th class="lastTh"></th>
+												</tr>
+										</thead>
+										<tbody lass="ss-tbody">
+											<tr *ngFor="let obj of project_list; let i = index" [attr.data-index]="i">
+												<td style="min-width: 1rem;">{{i+1}}</td>
+												<td  class="capitalize">
+													<a class="addCursor ss-link" href=""  [routerLink]="['/shop_drawing/projects/'+obj.id+'/boq-list']">{{obj.name}}</a>
+
+												</td>
+												<td style="min-width: 1rem;">{{obj.id}}</td>
+
+												<td style="min-width: 1rem;">
+													<span *ngIf="obj.user">{{obj.user.name}}</span>
+												</td>
+												<td style="min-width: 1rem;" class="capitalize">
+													<span *ngIf="obj.user">{{obj.user.id}}</span>
+												</td>
+												<td style="min-width: 1rem;" class="capitalize">
+													<span *ngIf="obj.designer">{{obj.designer.name}}</span>
+												</td>
+												<td style="min-width: 1rem;">
+													<span *ngIf="obj.community_manager">{{obj.community_manager.name}}</span>
+												</td>
+												<td></td>
+											</tr>
+
+										</tbody>
+								</table>
+								<!-- <p>{{paymentForm.value | json}}</p> -->
+							</div>
+						</div>          
+					</div> 
+					<div class="col-md-12 not-found " *ngIf="project_list && project_list.length== 0">
+						<div class="boq-img">
+							<img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+						</div>
+						<p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing to show...</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>

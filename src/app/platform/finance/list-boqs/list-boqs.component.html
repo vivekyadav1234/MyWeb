@@ -1,0 +1,359 @@
+<div class="row ss-top-menu">
+	<div class="col-xl-9 col-lg-9 col-md-9 col-sm-9 col-xs-9">
+		<span class="ss-text-light addCursor" routerLink="/">Dashboard <i class="rightArrow fa fa-angle-right"></i></span>
+    	<span class="ss-text-dark capitalize addCursor" *ngIf="projectName" routerLink="/">{{projectName}} <i class="rightArrow fa fa-angle-right"></i></span> 
+    	<span class="ss-text-dark capitalize addCursor" *ngIf="proposalName" routerLink="/project/{{project_id}}/list-proposals">{{proposalName | replaceChar}} <i class="rightArrow fa fa-angle-right"></i></span> 
+    	<span class="ss-text-dark capitalize ">List of Boqs</span> 
+  	</div>
+</div>
+<div class="rk-ui-notification" *ngIf="successalert">
+  <span id="notificationMessageText">{{successMessage}}</span>
+  <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+<div class="rk-ui-notification err" *ngIf="erroralert">
+  <span id="notificationMessageText">{{errorMessage}}</span>
+  <a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+
+<div id="navcontainer navcontainer-chnage" class="nav-chnage">
+    
+  <ul class="nav nav-tabs tabs-chng" id="myTab" role="tablist" >
+    <li class="nav-item nav-items">
+      <a class="nav-link active addCursor text-center mr-3" (click)="selectSet('boq')" [ngClass]="{'active': state == 'boq'}">BOQ</a>
+    </li>
+    <li class="nav-item nav-items">
+      <a class="nav-link  addCursor text-center mr-3" (click)="selectSet('payment')" [ngClass]="{'active': state == 'payment'}" >PAYMENTS</a>
+    </li>
+
+    <li class="nav-item nav-items">
+      <a class="nav-link active addCursor text-center mr-3" (click)="selectSet('initial_design')" [ngClass]="{'active': state == 'initial_design'}">Initial Design</a>
+    </li>
+    <li class="nav-item nav-items">
+      <a class="nav-link  addCursor text-center mr-3" (click)="selectSet('final_design')" [ngClass]="{'active': state == 'final_design'}" >Final Design</a>
+    </li>
+
+  </ul>
+</div>
+<div class="container-set">
+	<div class="row" tyle="padding: 16px" *ngIf="this.state == 'boq'">
+	    <div class="col-md-12">
+	      <div class="tableDiv table-responsive">
+	        <table class="table">
+	          <thead>
+	            <tr>
+	            	<th class="firstTh"></th>
+	              <th class="text-center">#</th>
+	              <th>Reference No.</th>
+	              <th>Created Date</th>
+	              <th>Last Updated</th>
+	              <th>Status</th>
+	              <!-- <th>Discounted Amount</th> -->
+	              <th>Total Amount</th>
+	              <th>Paid Amount</th>
+	              <th>Pending Amount</th>
+	              <th>Percent Discount</th>
+	              <th class="lastTh">Discount Status</th>
+	            </tr>
+	          </thead>
+	          <tbody>
+	          	<ng-container *ngFor="let proposal_doc of  proposaldocList; let i=index; ">
+		            <tr>
+		            	<td><i class="fa fa-dot-circle-o" style="color: green" *ngIf="proposal_doc.payment_varified==true"></i><i class="fa fa-dot-circle-o" style="color: red" *ngIf="proposal_doc.payment_varified==false"></i></td>
+		            	<td class="text-center ">{{i+1}} </td>
+	              	<td class="capitalize addCursor" style="color: blue;" (click)="downloadBoqCheatSheet(proposal_doc.id)">{{proposal_doc.reference_number}}</td>
+	              	<td class="">{{proposal_doc.created_at | date:'dd/MMM/yyy h:mm a'}}</td>
+	              	<td>{{proposal_doc.updated_at | date:'dd/MMM/yyy h:mm a'}}</td>
+	              	<td class="capitalize">{{proposal_doc.status}}</td>
+	              	<!-- <td class="capitalize minWidthForTd"><i class="fa fa-inr mr-1"></i>{{proposal_doc.final_amount }}</td> -->
+	              	<td class="minWidthForTd"><i class="fa fa-inr mr-1"></i> {{proposal_doc.net_amount  |  number : '1.2-2'}}</td>
+	              	<td class="minWidthForTd">
+                    <i class="fa fa-inr mr-1"></i>
+                    <span *ngIf="proposal_doc.paid_amount">{{proposal_doc.paid_amount  |  number : '1.2-2' }}</span>
+                    <span *ngIf="!proposal_doc.paid_amount">0</span>
+                  </td>
+	              	<td class="minWidthForTd"><i class="fa fa-inr mr-1"></i> {{ (proposal_doc.net_amount - proposal_doc.paid_amount)  |  number : '1.2-2' }} </td>
+	              	<td>
+                    <span *ngIf="proposal_doc.discount_value">{{proposal_doc.discount_value}}</span>
+                    <span *ngIf="!proposal_doc.discount_value">0</span>
+                  </td>
+	              	<td>{{proposal_doc.discount_status | replaceChar}}</td>
+		            </tr>
+
+				</ng-container>
+	          </tbody>
+	        </table>
+	      </div>
+	    </div>
+	</div>
+	<div class="row" tyle="padding: 16px" *ngIf="this.state == 'payment'">
+     <div class="col-md-12" *ngIf="payment_details_Arr && payment_details_Arr.length>0">
+       
+
+        <table class="table table-striped">
+
+          <thead class="thead-dark">
+
+            <tr>
+              <th scope="col" class="firstTh">#</th>
+              <th scope="col">DATE/DATE OF CHEQUE</th>
+              <th scope="col">PAYMENT MODE</th>
+              <th scope="col">PAID AMT<br><span>(by customer)</span></th>
+              <th scope="col"></th>
+              <th scope="col">TRANSACTION NUMBER</th>
+              <th scope="col">BANK NAME</th>
+              <th scope="col">BRANCH NAME</th>
+              <th scope="col">PAYMENT TYPE</th>
+              <th scope="col">IMAGE</th>
+              <th scope="col">STATUS</th>
+              <th scope="lastTh"></th>
+                
+            </tr>
+          </thead>
+         
+          <tbody>
+            <ng-container *ngFor="let history of payment_details_Arr; let i = index; " [attr.data-index]="i" >
+              <tr>
+                <td class="capitalize">{{ i +1 }}</td>
+                <td class="capitalize">
+                  <span *ngIf="history.date">{{history.date | date:'fullDate'}}</span>
+                  <span *ngIf="history.date_of_checque">{{history.date_of_checque}}</span>
+                </td>
+               
+                <td *ngIf="history.mode_of_payment != 'cheque' ">{{history.mode_of_payment}}</td>
+                <td *ngIf="history.mode_of_payment == 'cheque' "><a href="{{ history.image }}" target="_blank"  style="color: #007bff">{{history.mode_of_payment}} </a></td>
+                <!-- <td>{{payment.bank}}</td> -->
+                <td class="capitalize">
+                 <!--  <i class="fa fa-inr mr-1"></i> -->
+                  <span *ngIf="history.amount">
+                    {{ history.amount }}
+                    
+
+                  </span>
+                  <span *ngIf="!history.amount">0</span>
+                  <span  *ngIf="history.is_approved!=false && history.is_approved!=true && history.is_approved!='false' && history.is_approved!='true'"><i class="fa fa-pencil-square-o pencil" aria-hidden="true"  data-target="#editamountModal" data-toggle="modal" (click)="filterData(history.id,history.amount)"></i></span>
+                </td>
+                <td>
+
+              
+
+
+                </td>
+
+
+               
+                <td class="capitalize" *ngIf="history.mode_of_payment == 'NEFT/RTGS'">{{history.transaction_number}}</td>
+                <td class="capitalize" *ngIf="history.mode_of_payment != 'NEFT/RTGS'">N/A</td>
+                <td class="capitalize" *ngIf="history.mode_of_payment == 'cheque' ">{{history.bank}}</td>
+                <td class="capitalize" *ngIf="history.mode_of_payment != 'cheque' ">N/A</td>
+                <td class="capitalize" *ngIf="history.mode_of_payment == 'cheque' ">{{history.branch}}</td>
+                <td class="capitalize" *ngIf="history.mode_of_payment != 'cheque' ">N/A</td>
+                <td class="capitalize">{{history.payment_type | replaceChar}}</td>
+                <td>
+                  <a href="{{history.image}}" target="_blank" *ngIf="history.image != '/images/original/missing.png'">
+                    <img src="{{history.image}}" onError="this.src='../../../../assets/img/no_image.svg'" style = "max-width: 100px;">
+                  </a>
+                  <img src="{{history.image}}" onError="this.src='../../../../assets/img/no_image.svg'" style = "max-width: 100px;" *ngIf="history.image == '/images/original/missing.png'">
+
+                  <!-- <a href="{{history.image}}" target="_blank">
+                    <img src="{{history.image}}" onError="this.src='../../../../assets/img/no_image.svg'" style = "max-width: 100px;">
+                  </a> -->
+                  
+                </td>
+                <td class="capitalize" *ngIf="history.is_approved == true"><a data-trigger="hover" title="Remarks" [attr.data-content] ="history.remarks" class="pop approve-chnage" (mouseenter)="openpopup($event)">Approved</a></td>
+                <td class="capitalize" *ngIf="history.is_approved == false"><a data-trigger="hover" title="Remarks" [attr.data-content] ="history.remarks" class="pop reject-chnage" (mouseenter)="openpopup($event)">Rejected</a></td>
+                <td class="capitalize" *ngIf="history.is_approved!=false && history.is_approved!=true && history.is_approved!='false' && history.is_approved!='true'">Pending</td>
+                <td>
+    	            <div class="row" >
+    	              <div class="col-md-6" *ngIf="history.is_approved!=false && history.is_approved!=true && history.is_approved!='false' && history.is_approved!='true'">
+    	                <button type="button" class="btn btn-primary btn-sm btn-pink" data-toggle="modal" data-target="#approvePayment" (click)="setPaymentDocId(history.id)">Action</button>
+    	              </div>
+    	              
+    	              
+    	            </div>
+    	            
+    	        </td>
+    	    
+              </tr>
+              <!-- <collapsible-table-row-detail #detail1>
+                <table style="width:100%">
+                  <tr class="table-row font-weight-bold">
+                    <td scope="col">REF NO.</td>
+                    <td scope="col">LAST EDITED ON</td>
+                    <td scope="col">PRICE EXPIRY</td>
+                    <td scope="col">STATUS</td>
+                    <td scope="col">TOTAL AMOUNT</td>
+                  </tr>
+                  <tr *ngFor="let payment of payment_details ">
+                    <td class="capitalize">{{payment.reference_number}}</td>
+                    <td>{{payment.updated_at | date:'dd MMMM, y @ h:mma'}}</td>
+                    
+                    <td >{{payment.expiration_date}}</td>
+                    <td>{{payment.status}}</td>
+                    <td>
+                      <i class="fa fa-inr mr-1"></i>
+                      <span *ngIf="payment.net_amount">{{payment.net_amount  |  number : '1.2-2'}}</span>
+                      <span *ngIf="!payment.net_amount">0</span>
+                    </td>
+                    
+                  </tr>
+                </table>
+              </collapsible-table-row-detail>  -->
+            </ng-container>
+          </tbody>     
+        </table>
+	        
+       
+     </div>
+      <div class="col-md-12 not-found " *ngIf="payment_details_Arr && payment_details_Arr.length==0 ">
+          <div class="boq-img">
+            <img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+          </div>
+          <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing to show...</p>
+      </div>
+	</div>
+
+  <!-- 10 percent -->
+
+  <div class="row" tyle="padding: 16px" *ngIf="this.state == 'initial_design' || this.state == 'final_design'">
+      <div class="col-md-12" *ngIf="percentDocs && percentDocs.length>0">
+         
+
+        <table class="table table-striped">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col" class="firstTh">#</th>
+              <th scope="col">BOQ REFERENCE</th>
+              <th scope="col">PROJECT NAME</th>
+              <th scope="col">BOQ VALUE</th>
+              <th scope="col">PAYMENT RECEIVED</th>
+              <th scope="col">DUE AMOUNT(initial stage)</th>
+              <th scope="col">STATE</th>
+              <th scope="lastTh"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngFor="let quotation of percentDocs; let i = index; " [attr.data-index]="i" >
+              <tr >
+                <td class="capitalize">{{ i +1 }}</td>
+                <td class="capitalize">
+                  <span>{{quotation.reference_number}}</span>
+                </td>
+                <td>{{quotation.project_name}}</td>
+                <td >
+                  <i class="fa fa-inr mr-1"></i>
+                  <span *ngIf="quotation.total_amount">{{quotation.total_amount  |  number : '1.2-2'}}</span>
+                  <span *ngIf="!quotation.total_amount">0</span>
+                </td>
+                <td class="capitalize">
+                  <i class="fa fa-inr mr-1"></i>
+                  <span *ngIf="quotation.paid_amount">{{quotation.paid_amount  |  number : '1.2-2'}}</span>
+                  <span *ngIf="!quotation.paid_amount">0</span>
+                </td>
+                <td class="capitalize">
+                  <i class="fa fa-inr mr-1"></i>
+                  <span>{{calculatePendingAmt(state, quotation.total_amount, quotation.paid_amount)  |  number : '1.2-2'}}</span>
+                </td>
+                <td>
+                  <span *ngIf="quotation.last_payment_status == 'pending'">Pending</span>
+                  <span *ngIf="quotation.last_payment_status == true">Approved</span>
+                  <span *ngIf="quotation.last_payment_status == false">Rejected</span>
+                  <span *ngIf="quotation.last_payment_status == null">N/A</span>
+                </td>
+                <td>
+                  <div class="row" >
+                    <!-- <div class="col-md-6" *ngIf="history.is_approved!=false && history.is_approved!=true && history.is_approved!='false' && history.is_approved!='true'">
+                      <button type="button" class="btn btn-primary btn-sm btn-pink" data-toggle="modal" data-target="#approvePayment" (click)="setPaymentDocId(history.id)">Action</button>
+                    </div> -->
+                  </div>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>     
+        </table>
+            
+         
+      </div>
+      <div class="col-md-12 not-found " *ngIf="percentDocs && percentDocs.length==0 ">
+          <div class="boq-img">
+            <img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+          </div>
+          <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing to show...</p>
+      </div>
+  </div>
+
+  <!-- 10 percent end -->
+</div>
+<!-- Modal for approve payemnt -->
+<div class="modal fade" id="approvePayment" tabindex="-1" role="dialog" aria-labelledby="SmsModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document" style="width: 55rem; margin-top: 55px">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5>Enter Your Remarks:</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	        <img class="close" data-dismiss="modal" src="https://www.homepolish.com/assets/close-ee1bfd7a4473933b6dd934b2c284dc856361b63581c8f43b8cdc1abe07c91765.svg">
+	    </button>
+      </div>
+      <div class="modal-body">
+
+        <div>
+          <form [formGroup]="approvalForm">
+            
+	        <input type="text" class="form-control mb-2" placeholder="Remarks" formControlName = "remarks">
+
+	        <div class="modal-footer">
+		        <input type="button" value="Approve" class="btn btn-success" (click) = "paymentApprove(true)" [class.disabled]="!isChecked"
+            >
+		        <input type="button" value="Reject" class="btn btn-danger" (click) = "paymentApprove(false)" [class.disabled]="!isChecked"
+            >
+
+		    </div>
+
+
+	        
+	      </form>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</div>
+<!-- Modal ends here -->
+
+
+
+
+<div class="modal  animated fadeIn" id="editamountModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header border">
+        <h5 class="modal-title" id="exampleModalLabel" style="font-family: 'algerian';">  UPDATE PAID AMOUNT</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="removeFormItem()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        
+        <form [formGroup]="approvalEditForm">
+          <label for="example-text-input" class="col-2 col-form-label" style="display: inline;">OLD AMOUNT:</label>
+              
+          <input type="text" class="form-control my-2  place-chng" style="margin-left: 3.3rem;" placeholder="Eter New Amount"  value="{{ old_amt  }}" readonly>
+          <br>
+          <label for="example-text-input" class="col-2 col-form-label" style="display: inline;">NEW AMOUNT:</label>
+              
+          <input type="number" class="form-control my-2  ml-5  place-chng" placeholder="Enter New Amount" formControlName = "amount">
+
+            <div class="modal-footer">
+
+              <input type="button" value="Update" class="btn btn-pink" [disabled]="!approvalEditForm.valid" (click) = "paymentEditApprove()" 
+              >
+              
+
+            </div>
+
+
+            
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

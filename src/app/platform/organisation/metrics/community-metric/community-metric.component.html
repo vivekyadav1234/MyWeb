@@ -1,0 +1,316 @@
+<div class="row ss-top-menu">
+	<div class="col-xl-9 col-lg-9 col-md-9 col-sm-9 col-xs-9">
+		<span class="ss-text-dark">Metrics <i class="rightArrow fa fa-angle-right"></i></span>
+    <span class="ss-text-dark">Community Metrics</span>
+  </div>
+</div>
+
+<div class="container-set mt-4 filterRow">
+	<div class="row mx-0">
+		<div class="col-sm-11">
+			<div class="row  mx-0" style="">
+				<ul class="nav tabs-chng ml-3 mt-1 mb-1">
+				  <li class="nav-item itm-chng mr-4">
+				  	<span class="rk-form-fontsize font-weight-bold">Select City</span>
+				  	<angular2-multiselect [data]="city_dropdownList" [(ngModel)]="selectedCityItems"
+				    [settings]="city_dropdownSettings"
+				    (onSelect)="onItemSelect($event,'city',0)"
+				    (onDeSelect)="OnItemDeSelect($event,'city',0)"
+				    (onSelectAll)="onSelectAll($event)"
+				    (onDeSelectAll)="onDeSelectAll($event)"></angular2-multiselect>
+				  </li>
+
+				  <li  class="nav-item itm-chng mr-4">
+				  	<span class="rk-form-fontsize font-weight-bold">Select CM</span>
+				  	<angular2-multiselect [data]="cm_dropdownList" [(ngModel)]="selectedCmItems"
+				    [settings]="cm_dropdownSettings"
+				    (onSelect)="onItemSelect($event,'cm',1)"
+				    (onDeSelect)="OnItemDeSelect($event,'cm',1)"
+				    (onSelectAll)="onSelectAll($event)"
+				    (onDeSelectAll)="onDeSelectAll($event)"></angular2-multiselect>
+				  </li>
+
+				  <li  class="nav-item itm-chng mr-4">
+				  	<span class="rk-form-fontsize font-weight-bold">Select Designers</span>
+				  	<angular2-multiselect [data]="designer_dropdownList" [(ngModel)]="selectedDesignerItems"
+				    [settings]="designer_dropdownSettings"
+				    (onSelect)="onItemSelect($event,'designer',2)"
+				    (onDeSelect)="OnItemDeSelect($event,'designer',2)"
+				    (onSelectAll)="onSelectAll($event)"
+				    (onDeSelectAll)="onDeSelectAll($event)"></angular2-multiselect>
+				  </li>
+
+					<li class="nav-item mr-4">
+							<span class="rk-form-fontsize font-weight-bold">Select Lead Tag</span>
+					    <angular2-multiselect [data]="leadtype_dropdownList" [(ngModel)]="selectedLeadtypeItems"
+					    [settings]="leadtype_dropdownSettings"
+					    (onSelect)="onItemSelect($event,'leadtag',3)"
+					    (onDeSelect)="OnItemDeSelect($event,'leadtag',3)"
+					    (onSelectAll)="onSelectAll($event)"
+					    (onDeSelectAll)="onDeSelectAll($event)"></angular2-multiselect>
+					</li>
+					<li class="nav-item mr-4">
+							<span class="rk-form-fontsize font-weight-bold">Select Date Type</span>
+					    <angular2-multiselect [data]="datetype_dropdownList" [(ngModel)]="selectedDatetypeItems"
+					    [settings]="datetype_dropdownSettings"
+					    (onSelect)="onItemSelect($event,'',4)"
+					    (onDeSelect)="OnItemDeSelect($event,'',4)"
+					    (onSelectAll)="onSelectAll($event)"
+					    (onDeSelectAll)="onDeSelectAll($event)"></angular2-multiselect>
+					</li>
+
+					<li  class="nav-item itm-chng mr-4 " id="fromDateLi">
+				  		<span class="fromDateSpan rk-form-fontsize font-weight-bold " >From Date </span>
+	        		<input [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1" placeholder="From Date"  class="px-2 rk-form-fontsize d-block rounded py-1 border " [(ngModel)]="from_date">
+              <owl-date-time #dt1 [pickerType]="'calendar'"></owl-date-time> 
+					</li>
+
+					<li class="nav-item itm-chng mt-3"  id="toDateLi">
+				  		<span class="toDateSpan  rk-form-fontsize font-weight-bold ">To Date </span>
+				  		<input [owlDateTime]="dt2" [owlDateTimeTrigger]="dt2" placeholder="To Date"  class=" rk-form-fontsize d-block px-2 rounded py-1 border" [(ngModel)]="to_date" [min]="from_date">
+              <owl-date-time #dt2 [pickerType]="'calendar'" ></owl-date-time>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="col-sm-1 text-center pt-4">
+			 <img src="assets/img/dashboard/submit.png" class="ml-1 sendIcon filterRowIcon mt-2 addCursor" (click)="filterData()">
+		</div>
+	</div>
+</div>
+
+<div class="row card-row1 mt-5" *ngIf="metricdata">
+	<div class="col-4 mb-5">
+		<div class="card text-center  border-0 rounded-0 bg-white" style="min-height: 340px">
+    	<div class="mb-3 mt-4">
+    		<img src="assets/v3/img/invoice-1-copy.png" height="39px" width="32px">
+    	</div>
+	    <p class="count-heading">NO OF BOQs CREATED</p>
+	    <p class="mt-1 count-text">{{metricdata.boq_created}}</p>
+	    <table class="text-right col-12 mb-2">
+	    	<tr>
+	    		<td class="text-left pl-5 py-2 rk-form-fontsize" style="width: 56%">Value of BOQs created</td>
+	    		<td class="py-2 text-left font-weight-bold align-baseline rk-form-fontsize">&#8377; {{metricdata.value_boq_created}}</td>
+	    	</tr>
+	    	<tr>
+	    		<td class="text-left pl-5 py-2 rk-form-fontsize" style="width: 56%">Unique clients for which BOQs were created</td>
+	    		<td class="py-2 text-left font-weight-bold align-baseline rk-form-fontsize">{{metricdata.boq_unique_client}}</td>
+	    	</tr>
+	    </table>
+		</div>
+	</div>
+	<div class="col-4 mb-5">
+		<div class="card text-center  border-0 rounded-0 bg-white" style="min-height: 340px">
+    	<div class="mb-3 mt-4">
+    		<img src="assets/v3/img/group-8.png" height="39px" width="54px">
+    	</div>
+	    <p class="count-heading">NO OF BOQs SHARED</p>
+	    <p class="mt-1 count-text">{{metricdata.boq_shared}}</p>
+	    <table class="text-right col-12 mb-2">
+	    	<tr>
+	    		<td class="text-left pl-5 py-2 rk-form-fontsize" style="width: 56%">Value of BOQs shared</td>
+	    		<td class="py-2 text-left font-weight-bold align-baseline rk-form-fontsize">&#8377; {{metricdata.value_boq_shared}}</td>
+	    	</tr>
+	    	<tr>
+	    		<td class="text-left pl-5 py-2 rk-form-fontsize" style="width: 56%">Unique clients for which BOQs were shared</td>
+	    		<td class="py-2 text-left font-weight-bold align-baseline rk-form-fontsize">{{metricdata.boq_shared_unique_client}}</td>
+	    	</tr>
+	    </table>
+		</div>
+	</div>
+	<div class="col-4 mb-5">
+		<div class="card text-center  border-0 rounded-0 bg-white" style="min-height: 340px">
+    	<div class="mb-3 mt-4">
+    		<img src="assets/v3/img/group-55.png" height="39px" width="52px">
+    	</div>
+	    <p class="count-heading">NO OF LEADS QUALIFIED</p>
+	    <p class="mt-1 count-text">{{metricdata.qualified}}</p>
+	    <table class="text-right col-12 mb-3">
+	    	<tr>
+	    		<td class="text-left  pl-5 rk-form-fontsize" style="width: 50%">Qualified %</td>
+	    		<td class="py-2 text-left font-weight-bold align-baseline rk-form-fontsize">{{metricdata.percent_qualified}}%</td>
+	    	</tr>
+	    	<tr>
+	    		<td class="text-left py-2 pl-5 rk-form-fontsize" style="width: 50%">Dropped</td>
+	    		<td class="py-2 text-left font-weight-bold align-baseline rk-form-fontsize">{{metricdata.dropped}}</td>
+	    	</tr>
+	    	<tr>
+	    		<td class="text-left py-2 pl-5 rk-form-fontsize" style="width: 50%">Assign to Designer</td>
+	    		<td class="py-2 text-left font-weight-bold align-baseline rk-form-fontsize">{{metricdata.assigned_to_designer}}</td>
+	    	</tr>
+	    </table>
+		</div>
+	</div>
+	<div class="col-4">
+		<div class="card text-center  border-0 rounded-0 bg-white">
+    	<div class="mb-3 mt-4">
+    		<img src="assets/v3/img/hourglass-copy.png" height="39px" width="30px">
+    	</div>
+	    <p class="count-heading addCursor" (click)="toggleTable('wiptable')">WORK IN PROGRESS</p>
+	    <p class="mt-1 count-text addCursor" (click)="toggleTable('wiptable')">{{metricdata.work_in_progress.total}}</p>
+	    <table class="text-right col-12 mb-3 d-none" id="wiptable">
+	    	<!-- <tr>
+	    		<td class="text-left pl-5">Active</td>
+	    		<td class="py-2 text-left font-weight-bold">{{metricdata.work_in_progress.active.total}}</td>
+	    	</tr> -->
+	    	<tr>
+	    		<td class="text-left py-2  pl-5 rk-form-fontsize" style="width: 56%">Pre-Bid Stage</td>
+	    		<td class="py-2 text-left font-weight-bold rk-form-fontsize align-baseline">{{metricdata.work_in_progress.active.pre_bid_stage}}</td>
+	    	</tr>
+	    	<tr>
+	    		<td class="text-left py-2  pl-5 rk-form-fontsize" style="width: 56%">10%</td>
+	    		<td class="py-2 text-left font-weight-bold rk-form-fontsize align-baseline">{{metricdata.work_in_progress.active.percent_10}}</td>
+	    	</tr>
+	    	<tr>
+	    		<td class="text-left py-2  pl-5 rk-form-fontsize" style="width: 56%">10-40%</td>
+	    		<td class="py-2 text-left font-weight-bold rk-form-fontsize align-baseline">{{metricdata.work_in_progress.active.percent_10_40}}</td>
+	    	</tr>
+	    	<tr>
+	    		<td class="text-left py-2 pl-5 rk-form-fontsize" style="width: 56%">Pre-Production</td>
+	    		<td class="py-2 text-left font-weight-bold rk-form-fontsize align-baseline">{{metricdata.work_in_progress.active.pre_production}}</td>
+	    	</tr>
+	    	<tr>
+	    		<td class="text-left py-2 pl-5 rk-form-fontsize" style="width: 56%">Installation</td>
+	    		<td class="py-2 text-left font-weight-bold rk-form-fontsize align-baseline">{{metricdata.work_in_progress.active.installation}}</td>
+	    	</tr>
+	    	<tr>
+	    		<td class="text-left py-2 pl-5 rk-form-fontsize" style="width: 56%">Handover</td>
+	    		<td class="py-2 text-left font-weight-bold rk-form-fontsize align-baseline">{{metricdata.work_in_progress.active.handover}}</td>
+	    	</tr>
+	    </table>
+		</div>
+	</div>
+	<div class="col-4">
+		<div class="card text-center  border-0 rounded-0 bg-white">
+    	<div class="mb-3 mt-4">
+    		<img src="assets/v3/img/inactive-copy.png" height="39px" width="38px">
+    	</div>
+	    <p class="count-heading">INACTIVE</p>
+	    <p class="mt-1 count-text">{{metricdata.work_in_progress.inactive}}</p>
+		</div>
+	</div>
+	<div class="col-4">
+		<div class="card text-center border-0 rounded-0 bg-white">
+    	<div class="mb-3 mt-4">
+    		<img src="assets/v3/img/group-copy.png" height="39px" width="40px">
+    	</div>
+	    <p class="count-heading">ONHOLD</p>
+	    <p class="mt-1 count-text">{{metricdata.work_in_progress.on_hold}}</p>
+		</div>
+	</div>
+</div>
+
+<div class="row card-row2 mt-5" *ngIf="metricdata">
+	<div class="col-3">
+		<div class="card text-center  border-0 rounded-0 bg-white">
+	    <p class="count-heading mt-3">{{metricdata.avg_days_assign_designer}} Days</p>
+	    <p class="mt-1 count-text rk-form-fontsize mx-3">Average Number of Days taken to Assign a Designer from Qualification Date</p>
+		</div>
+	</div>
+	<div class="col-3">
+		<div class="card text-center  border-0 rounded-0 bg-white">
+	    <p class="count-heading mt-3">{{metricdata.avg_days_designer_first_attempt}} Days</p>
+	    <p class="mt-1 count-text rk-form-fontsize mx-3">Average Number of Days for first Attempt by a Designer</p>
+		</div>
+	</div>
+	<div class="col-3">
+		<div class="card text-center  border-0 rounded-0 bg-white">
+    	<p class="count-heading mt-3">{{metricdata.percent_designer_assigned_24h}}%</p>
+	    <p class="count-text rk-form-fontsize mx-3">% of Cases where Designer was assigned before 24 hours</p>
+		</div>
+	</div>
+	<div class="col-3">
+		<div class="card text-center  border-0 rounded-0 bg-white">
+    	<p class="count-heading mt-3">{{metricdata.percent_attempts_after_24h}}%</p>
+	    <p class="count-text rk-form-fontsize mx-3">% of Attempts after 24 hours</p>
+		</div>
+	</div>
+</div>
+
+<div class="row card-row3 mt-5 mx-0" *ngIf="metricdata">
+	<div class="col-12 mb-3 mt-4 text-center">
+		<button class="button1 py-1 px-3 addCursor mr-5" [ngClass]="{'active-btn':is_lastweektrend_flag}" (click)="toggleWeekFlag(true); filterData()">Last Weeks Trends</button>
+		<button class="button1 py-1 px-3 addCursor" [ngClass]="{'active-btn':!is_lastweektrend_flag}" (click)="toggleWeekFlag(false)" data-toggle="modal" data-target="#showpastdatacalendarmodal">Show Data for Past Weeks</button>
+	</div>
+	<div class="col-12 mt-3 px-4">
+		<table width="100%">
+			<thead>
+				<tr>
+					<th>BOQ Creation Date</th>
+					<th *ngFor="let acqdates of metricdata.boq_creation_date_array" class="text-center">{{acqdates.date}}</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>Number of BOQs</td>
+					<td *ngFor="let acqdates of metricdata.boq_creation_date_array" class="text-center">{{acqdates.total}}</td>
+				</tr>
+				<tr>
+					<td>Value of BOQs</td>
+					<td *ngFor="let acqdates of metricdata.boq_creation_date_array" class="text-center">&#8377; {{acqdates.value}}</td>
+				</tr>
+				<!-- <tr>
+					<td>Qualified %</td>
+					<td *ngFor="let acqdates of metricdata.boq_creation_date_array" class="text-center">{{acqdates.percent_qualified}}</td>
+				</tr>
+				<tr>
+					<td>Lost</td>
+					<td *ngFor="let acqdates of metricdata.boq_creation_date_array" class="text-center">{{acqdates.lost}}</td>
+				</tr> -->
+			</tbody>
+		</table>
+	</div>
+	<div class="col-12 mt-4 mb-4 px-4">
+		<table width="100%">
+			<thead>
+				<tr>
+					<th>BOQ Sharing Date</th>
+					<th *ngFor="let acqdates1 of metricdata.boq_sharing_date_array" class="text-center">{{acqdates1.date}}</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>Number of BOQs</td>
+					<td *ngFor="let acqdates1 of metricdata.boq_sharing_date_array" class="text-center">{{acqdates1.total}}</td>
+				</tr>
+				<tr>
+					<td>Value of BOQs</td>
+					<td *ngFor="let acqdates1 of metricdata.boq_sharing_date_array" class="text-center">&#8377; {{acqdates1.value}}</td>
+				</tr>
+				<!-- <tr>
+					<td>Qualified %</td>
+					<td *ngFor="let acqdates1 of metricdata.boq_sharing_date_array" class="text-center">{{acqdates1.percent_qualified}}</td>
+				</tr>
+				<tr>
+					<td>Lost</td>
+					<td *ngFor="let acqdates1 of metricdata.boq_sharing_date_array" class="text-center">{{acqdates1.lost}}</td>
+				</tr> -->
+			</tbody>
+		</table>
+	</div>
+</div>
+
+<div class="modal" id="showpastdatacalendarmodal" data-backdrop="static" data-keyboard="false">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="text-right">
+        <button type="button" class="close mx-3 my-2" data-dismiss="modal" (click)="week_from_date=null; is_lastweektrend_flag=true;">&times;</button>
+      </div>
+      <!-- Modal body -->
+      <div class="modal-body">
+      	<div class="row">
+          <div class="col-4 pr-0">
+          	<span class=" rk-form-fontsize " style="font-weight: 500">Choose From Date </span>
+          </div>
+          <div class="col-6 px-0">
+          	<input [owlDateTime]="dt3" [owlDateTimeTrigger]="dt3" placeholder="From Date"  class=" rk-form-fontsize  form-control" [(ngModel)]="week_from_date">
+          	<owl-date-time #dt3 [pickerType]="'calendar'" ></owl-date-time>
+          </div>
+          <div class="mt-3 text-right col-12">
+          	<button (click)="filterData()" class="rk-interalBtnColor addCursor" data-dismiss="modal">Submit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

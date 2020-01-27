@@ -1,0 +1,81 @@
+<div class="row bgSection" id="main">  
+  <div class="col-12" *ngIf="erroralert">
+    <div class="alert-box grid-100" *ngIf="errorMessage">
+      <div class="alert alert-danger mt-3 text-center">
+      <a class="close link" data-dismiss="alert">×</a>
+      {{errorMessage}}
+      </div>
+    </div>
+  </div>
+  <div class="col-12" *ngIf="successalert">
+    <div class="alert-box grid-100" *ngIf="successMsg">
+      <div class="alert alert-success mt-3 text-center">
+      <a class="close link" data-dismiss="alert">×</a>
+      {{successMsg}}
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-12">
+    <div class="form_div">
+      <div class="">
+        <!-- <form [formGroup]="signupmanufacturerForm" (ngSubmit)="submit(signupmanufacturerForm.value);" class="pt-2">
+                    <div class="loginFormContainer">
+                        <div class="text-center" data-background-color="orange">
+                            <h2 class="mb-5 formHeading">Become A Manufacturer</h2>
+                        </div>
+                        <div class="">
+                        	<input type="text" class="form-control" placeholder="Name*"  id="name" required name="name" formControlName="name">
+		                <small class="text-danger ml-3" *ngIf="signupmanufacturerForm.get('name').hasError('required') && formSubmitAttempt">
+				            Name is required
+				        </small>
+
+		                <input type="email" class="form-control" placeholder="Email*"  id="email" required name="email" formControlName="email" (focus)="emailVaildMsg()">
+		                <small class="text-danger ml-3" *ngIf="signupmanufacturerForm.get('email').hasError('required') && formSubmitAttempt">
+				            Email is required
+				        </small>
+				        <small class="text-danger ml-3" *ngIf="showvalidEmailMsg">Please enter a valid email address.</small>
+
+		                <input type="number" class="form-control" placeholder="Mobile"  id="contact"  name="contact" formControlName="contact" (keydown)="numberCheck($event)" min=0>
+                          
+                        </div>
+                      <button type="submit" class="button button_emi">SIGN UP</button>
+                        
+                    </div>
+            </form> -->
+            <form [formGroup]="form" (ngSubmit)="submit(form.value)" class="pt-2">
+                <div class="loginFormContainer">
+                    <div class="text-center" data-background-color="orange">
+                        <h2 class="mb-5 formHeading">Become A Manufacturer</h2>
+                        
+                    </div>
+                    <div class="">
+
+                        <div class="form-group">           
+                            <input class="form-control" formControlName="name" type="text" name="name" placeholder="Name*">
+                            <div class="alert error" *ngIf="!form.controls['name'].valid && form.controls['name'].touched">
+                                Name is required
+                            </div>   
+                        </div>
+
+                      <div class="form-group">                            
+                            <input class="form-control" formControlName="contact" type="number" name="contact" placeholder="Mobile*">
+                            <div class="alert error" *ngIf="!form.controls['contact'].valid && form.controls['contact'].touched">
+                                Mobile is required
+                            </div>                           
+                      </div>
+                  
+                        <div class="form-group">                          
+                            <input class="form-control" formControlName="email" type="email" name="email" placeholder="Email*">
+                            <div class="alert error" *ngIf="!form.controls['email'].valid && form.controls['email'].touched">
+                                Email is required
+                            </div>     
+                      </div>
+                    </div>
+                  <button type="submit" class="button button_emi">SIGN UP</button>
+                    
+                </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

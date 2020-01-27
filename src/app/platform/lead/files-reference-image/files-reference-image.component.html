@@ -1,0 +1,71 @@
+<div class="rk-ui-notification err" *ngIf="erroralert" style="z-index: 10000;">
+  <span id="notificationMessageText">{{errorMessage}}</span>
+  <a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+<div class="rk-ui-notification" *ngIf="successalert" style="z-index: 10000;">
+  <span id="notificationMessageText">{{successMessage}}</span>
+  <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+<div class="row mt-4 right-section reference-section">
+  <div class="col-md-12">
+    <button type="button"  *ngIf="project_id" class="btn btn-pink pull-right" data-toggle="modal" data-target="#referenceModal">
+      UPLOAD REFERENCE FILE
+    </button>
+  </div>
+  <div class="col-md-12 mt-5 text-center p-5" style="background-color: #fff;" *ngIf="referenceImageList.length <= 0">
+    <img src="../../../assets/img/nothing.png" class="img-fluid">
+  </div>
+  <div class="col-md-12 mt-5">
+    <div class="row">
+      <div class="col-md-4 mt-4" *ngFor="let obj of referenceImageList">
+        <div class="card card-chng">
+          <img onerror="this.src='./assets/img/no_image.svg';" class="card-img-top img-fluid" src="{{obj.reference_image_url}}" alt="Card image cap" style="max-height: 165px;" />
+          <div class="card-block" style="padding: 1rem;">
+            <p class="card-text" style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap;border-bottom: 1px solid #e0e0e0;padding-bottom: 10px;">{{obj.name}}</p>
+            <div class="row">
+             
+              <div class="col-md-12 divbutton mt-2">
+                <a class="btn btn-pink btn-chng pull-right" href="{{obj.reference_image_url}}" download>
+                  Download
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+</div>
+<!-- CREATE Reference MODAL -->
+<div class="modal fade" id="referenceModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="border-bottom: 1px solid #e4e4e4;">
+        <h6 class="modal-title" id="exampleModalLabel">Upload a Reference file : </h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+            <form (ngSubmit)="onSubmit(createReferenceForm.value); createReferenceForm.reset()" #createReferenceForm="ngForm" class="form-horizontal" enctype="multipart/form-data">
+              <div class="form-group">
+                <label for="name" class="ss-form-label">Reference Name</label>
+                <input type="text" class="form-control ss-form-control" id="name" placeholder="A proper name for reference file" required name="name" #name="ngModel" ngModel>
+
+                <label for="reference_drawing" class="ss-form-label mt-4">Reference File</label>
+                <input type="file" class="form-control ss-form-control" (change)="onChange($event)" name="reference_drawing" ngModel #reference_drawing="ngModel" id="reference_drawing">
+
+                <button type="submit" class="btn btn-pink button_emi pull-right mt-4" [disabled]="!createReferenceForm.valid || basefile == undefined"> Submit </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- ENds Here -->
+

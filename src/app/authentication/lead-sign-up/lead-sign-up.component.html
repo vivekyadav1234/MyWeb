@@ -1,0 +1,52 @@
+<section class="section1" style="margin: -15px; padding: 100px 0;">
+  <div class="row justify-content-center">
+    <div class="col-md-4 col-sm-6 col-md-offset-4 col-sm-offset-3" style="margin-top: 50px;">
+        <form (ngSubmit)="onSubmit(leadRegistrationForm.value); leadRegistrationForm.reset()" #leadRegistrationForm="ngForm">
+            <div class="card card-login card-hidden" style="padding: 30px;">
+                <div class="card-header text-center" data-background-color="orange">
+                    <h4 class="card-title">Book a design consultant</h4>
+                </div>
+                <div class="card-content">
+
+                    <div class="form-group">
+                      <label class="control-label"> Name*</label>
+                      <input type="text" class="form-control" placeholder="Name" id="name" required name="name" #name="ngModel" ngModel>
+                      <p *ngIf="name.invalid && (name.dirty || name.touched)">Name is required</p>
+                  </div>
+                  <div class="form-group">
+                      <label class="control-label"> Email*</label>
+                      <input type="email" class="form-control" id="email" required name="email" #email="ngModel" ngModel email="true">
+                      <p *ngIf="email.invalid && (email.dirty || email.touched)">Email is required</p>
+                  </div>
+                  <div class="form-group">
+                      <label class="control-label"> Mobile*</label>
+                      <input type="text" class="form-control" id="contact" required name="contact" #contact="ngModel" ngModel minlength="10" maxlength="10">
+                      <p *ngIf="contact.invalid && (contact.dirty || contact.touched)">Contact is required and should be of 10 digits</p>
+                      <!-- <p *ngIf="contact.errors.minlength">Contact must be of 10 digits.</p> -->
+                  </div>
+                  <!-- <div class="form-group">
+                      <label class="control-label"> City*</label>
+                      <input type="text" class="form-control" id="city" required name="city" #city="ngModel" ngModel>
+                      <p *ngIf="city.invalid && (city.dirty || city.touched)">City is required</p>
+                  </div> -->
+                  <div class="form-group">
+                      <label class="control-label"> Pin Code</label>
+                      <input type="text" class="form-control" id="pincode" name="pincode" #pincode="ngModel" ngModel>
+                  </div>
+
+                 <!--  <div class="form-group">
+                      <label class="control-label"> Describe what you are looking for</label>
+                      <textarea class="form-control" id="details"
+                          name="details"
+                          #details="ngModel" rows="5" ngModel></textarea>
+                  </div> -->
+                </div>
+                <div class="footer text-center">
+                    <button type="submit" class="btn btn-primary btn-lg btn-block" [disabled]="!leadRegistrationForm.valid">Register</button>
+
+                </div>
+            </div>
+        </form>
+    </div>
+  </div>
+</section>

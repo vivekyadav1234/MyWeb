@@ -1,0 +1,53 @@
+<div [formGroup]="form">
+        <label class="" [attr.for]="field.attr_name" [hidden]="(field.attr_name === 'vendor_id') || (field.attr_name === 'master_line_item_id')">{{field.attr_name | replaceChar | titlecase}}
+          <span *ngIf="field.required" class="text-danger">*</span>
+        </label>
+      
+        <div [ngSwitch]="field.attr_type">
+      
+          <input class="form-control" *ngSwitchCase="'text_field'" [formControlName]="field.attr_name"
+           [id]="field.attr_name"
+           [type]="field.attr_data_type === 'integer'? 'number':'text'">
+           <div *ngIf="form.controls[field.attr_name].errors && !form.controls[field.attr_name].pristine" class="text-danger">       
+           <span class="text-danger" [hidden]="!form.controls[field.attr_name].errors.required">{{field.attr_name | replaceChar | titlecase}} is required.</span>
+           </div>
+          <input class="form-control" (keypress)="keyPress($event)" *ngSwitchCase="'MOB'" [formControlName]="field.attr_name"
+           [id]="field.attr_name">
+          <input class="form-control" *ngSwitchCase="'EMAIL'" [formControlName]="field.attr_name"
+           [id]="field.attr_name">
+    
+           <input type="date"  *ngSwitchCase="'DATE'"
+           [formControlName]="field.attr_name"
+           class="form-control">
+    
+           <!-- <input  *ngSwitchCase="'DATETIME'" [owlDateTimeTrigger]="dt" [owlDateTime]="dt"
+           placeholder="Enter Date and Time" 
+           [formControlName]="field.attr_name" class="form-control">
+            <owl-date-time #dt></owl-date-time> -->
+                    
+          <select class="form-control" [id]="field.attr_name" *ngSwitchCase="'dropdown'" [formControlName]="field.attr_name">
+            <option value= "field.attr_name" [ngValue]="null" [selected]="!form.controls[field.attr_name].value">Select {{field.attr_name | replaceChar | titlecase}}</option>
+            <option *ngFor="let opt of field.dropdown_options" [value]="opt.value" [selected]="form.controls[field.attr_name].value === opt.value">{{opt.name}}</option>
+          </select> 
+          <div [id]="'radio'+field.attr_name" *ngSwitchCase="'CHKBX'" 
+                [formControlName]="field.attr_name">
+                <div *ngFor="let opt of field.choices.data">
+                <input type="radio" name="field.attr_name" value="{{opt.code}}" id="text{{opt.code}}">
+                 <label for="text{{opt.code}}" class="mr-4 pt-1 ml-2 align-middle">{{opt.lable}}</label></div>
+          </div>
+          <div [id]="'checkbox'+field.attr_name" *ngSwitchCase="'RADBTN'" 
+                [formControlName]="field.attr_name">
+                <div *ngFor="let opt of field.choices.data">
+                <input type="checkbox"  value="{{opt.code}}" id="text{{opt.code}}">
+          <label for="text{{opt.code}}" class="mr-4 pt-1 ml-2 align-middle">{{opt.lable}}</label></div>
+      
+        </div> 
+        <!-- <div *ngIf="!isValid && !field.attr_name.pristine" class="text-danger">
+            <!-- <div [hidden]="!field.attr_name.hasError('pattern')">
+                Please enter valid {{field.attr_name}} 
+            </div> -->
+            <!-- <div>
+                    Please enter {{field.attr_name}} 
+            </div>
+        </div> -->
+      </div>

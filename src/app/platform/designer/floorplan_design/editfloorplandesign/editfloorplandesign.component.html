@@ -1,0 +1,90 @@
+<div class="row title">
+  <h3>Dashboard / <span class="addCursor">Project</span> / <span class="addCursor">Floorplan</span> / <span>Edit Design Details</span></h3>
+</div>
+<div class="row inputForm bg_dashboard justify-content-center">
+  <div class="col-12" *ngIf="erroralert">
+    <div class="alert-box grid-100" *ngIf="errorMessage">
+      <div class="alert alert-danger mt-3 text-center">
+        <a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a>
+        {{errorMessage}}
+      </div>
+    </div>
+  </div>
+  <div class="col-12" *ngIf="successalert">
+    <div class="alert-box grid-100" *ngIf="successMessage">
+      <div class="alert alert-success mt-3 text-center">
+        <a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+        {{successMessage}}
+      </div>
+    </div>
+  </div>
+  <div class="col-11">
+    <div class="card text-center">
+      <div class="card-body card_main">
+        <!-- <form (ngSubmit)="onSubmit(editDesignForm.value); editDesignForm.reset()" #editDesignForm="ngForm">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-7">
+               <div class="form-check form-check-inline">
+                <label class="form-check-label">
+                  <input class="form-check-input" type="radio" #design_type="ngModel" ngModel name="design_type" id="initial" value="initial" required [checked]=" design_type == 'initial' ">
+                  Initial Design
+                </label>
+              </div>
+              <div class="form-check form-check-inline">
+                <label class="form-check-label">
+                  <input class="form-check-input" type="radio" #design_type="ngModel" ngModel name="design_type" id="final" value="final" required [checked]=" design_type == 'final' ">
+                  Final Design
+                </label>
+              </div>
+              <input type="text" class="form-control" name="name" placeholder="Design Name"  required [(ngModel)]="name">
+              <input type="text" class="form-control" name="details" placeholder="Design Details" [(ngModel)]="details" ngModel>
+            </div>
+            <div class="col-6 col-md-3">
+              <div class="card card_box">
+                <input type="file" class="form-control border-0" (change)="onChange($event)" name="attachment_file" ngModel #attachment_file="ngModel">
+              </div>
+            </div>
+            <div class="col-md-12">
+              <button type="submit" class="button button_emi pull-right mt-5" [disabled]="!editDesignForm.valid">Update Design</button>
+            </div>
+        </div>
+        </form> -->
+        <form (ngSubmit)="onSubmit(editDesignForm.value); editDesignForm.reset()" [formGroup]="editDesignForm">
+          <div class="row justify-content-center">
+              <div class="col-12 col-md-7">
+                 <div class="form-check form-check-inline">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="radio" formControlName="design_type" name="design_type" id="initial" value="initial" required [checked]=" design_type == 'initial' ">
+                    Initial Design
+                  </label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="radio" formControlName='design_type' name="design_type" id="final" value="final" required [checked]=" design_type == 'final' ">
+                    Final Design
+                  </label>
+                </div>
+                <input type="text" class="form-control" name="name" placeholder="Design Name"  required formControlName="name">
+                 <div *ngIf="editDesignForm.controls['name'].errors && !editDesignForm.controls['name'].pristine" class="text-danger">
+                    <p class="text-danger" [hidden]="!editDesignForm.controls['name'].errors.required"> Design Name is required.</p>
+                  </div>
+                <input type="text" class="form-control" name="details" placeholder="Design Details" formControlName="details">
+              </div>
+              <div class="col-6 col-md-3">
+                <div class="card card_box">
+                  <!-- <label>Change File</label> -->
+                  <p class="fileName addCursor" (click)="upload()"><i class="fa fa-cloud-upload" aria-hidden="true"></i> Change File*</p>
+                  <span id="uploadedfilename"></span>
+                  <input type="file" class="fileUpload d-none" id="fileupload" (change)="onChange($event)" formControlName="attachment_file">
+                  <!-- <input type="file" class="form-control border-0" (change)="onChange($event)" name="attachment_file"  formControlName="attachment_file"> -->
+                </div>
+              </div>
+              <div class="col-md-12">
+                <button type="submit" class="button button_emi pull-right mt-5" [disabled]="!editDesignForm.valid">Update Design</button>
+              </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

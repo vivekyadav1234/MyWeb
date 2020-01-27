@@ -1,0 +1,100 @@
+#row1 span{
+	font-size: 20px;
+	color: #5A5A5A;
+}
+#row1 select {
+	width: 30%;
+	display: inline-block;
+	font-size: 14px;
+	color: #202021;
+	-webkit-appearance: menulist;
+}
+#row1{
+	border-bottom: 1px solid #e8e8e8;
+}
+
+.textHeadingColor {
+	color: #5A5A5A;
+}
+.table-responsive {
+	font-size: 13px;
+    border: 1px solid #f5f5f5;
+    box-shadow: 0px 2px 2px 0 rgba(0,0,0,0.1), 0px 0px 5px 2px #f5f5f5;
+}
+.tableHandle{
+    font-size: 13px;
+    border: 1px solid #f5f5f5;
+    box-shadow: 0px 2px 2px 0 rgba(0,0,0,0.1), 0px 0px 5px 2px #f5f5f5;
+    overflow-x: auto;
+}
+.ss-3-dot-drop{
+	font-size: 20px;
+}
+.table td, .table th {
+	padding: 4px;
+	vertical-align: middle;
+}
+.submitButton{
+	background: #fff;
+    border: 2px solid #d4546d;
+    border-radius: 5px;
+    color: #8c031f;
+    padding: 5px 10px;
+    width: 100px;
+    font-size: 14px;
+    cursor: pointer;
+}
+#addCoreMaterialForm .form-control, #addshutter_finisheFormRow .form-control, 
+#addAddonFormRow .form-control{
+	font-size: 14px;
+	letter-spacing: 0.8px;
+}
+
+.addButton{
+    background: #8c031f;
+    color: white;
+    border: none;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    position: absolute;
+    margin-top: -30px;
+    right: 7px;
+    text-decoration: none;
+    z-index: 1;
+}
+.addButton i {
+    margin-top: 7px;
+    font-size: 20px;
+}
+.editRowButton{
+	border-radius: 50%;
+    height: 28px;
+    width: 28px;
+    background: #f3f3f3;
+    border: none;
+    cursor: pointer;
+    padding: 0px;
+    text-decoration: none;
+}
+.editRowButton i {
+	position: relative;
+    -webkit-transform: rotate(58deg);
+    -moz-transform: rotate(58deg);
+    -ms-transform: rotate(58deg);
+    -o-transform: rotate(58deg);
+    transform: rotate(58deg);
+    color: #8e8787;
+}
+.borderleft{
+	border-left: 1px solid #d3d3d3;
+}
+
+.col-md-1 {
+	max-width: 2px;
+}
+
+.linkColor{
+    color: #007bff!important;
+    cursor: pointer;
+}

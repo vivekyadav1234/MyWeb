@@ -1,0 +1,1411 @@
+<div class="row ss-top-menu">
+  <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-xs-4">
+    <span class="ss-text-light ss-link" style="vertical-align: -webkit-baseline-middle;" [routerLink]="['/']">Dashboard </span>
+    <span style="vertical-align: -webkit-baseline-middle;"> <i class="rightArrow fa fa-angle-right"></i> </span>
+    <span *ngIf="lead_status" class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;">{{lead_status | replaceChar}}</span>
+  </div>
+  <div class="col-xl-5 col-lg-5 col-md-5 col-sm-5 col-xs-5">
+    <div class="ss-searchbox">
+      <i class="fa fa-search"></i>
+      <input class="form-control" type="text" placeholder="Type in name, contact, status, role, date, designer to search..." #search (keyup.enter)="onKey($event)">
+    </div>
+  </div>
+  <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-xs-3 mt-2">
+    <a class="addCursor downloadBtn" (click)="smartShareEmail()">Smartshare</a>
+    <a class="addCursor downloadBtn" (click)="downloadExcel()">Download Lead</a> 
+  </div>
+</div>
+
+<div class="row">
+  <div class="rk-ui-notification err" *ngIf="erroralert">
+    <span id="notificationMessageText">{{errorMessage}}</span>
+    <a class="close rk-linknotification" (click)="erroralert=false">×</a>
+  </div>
+  <div class="col-12" *ngIf="successalert">
+    <div class="alert-box grid-100" *ngIf="successMessage">
+      <div class="alert alert-success mt-3 text-center">
+        <a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+        {{successMessage}}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row justify-content-end">
+  <div class="col-md-12">
+    <div class="filterMainDiv">
+      <span class="ss-text-dark mr-2">Filter By</span>
+      <select class="filterSelect form-control capitalize" (change)="filterColumDropdownChange($event.target.value)" [(ngModel)]="filtercol1Val" id="filter1dropdown">
+        <option value="all"><span class="capitalize" selected>All</span></option>
+        <option value="assigned_at"><span class="capitalize">Lead Assignment Date</span></option>
+        <option value="list_designer" *ngIf="lead_status && lead_status != 'leads_not_assigned' && lead_status != 'leads_dropped' "><span class="capitalize">Designers</span></option>
+        <!-- <option value="list_city" *ngIf="lead_status && lead_status != 'leads_not_assigned' && lead_status != 'leads_dropped' "><span class="capitalize">City</span></option> -->
+        <option value="customer_meeting_time" *ngIf="lead_status == 'leads_assigned_follow_up' "><span class="capitalize">Follow up Date</span></option>
+        <option value="customer_meeting_time" *ngIf="lead_status=='leads_assigned_meeting_fixed' "><span class="capitalize">Meeting Date</span></option>
+        <option value="follow_up" *ngIf="lead_status && lead_status != 'leads_dropped' "><span class="capitalize">Follow Up</span></option>
+        <option value="not_contactable" *ngIf="lead_status && lead_status != 'leads_dropped' "><span class="capitalize">Not Contactable</span></option>
+
+         <option value="wip" *ngIf="lead_status && lead_status != 'leads_dropped' && lead_status == 'leads_assigned' "><span class="capitalize">Wip</span></option>
+        <option value="lost" *ngIf="lead_status && lead_status != 'leads_dropped' && lead_status == 'leads_assigned'"><span class="capitalize">Lost</span></option>
+        <option value="todays_lead" *ngIf="lead_status && lead_status != 'leads_total_qualified' "><span class="capitalize">Today's Leads</span></option>
+        <option value="old_lead" *ngIf="lead_status && (lead_status != 'leads_dropped' && lead_status != 'leads_total_qualified') "><span class="capitalize">Old Leads</span></option>
+      </select>
+      <select style="display: none" id="designer_list" (change)="onDesignerFilterSelect($event)">
+        <option *ngFor="let design of my_designers" value={{design.id}}>{{ design.name }}</option>
+
+        
+      </select>
+
+
+      <i class="downArrow fa fa-angle-down d-none" id="downArrow"></i>
+      <div id="fromDateFilter" class= "d-none" style="display: inline;">
+        <label class="ss-text-dark mr-2">From Date </label>
+        <input type="date" name="" [(ngModel)]="from_date" class="form-control filterSelect" style="font-size: 12px;">
+      </div>
+      <div id="toDateFilter" class= "d-none" style="display: inline;">
+        <label class="ss-text-dark mr-2">To Date </label>
+        <input type="date" name="" [(ngModel)]="to_date" [min]="from_date" class="form-control filterSelect" style="font-size: 12px;">
+      </div>
+      <button class="filterBtn" (click)="filterSubmit()">GO</button>
+    </div>
+  </div>
+</div>
+
+<div class="row body_height justify-content-center">
+  <div class="col-12">
+    <h5 *ngIf="usersList && usersList.length == 0" class="text-center my-5">No leads Available</h5>
+    <div class="tableDiv lappyView">
+      <table class="table" *ngIf="usersList && usersList.length >0">
+        <thead class="ss-thead">
+          <tr>
+            <th class="firstTh" style="min-width: 1rem;">#</th>
+
+            <th>
+              NAME
+              <i class="fa ml-2 fa-sort" *ngIf="column != 'name'" (click)="sortFunc(usersList,{property: 'name', direction: '1'})"></i><i class="fa ml-2 fa-sort-asc" *ngIf="column == 'name' && direction=='1' " (click)="sortFunc(usersList,{property: 'name', direction: '-1'})"></i><i class="fa ml-2 fa-sort-desc" *ngIf="column == 'name' && direction=='-1' " (click)="sortFunc(usersList,{property: 'name', direction: '1'})"></i>
+            </th>
+
+            <th>
+              LEAD ID
+              <i class="fa ml-2 fa-sort" *ngIf="column != 'id'" (click)="sortFunc(usersList,{property: 'id', direction: '1'})"></i><i class="fa ml-2 fa-sort-asc" *ngIf="column == 'id' && direction=='1' " (click)="sortFunc(usersList,{property: 'id', direction: '-1'})"></i><i class="fa ml-2 fa-sort-desc" *ngIf="column == 'id' && direction=='-1' " (click)="sortFunc(usersList,{property: 'id', direction: '1'})"></i>
+            </th>
+
+            <th *ngIf="lead_status == 'leads_total_qualified'">DESIGNER STATUS</th>
+
+            <th style="min-width: 12rem;" *ngIf="['leads_assigned_qualified','leads_assigned_lost','leads_assigned_follow_up','leads_assigned_not_contactable'].includes(lead_status)">LEAD ACQUIRED</th>
+
+            <th style="min-width: 12rem;">LEAD ASSIGNED
+               <i class="fa ml-2 fa-sort" *ngIf="column != 'status_updated_at'" (click)="sortFunc(usersList,{property: 'status_updated_at', direction: '1'})"></i><i class="fa ml-2 fa-sort-asc" *ngIf="column == 'status_updated_at' && direction=='1' " (click)="sortFunc(usersList,{property: 'status_updated_at', direction: '-1'})"></i><i class="fa ml-2 fa-sort-desc" *ngIf="column == 'status_updated_at' && direction=='-1' " (click)="sortFunc(usersList,{property: 'status_updated_at', direction: '1'})"></i>
+            </th>
+
+            <th style="min-width: 12rem;" *ngIf="lead_status != 'leads_not_assigned' && lead_status != 'leads_dropped'">LEAD ASSIGNED (DESIGNER)
+              <i class="fa ml-2 fa-sort" *ngIf="column != 'assigned_at'" (click)="sortFunc(usersList,{property: 'assigned_at', direction: '1'})"></i><i class="fa ml-2 fa-sort-asc" *ngIf="column == 'assigned_at' && direction=='1' " (click)="sortFunc(usersList,{property: 'assigned_at', direction: '-1'})"></i><i class="fa ml-2 fa-sort-desc" *ngIf="column == 'assigned_at' && direction=='-1' " (click)="sortFunc(usersList,{property: 'assigned_at', direction: '1'})"></i>
+            </th>
+            <th style="min-width: 12rem;">REFERRAL PARTNER</th>
+
+            <th>LEAD STATUS </th>
+            
+
+            <th *ngIf="lead_status == 'leads_dropped'">DROP REASON </th>
+
+            <th  *ngIf="lead_status != 'leads_dropped'">PROJECT STATUS </th>
+
+            <th *ngIf="['leads_not_assigned', 'leads_assigned', 'leads_delayed_possession', 'leads_delayed_project'].includes(lead_status) ">CHANGE STATUS</th>
+
+            <th style="min-width: 15rem;" *ngIf="!['leads_dropped', 'leads_not_assigned', 'leads_delayed_project', 'leads_delayed_possession'].includes(lead_status) ">DESIGNER EMAIL
+              <i class="fa ml-2 fa-sort" *ngIf="column != 'assigned_to'" (click)="sortFunc(usersList,{property: 'assigned_to', direction: '1'})"></i><i class="fa ml-2 fa-sort-asc" *ngIf="column == 'assigned_to' && direction=='1' " (click)="sortFunc(usersList,{property: 'assigned_to', direction: '-1'})"></i><i class="fa ml-2 fa-sort-desc" *ngIf="column == 'assigned_to' && direction=='-1' " (click)="sortFunc(usersList,{property: 'assigned_to', direction: '1'})"></i>
+            </th>
+
+            <th *ngIf="lead_status != 'leads_dropped' && (role=='community_manager')" style="min-width: 15rem;" >ASSIGN DESIGNER</th>
+
+
+            <th *ngIf="lead_status == 'leads_assigned_lost'">REASON FOR LOST</th>
+
+            <th *ngIf="lead_status == 'leads_assigned_follow_up'">FOLLOW UP</th>
+
+            <th *ngIf="lead_status == 'leads_assigned_not_contactable'">NOT CONTACTABLE REMARK</th>
+
+            <th class="lastTh" *ngIf="lead_status != 'leads_dropped'" ></th>
+          </tr>
+        </thead>
+        <tbody class="ss-tbody">
+          <tr *ngFor=" let obj of usersList | paginate: { itemsPerPage: per_page, currentPage: current_page, totalItems: total_page  }  let i = index" [attr.data-index]="i">
+            <ng-container *ngIf="obj.project_details">
+              <td style="min-width: 1rem;">{{((current_page-1) * per_page) + (i+1)}}</td>
+            <td class="capitalize">
+              <a class="addCursor ss-link" href="" routerLink="/lead/{{obj.id}}/activity-logs" [queryParams]="{lead_status: lead_status}" *ngIf="obj.project_details;else nolink ">{{obj.name}}</a>
+              <ng-template #nolink>{{obj.name}}</ng-template>
+            </td>
+            <td>{{obj.id}}</td>
+            <td class="capitalize" *ngIf="lead_status == 'leads_total_qualified'">{{obj.designerStatus}}</td>
+            <td *ngIf="['leads_assigned_qualified','leads_assigned_lost','leads_assigned_follow_up','leads_assigned_not_contactable'].includes(lead_status)">
+              <span *ngIf="obj.created_at">{{obj.created_at | date:'dd/MM/yyyy - h:mm a'}}</span>
+            </td>
+            <td class="capitalize">
+              <span *ngIf="obj.status_updated_at">
+                {{obj.status_updated_at | date:'dd/MM/yyyy - h:mm a'}}
+              </span>
+            </td>
+            <td class="capitalize" *ngIf="lead_status != 'leads_not_assigned' && lead_status != 'leads_dropped'">
+              <span *ngIf="obj.assigned_at">
+                {{obj.assigned_at  | date:'dd/MM/yyyy - h:mm a'}}
+              </span>
+            </td>
+            <td>{{ obj.referal_partner_name | replaceChar }}</td>
+
+            <td class="capitalize">
+              {{obj.lead_status | replaceChar}}
+              <div>
+                <br>
+                <a class="addCursor text-primary" (click)="smartShareHistory(obj.id)" data-toggle="modal" data-target="#smartShareHistory">Smartshare  History</a>
+              </div>
+              
+             <!--  <ng-container>
+
+                <p *ngIf="obj.lead_status=='dropped'">(Reason - {{obj.drop_reason | replaceChar}})</p>
+                <p *ngIf="obj.lead_status=='dropped' && obj.drop_reason=='Others'">(Remarks - {{obj.lost_remark}})</p>
+              </ng-container> -->
+            </td>
+            <td class="capitalize" *ngIf="lead_status == 'leads_dropped'">
+              <span *ngIf="obj.lost_remark == null">{{obj.drop_reason | replaceChar}}</span>
+              <a *ngIf="obj.lost_remark != null"  data-trigger="hover" title="Remarks" [attr.data-content] ="obj.lost_remark" class="pop" (mouseenter)="openpopup($event)">{{obj.drop_reason | replaceChar}}</a>
+            </td>
+            <td  *ngIf="lead_status != 'leads_dropped'" class="capitalize">
+              <span *ngIf="obj.project_details && obj.project_details.status; else status_div">
+                <ng-container *ngIf="['lost','follow_up'].includes(obj.project_details.status)==false">{{obj.project_details.status | replaceChar}}
+
+                </ng-container>
+                <ng-container *ngIf="(obj.project_details.status =='not_contactable')">
+                 <p class="time-chng">{{obj.event_scheduled_at.follow_up_for_not_contactable_time | date:'dd/MM/yyyy - h:mm a'}}</p>
+
+                </ng-container>
+                <ng-container *ngIf="(obj.project_details.status =='delayed_possession' || obj.project_details.status =='delayed_project')">
+                 <p class="time-chng" *ngIf="obj.delayed_date">Date-({{obj.delayed_date}})</p>
+
+                </ng-container>
+                <ng-container *ngIf="(obj.project_details.status=='lost')">
+                   <a data-trigger="hover" title="Remarks" [attr.data-content] ="obj.project_details.remarks" class="pop" (mouseenter)="openpopup($event)" *ngIf="obj.project_details.remarks">{{obj.project_details.status | replaceChar}}</a>
+                   <p *ngIf="!obj.project_details.remarks">{{obj.project_details.status | replaceChar}}</p>
+                   <p class="time-chng">(Reason - {{ obj.project_details.reason_for_lost | replaceChar }} )</p>
+                </ng-container>
+                <ng-container *ngIf="(obj.project_details.status=='follow_up')">
+                    <a data-trigger="hover" title="Remarks" [attr.data-content] ="obj.project_details.remarks" class="pop" (mouseenter)="openpopup($event)">{{obj.project_details.status | replaceChar}}</a>
+                    <p class="time-chng">{{obj.event_scheduled_at.follow_up_time | date:'dd/MM/yyyy - h:mm a'}}</p>
+                </ng-container>
+              </span>
+              <ng-template #status_div></ng-template>
+            </td>
+            <td *ngIf="obj.project_details && ['leads_not_assigned', 'leads_delayed_possession', 'leads_delayed_project'].includes(lead_status)">
+              <select (change) = "onStatusChange(obj.project_details.id,obj.project_details.user_id, $event.target.value)" class="custom-select" *ngIf="obj.project_details">
+                <option>Change status</option>
+                <option value="not_contactable">Not Contactable</option>
+                <option value="follow_up">Follow Up</option>
+                <option value="delayed_possession">Delayed Possession</option>
+                <option value="delayed_project">Delayed Project</option>
+              </select>
+            </td>
+            <td *ngIf="lead_status == 'leads_assigned' && ['follow_up','qualified','not_contactable','delayed_possession','delayed_project'].includes(obj.project_details.status)">
+              <select (change) = "onStatusChange(obj.project_details.id,obj.project_details.user_id, $event.target.value)" class="custom-select" *ngIf="obj.project_details">
+                <option>Change status</option>
+                <option value="wip" >WIP</option>
+                <option value="lost" >Lost</option>
+                <option value="delayed_possession">Delayed Possession</option>
+                <option value="delayed_project">Delayed Project</option>
+              </select>
+            </td>
+            <td *ngIf="lead_status == 'leads_assigned' && ['wip','lost','10_50_percent','inactive','on_hold'].includes(obj.project_details.status)">
+
+            </td>
+            <td *ngIf="!['leads_dropped', 'leads_not_assigned', 'leads_delayed_project', 'leads_delayed_possession'].includes(lead_status)">{{obj.assigned_to_name}} - {{obj.assigned_to}} </td>
+            <td class="capitalize" *ngIf="lead_status!='leads_dropped' && (role=='community_manager')">
+              <select class="custom-select addCursor"  (change)="onDropdownChange($event.target.value,i)" id="assigndropdown{{i}}" style="max-width: 80%;" *ngIf="obj.project_details  ||  (obj.project_details.status == 'delayed_possession' || obj.project_details.status == 'delayed_project')" >
+                <option>Assign To Designer</option>
+                <option *ngFor="let des of designersList" value={{des.id}}>{{des.name | ucwords}} - {{des.email}}</option>
+              </select>
+              <i class="ion-android-send ss-send-circle addCursor" (click)="designerLeadsCount(obj.client_id,obj.project_details.id,i)" *ngIf="obj.project_details  ||  (
+              obj.project_details.status == 'delayed_possession' || obj.project_details.status == 'delayed_project')"></i>
+            </td>
+            <td *ngIf="lead_status == 'leads_assigned_lost'">{{obj.project_details.remarks}}</td>
+            <td *ngIf="lead_status == 'leads_assigned_follow_up'">{{obj.event_schedule_at_follow_up_time}} </td>
+            <td *ngIf="lead_status == 'leads_assigned_not_contactable'">{{obj.project_details.remarks}} </td>
+            <td class="capitalize" *ngIf="lead_status != 'leads_dropped'" >
+              <div class="dropdown p-0" *ngIf="!obj.assigned_to">
+                <i id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="fa fa-caret-square-o-down cursor-pointer" style="color: #8f0020; font-size: 1.5rem;"></i>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                  <a class="dropdown-item" data-toggle="modal" data-target="#dropLeadModal"  *ngIf="lead_status!='leads_dropped'" (click)=passDropLeadData(obj.id)>Drop Lead</a>
+                </div>
+              </div>
+            </td>
+            </ng-container>
+             <ng-container *ngIf="!obj.project_details">
+                <td style="min-width: 1rem;">{{((current_page-1) * per_page) + (i+1)}}</td>
+            <td class="capitalize">
+              <a class="addCursor ss-link" href="" routerLink="/lead/{{obj.id}}/activity-logs" [queryParams]="{lead_status: lead_status}" *ngIf="obj.project_details;else nolink ">{{obj.name}}</a>
+              <ng-template #nolink>{{obj.name}}</ng-template>
+            </td>
+            <td>{{obj.id}}</td>
+            <td colspan="8">Project Not Found</td>
+             </ng-container>
+          </tr>
+        </tbody>
+      </table>
+      <div class="text-center" *ngIf="usersList && usersList.length >0">
+        <pagination-controls autoHide="true" (pageChange)="current_page = getUserList($event)"></pagination-controls>
+      </div>
+    </div>
+
+
+    <div class="row my-4 mobView">
+      <div class="col-12" *ngIf="usersList && usersList.length > 0">
+        <div *ngFor=" let obj of usersList | category :search.value | sort: {property: column, direction: direction}; let i = index"
+        [attr.data-index]="i">
+          <div class="card card-body mobCard mb-2">
+            <a data-toggle="collapse" href="#tableDiv{{i}}">
+              <i class="fa fa-angle-right"></i>
+            </a>
+            <h4 class="ss-link cursor-pointer" routerLink="/lead/{{obj.id}}/activity-logs" [queryParams]="{lead_status: lead_status}" *ngIf="obj.project_details;else nolink">Name: {{obj.name}}</h4>
+            <ng-template #nolink>{{obj.name}}</ng-template>
+            <div class="row">
+              <p class="col-5 mb-0">LEAD ID: {{obj.id}}</p>
+              <h6 class="col-7 mb-0 text-center"><a (click)="dropLead(obj.id,i)" *ngIf="lead_status!='leads_dropped'"><i class="fa fa-trash"></i></a></h6>
+            </div>
+          </div>
+          <div class="collapse" id="tableDiv{{i}}">
+            <div class="card card-body py-0 mb-3">
+              <div class="row">
+                <div class="col-12 py-3 borderRight" *ngIf="['leads_assigned_qualified','leads_assigned_lost','leads_assigned_follow_up','leads_assigned_not_contactable'].includes(lead_status)">
+                  <p class="tableInner">LEAD ACQUIRED</p>
+                  <p class="tableInner capitalize"><span *ngIf="obj.created_at">{{obj.created_at | date:'dd/MM/yyyy - h:mm a'}}</span></p>
+                </div>
+                <div class="col-12 py-3 borderRight" *ngIf="lead_status == 'leads_total_qualified'">
+                  <p class="tableInner">DESIGNER STATUS</p>
+                  <p class="tableInner capitalize">
+                    <span *ngIf="obj.status_updated_at">{{obj.designerStatus}}</span>
+                  </p>
+                </div>
+                <div class="col-12 py-3 borderRight">
+                  <p class="tableInner">LEAD ASSIGNED</p>
+                  <p class="tableInner capitalize">
+                    <span *ngIf="obj.status_updated_at">{{obj.status_updated_at | date:'dd/MM/yyyy - h:mm a'}}</span>
+                  </p>
+                </div>
+                <div class="col-12 py-3 borderRight" *ngIf="lead_status != 'leads_not_assigned' && lead_status != 'leads_dropped'">
+                  <p class="tableInner">LEAD ASSIGNED (DESIGNER)</p>
+                  <p class="tableInner capitalize">
+                    <span *ngIf="obj.assigned_at">{{obj.assigned_at | date:'dd/MM/yyyy - h:mm a'}}</span>
+                  </p>
+                </div>
+                <div class="col-12 py-3 borderRight">
+                  <p class="tableInner">CURRENT STATUS</p>
+                  <p class="tableInner capitalize">
+                    <span *ngIf="obj.project_details && obj.project_details.status; else status_div">
+                      <ng-container *ngIf="(obj.project_details.status!='follow_up')">{{obj.project_details.status | replaceChar}}
+
+                      </ng-container>
+                      <ng-container *ngIf="(obj.project_details.status =='not_contactable')">
+                        <p class="time-chng">{{obj.event_scheduled_at.follow_up_for_not_contactable_time | date:'dd/MM/yyyy - h:mm a'}}</p>
+
+                      </ng-container>
+                      <ng-container *ngIf="(obj.project_details.status=='follow_up')">
+                        <a data-trigger="hover" title="Remarks" [attr.data-content]="obj.project_details.remarks" class="pop" (mouseenter)="openpopup($event)">{{obj.project_details.status | replaceChar}}</a>
+                        <p class="time-chng">{{obj.event_scheduled_at.follow_up_time | date:'dd/MM/yyyy - h:mm a'}}</p>
+                      </ng-container>
+                    </span>
+                    <ng-template #status_div>{{obj.lead_status | replaceChar}}</ng-template>
+                  </p>
+                </div>
+                <div class="col-12 py-3 borderRight" *ngIf="lead_status == 'leads_not_assigned'">
+                  <p class="tableInner">CHANGE STATUS</p>
+                    <select (change)="onStatusChange(obj.project_details.id,obj.project_details.user_id, $event.target.value)" class="custom-select"
+                      *ngIf="obj.project_details">
+                      <option>Change status</option>
+                      <option value="not_contactable">Not Contactable</option>
+                      <option value="follow_up">Follow Up</option>
+                    </select>
+                </div>
+                <div class="col-12 py-3 borderRight" *ngIf="lead_status != 'leads_not_assigned'">
+                  <p class="tableInner">DESIGNER EMAIL</p>
+                  <p class="tableInner capitalize">{{obj.assigned_to}}</p>
+                </div>
+                <div class="col-12 py-3 borderRight" *ngIf="lead_status == 'leads_assigned_lost'">
+                  <p class="tableInner">REASON FOR LOST</p>
+                  <p class="tableInner capitalize">{{obj.lost_remark}}</p>
+                </div>
+                <div class="col-12 py-3 borderRight"*ngIf="lead_status == 'leads_assigned_follow_up'">
+                  <p class="tableInner">FOLLOW UP</p>
+                  <p class="tableInner capitalize">{{obj.event_schedule_at_follow_up_time}}</p>
+                </div>
+                <div class="col-12 py-3 borderRight" *ngIf="lead_status == 'leads_assigned_not_contactable'">
+                  <p class="tableInner">NOT CONTACTABLE REMARK</p>
+                  <p class="tableInner capitalize">{{obj.project_details.remarks}}</p>
+                </div>
+                <div class="col-12 py-3 borderRight">
+                  <p class="tableInner">ASSIGN DESIGNER</p>
+                  <div *ngIf="lead_status!='leads_dropped'">
+                    <select class="custom-select" (change)="onDropdownChange($event.target.value,i)" id="assigndropdown{{i}}" style="max-width: 80%;"
+                      *ngIf="obj.project_details ">
+                      <option>Assign To Designer</option>
+                      <option *ngFor="let des of designersList" value={{des.id}}>{{des.name | ucwords}} - {{des.email}}</option>
+                    </select>
+                    <i class="ion-android-send ss-send-circle" (click)="assignLeadToDesigner(obj.client_id,obj.project_details.id,i)" *ngIf="obj.project_details"></i>
+                  </div>
+                </div>
+                <!-- <div class="col-12 callBtn" (click)="callToLead(data.lead_details.contact)">
+                  <span>CALL</span>
+                </div> -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+</div>
+
+<div class="modal fade" id="questionnaireModal" tabindex="-1" role="dialog" aria-labelledby="questionnaireModalLabel" aria-hidden="true">
+  <div class="modal-dialog vik-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="btnGroup">
+          <button class="upload0 actBtn" (click)="CSQuestionnaire();">CS Questionnaire</button>
+          <button class="upload1" (click)="bookingForm1Details();">Designer Booking Form 1</button>
+          <button class="upload2" (click)="bookingForm2Details()">Designer Booking Form 2</button>
+        </div>
+        <h5 class="modal-title vik-title mt-5 addClass" id="userModalLabel">CS Questionnaire</h5>
+        <h5 class="modal-title vik-title mt-5 addClass1 hideClass" id="userModalLabel">Designer Booking Form 1</h5>
+        <h5 class="modal-title vik-title mt-5 addClass2 hideClass" id="userModalLabel">Designer Booking Form 2</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="userQuestionnaireDetails=undefined; closeModal();">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <!-- update lead questionnaire-->
+      <div class="modal-body mBody_height mt-2">
+        <div class="col-12" *ngIf="erroralertmodal">
+          <div class="alert-box grid-100" *ngIf="errorMessagemodal">
+            <div class="alert alert-danger mt-3 text-center">
+              <a class="close link" data-dismiss="alert" (click)="erroralertmodal=false">×</a>
+              {{errorMessagemodal}}
+            </div>
+          </div>
+        </div>
+        <div class="col-12" *ngIf="successalertmodal">
+          <div class="alert-box grid-100" *ngIf="successMessagemodal">
+            <div class="alert alert-success mt-3 text-center">
+              <a class="close link" data-dismiss="alert"  (click)="successalertmodal=false">×</a>
+              {{successMessagemodal}}
+            </div>
+          </div>
+        </div>
+        <div class="addClass">
+         <!--  <p *ngIf="userQuestionnaireDetails==null || userQuestionnaireDetails==undefined ">No questionnaire available </p> -->
+          <form [formGroup]="updateLeadquestionnaireForm" (ngSubmit)="updateRecordNotesQuestionnaire(leadIDForModal,updateLeadquestionnaireForm.value);">
+            <div class="row justify-content-center">
+              <div class="col-11">
+                <div class="row">
+                  <div class="col-sm-10 col-md-6">
+                    <div class="form-group">
+                      <label class="customLabel">Customer Name<span>*</span></label>
+                      <input type="text" class="form-control" formControlName="customer_name">
+                    </div>
+                  </div>
+
+                  <div class="col-sm-10 col-md-6">
+                    <div class="form-group">
+                      <label class="customLabel">Customer Phone No<span>*</span></label>
+                      <input type="text" class="form-control" formControlName="phone">
+                    </div>
+                  </div>
+
+                  <div class="col-sm-10 col-md-6 mt-2">
+                    <div class="form-group">
+                      <label class="customLabel">Project Name</label>
+                      <input type="text" class="form-control" formControlName="project_name">
+                    </div>
+                  </div>
+
+                  <div class="col-sm-10 col-md-6 mt-2">
+                    <label class="customLabel">Call Back Day <span>*</span></label>
+                    <div class="form-check">
+                      <input type="date" name="" formControlName="call_back_day" class="form-control">
+                    </div>
+                  </div>
+
+                  <div class="col-sm-10 col-md-6 mt-2">
+                    <label class="customLabel">Call Back Time <span>*</span></label>
+                    <div class="form-check">
+                      <select formControlName="call_back_time" class="form-control">
+                        <option value="" disabled>Choose</option>
+                        <option value="10:00 AM">10:00 AM</option>
+                        <option value="10:30 AM">10:30 AM</option>
+                        <option value="11:00 AM">11:00 AM</option>
+                        <option value="11:30 AM">11:30 AM</option>
+                        <option value="12:00 PM">12:00 PM</option>
+                        <option value="12:30 PM">12:30 PM</option>
+                        <option value="1:00 PM">1:00 PM</option>
+                        <option value="1:30 PM">1:30 PM</option>
+                        <option value="2:00 PM">2:00 PM</option>
+                        <option value="2:30 PM">2:30 PM</option>
+                        <option value="3:00 PM">3:00 PM</option>
+                        <option value="3:30 PM">3:30 PM</option>
+                        <option value="4:00 PM">4:00 PM</option>
+                        <option value="4:30 PM">4:30 PM</option>
+                        <option value="5:00 PM">5:00 PM</option>
+                        <option value="5:30 PM">5:30 PM</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-10 col-md-6 mt-2">
+                    <div class="form-group">
+                      <label class="customLabel">Location<span>*</span></label>
+                      <input type="text" class="form-control" placeholder="Your answer" formControlName="location">
+                    </div>
+                  </div>
+
+                  <div class="col-sm-10 col-md-10 mt-2">
+                    <label class="customLabel">City<span>*</span></label>
+                    <div class="form-check">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="Mumbai" formControlName="city">
+                        Mumbai
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="Pune" formControlName="city">
+                        Pune
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="Ahmedabad" formControlName="city">
+                        Ahmedabad
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="Other" formControlName="city">
+                        Other:
+                      </label>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-10 col-md-10 mt-2">
+                    <label class="customLabel">Project Type<span>*</span></label>
+                    <div class="form-check">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="Residential" formControlName="project_type">
+                        Residential
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="Offices" formControlName="project_type">
+                        Offices
+                      </label>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-10 col-md-10 mt-2">
+                    <label class="customLabel">Type of Accommodation<span>*</span></label>
+                    <div class="form-check">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="Studio Apartment" formControlName="accomodation_type">
+                        Studio Apartment
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="1RK" formControlName="accomodation_type">
+                        1RK
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="1BHK" formControlName="accomodation_type">
+                        1BHK
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="1.5BHK" formControlName="accomodation_type">
+                        1.5BHK
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="2BHK" formControlName="accomodation_type">
+                        2BHK
+                      </label>
+                       <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="2.5BHK" formControlName="accomodation_type">
+                        2.5BHK
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="3BHK" formControlName="accomodation_type">
+                        3BHK
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="3.5BHK" formControlName="accomodation_type">
+                        3.5BHK
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="4BHK" formControlName="accomodation_type">
+                        4BHK
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="4.5BHK" formControlName="accomodation_type">
+                        4.5BHK
+                      </label>
+                       <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="5BHK" formControlName="accomodation_type">
+                        5BHK
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="Villa" formControlName="accomodation_type">
+                        Villa
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="Bungalow" formControlName="accomodation_type">
+                        Bungalow
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="Office Space" formControlName="accomodation_type">
+                        Office Space
+                      </label>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-10 col-md-10 mt-2">
+                    <label class="customLabel">Scope of work<span>*</span></label>
+                    <div class="form-check">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="checkbox" value="Complete interiors (e.g. Tiling/Ceiling/Painting)" (change)="onCheckChange($event,'scope_of_work')" [checked]="(userQuestionnaireDetails && userQuestionnaireDetails[0] && userQuestionnaireDetails[0]['scope_of_work']!=null && userQuestionnaireDetails[0]['scope_of_work'].indexOf('Complete interiors (e.g. Tiling/Ceiling/Painting)') >=0) || (userQuestionnaireDetails && userQuestionnaireDetails['scope_of_work']!=null && userQuestionnaireDetails['scope_of_work'].indexOf('Complete interiors (e.g. Tiling/Ceiling/Painting)') >=0)">
+                        Complete interiors (e.g. Tiling/Ceiling/Painting)
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="checkbox" value="Renovation of specific area like Kitchen/Wardrobe" (change)="onCheckChange($event,'scope_of_work')" [checked]="(userQuestionnaireDetails && userQuestionnaireDetails[0] && userQuestionnaireDetails[0]['scope_of_work']!=null && userQuestionnaireDetails[0]['scope_of_work'].indexOf('Renovation of specific area like Kitchen/Wardrobe') >=0) || (userQuestionnaireDetails && userQuestionnaireDetails['scope_of_work']!=null && userQuestionnaireDetails['scope_of_work'].indexOf('Renovation of specific area like Kitchen/Wardrobe') >=0)">
+                        Renovation of specific area like Kitchen/Wardrobe
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="checkbox" value="Full House Furniture" (change)="onCheckChange($event,'scope_of_work')" [checked]="(userQuestionnaireDetails && userQuestionnaireDetails[0] && userQuestionnaireDetails[0]['scope_of_work']!=null && userQuestionnaireDetails[0]['scope_of_work'].indexOf('Full House Furniture') >=0) || (userQuestionnaireDetails && userQuestionnaireDetails['scope_of_work']!=null && userQuestionnaireDetails['scope_of_work'].indexOf('Full House Furniture') >=0)">
+                        Full House Furniture
+                      </label>
+                      <label class="form-check-label">
+                        <input type="checkbox" class="form-check-input" value="Modular Kitchen" (change)="onCheckChange($event,'scope_of_work')" [checked]="(userQuestionnaireDetails && userQuestionnaireDetails[0] && userQuestionnaireDetails[0]['scope_of_work']!=null && userQuestionnaireDetails[0]['scope_of_work'].indexOf('Modular Kitchen') >=0) || (userQuestionnaireDetails && userQuestionnaireDetails['scope_of_work']!=null && userQuestionnaireDetails['scope_of_work'].indexOf('Modular Kitchen') >=0)">
+                        Modular Kitchen
+                      </label>
+                      <label class="form-check-label">
+                        <input type="checkbox" class="form-check-input" value="Modular Wardrobe" (change)="onCheckChange($event,'scope_of_work')" [checked]="(userQuestionnaireDetails && userQuestionnaireDetails[0] && userQuestionnaireDetails[0]['scope_of_work']!=null && userQuestionnaireDetails[0]['scope_of_work'].indexOf('Modular Wardrobe') >=0) || (userQuestionnaireDetails && userQuestionnaireDetails['scope_of_work']!=null && userQuestionnaireDetails['scope_of_work'].indexOf('Modular Wardrobe') >=0)">
+                        Modular Wardrobe
+                      </label>
+                      <label class="form-check-label">
+                        <input type="checkbox" class="form-check-input" value="Loose Furniture" (change)="onCheckChange($event,'scope_of_work')" [checked]="(userQuestionnaireDetails && userQuestionnaireDetails[0] && userQuestionnaireDetails[0]['scope_of_work']!=null && userQuestionnaireDetails[0]['scope_of_work'].indexOf('Loose Furniture') >=0) || (userQuestionnaireDetails && userQuestionnaireDetails['scope_of_work']!=null && userQuestionnaireDetails['scope_of_work'].indexOf('Loose Furniture') >=0)">
+                        Loose Furniture
+                      </label>
+                      <label class="form-check-label">
+                        <input type="checkbox" class="form-check-input" value="Remarks" (change)="onCheckChange($event,'scope_of_work')" [checked]="(userQuestionnaireDetails && userQuestionnaireDetails[0] && userQuestionnaireDetails[0]['scope_of_work']!=null && userQuestionnaireDetails[0]['scope_of_work'].indexOf('Remarks') >=0) || (userQuestionnaireDetails && userQuestionnaireDetails['scope_of_work']!=null && userQuestionnaireDetails['scope_of_work'].indexOf('Remarks') >=0)">Remarks <input type="text" class="ml-2" formControlName="remarks_of_sow" placeholder="Enter Remarks Here">
+                      </label>
+                    </div>
+                  </div>
+                  <div class="col-sm-10 col-md-10 mt-2">
+                    <label class="customLabel">Possession status<span>*</span></label>
+                    <div class="form-check">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="Possession Taken" formControlName="possession_status" (click)="possesionStatusSelected('Possession Taken','updateQuestionnaire')">
+                        Possession Taken
+                      </label>
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="radio" value="Awaiting Possession" formControlName="possession_status" (click)="possesionStatusSelected('Awaiting Possession','updateQuestionnaire')">
+                        Awaiting Possession (If Yes, please fill the date of possession below on "other")
+                      </label>
+                    </div>
+                  </div>
+                  <div class="col-sm-10 col-md-10 mt-2" id="possesiondateupdate">
+                    <label class="customLabel">Select Possession Month and Year <span>*</span></label>
+                    <div class="form-check"><input class="form-control" type="date" formControlName="possession_status_date"></div>
+                  </div>
+                  <div class="col-sm-10 col-md-10 mt-2">
+                    <div class="form-group">
+                      <label class="customLabel">Home Value(In Rs. Lacs)</label>
+                      <input type="number" class="form-control" placeholder="Home value" formControlName="home_value" (keydown)="numberCheck($event)">
+                    </div>
+                  </div>
+                  <div class="col-sm-10 col-md-10 mt-2">
+                    <div class="form-group">
+                      <label class="customLabel">Budget Value(In Rs. Lacs)</label>
+                      <input type="number" class="form-control" placeholder="Budget value" formControlName="budget_value" (keydown)="numberCheck($event)">
+                    </div>
+                  </div>
+
+                  <div class="col-sm-10 col-md-10 mt-2">
+                    <div class="form-group">
+                      <label class="customLabel">Do you have a home loan against the property?<span>*</span></label>
+                      <div class="form-check">
+                        <label class="form-check-label">
+                          <input class="form-check-input" type="radio" value="Yes" formControlName="have_homeloan">
+                          Yes
+                        </label>
+                        <label class="form-check-label">
+                          <input class="form-check-input" type="radio" value="No" formControlName="have_homeloan">
+                          No
+                        </label>
+                        <label class="form-check-label">
+                          <input class="form-check-input" type="radio" value="Doesn't want to disclose" formControlName="have_homeloan">
+                          Doesn't want to disclose
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-10 col-md-10 mt-2">
+                    <div class="form-group">
+                      <label class="customLabel">Do you have a floor plan?<span>*</span></label>
+                      <div class="form-check">
+                        <label class="form-check-label">
+                          <input class="form-check-input" type="radio" value="Yes" formControlName="have_floorplan" (click)="fpQuestionnaireSelected('yes')">
+                          Yes
+                        </label>
+                        <label class="form-check-label">
+                          <input class="form-check-input" type="radio" value="No" formControlName="have_floorplan" (click)="fpQuestionnaireSelected('no')">
+                          No
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-10 col-md-10 mt-2" *ngIf="updateLeadquestionnaireForm.controls['lead_floorplan'].value != '/images/original/missing.png' && updateLeadquestionnaireForm.controls['have_floorplan'].value=='Yes' && userQuestionnaireDetails && userQuestionnaireDetails.length!=0">
+                    <label class="customLabel">Uploaded Floorplan</label>
+                    <div class="form-check">
+                      <a href="{{updateLeadquestionnaireForm.controls['lead_floorplan'].value}}" target="_blank"  style="color: #007bff">View Floorplan </a>
+                    </div>
+                  </div>
+                  <div class="col-sm-10 col-md-10 mt-2" *ngIf="updateLeadquestionnaireForm.controls['lead_floorplan'].value == '/images/original/missing.png' && updateLeadquestionnaireForm.controls['have_floorplan'].value=='Yes' && userQuestionnaireDetails ">
+                    <label class="customLabel">Uploaded Floorplan</label>
+                    <div class="form-check">
+                      <span class="text-danger">Floorplan Not Available</span>
+                    </div>
+                  </div>
+                  <div class="col-sm-10 col-md-10 mt-2" id="floorplanQuestionnaire">
+                    <label class="customLabel">Upload Floorplan</label>
+                    <div class="form-check">
+                      <input class="form-control" type="file" (change)="onQuestionnaireFloorplanChange($event)" name="floorplan_attachment_file" ngModel #floorplan_attachment_file="ngModel" [ngModelOptions]="{standalone: true}">
+                    </div>
+                    <p id="extErrorMsg" class="text-danger d-none col-sm-10">Check File extension (File should be in proper image format).</p>
+                      <p class="col-sm-10">Note* - only image files are allowed.  </p>
+                  </div>
+
+                  <div class="col-sm-10 col-md-10">
+                    <div class="form-group">
+                      <label class="customLabel">Additional Comments</label>
+                      <div class="form-check">
+                        <textarea rows="2" class="form-control" formControlName="additional_comments"></textarea>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-12 col-md-12">
+                    <button class="mt-4 button_emi button" type="submit" *ngIf="userQuestionnaireDetails && userQuestionnaireDetails.length >0">UPDATE</button>
+                    <button class="button_emi button mt-4" type="submit" *ngIf="userQuestionnaireDetails && userQuestionnaireDetails.length ==0 ">SUBMIT</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="addClass1 hideClass">
+          <form [formGroup]="designerBookingForm1" (ngSubmit)="designerBookingForm1Submit(designerBookingForm1.value,'bookingForm1')">
+            <div  class="row question" *ngIf="bookingFormDetails">
+              <div class="col-md-6 mt-3">
+                  <label class="customLabel"><strong>Customer Name </strong></label>
+                  <input type="text" class="form-control" formControlName="customer_name">
+              </div>
+              <div class="col-md-6 mt-3">
+                  <label class="customLabel"><strong>Customer Age </strong></label>
+                <input type="text" class="form-control" formControlName="customer_age">
+              </div>
+              <div class="col-md-12 mt-4">
+                  <label class="customLabel"><strong>Profession / Background of the Client </strong></label>
+                  <input type="text" class="form-control" formControlName="profession">
+              </div>
+              <div class="col-md-12 mt-4">
+                  <label class="customLabel"><strong>Family Background of members staying in the house </strong></label>
+                  <input type="text" class="form-control" formControlName="family_profession">
+              </div>
+              <div class="col-md-12 mt-4">
+                  <label class="customLabel"><strong>Age of the house or structure of the house/area which needs to be remodelled or refurbish</strong></label>
+                  <input type="text" class="form-control" formControlName="age_house">
+              </div>
+
+              <div class="col-md-12 mt-4">
+                  <label class="customLabel"><strong>Lifestyle of the members staying in the house</strong></label>
+                  <input type="text" class="form-control" formControlName="lifestyle">
+              </div>
+              <div class="col-md-12 mt-4">
+                  <label class="customLabel"><strong>What do they love about the house or a particular area in the house. (e.g. Warm corners, Cozy corner, Family space, Activity space)</strong> </label>
+                  <input type="text" class="form-control" formControlName="house_positive_features">
+              </div>
+              <div class="col-md-12 mt-4">
+                  <label class="customLabel"><strong>Something which they don’t like in the house or a particular area. (Negative space, Passage areas, No ventilation)</strong></label>
+                  <input type="text" class="form-control" formControlName="house_negative_features">
+              </div>
+              <div class="col-md-12 mt-4">
+                  <label class="customLabel"><strong>Any inspirational references they have in their mind which they want to duplicate </strong></label>
+                  <input type="text" class="form-control col-md-7" style="display: inline;" formControlName="inspiration">
+                  <input class="form-control col-md-4" type="file" (change)="onChange($event)" name="attachment_file" ngModel #attachment_file="ngModel" [ngModelOptions]="{standalone: true}" style="display: inline;"><br>
+                  <a href="{{bookingFormDetails.designer_booking_form.general.inspiration_image}}" *ngIf="bookingFormDetails && bookingFormDetails.designer_booking_form.general.inspiration_image!='/images/original/missing.png'" target="_blank">View Reference</a>
+              </div>
+              <div class="col-md-12 mt-4">
+                  <label class="customLabel"><strong>Any preferred colour tones/hues/shades or antiques, or decor</strong> </label>
+                  <input type="text" class="form-control" formControlName="color_tones">
+              </div>
+              <div class="col-md-12 mt-4">
+                <label class="customLabel"><strong>Is there any particular theme which interests you for the look of the place? </strong></label>
+                <input class="form-control" type="text" formControlName="theme">
+              </div>
+              <div class="col-md-12 mt-4">
+                  <label class="customLabel"><strong>How do they use this house/room (Functionality of the house, Will they lease it out Or Occupy it themselves)?</strong> </label>
+                  <input type="text" class="form-control" formControlName="functionality">
+              </div>
+              <div class="col-md-12 mt-4">
+                <label class="customLabel"><strong> Do you need  a false ceiling for the space?</strong></label>
+                  <input type="text" class="form-control" formControlName="false_ceiling">
+              </div>
+              <div class="col-md-12 mt-4">
+                  <label class="customLabel"><strong>Will there be changes in electrical points, adding new ones like changing the TV point?</strong> </label>
+                  <input type="text" class="form-control" formControlName="electrical_points">
+              </div>
+              <div class="col-md-12 mt-4">
+                  <label class="customLabel"><strong>Are there any special needs/wants that I as a designer should take into consideration?</strong> </label>
+                  <input type="text" class="form-control" formControlName="special_needs">
+              </div>
+              <div class="col-md-12 mt-4">
+                  <label class="customLabel"><strong>Do you want to consider Vastu Shastra  in your design, and what are the things that you want to consider into it?</strong> </label>
+                  <input type="text" class="form-control" formControlName="vastu_shastra">
+              </div>
+              <div class="col-md-12 mt-4">
+                  <label class="customLabel"><strong>Do they want to accomplish this all at once or in phases(May be first just the living area / Only kitchen / Only furniture works etc)</strong> </label>
+                  <input type="text" class="form-control" formControlName="all_at_once">
+              </div>
+              <div class="col-md-12 mt-4">
+                  <label class="customLabel"><strong>Any budget range they have set in their mind (Approximate ball park figure and range)</strong> </label>
+                  <input type="text" class="form-control" formControlName="budget_range">
+              </div>
+              <div class="col-md-12 mt-4">
+                  <label class="customLabel"><strong>Any particular design style in accordance to their tastes(Contemporary,  Modern,  Elegant, Royal, Traditional Or Ethnic styles)</strong> </label>
+                  <input type="text" class="form-control" formControlName="design_style_tastes">
+              </div>
+              <div class="col-md-12 mt-4">
+                  <label class="customLabel"><strong>Do they want more of storage space in the house, where, and what do they want to store?</strong> </label>
+                  <input type="text" class="form-control" formControlName="storage_space">
+              </div>
+              <div class="col-md-12 mt-4">
+                  <label class="customLabel"><strong>How do they want the mood of the house to be created. (Formal, Relaxed, Warm, Cool, Lively, Spacious etc)?</strong> </label>
+                  <input type="text" class="form-control" formControlName="mood">
+              </div>
+              <div class="col-md-12 mt-4">
+                  <label class="customLabel"><strong>What are the enhancements which needs to be considered like furniture, flooring, re-upholstery, remodelling, space planning, wall & floor coverings, lighting etc?</strong> </label>
+                  <input type="text" class="form-control"  formControlName="enhancements">
+              </div>
+              <div class="col-md-12 mt-4">
+                  <label class="customLabel"><strong>Will they like to come to our experience centre, to discuss the details in person?</strong> </label>
+                  <input type="text" class="form-control" formControlName="discuss_in_person" >
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12 mt-4">
+                <button class="button_emi button" id="designerBookingForm1Button">SUBMIT</button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="addClass2 hideClass">
+          <form [formGroup]="designerBookingForm1" (ngSubmit)="designerBookingForm1Submit(designerBookingForm1.value,'bookingForm2')">
+            <div  class="row question" *ngIf="bookingFormDetails">
+              <div class="col-md-6 mt-3">
+                  <label class="customLabel"><strong>Customer Name </strong></label>
+                  <input type="text" class="form-control" formControlName="customer_name">
+              </div>
+              <div class="col-md-6 mt-3">
+                  <label class="customLabel"><strong>Customer Age </strong></label>
+                <input type="text" class="form-control" formControlName="customer_age">
+              </div>
+              <div class="col-md-12 mt-4">
+                  <label class="customLabel"><strong>Profession / Background of the Client </strong></label>
+                  <input type="text" class="form-control" formControlName="profession">
+              </div>
+
+              <div class="col-md-12 mt-4">
+                  <label class="customLabel"><strong>Family Background of members staying in the house </strong></label>
+                  <input type="text" class="form-control" formControlName="family_profession">
+              </div>
+              <div class="col-md-12 mt-4">
+                  <label class="customLabel"><strong>How old is the kitchen</strong></label>
+                  <input type="text" class="form-control" formControlName="mk_age">
+              </div>
+
+              <div class="col-md-12 mt-4">
+                  <label class="customLabel"><strong>Lifestyle of the members staying in the house</strong></label>
+                  <input type="text" class="form-control" formControlName="mk_lifestyle">
+              </div>
+              <div class="col-md-12 mt-4">
+                  <label class="customLabel"><strong>Are they planning to gut the kitchen area</strong> </label>
+                  <input type="text" class="form-control" formControlName="mk_gut_kitchen">
+              </div>
+              <div class="col-md-12 mt-4">
+                  <label class="customLabel"><strong>Are they planning to keep the same layout & simply make cosmetic changes</strong></label>
+                  <input type="text" class="form-control" formControlName="mk_same_layout">
+              </div>
+              <div class="col-md-12 mt-4">
+                  <label class="customLabel"><strong>What kind of improvements are they looking for in a new kitchen (Upgraded electrical service, Better lighting, Additional storage space. ) </strong></label>
+                  <input type="text" class="form-control" formControlName="mk_improvements">
+              </div>
+              <div class="col-md-12 mt-4">
+                  <label class="customLabel"><strong>Some special requirements in a new kitchen?</strong> </label>
+                  <input type="text" class="form-control" formControlName="mk_special_requirements">
+              </div>
+              <div class="col-md-12 mt-4">
+                <label class="customLabel"><strong>Who is the primary cook? And what kind of cooking they have on a regular basis (Veg / Non Veg) </strong></label>
+                <input class="form-control" type="text" formControlName="mk_cooking_details">
+              </div>
+              <div class="col-md-12 mt-4">
+                  <label class="customLabel"><strong>List of appliances/white goods/smaller electrical appliances(Microwave / Oven / Mixie)</strong> </label>
+                  <input type="text" class="form-control" formControlName="mk_appliances">
+              </div>
+              <div class="col-md-12 mt-4">
+                <label class="customLabel"><strong> What is the family eating area as in  like kitchen area, dining table, counter space?</strong></label>
+                  <input type="text" class="form-control" formControlName="mk_family_eating_area">
+              </div>
+              <div class="col-md-12 mt-4">
+                  <label class="customLabel"><strong>How often do they entertain guests?</strong> </label>
+                  <input type="text" class="form-control" formControlName="mk_guest_frequence">
+              </div>
+              <div class="col-md-12 mt-4">
+                  <label class="customLabel"><strong>Storage patterns like monthly, yearly, as required basis?</strong> </label>
+                  <input type="text" class="form-control" formControlName="mk_storage_patterns">
+              </div>
+              <div class="col-md-12 mt-4">
+                  <label class="customLabel"><strong>What kind of cabinets facing they are looking at (Glossy / Matt)</strong> </label>
+                  <input type="text" class="form-control" formControlName="mk_cabinet_finishing">
+              </div>
+              <div class="col-md-12 mt-4">
+                  <label class="customLabel"><strong>Counter top material/backsplash materials to be discussed</strong> </label>
+                  <input type="text" class="form-control" formControlName="mk_countertop_materials">
+              </div>
+              <div class="col-md-12 mt-4">
+                  <label class="customLabel"><strong>Any colour/mood for the look preferred?</strong> </label>
+                  <input type="text" class="form-control" formControlName="mk_mood">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12 mt-4">
+                <button class="button_emi button" id="designerBookingForm2Button">SUBMIT</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- User Modal -->
+<div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
+  <div class="modal-dialog vik-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="btnGroup">
+          <button class="upload0 actBtn" (click)="taskDetails()">Project Tasks</button>
+          <button class="upload1" (click)="ganttchartDetails(); getTaskList(userData[0].project_id)">Gantt Chart</button>
+          <!-- <button class="upload2" (click)="questionnaire()">Questionnaire</button> -->
+        </div>
+        <h5 class="modal-title vik-title mt-5 addClass" id="userModalLabel">Project Tasks</h5>
+        <h5 class="modal-title vik-title mt-5 addClass1 hideClass" id="userModalLabel">Gantt Chart</h5>
+        <!-- <h5 class="modal-title vik-title mt-5 addClass2 hideClass" id="userModalLabel">Questionnaire Form</h5> -->
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="clearModalData(); taskDetails();">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mBody_height">
+        <div class="row addClass">
+          <div class="col-12" *ngIf="erroralertmodal">
+            <div class="alert-box grid-100" *ngIf="errorMessagemodal">
+              <div class="alert alert-danger mt-3 text-center">
+                <a class="close link" data-dismiss="alert" (click)="erroralertmodal=false">×</a>
+                {{errorMessagemodal}}
+              </div>
+            </div>
+          </div>
+          <div class="col-12" *ngIf="successalertmodal">
+            <div class="alert-box grid-100" *ngIf="successMessagemodal">
+              <div class="alert alert-success mt-3 text-center">
+                <a class="close link" data-dismiss="alert"  (click)="successalertmodal=false">×</a>
+                {{successMessagemodal}}
+              </div>
+            </div>
+          </div>
+          <div class="col-12 table-responsive" *ngIf="userData && userData.length !=0">
+            <a class="addCursor" (click)="showAddtaskForm()"><i class="fa fa-plus mr-2"></i>Add New Task</a>
+            <table style="display: none" id="addtakformtable" class="table table-hover my-2">
+              <tbody>
+                <form [formGroup]="addTaskForm">
+                  <tr>
+                   <td>
+                      <label>Enter Task Name<span class="text-danger">*</span></label>
+                      <input type="text" name="taskname" class="form-control" formControlName="name">
+                      <!-- <span class="text-danger">Name is required.</span> -->
+                    </td>
+                    <td>
+                      <label>Enter Task Duration</label>
+                      <input type="number" name="taskduration" min="0" class="form-control" placeholder="" formControlName="duration">
+                    </td>
+                    <td>
+                      <label>Enter Percent Completion<span class="text-danger">*</span></label>
+                      <input type="number" name="taskpercentcomplete" class="form-control" placeholder="" formControlName="percent_completion" min="0">
+                      <!-- <span class="text-danger">Percent Completion is required.</span> -->
+                    </td>
+                    <td>
+                      <label>Select Action Point</label>
+                      <select formControlName="action_point" class="form-control">
+                        <option value="">Select Action Point</option>
+                        <option value="Designer">Designer</option>
+                        <option value="Customer">Customer</option>
+                        <option value="Site Supervisor">Site Supervisor</option>
+                        <option value="Community Manager">Community Manager</option>
+                        <option value="Category">Category</option>
+                        <option value="Finance">Finance</option>
+                        <option value="Logistics">Logistics</option>
+                      </select>
+                    </td>
+                    <td>
+                      <label>Select Process Owner</label>
+                      <select formControlName="process_owner" class="form-control">
+                        <option value="">Select Process Owner</option>
+                        <option value="Community Manager">Community Manager</option>
+                        <option value="General Manager">General Manager</option>
+                        <option value="Category">Category</option>
+                      </select>
+                    </td>
+                    <td>
+                      <label>Enter Dependencies</label>
+                      <input type="text" name="taskdependencies" placeholder="" formControlName="upstream_dependencies" class="form-control">
+                      <!-- <span class="text-danger">Note* - Multiple dependencies should be comma seperated.</span> -->
+                    </td>
+                    <td>
+                      <label>Enter Remarks</label>
+                      <input type="text" name="taskremarks" placeholder="" class="form-control" formControlName="remarks">
+                    </td>
+                    <td>
+                      <label>Enter Start Date</label>
+                      <input type="date" name="taskstartdate" placeholder="" formControlName="start_date" class="form-control">
+                    </td>
+                    <td>
+                      <label>Enter End Date</label>
+                      <input type="date" name="projecttaskenddate" placeholder="" formControlName="end_date" class="form-control">
+                    </td>
+                    <td>
+                      <button (click)="addTask(userData[0].customer_id,userData[0].project_id,addTaskForm.value)" class="addCursor">Add</button>
+                      <a class="addCursor" (click)="cancelAddtaskForm()">Cancel</a>
+                    </td>
+                  </tr>
+                </form>
+              </tbody>
+            </table>
+            <p class="text-danger my-2" style="font-size: 13px;">Note* - Percent complete (0- Incomplete, 1- Complete). Multiple dependencies should be comma seperated.</p>
+          </div>
+          <div class="col-12 table-responsive">
+            <p *ngIf="(userData && userData.length ==0)|| userData==null">No Project Task available</p>
+            <table class="table table-hover" *ngIf="userData && userData.length >0">
+              <thead>
+                <tr>
+                  <!-- <th>ID</th> -->
+                  <th>Name</th>
+                  <th>Duration</th>
+                  <th>Percent Complete</th>
+                  <th>Action Point</th>
+                  <th>Process Owner</th>
+                  <th>Previous Dependencies</th>
+                  <th>Remarks</th>
+                  <th>Start Date</th>
+                  <th>End Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let tableData of userData; let i=index"  [attr.data-index]="i">
+                  <!-- <td><input type="text" name="projecttaskid" readonly [(ngModel)]="projecttask_id[i]" value="{{tableData.id}}"></td> -->
+                  <td><!-- <input type="text" name="projecttaskname" readonly [(ngModel)]="projecttask_name[i]" value="{{tableData.name}}"> -->
+                    <textarea  name="projecttaskname" readonly [(ngModel)]="projecttask_name[i]" value="{{tableData.name}}"></textarea>
+                  </td>
+                  <td><input type="text" name="projecttaskduration" value="{{tableData.duration}}" [(ngModel)]="projecttask_duration[i]"></td>
+                  <td><input type="text" name="projecttaskpercentcomplete" value="{{tableData.percent_completion}}" [(ngModel)]="projecttask_percent_completion[i]"></td>
+                  <td>
+                    <select [(ngModel)]="projecttask_action_point[i]">
+                      <option value="Designer">Designer</option>
+                      <option value="Customer">Customer</option>
+                      <option value="Site Supervisor">Site Supervisor</option>
+                      <option value="Community Manager">Community Manager</option>
+                      <option value="Category">Category</option>
+                      <option value="Finance">Finance</option>
+                      <option value="Logistics">Logistics</option>
+                    </select>
+                  </td>
+                  <td>
+                    <select [(ngModel)]="projecttask_process_owner[i]">
+                      <option value="Community Manager">Community Manager</option>
+                      <option value="General Manager">General Manager</option>
+                      <option value="Category">Category</option>
+                    </select>
+                  </td>
+                  <td><!-- <input type="text" name="projecttaskdependencies" value="{{tableData.upstream_dependencies}}" [(ngModel)]="projecttask_previous_dependency[i]"> -->
+                    <textarea name="projecttaskdependencies" value="{{tableData.upstream_dependencies}}" [(ngModel)]="projecttask_previous_dependency[i]"></textarea>
+                  </td>
+                  <td>
+                    <!-- <input type="text" name="projecttaskremarks" value="{{tableData.remarks}}" [(ngModel)]="projecttask_remarks[i]"> -->
+                    <textarea name="projecttaskremarks" value="{{tableData.remarks}}" [(ngModel)]="projecttask_remarks[i]"></textarea>
+                  </td>
+                  <td><input type="date" name="projecttaskstartdate" value="{{tableData.start_date}}" [(ngModel)]="projecttask_start_date[i]"></td>
+                  <td><input type="date" name="projecttaskenddate" value="{{tableData.end_date}}" [(ngModel)]="projecttask_end_date[i]"></td>
+                  <td>
+                    <button (click)="update(i,tableData.project_id)" class="addCursor">Update</button>
+                    <i class="fa fa-trash addCursor" (click)="deletTask(i,tableData.customer_id,tableData.project_id)"></i>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!--Gantt chart-->
+        <div class="row addClass1 hideClass">
+          <p *ngIf="(userData && userData.length ==0)|| userData==null" class="ml-4">No Gantt Chart</p>
+          <div class="col-12" *ngIf="project_tasks && project_tasks.length != 0">
+            <gantt [project]="project" [options]="options"></gantt>
+          </div>
+        </div>
+        <!--Gantt chart close-->
+
+        <div class="row addClass2 hideClass">
+          <!-- <h1>qwertyuiop</h1> -->
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Status modal -->
+<div class="modal fade" id="statusModal" tabindex="-1" role="dialog" aria-labelledby="SmsModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document" style="width: 55rem; margin-top: 55px">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5>Follow-up Details</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+        <div class="form-group row">
+          <label for="example-text-input" class="col-2 col-form-label">Callback Date<span class="text-danger">*</span></label>
+          <div class="col-10">
+            <input type="datetime-local" name="followup-details" id="followup-details" class="form-control" (change) = "disableDate()">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="example-text-input" class="col-2 col-form-label">Remarks </label>
+          <div class="col-10">
+            <textarea rows="1" name="followup_remarks" id="followup_remarks" class="form-control"></textarea>
+            <!-- <input type="da" name="followup-details" id="followup-details" class="form-control"> -->
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <input type="button" id="followup-button" value="Update" class="btn btn-pink" (click) = "onCallbackChange()" >
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Status modal end -->
+
+
+<div class="modal fade" id="dropLeadModal" tabindex="-1" role="dialog" aria-labelledby="dropLeadTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document" style="width: 55rem;">
+    <div class="modal-content">
+        <div class="modal-header">
+          <h5>Are you sure you want to drop this lead? </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      <div class="modal-body">
+        <form [formGroup]="dropLeadForm">
+          <div class="form-group row mt-4">
+            <!-- <label for="example-text-input" class="col-4 col-form-label">Select Reason</label> -->
+            <!-- <div class="col-8">
+              <select class="form-control" formControlName="drop_reason">
+                <option disabled value="">Select</option>
+                <option value="Not_in_scope">Not in Scope</option>
+                <option value="Low_Budget">Low Budget</option>
+                <option value="Out_of_Area">Out of Area</option>
+                <option value="Not_Interested">Not Interested</option>
+                <option value="Already_done_with_Other_Vendor">Already done with Other Vendor</option>
+                <option value="Others">Others</option>
+              </select>
+            </div> -->
+            <input class="form-control" id="drop_reason" type="hidden" formControlName="drop_reason">
+            <!-- /////tree view dropdown//// -->
+            <div class="container">
+              <div class="row">
+                 <label for="example-text-input" class="col-3 col-form-label">Reason for Lost <span class="text-danger">*</span></label>
+                <div class="dropdown">
+                  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span *ngIf="!this.dropdownDropType">Select Reason</span>{{this.dropdownDropType | replaceChar}}</button>
+                  <ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
+                    <li class="dropdown-item"><a (click)="submitDropLeadType('out_of_scope')">Out of Scope</a></li>
+                    <li class="dropdown-item"><a (click)="submitDropLeadType('low_budget')">Low Budget</a></li>
+                    <li class="dropdown-item"><a (click)="submitDropLeadType('non_serviceable_area')">Non Serviceable Area</a></li>
+                    <li class="dropdown-item"><a (click)="submitDropLeadType('not_interested')">Not Interested</a></li>
+                    <li class="dropdown-item"><a (click)="submitDropLeadType('language_barrier')">Language Barrier</a></li>
+                    <li class="dropdown-item"><a (click)="submitDropLeadType('did_not_like_delivery_timelines')">Did not like Delivery Timelines</a></li>
+                    <li class="dropdown-item"><a (click)="submitDropLeadType('did_not_like_our_prices')">Did not like Our Prices</a></li>
+                    <li class="dropdown-item"><a (click)="submitDropLeadType('not_reachable_despite_multiple_attempts')">Not Reachable Despite Multiple Attempts</a></li>
+                    <li class="dropdown-item"><a (click)="submitDropLeadType('did_not_like_designs')">Did not like Designs</a></li>
+                    <li class="dropdown-item"><a (click)="submitDropLeadType('others')">Others</a></li>
+                    <li class="dropdown-divider"></li>
+                    <li class="dropdown-submenu">
+                      <a  class="dropdown-item" tabindex="-1">Already done with Other Vendor</a>
+                      <ul class="dropdown-menu">
+                        <li class="dropdown-submenu">
+                          <a class="dropdown-item" >Organized</a>
+                          <ul class="dropdown-menu">
+                              <li class="dropdown-item"><a (click)="submitDropLeadType('already_done_with_other_vendor--livspace')">Livspace</a></li>
+                              <li class="dropdown-item" (click)="submitDropLeadType('already_done_with_other_vendor--homelane')"><a>Homelane</a></li>
+                              <li class="dropdown-item" (click)="submitDropLeadType('already_done_with_other_vendor--design_cafe')"><a>Design Cafe</a></li>
+                          </ul>
+                        </li>
+                        <li class="dropdown-submenu">
+                          <a class="dropdown-item">Unorganized</a>
+                          <ul class="dropdown-menu">
+                              <li class="dropdown-item"><a (click)="submitDropLeadType('already_done_with_other_vendor--local_contractor')">Local Contractor</a></li>
+                              <li class="dropdown-item"><a (click)="submitDropLeadType('already_done_with_other_vendor--carpenter')">Carpenter</a></li>
+                          </ul>
+                        </li>
+                         
+                      </ul>
+                    </li>
+                    </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="example-text-input" class="col-3 col-form-label">Remarks </label>
+            <div class="col-8 p-0">
+              <textarea rows="1" name="lost_remark" id="lost_remark" class="form-control" formControlName="lost_remark"></textarea>
+            </div>
+          </div>
+          <div class="form-group row pull-right">
+            <button class="rk-btnCancel addCursor" data-dismiss="modal" (click)="dropleadId=undefined">Cancel</button>
+            <button class="rk-interalBtnColor mr-3" [disabled]="!dropLeadForm.valid" (click)="dropLead(dropleadId,dropLeadForm.value)">Drop Lead</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="loststatusModal" tabindex="-1" role="dialog" aria-labelledby="SmsModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg mobModal" role="document" style="width: 55rem;">
+    <form [formGroup]="statusChangeForm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5>Lost Details</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>        
+        </div>
+        <div class="modal-body">
+
+          <div class="form-group row">
+            <!-- <label for="example-text-input" class="col-3 col-form-label">Reason for Lost <span class="text-danger">*</span></label> -->
+            <!-- <div class="col-9">
+              <select class="form-control" id="lost_reason" formControlName="reson_for_lost" (change)="reasonForLostDropdownChange($event.target.value)">
+                <option value="" disabled>Select Reason</option>
+                <option value="not_in_scope">Not in Scope</option>
+                <option value="low_budget">Low Budget</option>
+                <option value="out_of_area">Out of Area</option>
+                <option value="not_interested">Not Interested</option>
+                <option value="already_done_with_other_vendor">Already done with Other Vendor</option>
+                <option value="others">Others </option>
+              </select>
+            </div> -->
+            <input class="form-control" id="lost_reason" value="{{this.dropdownType}}" type="hidden" formControlName="reson_for_lost">
+            <!-- /////tree view dropdown//// -->
+            <div class="container">
+              <div class="row">
+                <label for="example-text-input" class="col-3 col-form-label">Reason for Lost <span class="text-danger">*</span></label>
+                <div class="dropdown">
+                  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span *ngIf="!this.dropdownType">Select Reason</span>{{this.dropdownType | replaceChar}}</button>
+                  <ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
+                    <li class="dropdown-item"><a (click)="submitLeadType('out_of_scope')">Out of Scope</a></li>
+                    <li class="dropdown-item"><a (click)="submitLeadType('low_budget')">Low Budget</a></li>
+                    <li class="dropdown-item"><a (click)="submitLeadType('non_serviceable_area')">Non Serviceable Area</a></li>
+                    <li class="dropdown-item"><a (click)="submitLeadType('not_interested')">Not Interested</a></li>
+                    <li class="dropdown-item"><a (click)="submitLeadType('language_barrier')">Language Barrier</a></li>
+                    <li class="dropdown-item"><a (click)="submitLeadType('did_not_like_delivery_timelines')">Did not like Delivery Timelines</a></li>
+                    <li class="dropdown-item"><a (click)="submitLeadType('did_not_like_our_prices')">Did not like Our Prices</a></li>
+                    <li class="dropdown-item"><a (click)="submitLeadType('not_reachable_despite_multiple_attempts')">Not Reachable Despite Multiple Attempts</a></li>
+                    <li class="dropdown-item"><a (click)="submitLeadType('did_not_like_designs')">Did not like Designs</a></li>
+                    <li class="dropdown-item"><a (click)="submitLeadType('others')">Others</a></li>
+                    <li class="dropdown-divider"></li>
+                    <li class="dropdown-submenu">
+                      <a  class="dropdown-item" tabindex="-1">Already done with Other Vendor</a>
+                      <ul class="dropdown-menu">
+                        <li class="dropdown-submenu">
+                          <a class="dropdown-item" >Organized</a>
+                          <ul class="dropdown-menu">
+                              <li class="dropdown-item"><a (click)="submitLeadType('already_done_with_other_vendor--livspace')">Livspace</a></li>
+                              <li class="dropdown-item" (click)="submitLeadType('already_done_with_other_vendor--homelane')"><a>Homelane</a></li>
+                              <li class="dropdown-item" (click)="submitLeadType('already_done_with_other_vendor--design_cafe')"><a>Design Cafe</a></li>
+                          </ul>
+                        </li>
+                        <li class="dropdown-submenu">
+                          <a class="dropdown-item">Unorganized</a>
+                          <ul class="dropdown-menu">
+                              <li class="dropdown-item"><a (click)="submitLeadType('already_done_with_other_vendor--local_contractor')">Local Contractor</a></li>
+                              <li class="dropdown-item"><a (click)="submitLeadType('already_done_with_other_vendor--carpenter')">Carpenter</a></li>
+                          </ul>
+                        </li>
+                         
+                      </ul>
+                    </li>
+                    </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row" id="lostRemarkRow">
+            <label for="example-text-input" class="col-3 col-form-label">Remarks <span class="text-danger">*</span> </label>
+            <div class="col-9">
+              <textarea rows="1" name="lost_remarks" id="lost_remarks" class="form-control" formControlName="lost_remarks"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <input type="button" id="lost-button" value="Update" class="btn btn-pink addCursor" (click) = "onLostSubmit()" [disabled]="!statusChangeForm.valid">
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<!-- Not Conatcatable Modal Box -->
+<div class="modal fade" id="notContactableModal" tabindex="-1" role="dialog" aria-labelledby="SmsModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg mobModal" role="document" style="width: 55rem;margin-top: 55px;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5>Not Contactable</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+        <div class="form-group row">
+          <label for="example-text-input" class="col-2 col-form-label">Callback Date</label>
+          <div class="col-10">
+            <input type="datetime-local" name="notcontactable-details" id="notcontactable-details" class="form-control" (change) = "disableDate()">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <input type="button" id="followup-button" value="Update" class="btn btn-pink" (click) = "onCallbackChange1('not_contactable')" >
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Ends here -->
+
+<!-- DELAYED MODAL starts here -->
+<div class="modal fade" id="delayedModal" tabindex="-1" role="dialog" aria-labelledby="dropLeadTitle" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog modal-md" role="document" style="width: 55rem;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5>DELAYED POSSESION DATE</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="removeValueFromDelayedDate()">
+        <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group row">
+          <label for="example-text-input" class="col-4 col-form-label">Delayed Possesion Date</label>
+          <div class="col-md-8">
+            <input name="startDate" id="startDate" class="date-picker" (focus)="callChangeNew()" placeholder="Choose A Month..." value="{{newVar}}" />
+            
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <input type="button"  value="Submit" class="btn btn-pink" (click) = "onCallbackChangeForDelay()" >
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- END HERE -->
+<!-- DELAYED PROJECT MODAL starts here -->
+<div class="modal fade" id="delayedProjectModal" tabindex="-1" role="dialog" aria-labelledby="dropLeadTitle" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog modal-md" role="document" style="width: 55rem;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5>DELAYED PROJECT DATE</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="removeValueFromDelayedDate()">
+        <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group row">
+          <label for="example-text-input" class="col-4 col-form-label">Delayed Possesion Date</label>
+          <div class="col-md-8">
+            <input name="delayProjectDate" id="delayProjectDate" class="date-picker" (focus)="callChangeNew()" placeholder="Choose A Month..." value="{{newVarDelay}}" />
+            
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <input type="button"  value="Submit" class="btn btn-pink" (click) = "onCallbackChangeForDelayProject()" >
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ENDS HERE -->
+     
+
+
+<!--Smart Share History modal-->
+<div class="modal fade" id="smartShareHistory" tabindex="-1" role="dialog" aria-labelledby="smartShareHistory" aria-hidden="true">
+  <div class="modal-dialog modal-lg mobModal" role="document" style="width: 36rem;margin-top: 55px;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Smart Share History</h3>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body overFlowY">
+        <div *ngIf="this.smartshareHistoryList!=0">
+          <table class="table table-striped">
+            <tr>
+              <th>Click Url of the SmartShare</th>
+              <th>Time of Sharing</th>
+            </tr>
+
+            <tr *ngFor="let elem of smartshareHistoryList">
+              <td><a  href="{{elem.url}}" target="blank">{{elem.url}}</a></td>
+              <td>{{elem.time_stamp}}</td>
+            </tr>
+          </table>
+        </div>
+
+        <div *ngIf="this.smartshareHistoryList==0">
+          <div class="boq-img  col-lg-12">
+            <div class="row">
+              <div class="col-lg-6 mx-auto">
+                <img class="ml-4" src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+              </div>
+            </div>
+          </div>
+          <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing to show...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Ends here -->

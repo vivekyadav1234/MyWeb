@@ -1,0 +1,86 @@
+.ss-text-light
+{
+  vertical-align: -webkit-baseline-middle;
+  cursor: pointer;
+}
+.ss-text-dark{
+    vertical-align: -webkit-baseline-middle;
+}
+.table td{
+    padding: 0.7rem 0.75rem;
+    vertical-align: middle;
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.7);
+    border: none;
+}
+.table th {
+    padding: .9rem;
+    vertical-align: middle;
+    border: none;
+    font-size: 12px;
+    text-transform: uppercase;
+    color: #fff;
+    background-color: #5A5A5A;
+}
+.table{
+  border-collapse: separate;
+  border-spacing: 0 5px;
+}
+.tableDiv tbody{
+  background-color: #fff;
+}
+.tableDiv{
+  overflow-x:scroll;
+}
+
+.tableDiv tbody tr{
+  box-shadow: 1px 1px 7px 0px #dadada;
+  border-radius: 5px;
+}
+.firstTh{
+  border-radius: 5px 0 0 0;
+}
+.lastTh{
+  border-radius: 0px 5px 0 0;
+}
+
+.custom-class-dropdown .c-btn{
+    font-size:12px;
+    font-weight: bold;
+}
+/*.selected-list[_ngcontent-c7] .c-btn[_ngcontent-c7]{
+    font-size: 10px;
+}*/
+.custom-class-dropdown .dropdown-list{
+    width: auto;
+    font-size: 12px;
+}
+.filterRow{
+  background-color: #fff;
+}
+.filterRow .col-sm-11 {
+  padding: 10px 10px;
+}
+.filterRow .col-sm-11 .row{
+  margin-left: 0px; margin-right: 0px;
+}
+.filterRow .row .col-sm-1{
+  padding: 10px 10px 0px 0px;
+   border-left: 1px solid #d3d3d3;
+}
+
+/*.tooltip {
+    position: relative;
+    opacity: 1;
+}*/
+a.pop{
+  cursor: pointer;
+  color: #007bff;
+}
+.popover .popover-header, .popover .popover-title{
+  font-size: 13px;
+  padding: 7px 12px;
+}
+.popover .popover-body, .popover .popover-content {
+  font-size: 12px;
+}

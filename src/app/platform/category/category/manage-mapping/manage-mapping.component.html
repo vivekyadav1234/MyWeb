@@ -1,0 +1,166 @@
+<div class="row ss-top-menu">
+  <div class="col-xl-5 col-lg-5 col-md-5 col-sm-5 col-xs-5">
+    <span class="ss-text-light" style="vertical-align: -webkit-baseline-middle;">Dashboard <i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;">Mapping</span>
+  </div>
+</div>
+
+<div class="rk-ui-notification" *ngIf="successalert">
+  <span id="notificationMessageText">{{successMessage}}</span>
+  <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+<div class="rk-ui-notification err" *ngIf="erroralert">
+  <span id="notificationMessageText">{{errorMessage}}</span>
+  <a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+
+<div class="row px-4">
+	<div class="col-md-12 p-0 mt-4">
+    <ul class="nav nav-tabs ss-nav-tabs mt-0 justify-content-center" id="myTab" role="tablist">
+      <li class="nav-item ">
+        <a class="nav-link ss-nav-link " id="master-data-tab" data-toggle="tab" href="#master_data" role="tab" aria-controls="master_data" aria-selected="true" routerLink="/manage_master_data">MASTER DATA</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link ss-nav-link" id="master-element-tab" data-toggle="tab" href="#master_element" role="tab" aria-controls="master_element" aria-selected="false" routerLink="/manage_master_element">MASTER ELEMENT</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link ss-nav-link active" id="mapping-tab" data-toggle="tab" href="#mapping" role="tab" aria-controls="mapping" aria-selected="false" routerLink="/manage_mapping">MAPPING</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link ss-nav-link" id="master-service-tab" data-toggle="tab" href="#master_service" role="tab" aria-controls="master_service" aria-selected="false" routerLink="/manage_services">MANAGE SERVICES</a>
+      </li>
+      <li class="nav-item">
+          <a class="nav-link ss-nav-link capitalize" id="master-service-tab" data-toggle="tab" href="#master_line_item" role="tab" aria-controls="master_line_item" aria-selected="false" routerLink="/master_line_item">MASTER LINE ITEM</a>
+        </li>
+    </ul>
+	</div>
+	<div class="col-12">
+    <div class="row">
+      <div class="col-md-12  bg-white mb-4">
+        <div class="row mt-4 pb-3" id="row1">
+          <div class="col-md-6 px-5 py-3">
+          	<span class="mr-3">Mapping : </span>
+            <select class="form-control" (change)="fetchMapping($event.target.value)">
+            	<option disabled value="">Select</option>
+            	<option value="shades_shutter_finish" [selected]="activeDropDownVal=='shades_shutter_finish' " selected="true"> Shutter Finish - Shades Mapping</option>
+              <option value="core_material_shutter" [selected]="activeDropDownVal=='core_material_shutter' "> Shutter Finish - Core Material Mapping</option>
+              <option value="module_addons" [selected]="activeDropDownVal=='module_addons' "> Product Module - Module Addons Mapping</option>
+              <option value="kitchen_category_module_type" [selected]="activeDropDownVal=='kitchen_category_module_type' "> Kitchen Category - Module Type Mapping</option>
+              <option value="kitchen_module_addons" [selected]="activeDropDownVal=='kitchen_module_addons' "> Kitchen Module Addons Mapping</option>
+            </select>
+          </div>
+          <div class="col-md-6 px-5 py-3 d-none kitchen-module-type">
+            <span class="mr-3">Product module : </span>
+            <select class="form-control" (change)="selectProductModule($event.target.value)">
+              <option disabled value="">Select</option>
+              <option *ngFor="let item of product_module_list" value="{{item.id}}"> {{item.description}}({{item.code}})</option>
+            </select>
+          </div>
+        </div>
+        <div class="d-none mt-4 mb-3" id="produt_addon_mapping_category">
+          <input type="radio" name="category_type" class="mr-3" value="Wardrobe" (click)="changeTableColumn('Wardrobe')" [checked]="produt_addon_mapping_category=='Wardrobe'"> <label>Wardrobe</label>
+          <input type="radio" name="category_type" class="ml-3 mr-3" value="Kitchen" (click)="changeTableColumn('Kitchen')" [checked]="produt_addon_mapping_category=='Kitchen'"> <label>Kitchen</label>
+        </div>
+        <div class="row justify-content-center">
+          <div class="col-sm-12" *ngIf="activeSelection && activeSelection != 'kitchen_module_addons'">
+            <div id="zui-wrapper" class="zui-wrapper mt-3">
+              <div class="zui-scroller">
+                <table class="zui-table">
+                  <thead>
+                    <tr>
+                      <th class="zui-sticky-col" scope="col" style="border: none" [ngStyle]="{'position': (colList.length>0) ? 'absolute' : 'inherit'}"></th>
+                      <th *ngFor="let col of colList" scope="col">{{col.name}}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let row of rowList">
+                      <!-- <td *ngIf="row.code">{{row.code}}</td> -->
+                      <th class="zui-sticky-col" *ngIf="row.code" [ngStyle]="{'position': (colList.length>0) ? 'absolute' : 'inherit'}">{{row.code}}</th>
+
+                      <td *ngIf="row.name">{{row.name}}</td>
+                      <td *ngFor="let col of colList">
+                        <input type="checkbox" id="box-{{row.id}}-{{col.id}}" name="" [ngModel]="row.mappings.includes(col.id)" (click) = "restructureHash(row.id,col.id)">
+                        <label for="box-{{row.id}}-{{col.id}}"></label>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <input class="pull-right submitBtn mt-3" type="button" name="" (click) = "submitMapping()" value="Submit">
+          </div>
+          <div class="col-sm-11" *ngIf="activeSelection && activeSelection == 'kitchen_module_addons'">
+            <div class="row">
+              <div class="col-sm-12">
+                <span>Maximum limit to add slot:</span>
+                <span class="ml-2">{{number_kitchen_addons}}</span>
+              </div>
+            </div>
+            <form [formGroup]="kitchenAddonForm" class="mt-5 col-12 p-0" *ngIf="kitchenAddonForm">
+              <fieldset formArrayName="slots">
+                <div class="form-group row"
+                     *ngFor = "let addonItem of kitchenAddonForm.get('slots').controls; let i=index "
+                     [formGroup]="addonItem">
+
+                  <div class="col-sm-4">
+                    <label [attr.for]="'slot-name-'+i">Name</label>
+                    <input type="text" class="form-control" [attr.id]="'slot-name-'+i" formControlName="name" placeholder="Slot Name">
+                  </div>
+                  <div class="col-sm-7">
+                    <label [attr.for]="'slot-addon-'+i">Addons</label>
+
+                    <angular2-multiselect [data]="kitchenAddonsArray" 
+                        [settings]="dropdownSettings" formControlName="addon_ids" [attr.id]="'slot-addon-'+i"></angular2-multiselect>
+                    
+                    <!-- <select class="form-control" [attr.id]="'slot-addon-'+i" formControlName="addon_ids">
+                      <option *ngFor="let kitadon of kitchenAddonsArray" value="{{kitadon.id}}">
+                        {{kitadon.name}} ({{kitadon.code}})
+                      </option>
+                    </select> -->
+
+                  </div>
+                  <div class="col-sm-1">
+                    <button type="button" class="submitBtn pl-2 pr-2"
+                            (click)="kitchenAddonForm.get('slots').removeAt(i)">Delete</button>
+                  </div>
+                </div>
+
+              </fieldset>
+
+            </form>
+            <button type="button" class="btn btn-link"
+                          (click)="kitchenAddonForm.get('slots').push(buildSlots(''))" *ngIf="kitchenAddonForm">Add another item</button>
+            <input class="pull-right submitBtn mt-3" type="button" name="" (click) = "submitMapping()" value="Submit">
+            <!-- <pre>
+              {{kitchenAddonForm.value | json}}
+            </pre> -->
+          </div>
+          <div class="col-sm-12 mt-3">
+            <div id="accordion">
+              <div class="card" *ngFor="let item of rowList.kitchen_module_addons">
+                <div class="card-header" id="headingOne">
+                  <button class="btn btn-link" data-toggle="collapse" [attr.data-target]="'#collapseOne-'+item.id" aria-expanded="true" aria-controls="collapseOne">
+                    {{item.name}}
+                  </button>
+                </div>
+
+                <div id="collapseOne-{{item.id}}" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+                  <div class="card-body">
+                    <table class="table table-bordered">
+                      <tbody>
+                        <tr *ngFor="let addon of item.addons">
+                          <td *ngIf="addon">{{addon.code}}</td>
+                          <td *ngIf="addon">{{addon.name}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

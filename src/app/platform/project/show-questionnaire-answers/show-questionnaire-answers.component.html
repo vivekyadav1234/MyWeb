@@ -1,0 +1,663 @@
+
+<div class="row title">
+	<h3>Your Questionnaire Form</h3>
+</div>
+<div class="formButton" align="left">
+	<button  (click)="procuct()" class="upload0 actBtn">Basic Info</button>
+	<button (click)="servicesBtn()" class="upload1">LifeStyle</button>
+</div>
+
+<hr>
+
+
+
+
+<div class="addClass">
+	<!-- <div  *ngFor="let obj of result" >
+		{{obj.project_detail.id}}
+		{{obj.project_detail.customer_name}}
+	</div> -->
+<div class="container">
+			<form>
+				<div  *ngFor="let obj of result" >
+				  <div class="form-group row">
+				    <label  class="col-sm-2 col-form-label">Id:</label>
+				    <div class="col-sm-10">
+				      <input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.id}}" readonly>
+				    </div>
+				  </div>
+
+					<div class="form-group row">
+				    <label  class="col-sm-2 col-form-label">Name:</label>
+				    <div class="col-sm-10">
+				      <input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.customer_name}}" readonly>
+				    </div>
+				  </div>
+
+					<div class="form-group row">
+				    <label  class="col-sm-2 col-form-label">Mobile Number:</label>
+				    <div class="col-sm-10">
+				      <input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.mobile_number}}" readonly>
+				    </div>
+				  </div>
+
+					<div class="form-group row">
+				    <label  class="col-sm-2 col-form-label">Alternate Number:</label>
+				    <div class="col-sm-10">
+				      <input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.alternate_mobile}}" readonly>
+				    </div>
+				  </div>
+
+					<div class="form-group row">
+				    <label  class="col-sm-2 col-form-label">Email:</label>
+				    <div class="col-sm-10">
+				      <input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.email}}" readonly>
+				    </div>
+				  </div>
+
+					<div class="form-group row">
+				    <label  class="col-sm-2 col-form-label">City:</label>
+				    <div class="col-sm-10">
+				      <input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.city}}" readonly>
+				    </div>
+				  </div>
+
+					<div class="form-group row">
+				    <label  class="col-sm-2 col-form-label">Property Usage:</label>
+				    <div class="col-sm-10">
+				      <input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.property_usage}}" readonly>
+				    </div>
+				  </div>
+
+					<div class="form-group row">
+				    <label  class="col-sm-2 col-form-label">Property Age:</label>
+				    <div class="col-sm-10">
+				      <input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.property_age}}" readonly>
+				    </div>
+				  </div>
+
+					<div class="form-group row">
+				    <label  class="col-sm-2 col-form-label">Property Type:</label>
+				    <div class="col-sm-10">
+				      <input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.property_type}}" readonly>
+				    </div>
+				  </div>
+
+					<div class="form-group row">
+				    <label  class="col-sm-2 col-form-label">Number of Rooms:</label>
+				    <div class="col-sm-10">
+				      <input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.number_of_rooms}}" readonly>
+				    </div>
+				  </div>
+
+					<div class="form-group row">
+				    <label  class="col-sm-2 col-form-label">Possession Status:</label>
+				    <div class="col-sm-10">
+				      <input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.possession_status}}" readonly>
+				    </div>
+				  </div>
+
+					<div class="form-group row">
+				    <label  class="col-sm-2 col-form-label">Use Type:</label>
+				    <div class="col-sm-10">
+				      <input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.use_type}}" readonly>
+				    </div>
+				  </div>
+
+					<div class="form-group row">
+				    <label  class="col-sm-2 col-form-label">Requirement:</label>
+				    <div class="col-sm-10">
+				      <input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.requirement}}" readonly>
+				    </div>
+				  </div>
+
+					<div class="form-group row">
+				    <label  class="col-sm-2 col-form-label">Budget:</label>
+				    <div class="col-sm-10">
+				      <input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.budget}}" readonly>
+				    </div>
+				  </div>
+
+					<div class="form-group row">
+				    <label  class="col-sm-2 col-form-label">Designer Call :</label>
+				    <div class="col-sm-10">
+				      <input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.preferred_time_call_designer | date}}" readonly>
+				    </div>
+				  </div>
+
+					<div class="form-group row">
+				    <label  class="col-sm-2 col-form-label">Site Visit:</label>
+				    <div class="col-sm-10">
+				      <input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.preferred_time_site_visit | date}}" readonly>
+				    </div>
+				  </div>
+
+					<div class="form-group row">
+				    <label  class="col-sm-2 col-form-label">Occupation:</label>
+				    <div class="col-sm-10">
+				      <input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.occupation_of_customer}}" readonly>
+				    </div>
+				  </div>
+
+					<div class="form-group row">
+				    <label  class="col-sm-2 col-form-label">Members in Family:</label>
+				    <div class="col-sm-10">
+				      <input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.members_in_family}}" readonly>
+				    </div>
+				  </div>
+
+					<div class="form-group row">
+						<label  class="col-sm-2 col-form-label">Tentative date of moving:</label>
+						<div class="col-sm-10">
+							<input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.tentative_date_moving | date}}" readonly>
+						</div>
+					</div>
+
+					<!-- <div class="form-group row">
+						<label  class="col-sm-2 col-form-label">Project Type:</label>
+						<div class="col-sm-10">
+							<input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.project_type}}" readonly>
+						</div>
+					</div> -->
+		</div>
+		</form>
+</div>
+</div>
+
+<div class="addClass1 hideClass">
+	<div class="container">
+				<form>
+					 <div  *ngFor="let obj of result" >
+					 <!-- <div class="form-group row">
+					    <label  class="col-sm-2 col-form-label">Servent Room:</label>
+					    <div class="col-sm-10">
+					      <input type="text" class="form-control" id="staticEmail" value="{{obj.project_detail.servents_room}}" readonly>
+					    </div>
+					  </div>
+
+						<div class="form-group row">
+					    <label  class="col-sm-2 col-form-label">Utility Area:</label>
+					    <div class="col-sm-10">
+					      <input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.utility_area}}" readonly>
+					    </div>
+					  </div>
+
+						<div class="form-group row">
+					    <label  class="col-sm-2 col-form-label">Library:</label>
+					    <div class="col-sm-10">
+					      <input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.library}}" readonly>
+					    </div>
+					  </div> -->
+
+						<div class="form-group row">
+							<label  class="col-sm-2 col-form-label">Project Type:</label>
+							<div class="col-sm-10">
+								<input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.project_type}}" readonly>
+							</div>
+						</div>
+
+						<div class="form-group row">
+							<label  class="col-sm-2 col-form-label">Scope of Work:</label>
+							<div class="col-sm-10">
+								<input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.scope_of_work}}" readonly>
+							</div>
+						</div>
+
+
+						<div class="card">
+							<a  style="color: #fff;"class="collapsed" data-toggle="collapse" href="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
+								<div class="card-header" role="tab" id="headingSeven">
+									<h5 class="mb-0">
+											Kitchen
+									</h5>
+								</div>
+							</a>
+							<div  id="collapseSeven" class="collapse" role="tabpanel" aria-labelledby="headingSeven" data-parent="#accordion">
+								<div class="card-body">
+
+
+									<div class="form-group row" >
+								    <label  class="col-sm-2 col-form-label">Platform</label>
+								    <div class="col-sm-10">
+								      <input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.kitchen.platform}}" readonly>
+								    </div>
+								  </div>
+
+									<div class="form-group row" >
+								    <label  class="col-sm-2 col-form-label">Shape of Kitchen</label>
+								    <div class="col-sm-10">
+								      <input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.kitchen.shape_of_kitchen}}" readonly>
+								    </div>
+								  </div>
+
+									<div class="form-group row" >
+								    <label  class="col-sm-2 col-form-label">Type of Kitchen</label>
+								    <div class="col-sm-10">
+								      <input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.kitchen.type_of_kitchen}}" readonly>
+								    </div>
+								  </div>
+
+									<div class="form-group row" >
+								    <label  class="col-sm-2 col-form-label">Furniture</label>
+								    <div class="col-sm-10">
+								      <input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.kitchen.furniture}}" readonly>
+								    </div>
+								  </div>
+
+									<div class="form-group row" >
+								    <label  class="col-sm-2 col-form-label">Services</label>
+								    <div class="col-sm-10">
+								      <input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.kitchen.services}}" readonly>
+								    </div>
+								  </div>
+
+									<div class="form-group row" >
+								    <label  class="col-sm-2 col-form-label">Appliances</label>
+								    <div class="col-sm-10">
+								      <input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.kitchen.appliances}}" readonly>
+								    </div>
+								  </div>
+
+									<div class="form-group row" >
+								    <label  class="col-sm-2 col-form-label">Appliances II</label>
+								    <div class="col-sm-10">
+								      <input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.kitchen.apliances_ii}}" readonly>
+								    </div>
+								  </div>
+
+									<div class="form-group row" >
+								    <label  class="col-sm-2 col-form-label">Preferred Material</label>
+								    <div class="col-sm-10">
+								      <input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.kitchen.preferred_material}}" readonly>
+								    </div>
+								  </div>
+
+									<div class="form-group row" >
+								    <label  class="col-sm-2 col-form-label">Preferred Finish</label>
+								    <div class="col-sm-10">
+								      <input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.kitchen.preferred_finish}}" readonly>
+								    </div>
+								  </div>
+
+									<div class="form-group row" >
+								    <label  class="col-sm-2 col-form-label">Preferred Finish Material</label>
+								    <div class="col-sm-10">
+								      <input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.kitchen.preferred_finish_material}}" readonly>
+								    </div>
+								  </div>
+
+									<div class="form-group row" >
+								    <label  class="col-sm-2 col-form-label">More Used By</label>
+								    <div class="col-sm-10">
+								      <input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.kitchen.more_used_by}}" readonly>
+								    </div>
+								  </div>
+
+									<div class="form-group row" >
+								    <label  class="col-sm-2 col-form-label">Other Requirement</label>
+								    <div class="col-sm-10">
+								      <input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.kitchen.other_requirments}}" readonly>
+								    </div>
+								  </div>
+
+
+							</div>
+						</div>
+					</div>
+
+					<div class="card">
+						<a  style="color: #fff;"class="collapsed" data-toggle="collapse" href="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
+							<div class="card-header" role="tab" id="headingEight">
+								<h5 class="mb-0">
+										Kids Bedroom
+								</h5>
+							</div>
+						</a>
+						<div  id="collapseEight" class="collapse" role="tabpanel" aria-labelledby="headingEight" data-parent="#accordion">
+							<div class="card-body">
+
+
+								<div class="form-group row" >
+									<label  class="col-sm-2 col-form-label">Furniture</label>
+									<div class="col-sm-10">
+										<input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.kids_bedroom.furniture}}" readonly>
+									</div>
+								</div>
+
+								<div class="form-group row" >
+									<label  class="col-sm-2 col-form-label">Type of Wardrobe</label>
+									<div class="col-sm-10">
+										<input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.kids_bedroom.type_of_wardrobe}}" readonly>
+									</div>
+								</div>
+
+								<div class="form-group row" >
+									<label  class="col-sm-2 col-form-label">Type of Bed</label>
+									<div class="col-sm-10">
+										<input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.kids_bedroom.type_of_bed}}" readonly>
+									</div>
+								</div>
+
+								<div class="form-group row" >
+									<label  class="col-sm-2 col-form-label">Services</label>
+									<div class="col-sm-10">
+										<input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.kids_bedroom.services}}" readonly>
+									</div>
+								</div>
+
+								<div class="form-group row" >
+									<label  class="col-sm-2 col-form-label">Preferred Material</label>
+									<div class="col-sm-10">
+										<input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.kids_bedroom.preferred_material}}" readonly>
+									</div>
+								</div>
+
+								<div class="form-group row" >
+									<label  class="col-sm-2 col-form-label">Preferred Finish</label>
+									<div class="col-sm-10">
+										<input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.kids_bedroom.preferred_finish}}" readonly>
+									</div>
+								</div>
+
+								<div class="form-group row" >
+									<label  class="col-sm-2 col-form-label">Preferred Finish Material</label>
+									<div class="col-sm-10">
+										<input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.kids_bedroom.preferred_finish_material}}" readonly>
+									</div>
+								</div>
+
+								<div class="form-group row" >
+									<label  class="col-sm-2 col-form-label">Other Requirement</label>
+									<div class="col-sm-10">
+										<input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.kids_bedroom.other_requirments}}" readonly>
+									</div>
+								</div>
+
+
+						</div>
+					</div>
+				</div>
+
+
+				<div class="card">
+					<a  style="color: #fff;"class="collapsed" data-toggle="collapse" href="#collapseNine" aria-expanded="false" aria-controls="collapseNine">
+						<div class="card-header" role="tab" id="headingNine">
+							<h5 class="mb-0">
+									Parent Bedroom
+							</h5>
+						</div>
+					</a>
+					<div  id="collapseNine" class="collapse" role="tabpanel" aria-labelledby="headingNine" data-parent="#accordion">
+						<div class="card-body">
+
+
+							<div class="form-group row" >
+								<label  class="col-sm-2 col-form-label">Furniture</label>
+								<div class="col-sm-10">
+									<input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.parent_bedroom.furniture}}" readonly>
+								</div>
+							</div>
+
+							<div class="form-group row" >
+								<label  class="col-sm-2 col-form-label">Type of Wardrobe</label>
+								<div class="col-sm-10">
+									<input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.parent_bedroom.type_of_wardrobe}}" readonly>
+								</div>
+							</div>
+
+							<div class="form-group row" >
+								<label  class="col-sm-2 col-form-label">Type of Bed</label>
+								<div class="col-sm-10">
+									<input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.parent_bedroom.type_of_bed}}" readonly>
+								</div>
+							</div>
+
+							<div class="form-group row" >
+								<label  class="col-sm-2 col-form-label">Services</label>
+								<div class="col-sm-10">
+									<input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.parent_bedroom.services}}" readonly>
+								</div>
+							</div>
+
+							<div class="form-group row" >
+								<label  class="col-sm-2 col-form-label">Preferred Material</label>
+								<div class="col-sm-10">
+									<input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.parent_bedroom.preferred_material}}" readonly>
+								</div>
+							</div>
+
+							<div class="form-group row" >
+								<label  class="col-sm-2 col-form-label">Preferred Finish</label>
+								<div class="col-sm-10">
+									<input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.parent_bedroom.preferred_finish}}" readonly>
+								</div>
+							</div>
+
+							<div class="form-group row" >
+								<label  class="col-sm-2 col-form-label">Preferred Finish Material</label>
+								<div class="col-sm-10">
+									<input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.parent_bedroom.preferred_finish_material}}" readonly>
+								</div>
+							</div>
+
+							<div class="form-group row" >
+								<label  class="col-sm-2 col-form-label">Other Requirement</label>
+								<div class="col-sm-10">
+									<input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.parent_bedroom.other_requirments}}" readonly>
+								</div>
+							</div>
+
+
+					</div>
+				</div>
+			</div>
+
+
+			<div class="card">
+				<a  style="color: #fff;"class="collapsed" data-toggle="collapse" href="#collapseTen" aria-expanded="false" aria-controls="collapseTen">
+					<div class="card-header" role="tab" id="headingTen">
+						<h5 class="mb-0">
+								Guest Bedroom
+						</h5>
+					</div>
+				</a>
+				<div  id="collapseTen" class="collapse" role="tabpanel" aria-labelledby="headingTen" data-parent="#accordion">
+					<div class="card-body">
+
+
+						<div class="form-group row" >
+							<label  class="col-sm-2 col-form-label">Furniture</label>
+							<div class="col-sm-10">
+								<input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.guest_bedroom.furniture}}" readonly>
+							</div>
+						</div>
+
+						<div class="form-group row" >
+							<label  class="col-sm-2 col-form-label">Type of Wardrobe</label>
+							<div class="col-sm-10">
+								<input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.guest_bedroom.type_of_wardrobe}}" readonly>
+							</div>
+						</div>
+
+						<div class="form-group row" >
+							<label  class="col-sm-2 col-form-label">Type of Bed</label>
+							<div class="col-sm-10">
+								<input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.guest_bedroom.type_of_bed}}" readonly>
+							</div>
+						</div>
+
+						<div class="form-group row" >
+							<label  class="col-sm-2 col-form-label">Services</label>
+							<div class="col-sm-10">
+								<input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.guest_bedroom.services}}" readonly>
+							</div>
+						</div>
+
+						<div class="form-group row" >
+							<label  class="col-sm-2 col-form-label">Preferred Material</label>
+							<div class="col-sm-10">
+								<input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.guest_bedroom.preferred_material}}" readonly>
+							</div>
+						</div>
+
+						<div class="form-group row" >
+							<label  class="col-sm-2 col-form-label">Preferred Finish</label>
+							<div class="col-sm-10">
+								<input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.guest_bedroom.preferred_finish}}" readonly>
+							</div>
+						</div>
+
+						<div class="form-group row" >
+							<label  class="col-sm-2 col-form-label">Preferred Finish Material</label>
+							<div class="col-sm-10">
+								<input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.guest_bedroom.preferred_finish_material}}" readonly>
+							</div>
+						</div>
+
+						<div class="form-group row" >
+							<label  class="col-sm-2 col-form-label">Other Requirement</label>
+							<div class="col-sm-10">
+								<input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.parent_bedroom.other_requirments}}" readonly>
+							</div>
+						</div>
+
+
+				</div>
+			</div>
+		</div>
+
+
+		<div class="card">
+			<a  style="color: #fff;"class="collapsed" data-toggle="collapse" href="#collapseEleven" aria-expanded="false" aria-controls="collapseEleven">
+				<div class="card-header" role="tab" id="headingEleven">
+					<h5 class="mb-0">
+							Living Room
+					</h5>
+				</div>
+			</a>
+			<div  id="collapseEleven" class="collapse" role="tabpanel" aria-labelledby="headingEleven" data-parent="#accordion">
+				<div class="card-body">
+
+
+					<div class="form-group row" >
+						<label  class="col-sm-2 col-form-label">Furniture</label>
+						<div class="col-sm-10">
+							<input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.living_room.furniture}}" readonly>
+						</div>
+					</div>
+
+					<div class="form-group row" >
+						<label  class="col-sm-2 col-form-label">Services</label>
+						<div class="col-sm-10">
+							<input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.living_room.services}}" readonly>
+						</div>
+					</div>
+
+					<div class="form-group row" >
+						<label  class="col-sm-2 col-form-label">Preferred Material</label>
+						<div class="col-sm-10">
+							<input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.living_room.preferred_material}}" readonly>
+						</div>
+					</div>
+
+					<div class="form-group row" >
+						<label  class="col-sm-2 col-form-label">Preferred Finish</label>
+						<div class="col-sm-10">
+							<input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.living_room.preferred_finish}}" readonly>
+						</div>
+					</div>
+
+					<div class="form-group row" >
+						<label  class="col-sm-2 col-form-label">Preferred Finish Material</label>
+						<div class="col-sm-10">
+							<input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.living_room.preferred_finish_material}}" readonly>
+						</div>
+					</div>
+
+					<div class="form-group row" >
+						<label  class="col-sm-2 col-form-label">Other Requirement</label>
+						<div class="col-sm-10">
+							<input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.living_room.other_requirments}}" readonly>
+						</div>
+					</div>
+
+
+			</div>
+		</div>
+	</div>
+
+
+	<div class="card">
+		<a  style="color: #fff;"class="collapsed" data-toggle="collapse" href="#collapseTwe" aria-expanded="false" aria-controls="collapseTwe">
+			<div class="card-header" role="tab" id="headingTwe">
+				<h5 class="mb-0">
+						Pooja Room
+				</h5>
+			</div>
+		</a>
+		<div  id="collapseTwe" class="collapse" role="tabpanel" aria-labelledby="headingTwe" data-parent="#accordion">
+			<div class="card-body">
+
+
+				<div class="form-group row" >
+					<label  class="col-sm-2 col-form-label">Furniture</label>
+					<div class="col-sm-10">
+						<input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.pooja_room.furniture}}" readonly>
+					</div>
+				</div>
+
+				<div class="form-group row" >
+					<label  class="col-sm-2 col-form-label">Services</label>
+					<div class="col-sm-10">
+						<input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.pooja_room.services}}" readonly>
+					</div>
+				</div>
+
+		</div>
+	</div>
+</div>
+
+<div class="card">
+	<a  style="color: #fff;"class="collapsed" data-toggle="collapse" href="#collapseThi" aria-expanded="false" aria-controls="collapseThi">
+		<div class="card-header" role="tab" id="headingThi">
+			<h5 class="mb-0">
+					Foyer
+			</h5>
+		</div>
+	</a>
+	<div  id="collapseThi" class="collapse" role="tabpanel" aria-labelledby="headingThi" data-parent="#accordion">
+		<div class="card-body">
+
+
+			<div class="form-group row" >
+				<label  class="col-sm-2 col-form-label">Furniture</label>
+				<div class="col-sm-10">
+					<input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.foyer.furniture}}" readonly>
+				</div>
+			</div>
+
+			<div class="form-group row" >
+				<label  class="col-sm-2 col-form-label">Services</label>
+				<div class="col-sm-10">
+					<input type="text" readonly class="form-control" id="staticEmail" value="{{obj.project_detail.foyer.services}}" readonly>
+				</div>
+			</div>
+
+	</div>
+</div>
+</div>
+
+
+
+
+
+			</div>
+			</form>
+	</div>
+</div>
+
+
+<!-- <div  *ngFor="let obj of result" >
+	{{obj.project_detail.id}}
+	{{obj.project_detail.customer_name}}
+</div> -->

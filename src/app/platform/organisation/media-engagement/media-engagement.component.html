@@ -1,0 +1,114 @@
+<div class="row ss-top-menu">
+	<div class="col-sm-12">
+		<span class="ss-text-dark"  style="vertical-align: -webkit-baseline-middle;">Dashboard <i class="rightArrow fa fa-angle-right"></i></span>
+		<span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;">Media Engagement</span>
+	</div>
+</div>
+<div class="rk-ui-notification" *ngIf="successalert">
+	<span id="notificationMessageText">{{successMessage}}</span>
+	<a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+<div class="rk-ui-notification err" *ngIf="erroralert">
+	<span id="notificationMessageText">{{errorMessage}}</span>
+	<a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+<div class="text-right"><button class="rk-interalBtnColor addCursor mt-3 mb-3" data-toggle="modal" data-target="#mediaElementModal" (click)="updatemodal_bool=false">Add Element</button></div>
+
+<div class="container-set">
+	<div class="row">
+		<div class="col-md-12">
+			<div class="tableDiv table-responsive">
+				<div class="col-md-12" *ngIf="elementList &&  elementList.length==0 ">
+		      <div class="boq-img text-center">
+		        <img src="assets/img/desktop.png" style="height: 250px;width: 300px">
+		      </div>
+		      <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing to show...</p>
+		    </div>
+				<div class='paginated_container' ng-controller='PaginatedUserListCtrl'>
+					<table class="table px-3 py-3" *ngIf="elementList &&  elementList.length>0" >
+						<thead>
+							<tr>
+								<th class="text-center firstTh">#</th>
+								<th>Title</th>
+								<th>Description</th>
+								<th class="minWidthForTd">URL</th>
+								<th class="minWidthForTd">Image</th>
+								<th class="lastTh"></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr *ngFor="let data of elementList | paginate: { itemsPerPage: per_page, currentPage: current_page, totalItems: total_page  } let i = index; " [attr.data-index]="i" id="elementListRow{{i}}">
+								<td class="text-center">{{((current_page-1) * per_page) + (i+1)}}</td>
+								<td class="capitalize minWidthForTd addCursor" (click)="openEditMediaElemModal(data)" style="color: #007bff;">{{data.title}}</td>
+								<td class="minWidthForTd capitalize">{{data.description}}</td>
+								<td class="minWidthForTd ">{{data.read_more_url}}</td>
+								<td class="minWidthForTd capitalize">
+									<img src="{{data.logo}}" onerror="this.src='./assets/img/no_image.svg'" *ngIf="data.logo" height="110" width="110">
+								</td>
+								<td>
+									<i class="ion-android-more-vertical  ss-3-dot-drop" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"></i>
+                  <div class="dropdown-menu pt-2 pb-2" style="font-size: 14px;">
+                    <a class="dropdown-item addCursor" (click)="openEditMediaElemModal(data)" data-target="#mediaElementModal" data-toggle="modal">Edit</a>
+                    <a class="dropdown-item addCursor" (click)="deleteMediaElement(data.id)">Delete</a>
+                  </div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<div class="text-center" *ngIf="elementList && elementList.length >0">
+						<pagination-controls autoHide="true" (pageChange)="current_page = getMediaElementsList($event)"></pagination-controls>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="mediaElementModal" tabindex="-1" role="dialog" aria-labelledby="mediaElementModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title modalTitle" id="mediaElementModalLabel"><ng-container *ngIf="!updatemodal_bool">Create a Media Element</ng-container><ng-container *ngIf="updatemodal_bool">Update Media Element</ng-container></h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closemediaElementModal()">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<form [formGroup]="mediaElementForm">
+					<div class="row">
+						<div class="col-sm-12 col-md-6 mb-2">
+              <div class="form-group">
+                <label class="text-left">Title</label>
+                <input type="text" class="form-control" formControlName="title">
+              </div>
+            </div>
+						<div class="col-sm-12 col-md-6 mb-2">
+              <div class="form-group">
+                <label class="text-left">URL</label>
+								<input type="text" name=""  formControlName="url" class="form-control">
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-12 mb-2">
+              <div class="form-group">
+                <label class="text-left">Description</label>
+                <textarea class="form-control" formControlName="description"></textarea>
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-12 mb-2">
+              <div class="form-group">
+                <label class="text-left">Upload Image</label>
+                <input type="file" name="" class="form-control" (change)="uploadImage($event)" id="fileInput">
+                <img src="" id="img_url"  height="110" width="110" class="mt-2 d-none">
+              </div>
+            </div>
+					</div>
+					<div>
+						<ng-container *ngIf="!updatemodal_bool"><button class="pull-right rk-interalBtnColor mr-2 my-2 addCursor" (click)="saveMediaElement(mediaElementForm.value)">Save</button></ng-container>
+						<ng-container *ngIf="updatemodal_bool"><button class="pull-right rk-interalBtnColor mr-2 my-2 addCursor"  (click)="updateMediaElement(updateElement_Obj.id,mediaElementForm.value)">Update</button></ng-container>
+						<button class="pull-right rk-btnCancel my-2 addCursor mr-3" data-dismiss="modal" (click)="closemediaElementModal()">Cancel</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>

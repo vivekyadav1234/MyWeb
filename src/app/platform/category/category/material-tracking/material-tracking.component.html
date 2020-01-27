@@ -1,0 +1,686 @@
+<!-- <div class="errorMessage"><span>{{this.errorMessage}}</span></div> -->
+<div class="col-12" *ngIf="errorAlert">
+		<div class="alert-box grid-100" *ngIf="errorMessage">
+			<div class="alert alert-danger mt-3 text-center">
+				<a class="close link" data-dismiss="alert"  (click)="removeErrorMessage();">×</a>
+				{{errorMessage}}
+			</div>
+		</div>
+</div>
+<div class="col-12" *ngIf="successAlert">
+		<div class="alert-box grid-100" *ngIf="successMessage">
+			<div class="alert alert-success mt-3 text-center">
+				<a class="close link" data-dismiss="alert"  (click)="removeSuccessMessage();">×</a>
+				{{successMessage}}
+			</div>
+		</div>
+</div>
+<div class="row mt-4 mb-1">
+	<div class="col-md-12 text-left">
+		<div class="dropdown ml-3" style="display: inline-block;">
+			<button aria-expanded="false" aria-haspopup="true" class="btn btn-border1 dropdown-toggle  text-capitalize" data-toggle="dropdown" id="dropdownMenu2" type="button">QC</button>
+			<div aria-labelledby="dropdownMenu2" class="dropdown-menu" x-placement="bottom-start" style="position: absolute; transform: translate3d(16px, 38px, 0px); top: 0px; left: 0px; will-change: transform;">
+				<button class="dropdown-item text-capitalize" data-toggle="modal" data-target="#scheduleModal" (click)="rescheduleDefaultValues()" type="button">Schedule /Reschedule QC</button>
+				<button class="dropdown-item text-capitalize" type="button" data-toggle="modal" data-target="#cancelModal">Cancel QC</button>
+				<button class="dropdown-item text-capitalize" (click)="noQCneeded()"data-toggle="modal" data-target="#" type="button">QC Not Needed</button>
+				<button class="dropdown-item text-capitalize" (click)="setDefaultFileUploadStatus('qc_report')" type="button" data-toggle="modal" data-target="#completeModal">Complete QC</button>	
+            </div>
+		</div>
+		<a type=" " class="btn Kit-btn4 ml-3 addCursor" style="margin-right:1rem" data-toggle="modal" data-target="#DispatchReadinessModal">Dispatch Readiness</a>
+		<a type=" " class="btn Kit-btn4 addCursor" (click)="setDefaultFileUploadStatus('packing_list')" data-toggle="modal" data-target="#RaiseDispatchDateModal">Raise Dispatch Request</a>
+	    <div class="dropdown ml-3" style="display: inline-block;">
+			<button aria-expanded="false" aria-haspopup="true" class="btn btn-border1 dropdown-toggle  text-capitalize" data-toggle="dropdown" id="dropdownMenu2" type="button"> Dispatch</button>
+			<div aria-labelledby="dropdownMenu2" class="dropdown-menu" x-placement="bottom-start" style="position: absolute; transform: translate3d(16px, 38px, 0px); top: 0px; left: 0px; will-change: transform;">
+				<button class="dropdown-item text-capitalize" data-toggle="modal" data-target="#dispatchModal" type="button">Dispatch by Vendor</button>
+				<button class="dropdown-item text-capitalize" type="button" data-toggle="modal" data-target="#dispatchArrivaeModal">Dispatch by Arrivae</button>	
+            </div>
+		</div>
+		<div class="dropdown ml-3" style="display: inline-block;">
+			<button aria-expanded="false" aria-haspopup="true" class="btn btn-border1 dropdown-toggle  text-capitalize" data-toggle="dropdown" id="dropdownMenu2" type="button">Delivery</button>
+			<div aria-labelledby="dropdownMenu2" class="dropdown-menu" x-placement="bottom-start" style="position: absolute; transform: translate3d(16px, 38px, 0px); top: 0px; left: 0px; will-change: transform;">
+				<button (click)="completeDelivery('completed')" class="dropdown-item text-capitalize" data-dismiss="modal" data-target="#CompleteDelivery" type="button">Complete Delivery</button>
+				<button class="dropdown-item text-capitalize" type="button" data-toggle="modal" data-target="#PartialDelivery"> Partial Delivery</button>	
+            </div>
+		</div>
+ 
+		<div class="dropdown pull-right" style="display: inline-block;">
+            <span class="mr-2" style="font-weight: 600;color: #a5a5a5">Filter by:</span>
+			<button aria-expanded="false" aria-haspopup="true" class="btn btn-border dropdown-toggle1  text-capitalize" data-toggle="dropdown" id="dropdownMenu2" type="button">Vendor to Site</button>
+			<div aria-labelledby="dropdownMenu2" class="dropdown-menu" x-placement="bottom-start" style="position: absolute; transform: translate3d(16px, 38px, 0px); top: 0px; left: 0px; will-change: transform;">
+				<button class="dropdown-item text-capitalize" type="button" data-toggle="modal" data-target="#">Factory to Site</button>
+				<button class="dropdown-item text-capitalize" type="button">WH to Other</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!--  main page -->
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+	<ng-container *ngIf="po_release_list">	
+		<div class="tableDiv">
+        <table class="table">
+            <tbody *ngFor="let poobj of po_release_list; let i = index"[attr.data-index]="i">
+                <tr class="addCursor" (click)="fetchPOList(this.line_item_check_material['id'],poobj);">
+                  <td  [ngClass]="{'active': selectedArrow == i}" style="font-weight: bold; text-align:left;" colspan="1">{{ poobj.reference_no }}&nbsp; &nbsp; {{ poobj.updated_at | date:'MM/dd/yyyy | h:mm a'}}<i class="fa fa-angle-down"style="font-size: 14px;"></i></td>
+                  <td colspan="1">{{ poobj.vendor_name }}</td>
+                   
+                </tr>
+								
+                <tr class="expanding-col expanding-col-{{poobj.id}}">
+									<td colspan="2">
+                    <table style="display:table-row" >
+                    <tr class="thead-dark">
+                        <!-- <th class="fTh">Po No.</th> -->
+                        <th>Sli</th>
+                        <th>Quantity</th>
+                        <th>Shipping Address</th>
+												<!-- <th>Vendor Name</th> -->
+                        <th><form  [formGroup]="selectAllCheckbox"><input type="checkbox" (click)="selectAllSli($event,index)" formControlName="selectAllSli"style="margin-left: 0;margin-right: 0;" class="form-check-input" value="" id="checkAll" ></form></th>
+												<th>QC Status</th>
+                        <th>Dispatch Readiness</th>
+												<th>Current Location</th>
+												<th>Next Location</th>
+                        <th>Dispatch/Delivery Status</th>
+                        <th style="border-top-right-radius: 7px; border-bottom-right-radius: 7px;border-right: 2px solid #707070!important;">History</th>
+                    </tr>
+                    <ng-container *ngFor="let data of po_all_list;let i=index" class="po-items-table ">
+                    <tr>
+											<!-- <ng-container *ngIf="po_all_list.length>0"> -->
+												<!-- <ng-container *ngIf="i==0">
+                             
+                            <td class="po-items" [attr.rowspan]="po_all_list.length"><span style="font-weight: bold;">{{this.po_number}}</span>
+                            <div>{{this.po_date | date:'MM/dd/yyyy | h:mm a'}}</div>
+                            </td>
+                        </ng-container> -->
+                        <td class="po-items" >{{data.element_name}}</td>
+                        <td class="po-items">{{data.quantity}}</td>
+                        <td class="po-items">{{data.shipping_address}}</td>
+                        <!-- <td class="po-items">{{data.vendor_name}}</td> -->
+                        <td class="po-items"><input [id]="data.id"  name="sli-checkboxes" type="checkbox"  style="margin-left: 0;margin-right: 0;" class="form-check-input" (change)="selectSLI($event,i,data)" ></td>
+												<td class="po-items" style="cursor:pointer" [attr.name]="data.id" data-toggle="tooltip" data-placement="right" title="{{data.qc_remarks}}">{{data.qc_status}}</td>  
+												<!-- <ng-container><a (click)='downloadQCReport()'>Download Report</a></ng-container> -->
+                        <td class="po-items" style="cursor:pointer" data-toggle="tooltip" data-placement="right" title="{{data.dispatch_remarks || 'No Remarks' }}">{{data.dispatch_readiness_date }}</td>
+                        <td class="po-items">{{data.current_address}}</td>
+												<td class="po-items">{{data.next_address}}</td>
+												<td class="po-items">{{data.dispatch_and_delivery_status}}</td>
+                        <td class="po-items"><a type="" (click)="getHistory(data.id)" class="wine-red addCursor" data-toggle="modal" data-target="#historyModal">View History</a></td>
+										  </tr>
+											<ng-container *ngFor="let child of data.child_job_elements;let i=index" class="po-items-table ">
+												<tr>
+													<td class="po-items" >{{child.element_name}}</td>
+		                      <td class="po-items">{{child.quantity}}</td>
+		                      <td class="po-items">{{child.shipping_address}}</td>
+		                      <!-- <td class="po-items">{{data.vendor_name}}</td> -->
+		                      <td class="po-items"><input [id]="child.id"  name="sli-checkboxes" type="checkbox"  style="margin-left: 0;margin-right: 0;" class="form-check-input" (change)="selectSLI($event,i,child)" ></td>
+													<td class="po-items" style="cursor:pointer" [attr.name]="child.id" data-toggle="tooltip" data-placement="right" title="{{child.qc_remarks}}">{{child.qc_status}}</td>  
+													<!-- <ng-container><a (click)='downloadQCReport()'>Download Report</a></ng-container> -->
+		                      <td class="po-items" style="cursor:pointer" data-toggle="tooltip" data-placement="right" title="{{child.dispatch_remarks || 'No Remarks' }}">{{child.dispatch_readiness_date }}</td>
+		                      <td class="po-items">{{child.current_address}}</td>
+													<td class="po-items">{{child.next_address}}</td>
+													<td class="po-items">{{child.dispatch_and_delivery_status}}</td>
+		                      <td class="po-items"><a type="" (click)="getHistory(child.id)" class="wine-red addCursor" data-toggle="modal" data-target="#historyModal">View History</a></td>
+			                  <tr>
+									    </ng-container>
+									  </ng-container>
+									</table>
+									 </td>
+								 </tr>
+									 
+            </tbody>
+        </table>
+		</div>
+		</ng-container>
+</div>
+ 
+<!-- modalbox for Schedule A QC -->
+<div class="modal" id="scheduleModal">
+	<div class="modal-lg modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header mt-4">
+				<h4 class="modal-title" style="margin-left: 24px; color:#8c031f;font-size: 1.3rem; ">Schedule A QC</h4>
+				<button class="close mr-5 pull-right addCursor" data-dismiss="modal" style="height: 38px;font-size: 40px;font-weight: 300; color: #8c031f !important" type="button">×</button>
+			</div>
+			<div class="modal-body text-left">
+				<div class="row ml-2">
+					<div class="col-sm-5">
+						<div class="filter1">
+							<span class="fltype" style=" color: #808080;font-size: 13px">Date of QC Readiness</span>
+							<div class="floptions d-flex">
+		            <p style="font-weight: 600"> {{selectedMoment| date:'d MMM,y'}}</p>
+							</div>
+							
+              <div class="" style="margin-top: 30px">
+								<form [formGroup]="scheduleQC">
+									<label class="control-label mb-0 mt-2 mb-3" for="comment" style="font-weight: 600;">Remarks</label>
+							  	<textarea class="form-control form-control1" formControlName="scheduleQCRemark" placeholder="Write a Remark...." id="comment" style="height: 170px;"></textarea>
+								</form>
+							</div>
+						</div>
+          </div>
+          <div class="col-sm-7">
+					  <div>
+					    <owl-date-time-inline style="font-size:1.13rem" [pickerType]="'calendar'"  [(ngModel)]="selectedMoment" [min]="minDate" ></owl-date-time-inline>
+            </div>
+					</div>
+        </div>
+				 
+				<div class="row">
+					<div class="col-sm-12 text-left">
+						<button (click)="onQCschedulesubmit()" data-dismiss="modal" class="btn mb-3 Btn1">Schedule</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- modal box for Cancel QC -->
+<div class="modal" id="cancelModal">
+	<div class="modal-sm modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header mt-4">
+				<h4 class="modal-title" style="margin-left: 30px; color:#8c031f;font-size: 1.2rem; ">Cancel QC</h4>
+				<button class="close mr-4 pull-right addCursor" data-dismiss="modal" style="height: 38px;font-size: 40px;font-weight: 300; color: #8c031f !important" type="button">×</button>
+			</div>
+			<div class="modal-body text-left">
+				<div class="row ml-2">
+					<div class="col-sm-12">
+						<p style="color: #808080;font-size: 13px;">Are you sure you want to cancel ?</p>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-6 text-center">
+						<button (click)="cancelQC()"type="button" data-dismiss="modal" class="btn mb-3 Btn2">Yes</button>
+					</div>
+					<div class="col-sm-6 text-center">
+						<button type="button" data-dismiss="modal" class="btn mb-3 Btn2">No</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Complete QC -->
+<div class="modal" id="completeModal">
+	<div class="modal-sm modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header mt-4">
+				<h4 class="modal-title" style="margin-left: 30px; color:#8c031f;font-size: 1.5rem; ">Complete QC</h4>
+				<button class="close mr-5 pull-right addCursor" data-dismiss="modal" style="height: 38px;font-size: 40px;font-weight: 300; color: #8c031f !important" type="button">×</button>
+			</div>
+			<div class="modal-body text-left">
+				<div class="row ml-2">
+					<div class="col-sm-12" >
+						<div class="upload-label">
+							<form [formGroup]="completeQCForm"> 
+							<input  #fileInput id="file" type="file" class="inputfile" formControlName="upload" (change)="onFileChange($event,'completeQC')" accept="application/pdf, image/gif, image/jpeg, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" multiple="multiple"></form>
+                <label for="file" style="width:100%"><span style="width:87%;font-weight:bolder" class="pull-left ml-2 mt-2">{{fileUploadStatus}} </span><img style="margin-left:0rem" class="mr-2 mt-2"  src="/assets/img/Download Icon.png"></label>
+									<!-- <span *ngIf="this.completeQCForm.controls['upload'].value && this.completeQCForm.controls['upload'].value.fileList">{{this.completeQCForm.controls['upload'].value.fileList.fileName}}</span>  -->
+							
+							</div>
+ 					</div>
+				</div>
+				<!-- <div class="row">
+					<div class="col-sm-6 text-center"></div>
+				</div> -->
+				<div class="row">
+					<div class="col-sm-6 text-center">
+						<button type="button" (click)="completeQC();" data-dismiss="modal" class="btn mb-3 Btn3">Upload</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!--  Dispatch Readiness Date -->
+<div class="modal" id="DispatchReadinessModal">
+	<div class="modal-lg modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header mt-4">
+				<h4 class="modal-title" style="margin-left: 30px; color:#8c031f;font-size: 1.3rem; ">Dispatch Readiness Date</h4>
+				<button class="close mr-5 pull-right addCursor" data-dismiss="modal" style="height: 38px;font-size: 40px;font-weight: 300; color: #8c031f !important" type="button">×</button>
+			</div>
+			<div class="modal-body text-left">
+				<div class="row ml-2">
+					<div class="col-sm-6">
+						<div class="filter1">
+							<span class="fltype" style="color: #808080;font-size: 13px">Date of Dispatch Readiness</span>
+							<div class="floptions d-flex">
+		                        <p style="font-weight: 600"> {{selectedMoment| date:'d MMM,y'}}</p>
+                            </div>
+                            <div class="" style="margin-top: 30px">
+							    <label class="control-label mb-0 mt-2 mb-3" for="comment" style="font-weight: 600;">Remarks</label>
+									<form [formGroup]="dispatchReadinessForm">
+									<textarea class="form-control form-control1" formControlName="qcReadinessRemark" placeholder="Write a Remark...." id="comment" style="height: 100px;"></textarea>
+								  </form>
+								</div>
+						</div>
+          </div>
+                    <div class="col-sm-6">
+					    <div class="example-wrapper">
+					        <owl-date-time-inline [pickerType]="'calendar'"  [(ngModel)]="selectedMoment" [min]="minDate"></owl-date-time-inline>
+                        </div>
+					</div>
+                </div>
+				 
+				<div class="row">
+					<div class="col-sm-12 text-left">
+						<button  type="button" (click)="saveDispatchReadiness()" data-dismiss="modal" class="btn mb-3 Btn1">Schedule</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- dispatch modal Vendor-->
+<div class="modal" id="dispatchModal">
+	<div class="modal-sm modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header mt-4">
+				<h4 class="modal-title" style="margin-left: 5px; color:#8c031f;font-size: 1.3rem; ">Dispatch</h4>
+				<button class="close mr-5 pull-right addCursor" data-dismiss="modal" style="height: 38px;font-size: 40px;font-weight: 300; color: #8c031f !important" type="button">×</button>
+			</div>
+			<div class="modal-body text-left">
+				<div class="row ml-2">
+					<div class="col-sm-12">
+						<div class="">
+						  <!-- <p style="margin-left: 7px;font-weight: 600; font-size: 13px">Dispatch ID:<span class="fltype" style="margin-left: 7px;font-weight: 600; font-size: 13px">12345565</span></p>  -->
+						</div>
+ 					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-6 text-center">
+						<button (click)="dispatchItems('vendor','complete')" data-dismiss="modal" type="button" class="btn mb-3 bton4 ">Complete Dispatch</button>
+					</div>
+					<div class="col-sm-6 text-center">
+						<a href="#partialModal"  data-toggle="modal" data-dismiss="modal"><button type="submit" class="btn mb-3 bton4">Partial Dispatch</button></a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- dispatch modal Arrivae-->
+<div class="modal" id="dispatchArrivaeModal">
+	<div class="modal-sm modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header mt-4">
+				<h4 class="modal-title" style="margin-left: 5px; color:#8c031f;font-size: 1.3rem; ">Dispatch</h4>
+				<button class="close mr-5 pull-right addCursor" data-dismiss="modal" style="height: 38px;font-size: 40px;font-weight: 300; color: #8c031f !important" type="button">×</button>
+			</div>
+			<div class="modal-body text-left">
+				<div class="row ml-2">
+					<div class="col-sm-12">
+						<div class="">
+						  <!-- <p style="margin-left: 7px;font-weight: 600; font-size: 13px">Dispatch ID:<span class="fltype" style="margin-left: 7px;font-weight: 600; font-size: 13px">12345565</span></p>  -->
+						</div>
+ 					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-6 text-center">
+						<button (click)="dispatchItems('arrivae','complete')" data-dismiss="modal" type="button" class="btn mb-3 bton4 ">Complete Dispatch</button>
+					</div>
+					<div class="col-sm-6 text-center">
+						<a href="#partialArrivaeModal"  data-toggle="modal" data-dismiss="modal"><button type="submit" class="btn mb-3 bton4">Partial Dispatch</button></a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Complete Delivery -->
+<div class="modal" id="CompleteDelivery">
+	<div class="modal-sm modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header mt-4">
+				<h4 class="modal-title" style="margin-left: 30px; color:#8c031f;font-size: 1.3rem; ">Delivery</h4>
+				<button class="close mr-5 pull-right addCursor" data-dismiss="modal" style="height: 38px;font-size: 40px;font-weight: 300; color: #8c031f !important" type="button">×</button>
+			</div>
+			<div class="modal-body text-left">
+				<div class="row ml-2">
+					<div class="col-sm-12">
+						<div class="">
+						  <!-- <p style="margin-left: 7px;font-weight: 600; font-size: 13px">Dispatch ID:<span class="fltype" style="margin-left: 7px;font-weight: 600; font-size: 13px">12345565</span></p>  -->
+						</div>
+ 					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-6 text-center">
+						<button type="button" class="btn mb-3 bton4">Complete Dispatch</button>
+					</div>
+					<div class="col-sm-6 text-center">
+						<!-- <button href="#partialModal" data-toggle="modal" data-dismiss="modal" type="button" class="btn mb-3 bton4">Partial Dispatch</button> -->
+						<a href="#partialModal" data-toggle="modal" data-dismiss="modal"><button type="submit" class="btn mb-3 bton4">Partial Dispatch</button></a>
+					</div>
+				  
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Partial Dispatch-->
+<div class="modal" id="partialModal">
+	<div class="modal-sm modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header mt-2">
+				<h4 class="modal-title" style="margin-left: 20px; color:#8c031f;font-size: 1.2rem; ">Partial Dispatch</h4>
+				<button class="close mr-4 pull-right addCursor" data-dismiss="modal" style="height: 38px;font-size: 40px;font-weight: 300; color: #8c031f !important" type="button">×</button>
+			</div>
+			<div class="modal-body text-left">
+				<div class="row ml-2">
+					<form (ngSubmit)="dispatchItems('vendor','partial')" [formGroup]="partialDispatchForm">
+					<div class="col-sm-12">
+						<!-- <p style="font-weight: 600; font-size: 13px">Dispatch ID:<span class="fltype" style="margin-left: 7px;font-weight: 600; font-size: 13px">12345565</span></p>  -->
+					</div>
+					<div class="col-sm-12">
+						 
+						<label class="control-label mb-1 " for="comment" style="font-weight: 600;">What is being dispatched?</label>
+						<textarea class="form-control form-control1" formControlName="itemDescription" placeholder="Write a Remark...." id="comment"></textarea>
+					    
+ 					</div>
+ 					<div class="col-sm-12">
+						<label class="control-label mt-3 mb-1" for="comment" style="font-weight: 600;">What is balance?</label>
+						<textarea class="form-control form-control1" formControlName="itemBalance" placeholder="Balance...." id="comment"></textarea>
+					</div>
+					</form>
+				</div>
+				
+				<div class="row">
+					<div class="col-sm-12 text-center">
+						<button type="submit" [disabled]="partialDispatchForm.invalid" (click)="dispatchItems('vendor','partial')"   class="btn mb-3 Btn2">Submit</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Partial Arrivae Dispatch-->
+ <div class="modal" id="partialArrivaeModal">
+	<div class="modal-sm modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header mt-2">
+				<h4 class="modal-title" style="margin-left: 20px; color:#8c031f;font-size: 1.2rem; ">Partial Dispatch</h4>
+				<button class="close mr-4 pull-right addCursor" data-dismiss="modal" style="height: 38px;font-size: 40px;font-weight: 300; color: #8c031f !important" type="button">×</button>
+			</div>
+			<div class="modal-body text-left">
+				<div class="row ml-2">
+					<form [formGroup]="partialDispatchForm">
+					<div class="col-sm-12">
+						<!-- <p style="font-weight: 600; font-size: 13px">Dispatch ID:<span class="fltype" style="margin-left: 7px;font-weight: 600; font-size: 13px">12345565</span></p>  -->
+					</div>
+					<div class="col-sm-12">
+						 
+						<label class="control-label mb-1 " for="comment" style="font-weight: 600;">What is being dispatched?</label>
+						<textarea class="form-control form-control1" formControlName="itemDescription" placeholder="Write a Remark...." id="comment"></textarea>
+					    
+ 					</div>
+ 					<div class="col-sm-12">
+						<label class="control-label mt-3 mb-1" for="comment" style="font-weight: 600;">What is balance?</label>
+						<textarea class="form-control form-control1" formControlName="itemBalance" placeholder="Balance...." id="comment"></textarea>
+					</div>
+					</form>
+				</div>
+				
+				<div class="row">
+					<div class="col-sm-12 text-center">
+						<button type="submit" [disabled]="partialDispatchForm.invalid" (click)="dispatchItems('arrivae','partial')" data-dismiss="modal" class="btn mb-3 Btn2">Submit</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- partial delivery -->
+<div class="modal" id="PartialDelivery">
+	<div class="modal-sm modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header mt-2">
+				<h4 class="modal-title" style="margin-left: 20px; color:#8c031f;font-size: 1.2rem; ">Partial Delivery</h4>
+				<button class="close mr-4 pull-right addCursor" data-dismiss="modal" style="height: 38px;font-size: 40px;font-weight: 300; color: #8c031f !important" type="button">×</button>
+			</div>
+			<div class="modal-body text-left">
+				<div class="row ml-2">
+					<form [formGroup]="partialDeliveryForm">
+					<div class="col-sm-12">
+						<!-- <p style="font-weight: 600; font-size: 13px">Dispatch ID:<span class="fltype" style="margin-left: 7px;font-weight: 600; font-size: 13px">12345565</span></p>  -->
+					</div>
+					<div class="col-sm-12">
+						 
+						<label class="control-label mb-1 " for="comment" style="font-weight: 600;">What is being dispatched?</label>
+						<textarea class="form-control form-control1" formControlName="itemDescription" placeholder="Write a Remark...." id="comment"></textarea>
+					    
+ 					</div>
+ 					<div class="col-sm-12">
+						<label class="control-label mt-3 mb-1" for="comment" style="font-weight: 600;">What is balance?</label>
+						<textarea class="form-control form-control1" formControlName="itemBalance" placeholder="Balance...." id="comment"></textarea>
+					</div>
+				</form>
+				</div>
+				<div class="row">
+					<div class="col-sm-12 text-center">
+						<button type="submit"  class="btn mb-3 Btn2" [disabled]="partialDeliveryForm.invalid" data-dismiss="modal" (click)="completeDelivery('partial')">Submit</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+ 
+ 
+<!-- History -->
+<div class="modal" id="historyModal">
+	<div class="modal-lg modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header mt-4">
+				<h4 class="" style="color: #8d0528">History</h4>
+			</div>
+			<div class="modal-body text-left">
+				<div class="row">
+					<div class="col-sm-12">
+						<nav class="navbar navbar-expand-md">
+							<ul class="nav nav-tabs tabs-chng  nav-fill pl-5" style="width:100%;"  id="myTab" role="tablist">
+								<li class="nav-item nav-items">
+									<a class="nav-link active addCursor text-center mr-5" [ngClass]="{'active': selectedTab == 'QualityCheck'}" (click)="setSelectedTab('QualityCheck')">QC Status</a>
+								</li>
+								<li class="nav-item nav-items">
+									<a class="nav-link addCursor text-center mr-5" (click)="setSelectedTab('DispatchReadiness')" [ngClass]="{'active': selectedTab == 'DispatchReadiness'}">Readiness Date</a>
+								</li>
+								<li class="nav-item nav-items">
+									<a class="nav-link addCursor text-center mr-5" (click)="setSelectedTab('DispatchSchedule')" [ngClass]="{'active': selectedTab == 'DispatchSchedule'}">Dispatch Status</a>
+								</li>
+								<li class="nav-item nav-items">
+									<a class="nav-link addCursor text-center mr-5" (click)="setSelectedTab('DeliveryState')" [ngClass]="{'active': selectedTab == 'DeliveryState'}">Delivery Status</a>
+								</li>
+							</ul>
+						</nav>
+						<div class="mt-3 pr-4">
+							<div class="row">
+								<div class="col-md-12">
+								  <table class="table modalTable">
+										<thead class="modalHead align-table-head">
+											<tr>
+												<th class="w-25">Date</th>
+												<th class="w-25">Status</th>
+												<th class="w-25">Remarks </th>
+												<th class="w-25" [ngClass]="{'d-none': selectedTab == 'DispatchReadiness' || selectedTab == 'DeliveryState'}">File</th>
+											 
+											</tr>
+										</thead>
+										<tbody><!--historyList-->
+											<tr *ngFor="let history of historyList; let historyIndex = index">
+												<td class="text-center" style="width: 10rem">{{history.date || '-'}}</td>
+												<td class="text-center">{{history.status || '-'}}</td>
+												<td class="p-0 text-center">
+													<div class="b mt-3 addCursor" style="margin-left: 3rem;" title="{{history.remarks}}">{{history.remarks || '-'}}</div>
+												</td>
+												<td class="text-center" [ngClass]="{'d-none': selectedTab == 'DeliveryState' || selectedTab == 'DispatchReadiness'}">
+													<div class="b addCursor" style="margin-left: 3rem;"><a class="catlogue-product-name" href="{{history.file_urls}}" download target="_blank" class="catlogue-product-name" title="{{history.file_urls}}"> {{history.file_urls}} </a></div>
+												</td>
+											</tr>
+										 </tbody>
+									  </table>
+									</div>
+                </div>
+              </div>
+					</div>
+				</div>
+				<div class="row">
+				   <div class="col-sm-12 text-left">
+						<button type="button" class=" btn mb-3 Btn3 addCursor"  data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+ 
+ 
+ 
+<!-- Raise Dispatch Date
+ -->
+<div class="modal" id="RaiseDispatchDateModal">
+    <div class="modal-dialog modal-centered-on-screen modal-lg">
+        <div class="modal-content">
+            <!-- Modal Header -->
+		    <div class="modal-header modal-header pl-5">
+		            <h4 class="modal-title wine-red fs">Raise Dispatch Request</h4>
+		            <button type="button" class="close pr-4 wine-red" data-dismiss="modal" >&times;</button>
+		    </div>
+      
+	        <!-- Modal body -->
+	        <div class="modal-body">
+	             <form [formGroup]="raiseDispatchDateForm" >
+	            <!-- <pre>{{ milestoneForm.value |json}}</pre> -->
+	            <!-- Small -->
+	            <div class="row">
+	                <div class="col-md-6">
+	            	<div class="row ml-2">
+						<div class="col-sm-12">
+							<div class="">
+							  <!-- <p class="pull-left" style="font-weight: 600; font-size: 13px">Dispatch ID:<span class="fltype" style="margin-left: 7px;font-weight: 600; font-size: 13px">12345565</span></p>  -->
+							</div>
+							<div class="">
+								<div class="sd-container">
+									<label style="color: #808080;font-size: 13px">Date of dispatch * :</label>
+								    <input class="sd" formControlName="dispatchDate" type="date" name="selected_date" [min]="minDate | date:'yyyy-MM-dd'" />
+								    <span class="open-button">
+								        <img class="ml-2" src="./assets/img/edit.png"> 
+								    </span>
+								</div>
+							</div>
+						</div>
+						<div class="row m-0" style="width:76%">
+						    <div class="col-sm-12">
+									<input id="raiseDispatchfile" class="inputfile" type="file" formControlName="upload"  name=""  (change)="onDispatchFileChange($event)" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" multiple>
+									<label for="raiseDispatchfile" style="width:100%"><span style="width:79%;text-align: left" class="pull-left ml-2 mt-2">{{fileUploadStatus}}</span><img style="margin-left:0rem" class="mr-2 mt-2" src="/assets/img/Download Icon.png"></label>
+									<!-- <label  style="width:19rem"><span class="pull-left ml-2 mt-2">Upload QC Report</span><img class="mr-2 mt-2"  src="/assets/img/Download Icon.png"></label> -->
+					       </div>
+					  </div>
+					</div>
+					<!-- <div class="row">
+	            		<div class="col-sm-12 d-flex mt-3">
+	            			<div class="ml-4">
+								<input formControlName="siteWarehouse" id="question2"  type="radio" class="with-font" value="site"/>
+								<label for="question2" style="font-weight: 600">Site</label>
+							</div>
+							<div class="ml-4">
+								<input formControlName="siteWarehouse" id="question3"  type="radio" class="with-font" value="warehouse"/>
+								<label for="question3" style="font-weight: 600">Warehouse</label>
+							</div>
+	            		</div>
+	            	</div> -->
+	              <div class="row" style="margin-top:14%;">
+	              	 
+	                <div class="col-md-12" style="margin-bottom: 1rem;">
+	                	<p class="mb-1 mt-4" style="font-weight: 600;margin-right: 14rem;"> Billing Address</p>
+	                  <label class="input-label mr-3"> 
+												<select formControlName="selectedSavedBillingAddress" id="shippingList" class="form-control easy-drop-down btn4"  (change)="setBillingAddress($event)">
+														<option *ngFor="let address of billingAddressList; let addressIndex = index" [value]="addressIndex"  >{{address.addressName}}</option>
+													</select>
+	                 </label>
+	                </div>
+	                <div *ngIf="showAddNewBillingAddressText"   class="col-md-12 fcw" style="text-align: left;margin-left: 2rem; font-weight: 600">
+	                  <p *ngIf="!isNewBillingAddress" style="cursor:pointer"  (click)="toggleShowBillingAddress()">+ Add New Billing Address</p>
+	                </div>
+	                <div *ngIf="isNewBillingAddress" class="col-md-12"  style="text-align: left">
+	                  <textarea  class="form-control" formControlName="billingAddress" rows="4" placeholder="Billing Address" ></textarea>
+	                  <div class="row">
+		                    <div class="col-12 form-group">
+		                      <label>Contact Name</label>
+		                      <input class="form-control" formControlName="billingContactName" placeholder="Contact Name"  >
+		                    </div>
+	                  </div>
+	                  <div class="row">
+	                    <div class="col-12 form-group">
+	                      <label>Contact Number</label>
+	                      <input class="form-control" type="number" formControlName="billingContactNumber" placeholder="Contact Number" >
+	                    </div>
+	                  </div>                      
+	                </div>
+	              </div>
+	                </div>
+	                <div class="col-md-6">
+	            	<div class="row">
+	            		<div class="col-sm-12">
+	            			<div class="form-group" >
+						<div class="col-md-12">
+							<label class="control-label pull-left" for="comment" style="font-weight: 600">Remarks</label>
+							<textarea class="form-control" style="width: 91%;height: 75px" formControlName="remarks" placeholder="Write a Remark...." id="comment"></textarea>
+						</div>
+					</div>
+	            		</div>
+
+	            	</div>
+	              <div class="row">
+	                <div class="col-md-12" style="margin-bottom: 1rem;margin-top:2rem;">
+	                	<p class="mb-1" style="margin-right: 14rem;font-weight: 600">Shipping Address</p>
+	                  <label class="input-label" style="margin-right: 30px;">                     
+	                  	<select formControlName="selectedSavedShippingAddress" id="shippingList" class="form-control easy-drop-down btn4"  (change)="setShippingAddress($event)">
+												<option *ngFor="let address of shippingAddressList; let addressIndex = index" [value]="addressIndex"  >{{address.addressName}}</option>
+											</select>
+	                 </label>
+	                </div>
+	                <div *ngIf="showAddNewShippingAddressText"   class="col-md-12 fcw" style="text-align: left;margin-left: 2rem; font-weight: 600">
+	                  <p *ngIf="!isNewShippingAddress" style="cursor:pointer" (click)="toggleShowShippingAddress()">+ Add New Shipping Address</p>
+	                </div>
+	                <div *ngIf="isNewShippingAddress" class="col-md-12" style="text-align: left;"  >
+	                  <textarea  class="form-control" formControlName="shippingAddress" rows="4" placeholder="Shipping Address" ></textarea>
+	                  <div class="row">
+	                  <div class="col-12 form-group">
+	                    <label>Contact Name</label>
+	                    <input class="form-control" formControlName="shippingContactName" placeholder="Contact Name" >
+	                  </div>
+	                  </div>
+	                  <div class="row">
+	                    <div class="col-12 form-group">
+	                      <label>Contact Number</label>
+	                      <input class="form-control" type="number" formControlName="shippingContactNumber"  placeholder="Contact Number">
+	                    </div>
+	                  </div>
+	                  
+	                </div>
+	              </div>
+	                </div> 
+	            </div>
+                <div *ngIf="!showAddNewBillingAddressText || isNewBillingAddress"  class="row" style="margin-bottom: 2.875rem;">
+	                <div class="col-md-12" style="text-align: left; ">
+	              <label class="checkbox-inline fcw">
+	                <input class="form-control" type="checkbox" formControlName="sameAddress" (change)="sameBillShipAddressToggle()" style="margin-right: -0.5rem;" >
+	              </label>
+	              <span style="font-weight:800;">Use the Billing Address as shipping Address?</span>
+	                </div>
+	            </div>
+	            <div class="row" style="margin-bottom: 3rem;">
+	                <div class="col-md-12">
+	                    <button class="btn" [disabled]="raiseDispatchDateForm.invalid" data-dismiss="modal" (click)="raiseDispatchDate('')" style="height: 50px;width: 133px;margin-top:1.2rem;color: white;background-color: #8d0528;border-radius: 50px" >Schedule</button>
+	                </div>
+	            </div>
+	            </form>
+	        </div>
+        </div>
+    </div>
+</div>
+ 
+  
+ 

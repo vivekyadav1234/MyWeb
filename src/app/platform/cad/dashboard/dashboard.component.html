@@ -1,0 +1,195 @@
+<div class="row ss-top-menu">
+	<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6">
+		<span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;">Dashboard > Projects</span>
+	</div>
+	<div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6">
+			<button class="btn btn-pink pull-right" *ngIf = "is_champion=='true'" type="button" data-toggle="modal" data-target="#inviteChampionModal"  (click)="cadinvitechampions.getChampionList()">Invite Level 2 & Level 3 User</button>
+			<!-- <button class="btn btn-pink pull-right mr-2" type="button" data-toggle="modal" data-target="#addNewLeadModal">Add Lead</button> -->
+	</div>
+</div>
+<div class="row px-4">
+
+	 <div class="col-12">
+		<div class="row mb-5">
+			<div class="col-md-12  pb-3">
+				<div class="row mt-4">
+
+					<div class="col-md-12" >
+						<div class="tableDiv " >
+							<div class="table-responsive">
+								<table class="table ">
+										<thead class="thead-dark">
+												<tr>
+												<th scope="col" class="firstTh">#</th>
+												<th scope="col">PROJECT NAME</th>
+												<th scope="col">PROJECT ID</th>
+												<th scope="col">LEAD NAME</th>
+												<th scope="col">LEAD ID</th>
+												<th scope="col">DESIGNER ASSIGNED</th>
+												<th scope="col">COMMUNITY MANAGER</th>
+												<th class="lastTh"></th>
+												</tr>
+										</thead>
+										<tbody lass="ss-tbody">
+											<tr *ngFor="let obj of project_list | paginate: { itemsPerPage: per_page, currentPage: current_page, totalItems: total_page  }; let i = index" [attr.data-index]="i">
+												<td style="min-width: 1rem;">{{i+1}}</td>
+												<td  class="capitalize">
+													<a class="addCursor ss-link" href=""  [routerLink]="['/cad/projects/'+obj.id+'/boq-list']">{{obj.name}}</a>
+
+												</td>
+												<td style="min-width: 1rem;">{{obj.id}}</td>
+
+												<td style="min-width: 1rem;">
+													<span *ngIf="obj.user">{{obj.user.name}}</span>
+												</td>
+												<td style="min-width: 1rem;" class="capitalize">
+													<span *ngIf="obj.user">{{obj.user.id}}</span>
+												</td>
+												<td style="min-width: 1rem;" class="capitalize">
+													<span *ngIf="obj.designer">{{obj.designer.name}}</span>
+												</td>
+												<td style="min-width: 1rem;">
+													<span *ngIf="obj.community_manager">{{obj.community_manager.name}}</span>
+												</td>
+												<td></td>
+											</tr>
+
+										</tbody>
+								</table>
+								<div class="text-center" *ngIf="project_list && project_list.length >0">
+					                <pagination-controls autoHide="true" (pageChange)="current_page = getProjectList($event)"></pagination-controls>
+					            </div>
+								<!-- <p>{{paymentForm.value | json}}</p> -->
+							</div>
+						</div>          
+					</div> 
+					<div class="col-md-12 not-found " *ngIf="project_list && project_list.length== 0">
+						<div class="boq-img">
+							<img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+						</div>
+						<p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing to show...</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+<!-- Invite Champion Modal -->
+<div class="modal fade customModal" id="inviteChampionModal" tabindex="-1" role="dialog" aria-labelledby="inviteChampionModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title modalTitle" id="inviteChampionModalLabel">User Details</h5>
+      </div>
+
+      <div class="modal-body">
+        <app-invite-champions #cadinvitechampions></app-invite-champions>
+      </div>
+    </div>
+  </div>
+</div> 
+	  
+			<div class="rk-ui-notification err" *ngIf="erroralert"  style="z-index: 10000;">
+			  <span id="notificationMessageText">{{errorMessage}}</span>
+			  <a class="close rk-linknotification" (click)="erroralert=false">×</a>
+			</div>
+			<div class="rk-ui-notification" *ngIf="successalert"  style="z-index: 10000;">
+			  <span id="notificationMessageText">{{successMessage}}</span>
+			  <a class="close rk-linknotification" (click)="successalert=false">×</a>
+			</div>
+
+			<div class="modal fade customModal" id="addNewLeadModal" tabindex="-1" role="dialog" aria-labelledby="addNewLeadModalLabel" aria-hidden="true">
+					<div class="modal-dialog modal-lg" role="document">
+						<form (ngSubmit)="addLeadFormSubmit(addLeadForm.value); " [formGroup]="addLeadForm" class="form-horizontal" enctype="multipart/form-data" id="addLeadForm">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title modalTitle" id="exampleModalLabel"> Lead Details</h5>
+										</div>
+										<div class="modal-body">
+											<div class="row mx-2">
+												<div class="col-sm-10 col-md-6 mb-2">
+													<div class="form-group">
+														<label class="text-left">Name </label>
+														<input type="text" class="form-control" name="name" placeholder="Enter Lead Name" formControlName="name">
+													</div>
+												</div>
+												<div class="col-sm-10 col-md-6 mb-2">
+													<div class="form-group">
+														<label class="text-left">Lead Email </label>
+														<input type="email" class="form-control" name="email" placeholder="Enter Lead Email" formControlName="email">
+														<div *ngIf="addLeadForm.controls['email'].errors && !addLeadForm.controls['email'].pristine" class="text-danger">
+															<div [hidden]="addLeadForm.controls['email'].valid || addLeadForm.controls['email'].errors.required">Enter valid email.</div>
+														</div>
+													</div>
+												</div>
+												<div class="col-sm-10 col-md-6 mb-2">
+													<div class="form-group">
+														<label class="text-left">Lead Contact <span>*</span></label>
+														<input type="number" class="form-control" name="contact" placeholder="Enter Lead Contact" formControlName="contact" required min="0" (keydown)="numberCheck($event)">
+														<div *ngIf="addLeadForm.controls['contact'].errors && !addLeadForm.controls['contact'].pristine" class="text-danger">
+															<div [hidden]="!addLeadForm.controls['contact'].errors.required">Contact is required.</div>
+														</div>
+													</div>
+												</div>
+												<div class="col-sm-10 col-md-6 mb-2">
+													<div class="form-group">
+														<label class="text-left">Pincode</label>
+														<input type="number" class="form-control" name="pincode" placeholder="Enter Lead Pincode" formControlName="pincode" min="0" (keydown)="numberCheck($event)">
+													</div>
+												</div>
+				
+												<div class="col-sm-10 col-md-6">
+													<div class="form-group">
+														<label class="text-left">Select Lead Type <span>*</span></label>
+														<select formControlName="lead_type_id" class="form-control" (change)="onChangeOfLeadType($event.target.value)">
+															<option value="" disabled>Select</option>
+															<option value="{{type.id}}" *ngFor="let type of lead_types">{{type.name}}</option>
+														</select>
+													</div>
+												</div>
+												<div class="col-sm-10 col-md-6">
+													<div class="form-group">
+														<label class="text-left">Select Lead Source <span>*</span></label>
+														<select formControlName="lead_source_id" class="form-control capitalize">
+															<option value="" disabled>Select</option>
+															<option value="{{src.id}}" *ngFor="let src of lead_sources">{{src.name}}</option>
+														</select>
+													</div>
+												</div>
+												<div class="col-sm-10 col-md-6">
+													<div class="form-group">
+														<label class="text-left">Select Lead Campaign </label>
+														<select formControlName="lead_campaign_id" class="form-control capitalize">
+															<option value="" disabled>Select</option>
+															<option value="{{camp.id}}" *ngFor="let camp of lead_campaigns">{{camp.name}}</option>
+														</select>
+													</div>
+												</div>
+												<div class="col-sm-10 col-md-6 mb-2" *ngIf="addLeadForm.controls['lead_type_name'].value=='designer'">
+													<div class="form-group">
+														<label class="text-left">Instagram Id</label>
+														<input type="text" class="form-control" name="instagram_handle" placeholder="Enter Instagram Id" formControlName="instagram_handle">
+													</div>
+												</div>
+												<div class="col-sm-10 col-md-6 mb-2" *ngIf="addLeadForm.controls['lead_type_name'].value=='designer'">
+													<div class="form-group">
+														<label class="text-left">Upload CV</label>
+														<input type="file" name="" class="form-control" (change)="uploadCV($event)" name="attachment_file">
+													</div>
+												</div>
+												<div class="col-sm-12 mt-3 text-right">
+													<div class="mt-3">
+													<button type="submit" [disabled]="!addLeadForm.valid" class="rk-interalBtnColor addCursor">Add</button>
+													<button class="cancle ml-3 addCursor rk-btnCancel" data-dismiss="modal">Cancel</button>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+							</form>
+					</div>
+				</div> 
+
+

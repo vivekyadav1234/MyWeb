@@ -1,0 +1,71 @@
+:host ::ng-deep .fc-day{
+  background-color: #fff !important;
+}
+
+:host ::ng-deep .fc-day-header{
+  background-color: #AA3D56 !important;
+  color: #ffffff;
+}
+
+:host ::ng-deep .fc-button{
+  background-color: #ffffff;
+  background-image: none;
+  border: 1px solid #8f0521;
+  color: #8f0521;
+  text-transform: capitalize;
+}
+
+:host ::ng-deep .fc-state-active{
+  background-color: #8f0521;
+  background-image: none;
+  border: 1px solid #8f0521;
+  color: #ffffff;
+}
+
+:host ::ng-deep .fc-day-number{
+  float: left !important;
+  padding: 2px 5px;
+}
+
+:host ::ng-deep h2{
+  font-size: 18px;
+}
+
+:host ::ng-deep td.fc-today{
+  background-color: #d0d0d0 !important;
+}
+
+input{
+  font-size: 14px;
+}
+
+select{
+  -moz-appearance: menulist;
+  -webkit-appearance: menulist;
+  appearance: menulist;
+}
+
+
+
+@media (max-width: 767px) {
+  .calendarMB{
+    margin-bottom: 6rem;
+    padding-bottom: 15px;
+  }
+  .fc-center h2{
+    font-size: 14px;
+  }
+  :host ::ng-deep .fc button{
+    height: 22px;
+    padding: 3px 4px;
+    font-size: 10px;
+  }
+}
+
+
+
+
+
+
+
+

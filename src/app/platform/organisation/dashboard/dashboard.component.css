@@ -1,0 +1,300 @@
+
+.card{
+    /*margin: 0;*/
+    border: none;
+}
+
+.noFocus:focus, .noFocus:hover{
+  outline: none;
+  text-decoration: none;
+}
+.project_img{
+    width: 94%;
+    margin: auto;
+    margin-top: -10px;
+}
+.add_proj_img{
+    width: 10rem;
+    margin: auto;
+}
+
+.box{
+    max-width: 26rem;
+    margin: auto;
+    height: 16rem;
+    background-color: #fff;
+    overflow: hidden;
+    box-shadow: 0px 0px 5px 0px #98989894;
+}
+.box ul{
+    list-style: none;
+    padding-left: 1rem;
+    margin-top: 6rem;
+}
+.sideBg{
+    max-width: 24rem;
+    height: 16rem;
+    background-color: #BD4740;
+    transform: rotate(47.5deg);
+    -ms-transform: rotate(47.5deg);
+    -webkit-transform: rotate(44.5deg);
+    position: relative;
+    left: 12rem;
+    top: -5.3rem;
+}
+.boxInner{
+    position: absolute;
+    top: 0;
+    height: 16rem;
+    margin-left: 2.5rem;
+    border-left: 2px solid #00B9F4;
+}
+.boxInner h3{
+    font-size: 20px;
+    color: #00B9F4;
+}
+.boxInner p{
+    margin-top: 0.5rem;
+    font-size: 13px;
+    color: #777;
+}
+.boxAdd{
+    max-width: 26rem;
+    margin: auto;
+    height: 16rem;
+    background-color: #fff;
+    overflow: hidden;
+    box-shadow: 0px 0px 5px 0px #98989894;
+}
+.sideBgAdd{
+    max-width: 24rem;
+    height: 16rem;
+    background-color: #645769;
+    transform: rotate(47.5deg);
+    -ms-transform: rotate(47.5deg);
+    -webkit-transform: rotate(-44.5deg);
+    position: relative;
+    left: -10rem;
+    top: -5.3rem;
+}
+.boxInnerAdd{
+    position: absolute;
+    top: 0;
+    width: 69.5%;
+    /*margin-left: 2.5rem;*/
+/*    border-left: 2px solid #00B9F4;*/
+}
+.boxInnerAdd h3{
+    font-size: 20px;
+    color: #00B9F4;
+}
+.addProject{
+    font-size: 2rem;
+    color: #000;
+    position: absolute;
+    top: 7rem;
+    left: 46%;
+}
+.deleteProject{
+    position: relative;
+    left: 350px;
+    bottom: 2rem;
+    font-size: 20px;
+}
+.openDesignToolBtn{
+    border-radius: 6px;
+    border: 1px solid #000;
+    background-color: transparent;
+    z-index: 1;
+    font-size: 13px;
+    padding: 5px 9px;
+}
+.schedulerLink {
+    position: absolute;
+    margin-top: -35px;
+    padding-left: 40px;
+}
+
+
+
+/*.leadheadDashboardContainer .card:hover {
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}*/
+
+.statusCardTextColor1 {
+    color: #444444;
+    font-size: 45px
+}
+.statusCardTextColor2 {
+    color: #ffc107;
+}
+.statusCardTextColor3 {
+    color: #7cc329;
+}
+.statusCardTextColor4 {
+    color: #3f51b5;
+}
+.statusCardTextColor5 {
+    color: #43A047;
+}
+.statusCardTextColor6 {
+    color: #ff0202;
+}
+.statusCardTextColor7 {
+    color: #bf4f4d;
+}
+.statusCardTextColor8 {
+    color: #558aa2;
+}
+
+
+/**new css**/
+.ss-text-light
+{
+  vertical-align: -webkit-baseline-middle;
+  color: #6da8e8;
+  cursor: pointer;
+}
+.btn.designtoolBtn {
+    border: 1px solid #8c031f;
+}
+.titleText{
+    color: #5a5a5a;
+}
+.statusCardHeadingColor{
+    color: #8c031f;
+    font-size: 16px;
+    text-transform: uppercase;
+    font-weight: 900;
+}
+.cardHeadingIcon{
+    height: 54px;
+    width: 54px;
+}
+.leadheadDashboardContainer .card {
+    box-shadow: 0 1px 1px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+    border-radius: 0px;
+    border: 1px solid #dcdcdc;
+    min-height: 350px;
+}
+.statusCardTextColor {
+    color: #444444;
+    font-size: 45px
+}
+.statusCardContent {
+    color: #848484;
+    font-size: 14px;
+    font-weight: lighter
+}
+
+.filterRow{
+  background-color: #fff;
+  cursor: pointer;
+}
+.filterRow .col-sm-11 {
+  padding: 10px 10px;
+}
+.filterRow .col-sm-11 .row{
+  margin-left: 0px; margin-right: 0px;
+}
+.filterRow .row .col-sm-1{
+  padding: 10px 10px 0px 0px;
+   border-left: 1px solid #d3d3d3;
+}
+
+.tabs-chng{
+  border-bottom: none;
+}
+.itm-chng{
+  min-width: 87px;
+  max-width: 104px;
+  font-size: 12px;
+}
+:host ::ng-deep .selected-list .c-btn{
+  box-shadow: 0px 0px 0px #959595 !important;
+}
+:host ::ng-deep .c-btn{
+  border: none !important;
+}
+
+:host ::ng-deep  .selected-list .fa-angle-down , .selected-list .fa-angle-up
+{
+  right: 0px !important;
+
+}
+:host ::ng-deep .c-btn.disabled{
+  cursor: not-allowed !important;
+  background: white !important;
+
+}
+:host ::ng-deep .custom-class-dropdown .pure-checkbox input[type="checkbox"]:checked + label:before{
+  background: #96001F!important;
+  border-color: #96001F !important;
+}
+
+:host ::ng-deep .custom-class-dropdown .pure-checkbox input[type="checkbox"] + label:after{
+  border-color: white !important;
+}
+
+:host ::ng-deep  .list-filter{
+  width: 194px !important;
+
+}
+.nav-item.itm-chng .fromDateSpan .fa-caret-down, .nav-item.itm-chng .toDateSpan .fa-caret-down{
+  position: relative;
+  font-size: 12pt;
+  top:1px;
+}
+.nav-item.itm-chng .fromDate,.nav-item.itm-chng .toDate  {
+  padding: 0.3rem 0.4rem;
+  border: 1px solid rgba(90, 88, 88, 0.15);
+}
+.frm-chng{
+  border: 1px solid rgba(241, 237, 237, 0.15);
+  font-size: 0.8rem;
+  margin-top: -3px;
+  width: 108%;
+  cursor: pointer;
+}
+
+.frm-chng::-webkit-input-placeholder { /* Chrome */
+  color: black;
+  font-size: 16px;
+  font-family:  "Roboto";
+  font-weight: bold;
+}
+.frm-chng:-ms-input-placeholder { /* IE 10+ */
+  color: black;
+}
+.frm-chng::-moz-placeholder { /* Firefox 19+ */
+  color: black;
+  opacity: 1;
+}
+.frm-chng:-moz-placeholder { /* Firefox 4 - 18 */
+  color: black;
+  opacity: 1;
+}
+.fromDate,.toDate{
+  display: none;
+}
+.downloadBtn{
+    border: 1px solid #8F0020;
+    padding: 5px 10px;
+    margin-top: 4px;
+    color: #8F0020 !important;
+}
+.downloadBtn:hover{
+    color: #fff !important;
+    background-color: #8F0020;
+}
+
+input.frm-chng::placeholder{ 
+  font-family:fontAwesome; 
+  font-size:12px; 
+  color: black;
+}
+
+input.frm-chng{ 
+  font-family:  "Roboto";
+}

@@ -1,0 +1,194 @@
+
+<div class="row ss-top-menu">
+  <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-xs-3">
+    <span class="ss-text-light" style="vertical-align: -webkit-baseline-middle;">Dashboard <i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;">List of CS Agents</span>
+  </div>
+  <div class="col-xl-5 col-lg-5 col-md-5 col-sm-5 col-xs-5">
+    <div class="ss-searchbox">
+      <i class="fa fa-search"></i>
+      <input class="form-control" type="text" placeholder="Type in name, email, lead type, lead source, campaign to search..." #search (keyup)="0">
+    </div>
+  </div>
+</div>
+<div class="rk-ui-notification" *ngIf="successalert">
+  <span id="notificationMessageText">{{successMessage}}</span>
+  <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+<div class="rk-firstRow row">
+  <div class="col-12" *ngIf="erroralert">
+    <div class="alert-box grid-100" *ngIf="errorMessage">
+      <div class="alert alert-danger mt-3 text-center">
+        <a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a>
+        {{errorMessage}}
+      </div>
+    </div>
+  </div>
+<!--   <div class="col-12" *ngIf="successalert">
+    <div class="alert-box grid-100" *ngIf="successMessage">
+      <div class="alert alert-success mt-3 text-center">
+        <a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+        {{successMessage}}
+      </div>
+    </div>
+  </div> -->
+</div>
+<ul class="nav nav-tabs tabs-chng"  id="myTab" role="tablist">
+  <li class="nav-item nav-items">
+    <a class="nav-link active addCursor text-center mr-3" [ngClass]="{'active': selectedTab == 'csAgentTab'}" (click)="setSelectedTab('csAgentTab')">CS AGENTS</a>
+  </li>
+  <li class="nav-item nav-items">
+    <a class="nav-link addCursor text-center mr-3" (click)="setSelectedTab('leadTypeTab')" [ngClass]="{'active': selectedTab == 'leadTypeTab'}">LEAD TYPE</a>
+  </li>
+  <li class="nav-item nav-items">
+     <a class="nav-link addCursor text-center mr-3" (click)="setSelectedTab('leadSourceTab')" [ngClass]="{'active': selectedTab == 'leadSourceTab'}">LEAD SOURCE</a>
+  </li>
+  <li class="nav-item nav-items">
+    <a class="nav-link addCursor text-center mr-3" (click)="setSelectedTab('leadCampaignTab')" [ngClass]="{'active': selectedTab == 'leadCampaignTab'}">LEAD CAMPAIGN</a>
+  </li>
+</ul>
+<div class="container-fluid container-set">
+  <div class="row" style="padding: 16px;">
+    <div class="col-md-12">
+      <div class="tableDiv" *ngIf="selectedTab == 'csAgentTab'">
+        <table class="table" *ngIf="csagentslist">
+          <thead>
+            <tr>
+              <th class="text-center firstTh">#</th>
+              <th (click)="sort('name')">Name <i class="fa ml-2" [ngClass]="{'fa-sort': column != 'name', 'fa-sort-asc': (column == 'name' && !isDesc), 'fa-sort-desc': (column == 'name' && isDesc) }" aria-hidden="true"></i></th>
+              <th (click)="sort('email')">Email <i class="fa ml-2" [ngClass]="{'fa-sort': column != 'email', 'fa-sort-asc': (column == 'email' && !isDesc), 'fa-sort-desc': (column == 'email' && isDesc) }" aria-hidden="true"></i></th>
+              <th>Status</th>
+              <th class="lastTh">Last Active</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngIf="(csagentslist.users | category: search.value).length==0">
+              <td colspan="5" class="text-center">No Match</td>
+            </tr>
+            <tr *ngFor="let user of csagentslist.users | category: search.value | sort: {property: column, direction: direction}; let i = index; " [attr.data-index]="i">
+              <td class="text-center">{{i+1}}</td>
+              <td class="capitalize">{{user.name}}</td>
+              <td>{{user.email}}</td>
+              <td class="capitalize">
+                <ng-container *ngIf="user.online_status== false && user.last_active!='Not set' ">
+                  <!-- <i class="ion-ios-circle-filled ss-dot not_claimed"></i> -->
+                  <img src="assets/v3/img/redColor.svg">
+                  <span class="ml-1">Offline</span>
+                </ng-container>
+                <ng-container *ngIf="user.online_status== false && user.last_active=='Not set' ">
+                  <!-- <i class="ion-ios-circle-filled ss-dot not_set"></i> -->
+                  <img src="assets/v3/img/yellowColor.svg">
+                  <span class="ml-1">Not Set</span>
+                </ng-container>
+                <ng-container *ngIf="user.online_status== true">
+                  <!-- <i class="ion-ios-circle-filled ss-dot qualified"></i> -->
+                  <img src="assets/v3/img/greenColor.svg">
+                  <span class="ml-1">Online</span>
+                </ng-container>
+              </td>
+              <td>{{user.last_active}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="tableDiv" *ngIf="selectedTab == 'leadTypeTab'">
+        <table class="table">
+          <thead>
+            <tr>
+              <th class="text-center firstTh">#</th>
+              <th (click)="sort('name')">Lead Type <i class="fa ml-2" [ngClass]="{'fa-sort': column != 'name', 'fa-sort-asc': (column == 'name' && !isDesc), 'fa-sort-desc': (column == 'name' && isDesc) }" aria-hidden="true"></i></th>
+              <th>Assigned CS Agent</th>
+              <th></th>
+              <th class="lastTh"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngIf="(lead_tyesArr | category: search.value).length==0">
+              <td colspan="5" class="text-center">No Match</td>
+            </tr>
+            <tr *ngFor="let leadtype of lead_tyesArr | category: search.value | sort: {property: column, direction: direction}; let i = index; " [attr.data-index]="i">
+              <td class="text-center">{{i+1}}</td>
+              <td class="capitalize">{{leadtype.name}}</td>
+              <td *ngIf="leadtype.assigned_cs_agent==null">Not Assigned</td>
+              <td *ngIf="leadtype.assigned_cs_agent!=null">{{leadtype.assigned_cs_agent}}</td>
+              <td>
+                <select class="form-control" id="assigncsagent_leadtype_{{leadtype.id}}" style="width: 70%; display: inline-block;" (change)="onDropdownChange(leadtype.id,$event.target.value,i,'leadtype')">
+                  <option value="">Assign CS Agent</option>
+                  <option *ngFor="let agent of csagentsArr" value="{{agent.id}}-{{agent.email}}" >{{agent.name | uppercase}} - {{agent.email}}</option>
+                </select>
+                <img src="assets/v3/img/sendbutton1.svg" class="ml-1 sendIcon" (click)="assignCSAgentType(leadtype.id,i,leadtype.name)">
+              </td>
+              <td><button type="button" class="rk-interalBtnColor" (click)="unassignCSAgentType(leadtype.id,i,leadtype.name,'',leadtype.assigned_cs_agent)" *ngIf="leadtype.assigned_cs_agent!=null">Unassign</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="tableDiv" *ngIf="selectedTab == 'leadSourceTab'">
+        <table class="table">
+          <thead>
+            <tr>
+              <th class="text-center firstTh">#</th>
+              <th (click)="sort('name')">Lead Source <i class="fa ml-2" [ngClass]="{'fa-sort': column != 'name', 'fa-sort-asc': (column == 'name' && !isDesc), 'fa-sort-desc': (column == 'name' && isDesc) }" aria-hidden="true"></i></th>
+              <th>Assigned CS Agent</th>
+              <th></th>
+              <th class="lastTh"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngIf="(lead_sourceArr | category: search.value).length==0">
+              <td colspan="5" class="text-center">No Match</td>
+            </tr>
+            <tr *ngFor="let leadsource of lead_sourceArr | category: search.value | sort: {property: column, direction: direction}; let i = index; " [attr.data-index]="i">
+              <td class="text-center">{{i+1}}</td>
+              <td class="capitalize">{{leadsource.name | replaceChar}}</td>
+              <td *ngIf="leadsource.assigned_cs_agent==null">Not Assigned</td>
+              <td *ngIf="leadsource.assigned_cs_agent!=null">{{leadsource.assigned_cs_agent}}</td>
+              <td>
+                <select class="form-control" id="assigncsagent_leadsource_{{leadsource.id}}" style="width: 70%; display: inline-block;" (change)="onDropdownChange(leadsource.id,$event.target.value,i,'source')">
+                  <option value="">Assign CS Agent</option>
+                  <option *ngFor="let agent of csagentsArr" value="{{agent.id}}-{{agent.email}}" >{{agent.name | uppercase}} - {{agent.email}}</option>
+                </select>
+                <img src="assets/v3/img/sendbutton1.svg" class="ml-1 sendIcon" (click)="assignCSAgentSource(leadsource.id,i,leadsource.name)">
+              </td>
+              <td><button type="button" class="rk-interalBtnColor" (click)="unassignCSAgentSource(leadsource.id,i,leadsource.name,'',leadsource.assigned_cs_agent)" *ngIf="leadsource.assigned_cs_agent!=null">Unassign</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="tableDiv" *ngIf="selectedTab == 'leadCampaignTab'">
+        <table class="table">
+          <thead>
+            <tr>
+              <th class="text-center firstTh">#</th>
+              <th (click)="sort('name')">Lead Campaign <i class="fa ml-2" [ngClass]="{'fa-sort': column != 'name', 'fa-sort-asc': (column == 'name' && !isDesc), 'fa-sort-desc': (column == 'name' && isDesc) }" aria-hidden="true"></i></th>
+              <th>Assigned CS Agent</th>
+              <th></th>
+              <th class="lastTh"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngIf="(lead_campaignsArr | category: search.value).length==0">
+              <td colspan="5" class="text-center">No Match</td>
+            </tr>
+            <tr *ngFor="let leadcamp of lead_campaignsArr | category: search.value | sort: {property: column, direction: direction}; let i = index; " [attr.data-index]="i">
+              <td class="text-center">{{i+1}}</td>
+              <td class="capitalize">{{leadcamp.name}}</td>
+              <td *ngIf="leadcamp.assigned_cs_agent==null">Not Assigned</td>
+              <td *ngIf="leadcamp.assigned_cs_agent!=null">{{leadcamp.assigned_cs_agent}}</td>
+              <td>
+                <select class="form-control" id="assigncsagent_leadcamp_{{leadcamp.id}}" style="width: 70%; display: inline-block;" (change)="onDropdownChange(leadcamp.id,$event.target.value,i,'campaign')">
+                  <option value="">Assign CS Agent</option>
+                  <option *ngFor="let agent of csagentsArr; let k =index;" value="{{agent.id}}-{{agent.email}}" >{{agent.name | uppercase}} - {{agent.email}}</option>
+                </select>
+                <img src="assets/v3/img/sendbutton1.svg" class="ml-1 sendIcon" (click)="assignCSAgentCampaign(leadcamp.id,i,leadcamp.name)">
+              </td>
+              <td><button type="button" class="rk-interalBtnColor" (click)="unassignCSAgentCamp(leadcamp.id,i,leadcamp.name,'',leadcamp.assigned_cs_agent)" *ngIf="leadcamp.assigned_cs_agent!=null">Unassign</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

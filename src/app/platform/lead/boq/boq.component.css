@@ -1,0 +1,713 @@
+.body_height{
+    background-color: #ECF0F1
+}
+a{
+    color: #000;
+}
+/*.table th {
+    font-size: 12px;
+    color: #fff;
+    background-color: #5A5A5A;
+}*/
+.table td {
+  font-size: 14px;
+}
+.title{
+    padding: 1.4rem 0rem;
+    background-color: #f7f7f7;
+    position: fixed;
+    width: 83.4%;
+    z-index: 4;
+    border-bottom: 1px solid #ccc;
+}
+.title h3{
+    margin-bottom: 0;
+    margin-left: 10px;
+    font-size: 20px;
+    color: rgba(0, 0, 0, 0.55);
+    display: inline-block;
+}
+.title h3 span{
+    color: #000;
+}
+.quotationStatusNavBar .nav-link.active{
+    background-color: #8C031F;
+    border:1px solid #8C031F;
+    color: #fff;
+}
+.quotationStatusNavBar .nav-item{
+    width: 130px;
+}
+.quotationStatusNavBar .nav-link{
+    padding: 12px 25px;
+    border-radius: 24px;
+    background-color: #fff;
+    border: 1px solid #515151;
+    color: #515151;
+}
+.divCenter{
+    display: table;
+}
+.interalBtnColor {
+    background: #8C031F;
+    color: #fff;
+    border-radius: 5px;
+}
+
+.textColor{
+    color: #515151
+}
+#createquotationModal .modal-header{
+    border-bottom: 1px solid #e9ecef;
+}
+#createquotationModal .modal-footer{
+    justify-content: flex-start;
+}
+#createquotationModal .btnCancel{
+    border: 1px solid darkgray;
+    color: #abaaaa;
+    border-radius: 5px; 
+    font-size: 13px; 
+}
+#createquotationModal .spanFontSize {
+    font-size: 14px;
+    color:#c3c3c3;
+}
+.custom-hr::before{
+    content: "OR";
+    position: absolute;
+    margin-top: -10px;
+    margin-left: 45%;
+    color: gray;
+    background: #fff;
+    padding: 0px 6px;
+    font-size: 14px;
+}
+
+
+.addCursor.active{
+  color: #980029;
+  border-bottom: 2px solid #980029;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+}
+
+
+/* -------------------- Select Box Styles: bavotasan.com Method (with special adaptations by ericrasch.com) */
+/* -------------------- Source: http://bavotasan.com/2011/style-select-box-using-only-css/ */
+.styled-select {
+   background: url(http://i62.tinypic.com/15xvbd5.png) no-repeat 96% 0;
+   height: 29px;
+   overflow: hidden;
+   width: 240px;
+}
+
+.styled-select select {
+   background: transparent;
+   border: none;
+   font-size: 14px;
+   height: 29px;
+   padding: 5px; /* If you add too much padding here, the options won't show in IE */
+   width: 268px;
+}
+
+.styled-select.slate {
+   background: url(http://i62.tinypic.com/2e3ybe1.jpg) no-repeat right center;
+   height: 34px;
+   width: 240px;
+}
+
+.styled-select.slate select {
+   border: 1px solid #ccc;
+   border-radius: 5px;
+   font-size: 16px;
+   height: 34px;
+   width: 268px;
+}
+.semi-square {
+   -webkit-border-radius: 5px;
+   -moz-border-radius: 5px;
+   border-radius: 5px;
+}
+.blue select    { color: #fff; }
+.blue    { background-color: #8C031F; }
+
+
+
+
+
+
+/* #################  Radio Button ###################### */
+
+[type="radio"]:checked,
+[type="radio"]:not(:checked) {
+    position: absolute;
+    left: -9999px;
+}
+[type="radio"]:checked + label,
+[type="radio"]:not(:checked) + label
+{
+    position: relative;
+    padding-left: 28px;
+    cursor: pointer;
+    line-height: 20px;
+    display: inline-block;
+    color: #adadad;
+}
+[type="radio"]:checked + label:before,
+[type="radio"]:not(:checked) + label:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 18px;
+    height: 18px;
+    border: 1px solid #ddd;
+    border-radius: 100%;
+    background: #fff;
+}
+[type="radio"]:checked + label:after,
+[type="radio"]:not(:checked) + label:after {
+    content: '';
+    width: 10px;
+    height: 10px;
+    background: #8c031f;
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    border-radius: 100%;
+    -webkit-transition: all 0.2s ease;
+    transition: all 0.2s ease;
+}
+[type="radio"]:not(:checked) + label:after {
+    opacity: 0;
+    -webkit-transform: scale(0);
+    transform: scale(0);
+}
+[type="radio"]:checked + label:after {
+    opacity: 1;
+    -webkit-transform: scale(1);
+    transform: scale(1);
+}
+
+/* ################## Radio Button Close ##################### */
+
+
+
+/* ####################################### */
+label.textColor{
+  color: #989494;
+}
+.importType-class{
+  width: 11rem;
+  display: inline-block;
+  vertical-align: bottom; 
+}
+.form-control:disabled, .form-control[readonly]{
+  background-color: #fff;
+}
+select.form-control:not([size]):not([multiple]){
+  height: calc(1.9rem + 2px);
+  font-size: 14px;
+}
+select.form-control {
+  padding: .2rem .5rem;
+  font-size: 13px;
+  color: #515151;
+}
+.downArrow {
+    position: relative;
+    font-size: 1.3rem !important;
+    color: #fff;
+    top: 4px;
+    left: -7px;
+    padding: 6px 10px;
+    background-color: #8C031F;
+    border-radius: 0 6px 6px 0;
+}
+.hrTag{
+  margin: 2rem 0;
+}
+.modalBtn{
+  font-size: 12px;
+  padding: 3px 35px;
+}
+/* ####################################### */
+
+.bt-boq{
+  border-color: #93001E;
+  color: #93001E;
+  font-size: 15px;
+  cursor: pointer;
+  width: 160px;
+}
+.bt-boq:hover{
+  
+  background-color: #fff;
+ 
+}
+.container-set{
+  background-color: white;
+
+
+}
+
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+/*table th:first-child{
+  border-radius:10px 0 0 0px;
+}
+
+table th:last-child{
+  border-radius:0 10px 0px 0;
+}
+
+.table-res{
+  width: 100%;
+}
+table tr{
+  border: 1px solid #e9ecef;
+}*/
+
+ul{
+  margin-top: 40px;
+}
+
+.nav-items{
+  width: 135px;
+}
+
+.nav-items .nav-link{
+  font-size: 14px !important;
+  font-weight: 600 !important;
+}
+
+.addCursor.active{
+  color: #980029;
+  border-color: #fff #fff #fff;
+}
+
+.addCursor{
+  font-size: 12px;
+  /* font-family: bold; */
+  font-weight: bold;
+
+}
+.tabs-chng{
+  border-bottom: none;
+}
+
+.bt-boqs{
+  display: block;
+  margin: 0px auto;
+  border-color: #93001E;
+  color: #93001E;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+
+/* css for invoice modal*/
+/*  Css FOr Invoice modal start here*/
+
+#modalInvoiceId .border-right{
+  border-right: 2px solid black;
+
+}
+
+.logo{
+  padding: 17px 25px;
+    text-align: center;
+
+}
+
+.logo img{
+  width: 145px;
+
+}
+
+#modalInvoiceId .quoteFont
+{
+  font-family: Courier;
+    text-align: center;
+    padding: 18px 24px;
+    font-size: 1.5rem;
+}
+#modalInvoiceId .address{
+  text-align: center;
+    /* padding: 30px; */
+    font-size: .9rem;
+    padding-left: 30px;
+    padding-right: 30px;
+}
+p{
+  font-family: 'Helvetica';
+  font-size: 0.8rem;
+  word-wrap: break-word;
+}
+
+#modalInvoiceId .table-bordered td, .table-bordered th {
+    border: 2px solid #0e1013;
+    font-size: .9rem;
+}
+#modalInvoiceId .table-bordered {
+    border: 2px solid #1d1e1f;
+}
+#modalInvoiceId .table td, .table th {
+    padding: 0.25rem;
+}
+#modalInvoiceId .minTdWidth{
+  width: 30%;
+}
+#modalInvoiceId .spanChange{
+  margin-left: -12px;
+}
+#modalInvoiceId .rowChng td:nth-child(1) {
+  width: 60px;
+  
+  }
+#modalInvoiceId .rowChng td:nth-child(2) {
+  width: 90px;
+  
+  }  
+
+#modalInvoiceId .rowChng td:nth-child(3) {
+  width: 130px;
+  
+  }  
+#modalInvoiceId .rowChng td:nth-child(4) {
+  width: 240px;
+  
+  }  
+#modalInvoiceId .rowChng td:nth-child(5) {
+  width: 70px;
+  
+  }  
+#modalInvoiceId table th{
+  text-align: center;
+}   
+#modalInvoiceId .rowChng td{
+  font-family: 'Helvetica';
+  font-size: .7rem;
+} 
+
+#modalInvoiceId .borders {
+  border:2px solid black;
+}
+#modalInvoiceId .text{
+  text-align: center;
+    font-family: 'Helvetica';
+    font-size: .9rem;
+}
+#modalInvoiceId .btn-red {
+  font-family: 'roboto';
+  background: darkred;
+  border: darkred;
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+#modalInvoiceId .btn-reject{
+  background: #d6d6d6;
+    border: #d6d6d6;
+    color: gray;
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+.table1{
+ border-collapse: none; 
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 1rem;
+  background-color: transparent;
+}
+
+/*.table thead th {
+  vertical-align: bottom;
+  border-bottom: 2px solid #e9ecef;
+  border-top: 1px solid white;
+}*/
+
+.box-list{
+  -webkit-box-shadow: 0 10px 6px -6px #dedbdb;
+  -moz-box-shadow: 0 10px 6px -6px #dedbdb;
+  box-shadow: 0 10px 6px -6px #dedbdb;
+}
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+
+
+/* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
+.interalBtnColor{
+    margin-left: auto;
+    display: block;
+    margin-right: 0px;
+    padding: 5px 16px;
+    font-size: 16px;
+    border-color: #8C031F;
+
+}
+.btn-change{
+  background: none;
+  color: inherit;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
+  font-size: 22px;
+  color: darkred;
+}
+.btnchng{
+  border: none! important;
+  background-color: white;
+  cursor: pointer;
+}
+.ss-text-light
+{
+  vertical-align: -webkit-baseline-middle;
+  color: #6da8e8;
+  cursor: pointer;
+}
+.not-found{
+  background-color: white;
+}
+.modal-change{
+  top: 42px;
+  width: 500px;
+  left: 165px;
+  /*height: 450px;*/
+  border: none;
+  border-radius: 0.2rem;
+  /* right: 894px; */
+}
+
+.custom-close{
+    position: absolute;
+    right: -15px;
+    top: -15px;
+    border: 1px solid #bbb;
+    height: 3rem;
+    text-align: center;
+    width: 3rem;
+    border-radius: 50%;
+    background-color: #fff;
+    color: #54212d;
+    z-index: 9;
+}
+input[type=radio]:checked+label , .activeselectColor{
+    /* Or `#a1:checked+label` if you only want it for that input */
+    color: #515151;
+}
+
+select{
+  -webkit-appearance:menulist;
+    appearance:menulist;
+      -moz-appearance:menulist;
+}
+.sorting{
+  padding:5px 10px;
+  clear:both;
+  background:#FFF;
+  height:40px;
+  color: lightgray;
+  
+}
+.sectionDiv {
+  color: lightgray;
+}
+.sorting h4{
+  padding:4px 0 0;
+  margin:0;
+}
+.sort{
+  position:relative;  
+  padding-left:10px;
+  float:left;
+  margin-left: -14px;
+}
+.sort>label{
+  font-weight:normal !important
+}
+.sort span.pointer{
+  height:32px;
+  width:30px;
+  border-left:1px solid #ddd;
+  position:absolute;
+  right:0;
+  top:0;
+  text-align:center;
+  color:white;
+  font-size:20px;
+  z-index:1;
+  border-top-right-radius: 5px;
+    /* cursor: pointer; */
+  border-bottom-right-radius: 5px;
+}
+.sort span.pointer i{
+  margin-top:6px;
+}
+.sorting select{
+  padding:5px 40px 5px 10px !important;
+  margin-left:10px;
+  border:1px solid #eee;
+  background:none;
+  height:30px;
+  position:relative;
+  z-index:2;
+}
+.pointer{
+  background-color: #93001E;
+  
+}
+
+.rk-activeLink{
+  vertical-align: -webkit-baseline-middle;
+  color: #6da8e8;
+}
+
+.rk-activeLink:focus{
+  outline: none;
+}
+
+.boq-img {
+  text-align: center;
+}
+
+.importType-class1{
+  font-size: 14px;
+}
+.sectionType-class1{
+  font-size: 14px;
+}
+.sectionType-class{
+  font-size: 12px;
+  
+}
+ 
+ 
+.a_hrefLink{
+  color:#007bff;
+}
+
+.a_hrefLink:hover{
+  text-decoration: none;
+}
+.table{
+  border-collapse: separate;
+  border-spacing: 0 5px;
+}
+.table td{
+    padding: 0.7rem 0.75rem;
+    vertical-align: middle;
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.7);
+    border: none;
+}
+.table th {
+    padding: .9rem;
+    vertical-align: middle;
+    border: none;
+    font-size: 12px;
+    text-transform: uppercase;
+    color: #fff;
+    background-color: #5A5A5A;
+}
+.tableDiv tbody{
+  background-color: #fff;
+}
+.tableDiv tbody tr{
+  box-shadow: 1px 1px 7px 0px #dadada;
+  border-radius: 5px;
+}
+.firstTh{
+  border-radius: 5px 0 0 0;
+}
+.lastTh{
+  border-radius: 0px 5px 0 0;
+}
+
+.minWidthTd{
+  min-width: 125px;
+}
+
+
+@media (min-width: 768px) {
+  .mobView{
+    display: none;
+  }
+}
+@media (min-width: 992px){ 
+.modal-lg {
+    max-width: 1000px !important;
+  }
+}
+@media (max-width: 767px) {
+  #detailModal .modal-dialog{
+    left: auto;
+    max-width: 100%;
+  }
+  .lappyView{
+    display: none;
+  }
+  .mobCard a{
+    position: absolute;
+    right: 0rem;
+    font-size: 30px;
+    padding: 0px 5px;
+    z-index: 1;
+  }
+  .mobCard h4{
+    font-size: 18px !important;
+    width: 80%;
+  }
+  .mobCard p{
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 0;
+  }
+  .mobView .tableInner{
+    font-size: 14px;
+    margin-bottom: 5px;
+  }
+  .mobView .custom-select{
+    height: calc(2rem + 2px);
+    font-size: 14px;
+  }
+  .mobView .pop{
+    position: unset;
+    font-size: 15px;
+  }
+  .borderRight{
+    border: 1px solid #ccc;
+  }
+  .callBtn{
+    background-color: #8f080f;
+    text-align: center;
+    padding: 2px 0;
+    border: 1px solid #ccc;
+  }
+  .callBtn div{
+    color: #fff;
+  }
+  .mobModal{
+    width: auto !important;
+  }
+  .nav-items .nav-link{
+    text-align: left !important;
+  }
+  .modal-change{
+    width: auto;
+    left: auto;
+    height: auto;
+  }
+  .bt-boq{
+    float: right;
+  }
+  .modal-lg{
+    width: 1000px !important;
+  }
+
+}

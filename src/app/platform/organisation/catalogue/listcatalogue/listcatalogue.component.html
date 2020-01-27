@@ -1,0 +1,176 @@
+<div class="row title">
+  <h3>Dashboard / <span>Catalogue</span></h3>
+  <span data-toggle="modal" data-target="#createSectionModal" *ngIf="(editAndDeleteSectionAccess.length>0) && (editAndDeleteSectionAccess.indexOf(role) > -1) "><p class="add" data-toggle="tooltip" title="Create Section" data-placement="left"><i class="fa fa-plus" aria-hidden="true"></i></p></span>
+</div>
+<div class="marginTop">
+  <div class="col-12" *ngIf="erroralert">
+    <div class="alert-box grid-100" *ngIf="errorMessage">
+      <div class="alert alert-danger text-center">
+        <a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a>
+        {{errorMessage}}
+      </div>
+    </div>
+  </div>
+  <div class="col-12" *ngIf="successalert">
+    <div class="alert-box grid-100" *ngIf="successMessage">
+      <div class="alert alert-success text-center">
+        <a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+        {{successMessage}}
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row body_height" *ngIf="catalogues && catalogues?.length == 0">
+  <div class="col-sm-12 col-md-12 col-lg-12 mb-4">
+    <div class="card text-center">
+      <div class="card-block">
+        <h5 class="card-text py-4">No section created !</h5>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row body_height" *ngIf="catalogues && catalogues?.length > 0">
+  <div class="col-sm-6 col-md-4 col-lg-3 mb-4" *ngFor="let section of catalogues">
+    <div class="imgDiv">
+        <img class="addCursor catalogueImg" src="{{section.attachment_file}}" [routerLink]="['/catalogue/section/'+section.id+'/subsections']" routerLinkActive='active' *ngIf="section.attachment_file != '/images/original/missing.png' ">
+        <img *ngIf="section.attachment_file == '/images/original/missing.png' " src="../../../../../assets/v3/img/noImg.png" class="addCursor catalogueImg" [routerLink] = "['/catalogue/section/'+section.id+'/subsections']" routerLinkActive='active'>
+        <p class="mt-2 mb-0 addCursor d-inline-block" [routerLink]="['/catalogue/section/'+section.id+'/subsections']" routerLinkActive='active'>{{section.name}}</p>
+      <div class="pull-right mt-2 mb-0 icons" *ngIf="(editAndDeleteSectionAccess.length>0) && (editAndDeleteSectionAccess.indexOf(role) > -1) ">
+        <i class="fa fa-pencil addCursor mr-2" aria-hidden="true" data-target="#editSubSectionModal" data-toggle="modal" (click)="setValueForm(section.id,section.name,section.description,section.attachment_file)"></i>
+        <i class="fa fa-trash addCursor mr-2" aria-hidden="true" (click)="confirmAndDeleteSection(section.id)"></i>
+        <!-- <i class="fa fa-info-circle addCursor" aria-hidden="true" data-container="body" data-toggle="popover" data-placement="top" data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."></i> -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="createSectionModal" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Create Section</h4>
+        <button type="button" class="close" data-dismiss="modal" (click)=" createCatalogueForm.reset() ">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="createCatalogueForm" (ngSubmit)="onSubmit(createCatalogueForm.value);createCatalogueForm.reset()" class="form-horizontal">
+          <fieldset formArrayName="section" class="mb-3">
+              <div class="form-group label-floating" *ngFor="let item of getJobAttributes(createCatalogueForm); let i=index" [formGroup]="item">
+                  <div class="col-sm-12">
+                      <i class="fa fa-minus-circle remove_button pull-right mr-2" (click)="createCatalogueForm.get('section').removeAt(i)"></i>
+                  </div>
+                  <div class="col-md-10">
+                      <label class="control-label mb-0 mt-2">Name*</label>
+                      <input type="text" class="form-control" placeholder="Enter Your Name" [attr.id]="'name'+i" formControlName="name">
+                  </div>
+                  <div class="col-md-10">
+                      <label class="control-label mb-0 mt-2">Description</label>
+                      <textarea class="form-control" placeholder="Enter Description" [attr.id]="'description'+i" formControlName="description" ></textarea>
+                  </div>
+                  <div class="col-md-10">
+                      <label class="control-label mb-0 mt-2">Upload Image</label>
+                      <input type="file" class="form-control" [attr.id]="'attachment_file'+i" formControlName="attachment_file" (change)="onChange($event,i)">
+                  </div>
+              </div>
+          </fieldset>
+          <button type="button" class="button addButton"  (click)="pushJobAttributes(createCatalogueForm)"><i class="fa fa-plus" aria-hidden="true"></i> Add another section</button>
+          <hr>
+          <div class="pull-right">
+            <button type="submit" class="button" [disabled]="createCatalogueForm?.invalid">Submit</button>
+            <button type="button" class="btn addCursor btn-default" data-dismiss="modal" (click)=" createCatalogueForm.reset()">Close</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="editSubSectionModal" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Update Section Details</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="editCatalogueForm" (ngSubmit)="editSectionDetails(editCatalogueForm.value); editCatalogueForm.reset()" class="form-horizontal">
+          <div class="form-group label-floating">
+              <div class="col-md-10">
+                  <label class="control-label mb-0 mt-2">Name*</label>
+                  <input type="text" class="form-control" formControlName="name">
+                  <div *ngIf="editCatalogueForm.controls['name'].errors && !editCatalogueForm.controls['name'].pristine" class="text-danger">
+                    <div [hidden]="!editCatalogueForm.controls['name'].errors.required">Name is required.</div>
+                  </div>
+              </div>
+              <div class="col-md-10">
+                  <label class="control-label mb-0 mt-2">Description</label>
+                  <textarea class="form-control" formControlName="description" ></textarea>
+              </div>
+              <div class="col-md-10">
+                  <label class="control-label mb-0 mt-2">Change Image</label>
+                  <input type="file" class="form-control" formControlName="attachment_file" (change)="onEditSectionFormChange($event)">
+              </div>
+              <div class="col-md-10"><img src="" id="output" height="60px" class="my-2" alt="No Image Available"></div>
+            </div>
+            <hr>
+            <div class="pull-right">
+              <button type="submit" class="button" [disabled]="editCatalogueForm?.invalid">Update</button>
+              <button type="button" class="btn addCursor btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- <div class="row body_height justify-content-center">
+    <div class="col-11 table-responsive">
+    <div class="add mb-2 ml-2">
+        <button [routerLink]="['/catalogue/create']" routerLinkActive="active"><span>+</span>Create Section</button>
+    </div>
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th class="text-center">ID</th>
+          <th>Item</th>
+          <th>Details</th>
+          <th>Immediate Relation</th>
+          <th class="text-center">Action</th>
+        </tr>
+      </thead>
+      <tbody *ngIf="catalogues?.length >0">
+        <tr *ngFor="let catalogue of catalogues">
+          <td  class="text-center">{{catalogue.id}}</td>
+          <td>
+            <a href = "/catalogue/{{catalogue.id}}/section">{{catalogue.name}}</a>
+          </td>
+          <td>
+            {{catalogue.description}}
+          </td>
+          <td>
+            <span> <strong>Parent Section: </strong> </span>
+            <span *ngIf="!catalogue.parent"> Root</span>
+            <span *ngFor="let parent of catalogue.parent"> <a [routerLink]="['/catalogue/'+parent.id+'/view']" routerLinkActive="active">{{parent.name}}</a>, </span>
+            <br>
+            <span> <strong>Sub-Section: </strong> </span>
+            <span *ngIf="catalogue.children.length < 1">No sub section</span>
+            <span *ngFor="let child of catalogue.children"> <a [routerLink]="['/catalogue/'+child.id+'/view']" routerLinkActive="active">{{child.name}}</a>, </span>
+            <br>
+            <span> <strong>Products: </strong> </span>
+            <span *ngIf="catalogue.product_list.length < 1">No product</span>
+            <span *ngFor="let product of catalogue.product_list"> {{product.name}}, </span>
+          </td>
+          <td>
+            <div class="text-center fa_icons py-2">
+              <a [routerLink]="['/catalogue/'+catalogue.id+'/view']" routerLinkActive="active"><i class="fa fa-eye" aria-hidden="true"></i></a><br>
+              <a [routerLink]="['/catalogue/'+catalogue.id+'/section/create']" routerLinkActive="active"><i class="fa fa-plus" aria-hidden="true"></i></a><br>
+              <a (click)=confirmAndDelete(catalogue.id)><i class="fa fa-trash" aria-hidden="true"></i></a>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div> -->

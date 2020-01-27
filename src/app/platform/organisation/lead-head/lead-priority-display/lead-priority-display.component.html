@@ -1,0 +1,52 @@
+<div class="row ss-top-menu">
+	<div class="col-sm-12">
+		<span class="ss-text-dark"  style="vertical-align: -webkit-baseline-middle;">Dashboard <i class="rightArrow fa fa-angle-right"></i></span>
+		<span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;">Lead Priority Queue</span>
+	</div>
+</div>
+
+<div class="mt-4 container-set">
+	<div class="row">
+	  <div class="col-md-12" *ngIf="lead_priority_que_arr &&  lead_priority_que_arr.length>0">
+      <div class="tableDiv table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th class="text-center firstTh">#</th>
+              <th>Lead ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Contact No.</th>
+              <th>Role</th>
+              <th>Status</th>
+              <th>Follow-Up Time</th>
+              <th class="lastTh">Escalated</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let data of lead_priority_que_arr ; let i = index; " [attr.data-index]="i">
+            	<td class="text-center">{{i+1}}</td>
+            	<td>{{data.lead_id}}</td>
+            	<td class="capitalize minWidthForTd">
+                <span *ngIf="data.user_name == null || data.user_name=='' ">Unnamed</span>
+                <span *ngIf="data.user_name!=null && data.user_name!='' ">{{data.user_name}}</span>
+              </td>
+            	<td class="minWidthForTd">{{data.email}}</td>
+              <td>{{data.contact}}</td>
+              <td>{{data.lead_type}}</td>
+              <td>{{data.status | replaceChar}}</td>
+              <td class="time-chng">{{data.follow_up_time | date:'dd/MM/yyyy - h:mm a'}}</td>
+              <td>{{data.lead_escalated | replaceChar}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+	  </div>
+	  <div class="col-md-12 not-found " *ngIf="lead_priority_que_arr && lead_priority_que_arr.length==0 ">
+      <div class="boq-img text-center">
+        <img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+      </div>
+      <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">No leads to display...</p>
+    </div>
+	</div>
+</div>

@@ -1,0 +1,19 @@
+.formStyle{
+    border: 1px solid #dfdfdf !important;
+    background-color: #fff !important;
+}
+.header_design{
+    background-color: #ECF0F1;
+}
+.form_header{
+    background-color: #efefef;
+    font-size: 19px;
+    font-weight: 600;
+    color: #8f0521;
+}
+.form_style{
+    border: 1px solid #dfdfdf;
+    padding: 5px 21px;
+    margin-left: 45px;
+}
+

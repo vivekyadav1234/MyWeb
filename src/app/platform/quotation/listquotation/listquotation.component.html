@@ -1,0 +1,159 @@
+<div class="row ss-top-menu">
+  <div class="col-12">
+    <span class="ss-text-light rk-activeLink" routerLink="/">Dashboard <i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-text-light rk-activeLink capitalize" [routerLink]="['../../../projects/view/'+pid]" *ngIf="pname">{{pname}}<i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;">BOQs </span>
+    <button type="button" class="btn btn-outline-secondary pull-right btn-lg bt-boq" data-toggle="modal" data-target="#createquotationModal">Create BOQ</button>
+  </div>
+</div>
+
+<ul class="nav nav-tabs tabs-chng rk-firstRow"  id="myTab" role="tablist">
+  <li class="nav-item nav-items">
+    <a class="nav-link active addCursor text-center mr-3" (click)="getQuotationListByStatus('all')" [ngClass]="{'active': selectedQuotationStatus == 'all'}">ALL</a>
+  </li>
+  <li class="nav-item nav-items">
+    <a class="nav-link addCursor text-center mr-3" (click)="getQuotationListByStatus('draft')" [ngClass]="{'active': selectedQuotationStatus == 'draft'}">DRAFT</a>
+  </li>
+  <li class="nav-item nav-items">
+     <a class="nav-link addCursor text-center mr-3" (click)="getQuotationListByStatus('pending')" [ngClass]="{'active': selectedQuotationStatus == 'pending'}">PENDING</a>
+  </li>
+  <li class="nav-item nav-items">
+    <a class="nav-link addCursor text-center mr-3" (click)="getQuotationListByStatus('shared')" [ngClass]="{'active': selectedQuotationStatus == 'shared'}">SHARED</a>
+  </li>
+  <li class="nav-item nav-items">
+     <a class="nav-link addCursor text-center mr-3" (click)="getQuotationListByStatus('paid')" [ngClass]="{'active': selectedQuotationStatus == 'paid'}">PAID</a>
+  </li>
+  <li class="nav-item nav-items">
+    <a class="nav-link addCursor text-center" (click)="getQuotationListByStatus('expired')" [ngClass]="{'active': selectedQuotationStatus == 'expired'}">EXPIRED</a>
+  </li>
+
+</ul>
+<div class="marginTop row">
+  <div class="col-12" *ngIf="erroralert">
+    <div class="alert-box grid-100" *ngIf="errorMessage">
+      <div class="alert alert-danger mt-3 text-center">
+        <a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a>
+        {{errorMessage}}
+      </div>
+    </div>
+  </div>
+  <div class="col-12" *ngIf="successalert">
+    <div class="alert-box grid-100" *ngIf="successMessage">
+      <div class="alert alert-success mt-3 text-center">
+        <a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+        {{successMessage}}
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container-fluid container-set">
+  <div class="row" style="padding: 16px;">
+    <div class="col-md-12 p-0" *ngIf="quotations && quotations.length>0">
+      <div class="tableDiv">
+        <div class="table-responsive">
+          <table class="table ">
+            <thead class="tHead thead-dark">
+              <tr>
+                <th scope="col" class="text-center firstTh" style="min-width: 70px;">#</th>
+                <th scope="col" style="min-width: 150px;">REF NO.</th>
+                <th scope="col" (click)="sort('updated_at')" style="min-width: 250px;">LAST EDITED ON <i class="fa ml-2" [ngClass]="{'fa-sort': column != 'updated_at','fa-sort-asc': (column == 'updated_at' && !isDesc), 'fa-sort-desc': (column == 'updated_at' && isDesc) }" aria-hidden="true"> </i></th>
+                <th scope="col" (click)="sort('expiration_date')" style="min-width: 250px;">PRICE EXPIRY  <i class="fa ml-2" [ngClass]="{'fa-sort': column != 'expiration_date','fa-sort-asc': (column == 'expiration_date' && !isDesc), 'fa-sort-desc': (column == 'expiration_date' && isDesc) }" aria-hidden="true"> </i></th>
+                <th scope="col" (click)="sort('status')" style="min-width: 111px;">STATUS <i class="fa ml-2" [ngClass]="{'fa-sort': column != 'status','fa-sort-asc': (column == 'status' && !isDesc), 'fa-sort-desc': (column == 'status' && isDesc) }" aria-hidden="true"> </i></th>
+                <th scope="col" (click)="sort('total_amount')" style="min-width: 180px;">TOTAL AMOUNT <i class="fa ml-2" [ngClass]="{'fa-sort': column != 'total_amount','fa-sort-asc': (column == 'total_amount' && !isDesc), 'fa-sort-desc': (column == 'total_amount' && isDesc) }" aria-hidden="true"> </i></th>
+                <th class="lastTh"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr  *ngFor="let boq of quotations | slice : startPage:paginationLimit | sortDatewise: {property: column, direction: direction}; let i = index" [attr.data-index]="i" class="box-list">
+                <td class="text-center" style="min-width: 70px;">{{ i+1 }}</td>
+                <td style="min-width: 150px;"><a class="a_hrefLink" [routerLink]="['/project/'+pid+'/boq/'+boq.id]" routerLinkActive='active'>{{ boq.reference_number }}</a></td>
+                <td style="min-width: 250px;">{{boq.updated_at | date:"dd MMMM, y @ h:mma"}}</td>
+                <td style="min-width: 250px;">{{boq.expiration_date | date:'dd MMMM, y @ h:mma'}}</td>
+                <td class="capitalize" style="min-width: 111px;">{{ boq.status}}</td>
+                <td style="min-width: 180px;"><i class="fa fa-inr mr-1"></i>{{ boq.total_amount}}</td>
+                <td>
+                  <i class="ion-android-more-vertical  ss-3-dot-drop" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"></i>
+                  <div class="dropdown-menu pt-2 pb-2" style="font-size: 14px;">
+                    <a class="dropdown-item addCursor" (click)="deleteBoq(boq.id)">Delete</a>
+                    <a class="dropdown-item addCursor" (click)="downloadboq(boq.id)">Download Boq</a>
+                  </div>
+
+                </td>
+              </tr>
+            </tbody>
+          </table>
+           <button type="button" class="btn-lg bt-boqs"   (click) = "showMore()" *ngIf="(quotations.length - paginationLimit)>0">Show More BOQs({{ quotations.length - paginationLimit}})</button>
+        </div>  
+      
+      </div>
+    </div>
+  </div>  
+</div>
+<div class="col-md-12 not-found " *ngIf="quotations && quotations.length==0 ">
+  <div class="boq-img">
+    <img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+  </div>
+  <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing to show...</p> 
+</div>
+
+<!-- Modal create quotation -->
+<div id="createquotationModal" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+
+    <!-- Modal content-->
+    <div class="modal-content modal-change">
+      <div class="modal-header">
+        <h6 class="modal-title textColor" style="font-size:18px">Create New BOQ</h6>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="selectBoqTypeForm1">
+          <div>
+            <p class="textColor my-3">
+              <input type="radio" formControlName="boqType" value="create_boq" id="text1" class="mr-2" (change)="checkBoqType('create_boq')">
+              <label for="text1" class="texts" >Create a new Boq</label>
+            </p>
+          </div>
+          <hr class="custom-hr hrTag" />
+          <div>
+            <p class="textColor my-3">
+              <input type="radio" formControlName="boqType" value="import_boq" id="text2" class="mr-2" (change)="checkBoqType('import_boq')">
+              <label for="text2">Import Existing BOQ</label>
+            </p>
+            <form [formGroup]="importBoqForm">
+              <div class="sorting">
+                <div class="sort right">
+                  <label>
+                    <span class="importType-class1">Select Project:</span></label>
+                    <select class="importType-class form-control ml-3" formControlName="project" (change)="importQuotationValue($event.target.value)">
+                      <option value="">Select Project</option>
+                      <option *ngFor="let project of projectsList" value="{{project.id}}">{{project.name}}</option>
+                    </select> 
+                    <span class="pointer"><i class="fa fa-angle-down"></i></span>
+                  
+                </div>
+              </div>
+                <div class="sorting">
+                  <div class="sort right"><label>
+                    <span class="importType-class1">Select BOQ:</span></label>
+                      <select class="importType-class form-control " formControlName="boq" style="margin-left: 31px">
+                        <option value="">Select BOQ</option>
+                        <option *ngFor="let boq of importquotations" value="{{boq.id}}">{{boq.reference_number}}</option>
+                      </select>
+                        
+                      <span class="pointer"><i class="fa fa-angle-down"></i></span>
+                      
+                  </div>
+                </div>
+            </form>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer ">
+        <button class="btn btn-primary interalBtnColor addCursor modalBtn" (click)="submitForm(selectBoqTypeForm1.value,importBoqForm.value)" [disabled]="selectBoqTypeForm1.value.boqType=='import_boq' && (importBoqForm.value.project=='' || importBoqForm.value.project== null ||  importBoqForm.value.project==undefined || importBoqForm.value.boq=='' || importBoqForm.value.boq==undefined || importBoqForm.value.boq== null)">Create</button>
+
+         <button type="button" class=" btn btn-primary btnCancel btnchng" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+
+  </div>
+</div>

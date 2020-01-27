@@ -1,0 +1,37 @@
+<div class="row body_height justify-content-center">
+  <div class="col-12">
+   
+    <div class="tableDiv">
+      <table class="table">
+        <thead class="ss-thead">
+          <tr>
+            <th class="firstTh" style="min-width: 1rem;">#</th>
+            <th style="min-width: 12rem;">LEAD ID</th>
+            <th style="min-width: 12rem;">PROJECT NAME</th>
+            <th style="min-width: 12rem;">PROJECT LOCATION</th>
+            <th style="min-width: 12rem;">DESIGNER </th>
+            <th style="min-width: 12rem;">COMMUNITY MANAGER </th>
+            <th style="min-width: 12rem;">CURRENT STATUS</th>
+            <th style="min-width: 12rem;">CURRENT SUBSTATUS</th>
+          </tr>
+        </thead>
+        <tbody class="ss-tbody">
+          <tr *ngFor="let obj of wipList; let i = index" [attr.data-index]="i">
+            <td style="min-width: 1rem;">{{i+1}}</td>
+            <td style="min-width: 1rem;">{{obj.id}}</td>
+            <td  class="capitalize">
+              <a class="addCursor ss-link" href="" [routerLink]="['/projects/'+obj.project_id+'/designer-proposal']">{{obj.project_name}}</a>
+              <ng-template #nolink>{{obj.project_name}}</ng-template>
+            </td>
+            <td style="min-width: 1rem;">{{obj.project_location}}</td>
+            <td style="min-width: 1rem;" class="capitalize">{{obj.assigned_designer.name}}<br><span class="email-chng">({{obj.assigned_designer.email }})</span></td>
+            <td style="min-width: 1rem;" class="capitalize">{{obj.community_manager.name}}<br><span class="email-chng">({{ obj.community_manager.email }})</span></td>
+            <td style="min-width: 1rem;">{{obj.project_status | replaceChar }}</td>
+            <td style="min-width: 1rem;" class="capitalize">{{obj.project_sub_status | replaceChar }}</td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+</div>

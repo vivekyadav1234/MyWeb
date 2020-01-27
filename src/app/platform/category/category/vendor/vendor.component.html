@@ -1,0 +1,772 @@
+<div class="row ss-top-menu">
+  <div class="col-xl-5 col-lg-5 col-md-5 col-sm-5 col-xs-5">
+	<span class="ss-text-light" style="vertical-align: -webkit-baseline-middle;">Dashboard <i class="rightArrow fa fa-angle-right"></i> </span>
+	<span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;">Vendors</span>
+  </div>
+</div>
+<div class="rk-ui-notification" *ngIf="successalert">
+  <span id="notificationMessageText">{{successMessage}}</span>
+  <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+<div class="rk-ui-notification err" *ngIf="erroralert"  style="z-index: 10000;">
+	<span id="notificationMessageText">{{errorMessage}}</span>
+	<a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+
+<div class="container-set container-set-change mt-4">
+  <div class="row">
+	<div class="col-6">
+		<div class="ss-searchbox">
+		  <i class="fa fa-search"></i>
+		  <input class="form-control" type="text" placeholder="Type in name, contact person,contact number, pan no.,email to search..." #search (keyup.enter)="onKey($event)">
+		</div>
+		
+	</div>
+	<div class="col-md-6 pull-right">
+		<div class="row mt-3">
+  
+			<div class="col-md-12">
+				<div class="filterdiv">
+					<p class="d-inline-block m-0">Filter By - </p>
+					<select class="filterSelect col-sm-2" (change)="filterEvents($event)">
+
+						<option value='all'>All</option>
+						<option value="city">Serviceable City</option>
+						<option value="category">Category</option>
+						
+					</select> 
+					<select class="filterSelect" style="display: none" id="cityId" (change)="filterCities($event)">
+						<option value='all'>All</option>
+						<option *ngFor="let obj of city_list" value="{{ obj.id }}">{{ obj.name | replaceChar }}</option>
+					</select> 
+					<select class="filterSelect " style="display: none" id="categoryId" (change)="filterCategories($event)">
+						<option value='all'>All</option>
+						<option *ngFor="let cb of categories" value="{{ cb.id }}">{{ cb.category_name }}</option>
+					</select> 
+					<select class="filterSelect" style="display: none" id="SubcategoryId" (change)="filterSubCategories($event)">
+						<option value='all'>All</option>
+						<option *ngFor="let subC of subCategoryList" value="{{ subC.id }}">{{ subC.category_name }}</option>
+					</select> 	
+					
+				</div>
+					
+			</div>
+			
+		</div>
+	   
+	</div>
+	
+  </div>
+	
+</div>
+<div class="row mt-4"> 
+  <div class="col-12">
+  	<button class="bt-boq btn mr-2 pull-right" data-target="#ddSheet" data-toggle="modal">Sample DD <img class="ml-1 downloadImg" src="../../../assets/img/down.png"></button>
+
+	  <button class="btn  bt-boq pull-right mr-2" data-target="#addVendorModal" data-toggle="modal" (click)="addVendorClick()">Add vendor</button>
+  </div>	
+	
+</div>
+<div class="container-set">
+
+	<div class="row" style="padding: 16px">
+		<div class="col-md-12">
+	   
+
+			<collapsible-table [type]="'accordion'" bordered class="table" style="outline: none;">
+
+			  <thead class="thead-dark">
+
+				<collapsible-table-row>
+				  <th scope="col" class="firstTh">#</th>
+				  <th scope="col">VENDOR NAME</th>
+				  <th scope="col">ADDRESS</th>
+				  <th scope="col">PERSON NAME</th>
+				  <th scope="col">NUMBER</th>
+				  <th scope="col">EMAIL</th>
+				  <th scope="col">DD SCORE</th>
+				  <th scope="col"></th>
+				  <th scope="lastTh" class="lastTh"></th>
+				</collapsible-table-row>
+			  </thead>
+			 
+			  <tbody style="background: white">
+				<ng-container *ngFor="let vendor of itemList | paginate: { itemsPerPage: per_page, currentPage: current_page, totalItems: total_page  }  let i = index" [attr.data-index]="i" >
+				  <collapsible-table-row [detail]="detail1"  (click)="getVendorDetails(vendor.id)">
+					<td style="min-width: 1rem;">{{((current_page-1) * per_page) + (i+1)}}</td>
+					<td class="capitalize">
+					  {{vendor.name}}
+					</td>
+				   
+					<td>{{vendor.address}}</td>
+					<td class="capitalize">{{vendor.contact_person}}</td>
+					<td class="capitalize">{{vendor.contact_number}}</td>
+					<td class="capitalize">{{vendor.email}}</td>
+					<td class="capitalize">{{vendor.dd_score}}</td>
+					<td>
+						
+					</td>
+					<td>
+						<i class="ion-android-more-vertical  ss-3-dot-drop" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"></i>
+						<div class="dropdown-menu pt-2 pb-2" style="font-size: 14px;">
+							<a class="dropdown-item addCursor" (click)="confirmAndDelete(vendor.id)">Delete</a>
+							<a class="dropdown-item addCursor" data-toggle="modal" data-target="#vendorUpdateModal" (click)="getVendorForUpdate(vendor.id)">Edit</a>
+							
+						</div>
+					</td>
+				  </collapsible-table-row>
+				  <collapsible-table-row-detail style="box-shadow: none;" #detail1>
+					<div *ngIf="vendor_det">
+						<div class="row" style="border-bottom: 1px solid #dcd7d7;" >
+						  <div class="col-md-10">
+							<h5 class="heading-change">Bank Details:</h5>
+							 </div>
+							 <div class="col-md-2">
+									<a class="btn btn-pink mt-2 addCursor" href="" [routerLink]="['/vendor-product']" [queryParams]="{id: vendor_det.id}">View Vendor Product</a>
+								</div>
+						</div>
+						<div  class="row style-chng">
+							<div class="col-md-4">
+								<div class="form-group">
+									<label class="ss-form-label">Pan Card:</label>
+									<input type="text" class="form-control ss-form-control" value="{{ vendor_det.pan_no }}" readonly >
+								</div>
+								
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label class="ss-form-label">GST Registration Number:</label>
+									<ng-container *ngFor="let item of gst_list">
+									  <input type="text" class="form-control ss-form-control" value="{{ item }}" readonly>
+									</ng-container>
+								</div>
+								
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label class="ss-form-label">Account Holder Name:</label>
+									<input type="text" class="form-control ss-form-control" value="{{ vendor_det.account_holder }}" readonly>
+								</div>
+								
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label class="ss-form-label">Account Number:</label>
+									<input type="text" class="form-control ss-form-control" value="{{ vendor_det.account_number }}" readonly>
+								</div>
+								
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label class="ss-form-label">Bank Name:</label>
+									<input type="text" class="form-control ss-form-control" value="{{ vendor_det.bank_name }}" readonly>
+								</div>
+								
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label class="ss-form-label">Branch Name:</label>
+									<input type="text" class="form-control ss-form-control" value="{{ vendor_det.branch_name }}" readonly>
+								</div>
+								
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label class="ss-form-label">IFSC Code:</label>
+									<input type="text" class="form-control ss-form-control" value="{{ vendor_det.ifsc_code }}" readonly>
+								</div>
+								
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label class="ss-form-label">Uploaded Pan Copy:</label>
+									<input type="text" class="form-control ss-form-control" value="No Image Uploaded" *ngIf="vendor_det.pan_copy == '/images/original/missing1.png'" readonly>
+									<input type="text" class="form-control ss-form-control" value="{{ vendor_det.pan_copy }}" *ngIf="vendor_det.pan_copy != '/images/original/missing1.png'" readonly>
+									<a href="{{ vendor_det.pan_copy }}" class="download-change" target="_blank" *ngIf="vendor_det.pan_copy != '/images/original/missing1.png'">View</a>
+								</div>
+								
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label class="ss-form-label">Uploaded GST Copy:</label>
+									<ng-container *ngFor="let item of gst_files">
+										<input type="text" class="form-control ss-form-control" value="{{ item.url }}" readonly>
+									
+										<a href="{{ item.url }}" class="download-change ml-1" target="_blank" >View</a>
+
+									</ng-container>
+								</div>
+								
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label class="ss-form-label">Uploaded Cancelled Cheque:</label>
+									<input type="text" class="form-control ss-form-control" value="No Image Uploaded" *ngIf="vendor_det.cancelled_cheque == '/images/original/missing3.png'" readonly>
+									<input type="text" class="form-control ss-form-control" value="{{ vendor_det.cancelled_cheque }}" *ngIf="vendor_det.cancelled_cheque != '/images/original/missing3.png'" readonly>
+									<a href="{{ vendor_det.cancelled_cheque }}" class="download-change" target="_blank" *ngIf="vendor_det.cancelled_cheque != '/images/original/missing3.png'">View</a>
+								</div>
+								
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label class="ss-form-label">City:</label>
+									<input type="text" class="form-control ss-form-control" value="{{ vendor_det.city }}" readonly>
+								</div>
+								
+							</div>
+							<div class="col-md-4">
+								<div class="form-group" >
+									<label class="ss-form-label">Serviceable Cities:</label>
+									<ng-container *ngFor="let obj of city_name">
+									  <input type="text" class="form-control ss-form-control" value="{{ obj.itemName | replaceChar  }}" readonly>
+									</ng-container>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group" *ngIf="vendor_det">
+									<label class="ss-form-label">Category:</label>
+									<br>
+									<span class="badge badge-primary mr-3" *ngFor="let item of vendor_det.vendor_sub_categories">{{item.parent_category_name}} - {{item.category_name}}</span>
+								</div>
+								
+							</div>
+
+							<div class="col-md-4">
+								<div class="form-group">
+									<label class="ss-form-label">Uploaded DD List:</label>
+									<ng-container *ngFor="let item of dd_files">
+										<input type="text" class="form-control ss-form-control" value="{{ item.file_name }}" readonly>
+									
+										<a href="{{ item.url }}" class="download-change ml-1" target="_blank" >View</a>
+									</ng-container>
+								</div>
+							</div>
+						</div>
+					</div>        
+				  </collapsible-table-row-detail> 
+				</ng-container>
+			  </tbody>     
+			</collapsible-table>
+			<div class="text-center" *ngIf="itemList && itemList.length >0">
+				<pagination-controls autoHide="true" (pageChange)="current_page = getVendorList($event)"></pagination-controls>
+			</div>
+			
+	   
+		</div>
+		<div class="col-md-12 not-found " *ngIf="itemList && itemList.length==0 ">
+			<div class="boq-img">
+			  <img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+			</div>
+			<p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray;background: white;">Nothing to show...</p> 
+		  </div> 
+	</div>
+</div>
+
+
+
+<!-- Modal create for Vendor -->
+<div id="addVendorModal" class="modal fade" role="dialog" data-keyboard="false" data-backdrop="static">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content modal-change">
+			<div class="modal-header modal-header-chng">
+				<h4 class="modal-title modal-title-change">Add Vendor</h4>
+				<div class="iconbox">
+				  <button type="button" class="close close-icon" data-dismiss="modal" (click)="resetForm()">&times;</button>
+				</div>
+			</div>
+		  
+			<div class="modal-body modal-body-change">
+		
+  
+				<div class="row" >
+					<div class="col-12" style="padding: 0">
+					   <div class="form">
+						<form [formGroup]="vendorForm" (ngSubmit)="onVendorFormSubmit()">
+						  <!-- <pre>{{ vendorForm.value | json }}</pre>	 -->
+						   <div class="row-change">
+								<div class="check" *ngIf="this.selectedSet == 'first'">
+								 <div class="row">
+									<div class="col-md-6 mt-3">
+										<label class="name">Name <span class="text-danger">*</span></label>
+										<input type="text" formControlName="name" class="form-control" placeholder="Enter  Name">
+										<!-- <div class="alert" *ngIf="!vendorForm.controls['name'].valid && vendorForm.controls['name'].touched">This is required</div> -->
+									</div>
+									<div class="col-md-6 mt-3">
+										<label class="dimension">Address <span class="text-danger">*</span></label>
+										<input type="text" formControlName="address" class="form-control" placeholder="Enter Address">
+
+									</div>
+
+									<div class="col-md-6 mt-3">
+										<label class="core_material">Contact Person<span class="text-danger">*</span></label>
+										<input type="text" formControlName="contact_person" class="form-control" placeholder="Enter Contact Person">
+									</div> 
+									<div class="col-md-6 mt-3">
+										<label class="core_material">Mobile Number<span class="text-danger">*</span></label>
+										<input type="text" formControlName="contact_number" class="form-control" placeholder="Enter Mobile Number">
+										
+										<div *ngIf="vendorForm.controls['contact_number'].errors && !vendorForm.controls['contact_number'].pristine" class="text-danger">
+
+										  <div [hidden]="vendorForm.controls['contact_number'].valid">Enter valid Number.</div>
+										</div>
+
+									</div>  
+									<div class="col-md-6 mt-3">
+										<label class="core_material">Email Address<span class="text-danger">*</span></label>
+										<input type="text" formControlName="email" class="form-control" placeholder="Enter Email">
+										<div *ngIf="vendorForm.controls['email'].errors && !vendorForm.controls['email'].pristine" class="text-danger">
+
+										  <div [hidden]="vendorForm.controls['email'].valid">Enter valid email.</div>
+										</div>
+										
+									</div>                	
+								  </div>
+								</div>
+								<div class="check" *ngIf="this.selectedSet == 'second'">
+								  <div class="row " >
+
+									<div class="col-md-6 mt-3">
+										<label class="name">Pan Number <span class="text-danger">*</span></label>
+										<input type="text" formControlName="pan_no" class="form-control" placeholder="Enter  Name" (change)="panInputChange($event)" id="PanId">
+										<div *ngIf="vendorForm.controls['pan_no'].errors && !vendorForm.controls['pan_no'].pristine" class="text-danger" >
+
+										  <div [hidden]="vendorForm.controls['pan_no'].valid">Enter valid pan number.</div>
+										</div>
+										
+									</div>
+									 
+
+									<div class="col-md-6 mt-3">
+										<label class="core_material">Account Holder Name<span class="text-danger">*</span></label>
+										<input type="text" formControlName="account_holder" class="form-control" placeholder="Enter Data">
+									</div> 
+									<div class="col-md-6 mt-3">
+										<label class="core_material">Account Number<span class="text-danger">*</span></label>
+										<input type="text" formControlName="account_number" class="form-control" placeholder="Enter Data">
+									</div>  
+									<div class="col-md-6 mt-3">
+										<label class="core_material">Bank Name<span class="text-danger">*</span></label>
+										<input type="text" formControlName="bank_name" class="form-control" placeholder="Enter Data">
+									</div>  
+									<div class="col-md-6 mt-3">
+										<label class="core_material">Branch Name<span class="text-danger">*</span></label>
+										<input type="text" formControlName="branch_name" class="form-control" placeholder="Enter Data">
+									</div>  
+									<div class="col-md-6 mt-3">
+										<label class="core_material">IFSC Code<span class="text-danger">*</span></label>
+										<input type="text" formControlName="ifsc_code" class="form-control" placeholder="Enter Data">
+									</div>  
+									 
+									<div class="col-md-6 mt-3">
+										<label class="core_material">Upload Pan</label>
+										<input type="file" class="form-control"  placeholder="Enter Image" (change)="onChange($event,i)">
+										<span class="text-danger" *ngIf="pan_copy_image">1 File Uploaded</span>
+									</div> 
+									 
+									<div class="col-md-6 mt-3">
+										<label class="core_material">Upload Cancelled Cheque</label>
+										<input type="file"  class="form-control" placeholder="Enter Data" (change)="onChange2($event,i)">
+										<span class="text-danger" *ngIf="cheque_copy_image">1 File Uploaded</span>
+
+									</div> 
+									<div class="col-md-6 mt-3">
+											<label class="core_material">Upload GST</label>
+											<input type="file"  class="form-control" placeholder="Enter Iamge" (change)="onChange1($event,i)" multiple>
+											<span class="text-danger" *ngIf="urls.length">{{ urls.length }} File Uploaded</span>
+
+									</div>
+									<div class="col-md-12">
+										<div class="row" formArrayName="gsts" *ngFor="let item of  getGsts(vendorForm); let i = index;" >
+										
+											
+											<div class="col-md-6 mt-3"  [formGroupName]="i" *ngIf="getGsts(vendorForm).length > 0">
+
+												<label class="dimension">GST Number <span class="text-danger">*</span></label>
+												<input type="text" formControlName="gst_reg_no" class="form-control" placeholder="Enter Data">
+											</div>
+											<div class="col-md-6">
+												<button class="btn btn-pink ml-2 pull-left mt-5"  *ngIf="getGsts(vendorForm).length > 1" (click)="removeGstValues(i)">DELETE</button>
+											</div>
+													
+										</div>
+										<div class="more mt-2">
+											<span class="addCursor cursorChange mt-1" (click)="AddGstValues()"><i class="fa fa-plus" aria-hidden="true"></i>Add More GST Number</span><span class="text-danger ml-3" *ngIf="getGsts(vendorForm).length < 1">*Note:Please Add Atleast one GST Number Before Submit</span>
+											
+										</div>
+										
+									</div>
+									
+									
+												
+								   </div>
+								</div>
+								<div class="check" *ngIf="this.selectedSet == 'third'">
+									<div class="row">
+								<div class="col-md-5 mt-3" >
+										<label class="name">Category <span class="text-danger">*</span></label>
+										<select formControlName="category_ids" class="form-control" (change)="getSubCategories($event)">
+											<option value="" disabled>Choose</option>
+											<option value="{{cb.id}}" *ngFor="let cb of categories">{{cb.category_name}}</option>
+										</select>
+									</div>
+									<div class="col-md-5 mt-3">
+										<label class="dimension">Subcategory <span class="text-danger">*</span></label>
+										<select class="form-control" (change) = "setCurrentSubCategory($event)" >
+											<option value="" disabled>Choose</option>
+											<option value="{{subC.id}}" *ngFor="let subC of subCategoryList">{{subC.category_name}}</option>
+										</select>
+									</div>
+									<div class="col-md-2 mt-5">
+										<input type="button" class = "btn btn-pink" name="" value="Add" (click) = "AddSubCategories()" >
+									</div>
+									<div class="col-md-12 mt-3">
+										<span class="badge badge-primary mr-3" *ngFor="let item of selected_cate_subcate_list">{{item.category_name}} - {{item.subcategory_name}}
+										<i class="fa fa-close" (click)="removeItem(item.subcategory_id)"></i>
+										</span>
+									</div>
+										
+									</div> 
+
+									<div class="row">  	
+										<div class="col-md-6 mt-3">
+											<label class="core_material"> City<span class="text-danger">*</span></label>
+											<input type="text" formControlName="city" class="form-control" placeholder="Enter Data">
+										</div>  
+										<div class="col-md-6 mt-3">
+											<label class="core_material"> Serviceable City<span class="text-danger">*</span></label>
+												<angular2-multiselect [data]="dropdownCityList" [(ngModel)]="selectedServicableCity"
+															[settings]="dropdownSscSettings"
+															(onSelect)="onSscItemSelect($event)"
+															(onDeSelect)="OnSscItemDeSelect($event)"
+															(onSelectAll)="onSscSelectAll($event)"
+															(onDeSelectAll)="onSscDeSelectAll($event)"
+															(change)="onSscCheckChange($event)"
+												formControlName="serviceable_city_ids"
+															></angular2-multiselect>
+										</div>
+									</div>
+
+									<div class="row">  
+										<div class="col-md-6 mt-3">
+											<label class="core_material">Upload DD Sheet</label>
+											<input type="file"  class="form-control" placeholder="Enter Iamge" formControlName="dd_upload_attachments" (change)="UploadDD($event,i)" multiple>
+											<span class="text-danger" *ngIf="UploadDDlist_Item.length > 0">{{ UploadDDlist_Item.length }} File Uploaded</span>
+										</div>	
+										<div class="col-md-6 mt-3">
+											<label class="core_material">DD Score</label><br>
+											<input type="number" name="DDscore" class="form-control" formControlName="dd_score" placeholder="Enter DD Score">
+										</div>  
+									</div>
+								</div>  	
+							</div>
+						 <div class="footer-changes">
+							<a class="nav-link  text-center" (click)="getSet('second')" *ngIf="selectedSet == 'first'">Next Step</a>
+							<div class="row">
+								<div class="col-md-6">
+								  <a class="nav-link  text-center text-chng" (click)="getSet('first')" *ngIf="selectedSet == 'second'">Back</a>
+								</div>
+								<div class="col-md-6">
+									<a class="nav-link  text-center" (click)="getSet('third')" *ngIf="selectedSet == 'second'">Next</a>
+								</div>
+								<div class="col-md-6" style="padding-right:0">
+								  <a class="nav-link  text-center text-chng" (click)="getSet('second')" *ngIf="selectedSet == 'third'" style="width: 100%">Back</a>
+								</div>
+								<div class="col-md-6" style="padding-left: 0">
+									<input type="submit" class="btn btn-primary btn-chng "  style="width: 100%" *ngIf="selectedSet == 'third'">
+								
+									
+
+									
+								</div>
+								
+							</div>
+
+						 </div>
+			  
+						</form>
+						</div>
+					</div>    
+						   
+				</div>
+			</div>
+
+		</div>
+
+	</div>
+</div>
+<!-- MOdal ends here -->
+
+<!-- MOdal For Update Vendor -->
+<div id="vendorUpdateModal" class="modal fade" role="dialog"  data-keyboard="false" data-backdrop="static">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content modal-change">
+			<div class="modal-header modal-header-chng">
+				<h4 class="modal-title modal-title-change">Edit Vendor</h4>
+				<div class="iconbox">
+				  <button type="button" class="close close-icon" data-dismiss="modal" (click)="removeUpadteContent()">&times;</button>
+				</div>
+			</div>
+		  
+			<div class="modal-body modal-body-change">
+		
+  
+				<div class="row" >
+					<div class="col-12" style="padding: 0">
+					   <div class="form">
+						<form [formGroup]="vendorUpdateForm" (ngSubmit)="onVendorUpdateFormSubmit()">
+						  <!-- <pre>{{ vendorUpdateForm.value | json }}</pre>	 -->
+							<div class="row-change">
+								<div class="check" *ngIf="this.selectedSet == 'first'">
+								 <div class="row">
+									<div class="col-md-6 mt-3">
+										<label class="name">Name <span class="text-danger">*</span></label>
+										<input type="text" formControlName="name" class="form-control" placeholder="Enter  Name">
+										
+									</div>
+									<div class="col-md-6 mt-3">
+										<label class="dimension">Address <span class="text-danger">*</span></label>
+										<input type="text" formControlName="address" class="form-control" placeholder="Enter Address">
+
+									</div>
+
+									<div class="col-md-6 mt-3">
+										<label class="core_material">Contact Person<span class="text-danger">*</span></label>
+										<input type="text" formControlName="contact_person" class="form-control" placeholder="Enter Contact Person">
+									</div> 
+									<div class="col-md-6 mt-3">
+										<label class="core_material">Mobile Number<span class="text-danger">*</span></label>
+										<input type="text" formControlName="contact_number" class="form-control" placeholder="Enter Mobile Number">
+										<div *ngIf="vendorUpdateForm.controls['contact_number'].errors && !vendorUpdateForm.controls['contact_number'].pristine" class="text-danger">
+
+										  <div [hidden]="vendorUpdateForm.controls['contact_number'].valid">Enter valid Number.</div>
+										</div>
+									</div>  
+									<div class="col-md-6 mt-3">
+										<label class="core_material">Email Address<span class="text-danger">*</span></label>
+										<input type="text" formControlName="email" class="form-control" placeholder="Enter Email">
+										<div *ngIf="vendorUpdateForm.controls['email'].errors && !vendorUpdateForm.controls['email'].pristine" class="text-danger">
+
+										  <div [hidden]="vendorUpdateForm.controls['email'].valid">Enter valid email.</div>
+										</div>
+										
+									</div>                	
+								  </div>
+								</div>
+								<div class="check" *ngIf="this.selectedSet == 'second'">
+								  <div class="row " >
+
+									<div class="col-md-6 mt-3">
+										<label class="name">Pan Number <span class="text-danger">*</span></label>
+										<input type="text" formControlName="pan_no" class="form-control" placeholder="Enter  Name" (change)="panInputUpdateChange($event)" id="PanIdChng">
+										<div *ngIf="vendorUpdateForm.controls['pan_no'].errors && !vendorUpdateForm.controls['pan_no'].pristine" class="text-danger">
+
+										  <div [hidden]="vendorUpdateForm.controls['pan_no'].valid">Enter valid pan number.</div>
+										</div>
+										
+									</div>
+
+									<div class="col-md-6 mt-3">
+										<label class="core_material">Account Holder Name<span class="text-danger">*</span></label>
+										<input type="text" formControlName="account_holder" class="form-control" placeholder="Enter Data">
+									</div> 
+									<div class="col-md-6 mt-3">
+										<label class="core_material">Account Number<span class="text-danger">*</span></label>
+										<input type="text" formControlName="account_number" class="form-control" placeholder="Enter Data">
+									</div>  
+									<div class="col-md-6 mt-3">
+										<label class="core_material">Bank Name<span class="text-danger">*</span></label>
+										<input type="text" formControlName="bank_name" class="form-control" placeholder="Enter Data">
+									</div>  
+									<div class="col-md-6 mt-3">
+										<label class="core_material">Branch Name<span class="text-danger">*</span></label>
+										<input type="text" formControlName="branch_name" class="form-control" placeholder="Enter Data">
+									</div>  
+									<div class="col-md-6 mt-3">
+										<label class="core_material">IFSC Code<span class="text-danger">*</span></label>
+										<input type="text" formControlName="ifsc_code" class="form-control" placeholder="Enter Data">
+									</div>  
+									<div class="col-md-6 mt-3" *ngIf="vendor_details">
+										<label class="core_material">Upload Pan</label>
+										<input type="file"  class="form-control" placeholder="Enter Image" (change)="onChange($event,i)">
+										<span *ngIf="vendor_details.pan_copy"><a href="{{ vendor_details.pan_copy }}" class="download-change" target="_blank" *ngIf="vendor_details.pan_copy != '/images/original/missing1.png'">Download</a></span>
+
+									</div> 
+									<div class="col-md-6 mt-3" *ngIf="vendor_details">
+										<label class="core_material">Upload GST</label>
+										<input type="file"  class="form-control" placeholder="Enter Iamge" (change)="updateGST($event,i)" multiple="">
+										<div class="gst-chn">
+											<span *ngFor="let item of vendor_details['gst_files'] ; let k=index" >
+												<a href="{{ item.url }}" class="download-change ml-2" target="_blank" *ngIf="vendor_details" style="position: absolute;">Download-{{ k+1 }}</a>
+												<span class="icon-cros"><i class="fa fa-times mt-2" aria-hidden="true" (click)="removeGstFiles(k, item.id)"></i></span>
+											</span>
+										</div>
+
+									</div>  
+									<div class="col-md-6 mt-3" *ngIf="vendor_details">
+										<label class="core_material">Upload Cancelled Cheque</label>
+										<input type="file"  class="form-control" placeholder="Enter Data" (change)="onChange2($event,i)">
+										<a href="{{ vendor_details.cancelled_cheque }}" class="download-change" target="_blank" *ngIf="vendor_details.cancelled_cheque != '/images/original/missing3.png'">Download</a>
+									</div>  
+									<div class="col-md-12">
+
+										<div class="row" formArrayName="gsts" *ngFor="let item of  getGsts(vendorUpdateForm); let m = index;" >
+									
+										
+											<div class="col-md-6 mt-3"  [formGroupName]="m">
+
+												<label class="dimension">GST Number <span class="text-danger">*</span></label>
+												<input type="text" formControlName="gst_reg_no" class="form-control" placeholder="Enter Data">
+
+											</div>
+											<div class="col-md-6">
+												<button class="btn btn-pink ml-2 pull-left mt-5"  *ngIf="getGsts(vendorUpdateForm).length > 1" (click)="removeGstValuesForUpdate(m)">DELETE</button>
+											</div>
+													
+										</div>
+										<div class="more mt-2">
+											<span class="addCursor cursorChange mt-1" (click)="AddGstValuesForUpdate()"><i class="fa fa-plus" aria-hidden="true"></i>Add More GST Number</span>
+											
+										</div>
+										
+									</div>
+												
+								   </div>
+								</div>
+								<div class="check" *ngIf="this.selectedSet == 'third'">
+									<div class="row">
+										<div class="col-md-5 mt-3" >
+												<label class="name">Category <span class="text-danger">*</span></label>
+												<select formControlName="category_ids" class="form-control" (change)="getSubCategories($event)">
+													<option value="" disabled>Choose</option>
+													<option value="{{cb.id}}" *ngFor="let cb of categories">{{cb.category_name}}</option>
+												</select>
+										</div>
+										<div class="col-md-5 mt-3">
+											<label class="dimension">Subcategory <span class="text-danger">*</span></label>
+											<select class="form-control" (change) = "setCurrentSubCategory($event)" >
+												<option value="" disabled>Choose</option>
+												<option value="{{subC.id}}" *ngFor="let subC of subCategoryList">{{subC.category_name}}</option>
+											</select>
+										</div>
+										<div class="col-md-2 mt-5">
+											<input type="button" class = "btn btn-pink" name="" value="Add" (click) = "AddSubCategories('edit')" >
+										</div>
+										<div class="col-md-12 mt-3">
+											<span class="badge badge-primary mr-3" *ngFor="let item of selected_cate_subcate_list_update">{{item.category_name}} - {{item.subcategory_name}}
+											<i class="fa fa-close" (click)="removeUpdateItem(item.subcategory_id)"></i>
+											</span>
+										</div>
+												
+									</div>  	
+									<div class="row">  	
+										<div class="col-md-6 mt-3">
+											<label class="core_material"> City<span class="text-danger">*</span></label>
+											<input type="text" formControlName="city" class="form-control" placeholder="Enter Data">
+										</div>  
+										<div class="col-md-6 mt-3">
+											<label class="core_material"> Serviceable City<span class="text-danger">*</span></label>
+												<angular2-multiselect [data]="dropdownCityList" [(ngModel)]="selectedServicableCity"
+															[settings]="dropdownSscSettings"
+															(onSelect)="onSscItemSelect($event)"
+															(onDeSelect)="OnSscItemDeSelect($event)"
+															(onSelectAll)="onSscSelectAll($event)"
+															(onDeSelectAll)="onSscDeSelectAll($event)"
+															(change)="onSscCheckChange($event)"
+												formControlName="serviceable_city_ids"
+															></angular2-multiselect>
+										</div>
+										
+
+									</div>
+
+									<div class="row">  
+										<div class="col-md-6 mt-3" *ngIf="vendor_details">
+											<label class="core_material">Upload DD Sheet</label>
+											<input type="file" class="form-control"  placeholder="Enter Image" formControlName="dd_upload_attachments" (change)="UpdateDD($event,i)" multiple="">
+
+											<div class="gst-chn">
+												<span *ngFor="let item of vendor_details['dd_files'] ; let k=index" >
+													<a href="{{ item.url }}" class="download-change ml-2" target="_blank" *ngIf="vendor_details" style="position: absolute;">Download-{{ k+1 }}</a>
+													<span class="icon-cros"><i class="fa fa-times mt-2" aria-hidden="true" (click)="removeddFiles(k,item.id)"></i></span>
+												</span>
+											</div>
+										</div>	
+										<div class="col-md-6 mt-3">
+											<label class="core_material">DD Score</label><br>
+											<input type="number" name="DDscore" class="form-control" formControlName="dd_score" placeholder="Enter DD Score">
+										</div>  
+									</div>
+								</div>  	
+							</div>
+						 <div class="footer-changes">
+							<a class="nav-link  text-center" (click)="getSet('second')" *ngIf="selectedSet == 'first'">Next Step</a>
+							<div class="row">
+								<div class="col-md-6">
+								  <a class="nav-link  text-center text-chng" (click)="getSet('first')" *ngIf="selectedSet == 'second'">Back</a>
+								</div>
+								<div class="col-md-6" >
+									<a class="nav-link  text-center" (click)="getSet('third')" *ngIf="selectedSet == 'second'">Next</a>
+								</div>
+								<div class="col-md-6" style="padding-right: 0">
+								  <a class="nav-link  text-center text-chng" (click)="getSet('second')" *ngIf="selectedSet == 'third'" style="width: 100%">Back</a>
+								</div>
+								<div class="col-md-6" style="padding-left: 0">
+									
+									<input type="submit" class="btn btn-primary btn-chng "  style="width: 100%" *ngIf="selectedSet == 'third'" value="Update">
+								
+
+									
+								</div>
+								
+							</div>
+
+						 </div>
+			  
+						</form>
+						</div>
+					</div>    
+						   
+				</div>
+			</div>
+
+		</div>
+
+	</div>
+</div>
+
+
+
+
+
+<!-- MOdal For DD list -->
+<div id="ddSheet" class="modal fade" role="dialog"  data-keyboard="false" data-backdrop="static">
+	<div class="modal-dialog modal-dialog-centered" style="transform: translate(0, -50%);top: 50%;margin: 0 auto;">
+		<div class="modal-content">
+			<div class="modal-header">
+				<div class="m-auto modal-title text-uppercase" style="font-weight: 700;">Download Sample DD</div>
+				<!-- <div class="iconbox">
+				  <button type="button" class="close close-icon" data-dismiss="modal">&times;</button>
+				</div> -->
+			</div>
+
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="bg-light">
+							<p class="ml-5" style="font-weight: 500;">Choose among options below before Download file</p>
+						</div>
+						<input class="ml-5" type="checkbox" value="1" name="PanelFurniture" id="panelFurniture" (change) = "enadleDownload()"> <label class="ml-1">Panel Furniture</label> <br>
+
+						<input class="ml-5 mt-2" type="checkbox" value="2" name="Non-PanelFurniture" id="non-panelFurniture" (change) = "enadleDownload()"> <label class="ml-1">Non-Panel Furniture</label> <br>
+					</div>
+				</div>
+			</div>
+
+			<div class="modal-footer m-auto border-0">
+				<button class="btn btn-pink addCursor" id="download" data-dismiss="modal" (click)="dowloadDDlist()" disabled>Download</button>
+				<button class="btn btn-pink addCursor" data-dismiss="modal">Cancel</button>
+			</div>
+		</div>
+	</div>
+</div>
+

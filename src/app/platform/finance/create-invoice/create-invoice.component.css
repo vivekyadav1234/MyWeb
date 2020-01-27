@@ -1,0 +1,137 @@
+body .modal-open {
+  overflow: hidden !important;
+}
+body.modal-open {
+  overflow: hidden !important;
+}
+body .stoped .modal-open {
+  overflow: hidden !important;
+}
+.arrColr{
+  background-color: #93001E;
+  color: white;
+}
+tr th{
+    font-weight: 500;
+}
+tr{
+    font-size: 14px;
+}
+.table td{
+  padding: 1rem 0.75rem;
+  vertical-align: middle;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.7);
+  border: none;
+  text-align: center;
+}
+.table th {
+  /*padding: .9rem;*/
+  vertical-align: middle;
+  border: none;
+  font-size: 14px;
+  text-transform: uppercase;
+  /*color: #9E9FA0;*/
+  /*background-color: #ECF0F1 !important;*/
+  text-align:center;
+}
+.tableDiv .table th {
+  padding: .9rem;
+  vertical-align: middle;
+  border: none;
+  font-size: 12px;
+  text-transform: uppercase;
+  color: #9E9FA0;
+  background-color: #ECF0F1 !important;
+  text-align:center;
+}
+.table{
+  border-collapse: separate;
+  border-spacing: 0 5px;
+}
+tr{
+  text-align: center;
+}
+.ss-thead{
+  th{
+    white-space: pre-line;
+  }
+}
+/*.table thead th {
+    vertical-align: bottom;
+    border-bottom: 2px solid #e9ecef;
+}*/
+.ss-thead {
+    font-size: 14px;
+    text-transform: uppercase;
+    color: #8D8D8D;
+}
+.filter-design{
+    border: 2px solid #ada9a9;
+    padding: 1rem;
+    border-radius: 1rem;
+}
+input[type=checkbox]{
+    -webkit-appearance: none;
+    outline: none;
+    content: none;
+}
+input[type="checkbox"]:before {
+    border: 1px solid #909090;
+    content: "\A0";
+    display: inline-block;
+    font: 13px/1em sans-serif;
+    height: 18px;
+    margin: 0 .25em 0 0;
+    padding: 0;
+    vertical-align: sub;
+    width: 18px;
+    padding-top: 5px;
+}
+input[type=checkbox]:checked:before {
+    color: black !important;
+    /*margin-top: -0.2rem;*/
+    font-family: FontAwesome;
+    content: "\f00c";
+    padding-left: 0px !important;
+    font-size: 15px;
+    text-align: center;
+    padding-top: 0px;
+}
+ 
+body .modal-open {
+    font-family: Roboto;
+    overflow: hidden !important;
+}
+.easy-drop-down{
+    background-color: #253858;
+    color: white;
+    height: 29px;
+    outline: none;
+    width: 6rem;
+}
+.highlight{
+    font-weight: 400;
+    color:#A20025;
+     
+}
+.savebutton{
+    background-color:green;
+    color: white;
+    height: 24px;
+    outline: none;
+    width: 50px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor:pointer;
+}
+.cancelbutton{
+    background-color:red;
+    color: white;
+    height: 24px;
+    outline: none;
+    width: 50px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor:pointer;
+}

@@ -1,0 +1,370 @@
+<div class="row ss-top-menu">
+  <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-xs-4">
+    <span class="ss-link ss-text-light" style="vertical-align: -webkit-baseline-middle;" [routerLink]="['/community_manager/wip']">Wip Dashboard </span>
+    <span style="vertical-align: -webkit-baseline-middle;"> <i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-text-light" style="vertical-align: -webkit-baseline-middle;">Leads </span>
+  </div>
+  <div class="col-xl-5 col-lg-5 col-md-5 col-sm-5 col-xs-5">
+    <div class="ss-searchbox">
+      <i class="fa fa-search"></i>
+      <input class="form-control" type="text" placeholder="Type in name, contact, status, role, date to search..." #search (keyup.enter)="onKey($event)">
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12" *ngIf="erroralert">
+    <div class="alert-box grid-100" *ngIf="errorMessage">
+      <div class="alert alert-danger mt-3 text-center">
+        <a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a>
+        {{errorMessage}}
+      </div>
+    </div>
+  </div>
+  <div class="col-12" *ngIf="successalert">
+    <div class="alert-box grid-100" *ngIf="successMessage">
+      <div class="alert alert-success mt-3 text-center">
+        <a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+        {{successMessage}}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row body_height justify-content-center">
+  <div class="col-12">
+    <div class="row justify-content-end">
+      <div class="col-md-12">
+        <div class="filterMainDiv">
+          <span class="ss-text-dark mr-2">Filter By</span>
+          <select class="filterSelect form-control capitalize" (change)="filterColumDropdownChange($event.target.value)" [(ngModel)]="filtercol1Val" id="filter1dropdown">
+            <option value="all" selected><span class="capitalize">All</span></option>
+            <option value="list_designer"><span class="capitalize">Designers</span></option>
+            <!-- <option value="list_city" *ngIf="lead_status && lead_status != 'leads_not_assigned' && lead_status != 'leads_dropped' "><span class="capitalize">City</span></option> -->
+          </select>
+          <select style="display: none" class="capitalize" id="designer_list" (change)="onDesignerFilterSelect($event)">
+            <option *ngFor="let design of my_designers" value={{design.id}}>{{ design.name }}</option>
+
+            
+          </select>
+
+
+          <i class="downArrow fa fa-angle-down d-none" id="downArrow"></i>
+          <div id="fromDateFilter" class= "d-none" style="display: inline;">
+            <label class="ss-text-dark mr-2">From Date </label>
+            <input type="date" name="" [(ngModel)]="from_date" class="form-control filterSelect" style="font-size: 12px;">
+          </div>
+          <div id="toDateFilter" class= "d-none" style="display: inline;">
+            <label class="ss-text-dark mr-2">To Date </label>
+            <input type="date" name="" [(ngModel)]="to_date" [min]="from_date" class="form-control filterSelect" style="font-size: 12px;">
+          </div>
+          <button class="filterBtn" (click)="filterSubmit()">GO</button>
+        </div>
+      </div>
+    </div>
+    <h5 *ngIf="wipList && wipList.length ==0" class="text-center my-5">No leads Available</h5>
+    <div class="tableDiv lappyView">
+      <table class="table" *ngIf="wipList && wipList.length >0">
+        <thead class="ss-thead">
+          <tr>
+            <th class="firstTh" style="min-width: 1rem;">#</th>
+
+            <th (click)="sort('name')">
+              NAME
+              <i class="fa ml-2" [ngClass]="{'fa-sort': column != 'name', 'fa-sort-asc': (column == 'name' && !isDesc), 'fa-sort-desc': (column == 'name' && isDesc) }" aria-hidden="true"></i>
+            </th>
+
+            <th (click)="sort('id')">
+              LEAD ID
+              <i class="fa ml-2" [ngClass]="{'fa-sort': column != 'id', 'fa-sort-asc': (column == 'id' && !isDesc), 'fa-sort-desc': (column == 'id' && isDesc) }" aria-hidden="true"></i>
+            </th>
+
+            <th (click)="sort('wip_time')" style="min-width: 12rem;">
+              WIP DATE
+              <i class="fa ml-2" [ngClass]="{'fa-sort': column != 'wip_time', 'fa-sort-asc': (column == 'wip_time' && !isDesc), 'fa-sort-desc': (column == 'wip_time' && isDesc) }" aria-hidden="true"></i>
+            </th>
+            <th>
+              CURRENT STATUS
+            </th>
+            <th>CHANGE STATUS</th>
+            <th>SUBSTATUS</th>
+            <th style="min-width: 12rem;">LEAD ACQUIRED</th>
+            <th style="min-width: 12rem;">LEAD ASSIGNED (CM)</th>
+            <th style="min-width: 12rem;">LEAD ASSIGNED (DESIGNER)</th>
+            <th style="min-width: 12rem;" (click)="sort('assigned_to')">
+              ASSIGNED DESIGNER
+              <i class="fa ml-2" [ngClass]="{'fa-sort': column != 'assigned_to', 'fa-sort-asc': (column == 'assigned_to' && !isDesc), 'fa-sort-desc': (column == 'assigned_to' && isDesc) }" aria-hidden="true"></i>
+            </th>
+            <th></th>
+            <th class="lastTh"></th>
+          </tr>
+        </thead>
+        <tbody class="ss-tbody">
+          <tr *ngFor=" let obj of wipList | paginate: { itemsPerPage: per_page, currentPage: current_page, totalItems: total_page  }   | category :search.value | sort: {property: column, direction: direction}; let i = index" [attr.data-index]="i">
+            <td style="min-width: 1rem;">{{((current_page-1) * per_page) + (i+1)}}</td>
+            <td class="capitalize">
+              <a class="addCursor ss-link" routerLink="/lead/{{obj.id}}/overview"  *ngIf="obj.project_details;else nolink ">{{obj.name}}</a>
+              <ng-template #nolink>{{obj.name}}</ng-template>
+            </td>
+            <td>{{obj.id}}</td>
+            <td>{{obj.project_details.wip_time | date:'dd/MM/yyyy - h:mm a'}}</td>
+            <td class="capitalize">
+              <span *ngIf="obj.project_details">
+                <ng-container  *ngIf="(obj.project_details.status!='on_hold' && obj.project_details.status!='inactive')">
+                  {{ obj.project_details.status | replaceChar }}
+                </ng-container>
+                <ng-container *ngIf="(obj.project_details.status=='on_hold')">
+                    <a data-trigger="hover" title="Remarks" [attr.data-content] ="obj.project_details.remarks" class="pop" (mouseenter)="openpopup($event)">{{obj.project_details.status | replaceChar}}</a>
+                    <p class="time-chng">{{obj.event_scheduled_at.on_hold_time | date:'dd/MM/yyyy - h:mm a'}}</p>
+                </ng-container>
+                <ng-container *ngIf="(obj.project_details.status=='inactive')">
+                    <a data-trigger="hover" title="Remarks" [attr.data-content] ="obj.project_details.remarks" class="pop" (mouseenter)="openpopup($event)">{{obj.project_details.status | replaceChar}}</a>
+                    <span *ngIf="obj.project_details.reason_for_lost !=null">Reason:{{obj.project_details.reason_for_lost | replaceChar}}</span>
+                </ng-container>
+              </span>
+            </td>
+            <td>
+              <select (change) = "onStatusChange(obj.project_details.id,obj.project_details.user_id, $event.target.value)" class="custom-select" *ngIf="obj && obj.project_details">
+                <option>Change status</option>
+                <option value="on_hold" [selected]="obj.project_details.status === 'on_hold'" *ngIf="!['on_hold', 'inactive'].includes(obj.project_details.status)">On Hold</option>
+                <option value="inactive" [selected]="obj.project_details.status === 'inactive'" *ngIf="!['on_hold', 'inactive'].includes(obj.project_details.status)">Inactive</option>
+                <option value="active" [selected]="obj.project_details.status === 'active'" *ngIf="['on_hold', 'inactive'].includes(obj.project_details.status)">Active</option>
+              </select>
+
+            </td>
+
+            <td>
+              <span *ngIf="obj.project_details">{{obj.project_details.sub_status | replaceChar}}</span>
+              <!-- <select (change) = "onSubStatusChange(obj.project_details.id,obj.project_details.user_id, $event.target.value)" class="custom-select" *ngIf="obj.project_details && isProjectInWipAndActive(obj.project_details.status)">
+                <option>Change sub status</option>
+                <option value="meeting_fixed" [selected]="obj.project_details.sub_status === 'meeting_fixed'">Meeting Fixed</option>
+                <option value="floorplan_uploaded" [selected]="obj.project_details.sub_status === 'floorplan_uploaded'">Req Sheet and Floor Plan Uploaded</option>
+                <option value="initial_proposal_submitted" [selected]="obj.project_details.sub_status === 'initial_proposal_submitted'">Initial Design and BOQ Submitted</option>
+                <option value="initial_proposal_accepted" [selected]="obj.project_details.sub_status === 'initial_proposal_accepted'">Initial Design and BOQ Accepted</option>
+                <option value="initial_proposal_rejected" [selected]="obj.project_details.sub_status === 'initial_proposal_rejected'">Initial Design and BOQ Rejected</option>
+              </select> -->
+
+            </td>
+
+            <td>
+              <span *ngIf="obj.created_at">{{obj.created_at | date:'dd/MM/yyyy - h:mm a'}}</span>
+            </td>
+            <td class="capitalize">
+              <span *ngIf="obj.status_updated_at">
+                {{obj.status_updated_at | date:'dd/MM/yyyy - h:mm a'}}
+              </span>
+            </td>
+            <td class="capitalize">
+              <span *ngIf="obj.assigned_at">
+                {{obj.assigned_at  | date:'dd/MM/yyyy - h:mm a'}}
+              </span>
+            </td>
+            <td>
+              {{obj.assigned_to_name}} - {{obj.assigned_to}}
+            </td>
+            <td>
+                <!-- <img src="assets/img/dashboard/doc.png"> -->
+                <i class="fa fa-phone cursor-pointer" (click)="callToLead(obj.contact)" style="    font-size: 1.5rem; color: #8F0020;"></i>
+            </td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="text-center" *ngIf="wipList && wipList.length >0">
+        <pagination-controls autoHide="true" (pageChange)="current_page = getWipList($event)"></pagination-controls>
+      </div>
+    </div>
+
+    <div class="row my-4 mobView">
+      <div class="col-12">
+        <div *ngIf="wipList && wipList.length >0">
+          <div *ngFor=" let obj of wipList | category :search.value | sort: {property: column, direction: direction}; let i = index" [attr.data-index]="i">
+            <div class="card card-body mobCard mb-2">
+              <a data-toggle="collapse" href="#tableDiv{{i}}">
+                <i class="fa fa-angle-right"></i>
+              </a>
+              <h4 class="ss-link cursor-pointer" routerLink="/lead/{{obj.id}}/overview" *ngIf="obj.project_details;else nolink ">Name: {{obj.name}}</h4>
+              <ng-template #nolink>{{obj.name}}</ng-template>
+              <div class="row">
+                <p class="col-5 mb-0">LEAD ID: {{obj.id}}</p>
+                <h6 class="col-7 mb-0 text-center" *ngIf="obj.project_details">
+                  <span *ngIf="obj.project_details">
+                    <ng-container *ngIf="(obj.project_details.status!='on_hold' && obj.project_details.status!='inactive')">
+                      {{ obj.project_details.status }}
+                    </ng-container>
+                    <ng-container *ngIf="(obj.project_details.status=='on_hold')">
+                      <a data-trigger="hover" title="Remarks" [attr.data-content]="obj.project_details.remarks" class="pop" (mouseenter)="openpopup($event)">{{obj.project_details.status | replaceChar}}</a>
+                      <p class="time-chng">{{obj.event_scheduled_at.on_hold_time | date:'dd/MM/yyyy - h:mm a'}}</p>
+                    </ng-container>
+                    <ng-container *ngIf="(obj.project_details.status=='inactive')">
+                      <a data-trigger="hover" title="Remarks" [attr.data-content]="obj.project_details.remarks" class="pop" (mouseenter)="openpopup($event)">{{obj.project_details.status | replaceChar}}</a>
+                    </ng-container>
+                  </span>
+                </h6>
+              </div>
+            </div>
+            <div class="collapse" id="tableDiv{{i}}">
+              <div class="card card-body py-0 mb-3">
+                <div class="row">
+                  <div class="col-12 py-3 borderRight">
+                    <p class="tableInner">WIP DATE</p>
+                    <p class="tableInner capitalize">{{obj.project_details.wip_time | date:'dd/MM/yyyy - h:mm a'}}</p>
+                  </div>
+                  <div class="col-12 py-3 borderRight">
+                    <p class="tableInner">CHANGE STATUS</p>
+                    <select (change)="onStatusChange(obj.project_details.id,obj.project_details.user_id, $event.target.value)" class="custom-select"
+                      *ngIf="obj && obj.project_details">
+                      <option>Change status</option>
+                      <option value="on_hold" [selected]="obj.project_details.status === 'on_hold'" *ngIf="!['on_hold', 'inactive'].includes(obj.project_details.status)">On Hold</option>
+                      <option value="inactive" [selected]="obj.project_details.status === 'inactive'" *ngIf="!['on_hold', 'inactive'].includes(obj.project_details.status)">Inactive</option>
+                      <option value="active" [selected]="obj.project_details.status === 'active'" *ngIf="['on_hold', 'inactive'].includes(obj.project_details.status)">Active</option>
+                    </select>
+                  </div>
+                  <div class="col-12 py-3 borderRight">
+                    <p class="tableInner">CHANGE SUBSTATUS</p>
+                    <select (change)="onSubStatusChange(obj.project_details.id,obj.project_details.user_id, $event.target.value)" class="custom-select"
+                      *ngIf="obj.project_details && isProjectInWipAndActive(obj.project_details.status)">
+                      <option>Change sub status</option>
+                      <option value="meeting_fixed" [selected]="obj.project_details.sub_status === 'meeting_fixed'">Meeting Fixed</option>
+                      <option value="floorplan_uploaded" [selected]="obj.project_details.sub_status === 'floorplan_uploaded'">Req Sheet and Floor Plan Uploaded</option>
+                      <option value="initial_proposal_submitted" [selected]="obj.project_details.sub_status === 'initial_proposal_submitted'">Initial Design and BOQ Submitted</option>
+                      <option value="initial_proposal_accepted" [selected]="obj.project_details.sub_status === 'initial_proposal_accepted'">Initial Design and BOQ Accepted</option>
+                      <option value="initial_proposal_rejected" [selected]="obj.project_details.sub_status === 'initial_proposal_rejected'">Initial Design and BOQ Rejected</option>
+                    </select>
+                  </div>
+                  <div class="col-12 py-3 borderRight">
+                    <p class="tableInner">LEAD ACQUIRED</p>
+                    <p class="tableInner capitalize" *ngIf="obj.created_at">{{obj.created_at | date:'dd/MM/yyyy - h:mm a'}}</p>
+                  </div>
+                  <div class="col-12 py-3 borderRight">
+                    <p class="tableInner">LEAD ASSIGNED (CM)</p>
+                    <p class="tableInner capitalize" *ngIf="obj.status_updated_at">{{obj.created_at | date:'dd/MM/yyyy - h:mm a'}}</p>
+                  </div>
+                  <div class="col-12 py-3 borderRight">
+                    <p class="tableInner">LEAD ASSIGNED (DESIGNER)</p>
+                    <p class="tableInner capitalize" *ngIf="obj.assigned_at">{{obj.assigned_at | date:'dd/MM/yyyy - h:mm a'}}</p>
+                  </div>
+                  <div class="col-12 py-3 borderRight">
+                    <p class="tableInner">ASSIGNED DESIGNER</p>
+                    <p class="tableInner">{{obj.assigned_to}}</p>
+                  </div>
+                  <div class="col-12 callBtn" (click)="callToLead(data.contact)">
+                    <span>CALL</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Status modal -->
+<div class="modal fade" id="statusModal" tabindex="-1" role="dialog" aria-labelledby="SmsModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document" style="width: 55rem;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5>On Hold Details</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+        <div class="form-group row">
+          <label for="example-text-input" class="col-2 col-form-label">Reopening Date</label>
+          <div class="col-10">
+            <input type="datetime-local" name="followup-details" id="followup-details" class="form-control">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="example-text-input" class="col-2 col-form-label">Remarks </label>
+          <div class="col-10">
+            <textarea rows="1" name="followup_remarks" id="followup_remarks" class="form-control"></textarea>
+            <!-- <input type="da" name="followup-details" id="followup-details" class="form-control"> -->
+          </div>
+        </div>
+
+
+      </div>
+      <div class="modal-footer">
+        <input type="button" id="followup-button" value="Update" class="btn btn-pink" (click) = "onCallbackChange()" >
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Status modal end -->
+
+
+<!-- For Inactive Remark -->
+<div class="modal fade" id="statusModal2" tabindex="-1" role="dialog" aria-labelledby="SmsModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document" style="width: 55rem;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5>Inactive Reamrks Deatils</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group row mt-4">
+            <input class="form-control" id="inactive_reason" type="hidden" value="{{this.dropdownDropType}}">
+            <!-- /////tree view dropdown//// -->
+            <div class="container">
+              <div class="row mb-3">
+                 <label for="example-text-input" class="col-3 col-form-label">Reason for Lost <span class="text-danger">*</span></label>
+                <div class="dropdown">
+                  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span *ngIf="!this.dropdownDropType">Select Reason</span>{{this.dropdownDropType | replaceChar}}</button>
+                  <ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
+                    <li class="dropdown-item"><a (click)="submitDropLeadType('out_of_scope')">Out of Scope</a></li>
+                    <li class="dropdown-item"><a (click)="submitDropLeadType('low_budget')">Low Budget</a></li>
+                    <li class="dropdown-item"><a (click)="submitDropLeadType('non_serviceable_area')">Non Serviceable Area</a></li>
+                    <li class="dropdown-item"><a (click)="submitDropLeadType('not_interested')">Not Interested</a></li>
+                    <li class="dropdown-item"><a (click)="submitDropLeadType('language_barrier')">Language Barrier</a></li>
+                    <li class="dropdown-item"><a (click)="submitDropLeadType('did_not_like_delivery_timelines')">Did not like Delivery Timelines</a></li>
+                    <li class="dropdown-item"><a (click)="submitDropLeadType('did_not_like_our_prices')">Did not like Our Prices</a></li>
+                    <li class="dropdown-item"><a (click)="submitDropLeadType('not_reachable_despite_multiple_attempts')">Not Reachable Despite Multiple Attempts</a></li>
+                    <li class="dropdown-item"><a (click)="submitDropLeadType('did_not_like_designs')">Did not like Designs</a></li>
+                    <li class="dropdown-item"><a (click)="submitDropLeadType('others')">Others</a></li>
+                    <li class="dropdown-divider"></li>
+                    <li class="dropdown-submenu">
+                      <a  class="dropdown-item" tabindex="-1">Already done with Other Vendor</a>
+                      <ul class="dropdown-menu">
+                        <li class="dropdown-submenu">
+                          <a class="dropdown-item" >Organized</a>
+                          <ul class="dropdown-menu">
+                              <li class="dropdown-item"><a (click)="submitDropLeadType('already_done_with_other_vendor--livspace')">Livspace</a></li>
+                              <li class="dropdown-item" (click)="submitDropLeadType('already_done_with_other_vendor--homelane')"><a>Homelane</a></li>
+                              <li class="dropdown-item" (click)="submitDropLeadType('already_done_with_other_vendor--design_cafe')"><a>Design Cafe</a></li>
+                          </ul>
+                        </li>
+                        <li class="dropdown-submenu">
+                          <a class="dropdown-item">Unorganized</a>
+                          <ul class="dropdown-menu">
+                              <li class="dropdown-item"><a (click)="submitDropLeadType('already_done_with_other_vendor--local_contractor')">Local Contractor</a></li>
+                              <li class="dropdown-item"><a (click)="submitDropLeadType('already_done_with_other_vendor--carpenter')">Carpenter</a></li>
+                          </ul>
+                        </li>
+                         
+                      </ul>
+                    </li>
+                    </ul>
+                </div>
+              </div>
+            </div>
+            <label for="example-text-input" class="col-3 col-form-label">Remarks </label>
+          <div class="col-9 p-0">
+            <textarea rows="1" name="followup_remarks" id="inactive_remarks" class="form-control"></textarea>
+            <!-- <input type="da" name="followup-details" id="followup-details" class="form-control"> -->
+          </div>
+        </div>
+        <div class="form-group row pull-right mr-2">
+          <input type="button" id="followup-button" value="Update" class="btn btn-pink" (click) = "onCallbackChange2()" >
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- end modal -->

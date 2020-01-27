@@ -1,0 +1,688 @@
+<div class="row ss-top-menu">
+    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-xs-4">
+    	<span class="ss-link ss-text-light" style="vertical-align: -webkit-baseline-middle;" [routerLink]="['/']">Dashboard</span>
+        <span style="vertical-align: -webkit-baseline-middle;"> <i class="rightArrow fa fa-angle-right"></i> </span>
+
+        <span class="ss-link ss-text-light" style="vertical-align: -webkit-baseline-middle;" >Tasks</span>
+
+            
+
+    </div>  
+    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6">
+    	<div class="ss-searchbox">
+          <i class="fa fa-search"></i>
+          <input class="form-control" type="text" placeholder="Type in Project Id, Lead Name to search..." #search (keyup.enter)="onKey($event)">
+        </div>
+    	
+    </div>
+</div>
+<div class="row mt-4 justify-content-center">
+	<div class="col-sm-2" *ngIf="taskCounts">
+		<div class="card text-center active card-body-out">
+		    <div class="card-body ">
+		      <h5 class="card-title">{{ taskCounts.outstanding }}</h5>
+		      <p class="card-text"><img src="../../../assets/img/designer/shape.svg" *ngIf="shapeImage == true "><img src="../../../assets/img/designer/vectorpaint.svg" *ngIf="shapeImage == false "><br><small>Outstanding Tasks</small></p>
+		      
+		    </div>
+		</div>
+		
+	</div>
+	<div class="col-sm-2"  *ngIf="taskCounts">
+		<div class="card text-center card-body-complete">
+		    <div class="card-body">
+		      <h5 class="card-title">{{ taskCounts.completed }}</h5>
+		      <p class="card-text"><img src="../../../assets/img/check.svg"><br><small >Completed Tasks</small></p>
+		      
+		    </div>
+		</div>
+		
+	</div>
+	<div class="col-sm-2"  *ngIf="taskCounts">
+		<div class="card text-center card-body-overdue" >
+		    <div class="card-body ">
+		      <h5 class="card-title card-title-change" [ngClass]="{'active': selectSection == 'overdue-task'}">{{ taskCounts.overdue }}</h5>
+		      <p class="card-text"><img src="../../../assets/img/exclamation.svg" *ngIf="exclamImage == false"><img src="../../../assets/img/vectorpaint2.svg" *ngIf="exclamImage == true"><br><small >Overdue Tasks</small></p>
+		      
+		    </div>
+		</div>
+		
+	</div>
+	
+
+</div>
+<div class="row px-4 mt-4">
+	<div class="col-md-8">
+		<!-- <button class="btn btn-outline-danger cursor-pointer">Client Filter</button> -->
+		<div class="row">
+			<div class="col-md-10 bg-white rounded-left">
+				<span class="text-secondary">Filter By:</span>&nbsp;&nbsp;&nbsp;
+
+				<select class="form-control selectChnage my-2" (change)="filterColumDropdownChange1($event.target.value)"  id="filter1dropdown">
+		          <option value="outstanding" selected><span class="capitalize">Outstanding</span></option>
+		          <option value="overdue"><span class="capitalize">Overdue</span></option>
+		          
+		          
+		        </select>
+				<!-- <button class="btn btn-outline-danger cursor-pointer"  (click)="getTaskListForStatus()">Sort By Deadline</button> -->
+				<select class="form-control selectChnage my-2" (change)="filterColumDropdownChange2($event.target.value)" id="filter1dropdown">
+				  <option value="" selected><span class="capitalize">Stage</span></option>	
+		          <option value="10 %"><span class="capitalize">10%</span></option>
+		          <option value="10% - 40%"><span class="capitalize">10 - 40%</span></option>
+		          <option value="50 %"><span class="capitalize">50 %</span></option>
+		          <option value="pre bid"><span class="capitalize">Pre Bid</span></option>
+		          
+		          
+		        </select>
+				<!-- <button class="btn btn-outline-danger cursor-pointer" (click)="filterAccordintToDate()">Due Date</button> -->
+				<select class="form-control selectChnage my-2" (change)="filterColumDropdownChange3($event.target.value)"  id="filter1dropdown">
+		          <option value="" selected><span class="capitalize">Status</span></option>
+		          <option value="wip"><span class="capitalize">WIP</span></option>
+		          <option value="inactive"><span class="capitalize">Inactive</span></option>
+		          <option value="on_hold"><span class="capitalize">ON Hold</span></option>
+		          
+		        </select>
+		        <select class="form-control selectChnage my-2" (change)="filterColumDropdownChange4($event.target.value)" style="text-transform: capitalize;">
+		          <option *ngFor="let item of Lead_list" value="{{ item.id }}" [selected]="item.id === selectedClient.id"><span class="capitalize">{{ item.name}}</span></option>
+		          
+		          
+		        </select>
+		        
+		    </div>
+		    <div class="col-md-2 bg-white" style="border-right: 1px solid gray;">
+		    	<img src="assets/img/dashboard/submit.png" class="ml-1 my-2 sendIcon filterRowIcon cursor-pointer" (click)="filterData()">
+		    	
+		    </div>
+       </div>
+    
+		
+	</div>
+	<div class="col-md-4 bg-white rounded-right">
+		<span class="text-secondary">Sort By:</span>&nbsp;&nbsp;&nbsp;
+		<!-- <button class="btn btn-sm btn-outline-danger cursor-pointer my-2"  (click)="sortData('lead_name')">Client</button>&nbsp;&nbsp;&nbsp; -->
+
+		<button class="btn btn-sm btn-outline-danger cursor-pointer my-2" (click)="sortData('due_date')">Due Date  <i class="fa fa-caret-down" aria-hidden="true" *ngIf="sort_state == 'ASC'" style="font-size: 20px;"></i><i class="fa fa-caret-up" aria-hidden="true" *ngIf="sort_state == 'DESC'" style="font-size: 20px;"></i></button>
+
+		<button class="btn btn-sm pull-right btn-chn my-2 cursor-pointer" (click)="clearSort()">Clear Sort</button>
+
+
+		
+	</div>
+	
+	<div class="col-md-2 d-none" id="from_date_div">
+	    <label>
+		    From:
+		    <input [owlDateTimeTrigger]="dt4" [owlDateTime]="dt4" name="to_date" class="form-control" id="to_date" (change)="changeDateFrom($event.target.value)">
+		    <owl-date-time [pickerType]="'calendar'" #dt4></owl-date-time>
+		</label>
+	    
+	</div>
+	<div class="col-md-2 d-none " id="to_date_div">
+	    <label>
+		    To:
+		    <input [owlDateTimeTrigger]="dt3" [owlDateTime]="dt3" name="to_date" class="form-control" id="to_date" (change)="changeDateFrom($event.target.value)">
+		    <owl-date-time [pickerType]="'calendar'" #dt3></owl-date-time>
+		</label>
+	</div>
+	
+</div>
+<div class="row px-4 mt-4">
+	<div class="col-md-12" *ngIf="selectSection == 'outstanding'">
+	      <div class="tableDiv" >
+	      	<p class="text-center" *ngIf="boqProjectDeatil &&  boqProjectDeatil.length == 0 ">No Result Found</p>
+	        <table class="table table-striped" *ngIf="boqProjectDeatil &&  boqProjectDeatil.length>0">
+	            <thead class="thead-dark">
+	              <tr>
+	                <th class="firstTh"></th>
+	                <th scope="col">LEAD ID</th>
+	                <th scope="col" [class.active]="order === 'attributes.lead_name'"
+			            (click)="setOrder('attributes.lead_name')"
+			            class="mdl-data-table__cell--non-numeric">CLIENT NAME
+			            <span [hidden]="reverse">▼</span
+			            ><span [hidden]="!reverse">▲</span>
+	                </th>
+	                <!-- <th scope="col">PROJECT ID</th> -->
+	                <th scope="col">PROJECT/BOQ</th>
+	               <!--  <th scope="col">OWNER</th> -->
+	                <th scope="col">TASK</th>
+	                <th scope="col" [class.active]="order === 'obj.attributes.time_left'"
+			            (click)="setOrder('obj.attributes.time_left')"
+			            class="mdl-data-table__cell--non-numeric">DEADLINE <span [hidden]="reverse">▼</span
+			            ><span [hidden]="!reverse">▲</span></th>
+	                <th scope="col">STAGE</th>
+	                <th scope="col">QUAL DATE</th>
+	                <th scope="col">DUE DATE</th>
+	                <th scope="col">NEW TASK</th>
+	                <th scope="col">WIP STATUS</th>
+	                <th scope="col">BOQ</th>
+	                <!-- <th scope="col">BOQ</th> -->
+	                <th scope="col" class="lastTh">OWNER</th>
+
+
+	              </tr>
+	            </thead>
+	            <tbody>
+	                <tr></tr>
+	                <tr *ngFor="let obj  of boqProjectDeatil | orderBy: order:reverse:'case-insensitive' | paginate: { itemsPerPage: per_page, currentPage: current_page, totalItems: total_page  };">  
+	                    <td></td>
+		                <td>{{ obj.attributes.lead_id }}</td>
+		                <td class="capitalize">{{ obj.attributes.lead_name }}</td> 
+		                <td class="text-color-change cursor-pointer"><span *ngIf="obj.attributes.ownerable_type == 'Project'"(click)="selectProjectTask(obj.attributes.ownerable_id)">{{ obj.attributes.ownerable_name }}</span>
+
+		                <span *ngIf="obj.attributes.ownerable_type == 'Quotation' && obj.attributes.next_task_stage != '50 %'"(click)="selectBoqTask(obj.attributes.ownerable_id,obj.attributes.next_task_stage)" data-toggle="modal" data-target=".boqTaskModal">{{ obj.attributes.ownerable_name }}</span>
+
+		                <!-- For 50% -->
+		                <span *ngIf="obj.attributes.ownerable_type == 'Quotation' && obj.attributes.next_task_stage == '50 %'">{{ obj.attributes.ownerable_name }}</span></td> 
+		                <td>
+		               	   
+
+                            <!--  For Floor Plan -->
+		                	<button type="button" class="btn btn-default btn-pink" *ngIf="obj.attributes.next_task_name == 'Upload Floor Plan'" [routerLink]="['/lead/'+obj.attributes.lead_id+'/files']" (click)="newStatusChange(obj.attributes.is_new,obj.id)">{{ obj.attributes.next_task_name }}</button>
+                            
+                            <!--  For Requirement sheet -->
+		                	<button type="button" class="btn btn-default btn-pink" *ngIf="obj.attributes.next_task_name == 'Upload Requirement Sheet'" [routerLink]="['/lead/'+obj.attributes.lead_id+'/detailed-info']" (click)="newStatusChange('new')" (click)="newStatusChange(obj.attributes.is_new,obj.id)">{{ obj.attributes.next_task_name }}</button>
+
+		                	<!--  Create Intial Boq -->
+		                	<button type="button" class="btn btn-default btn-pink" *ngIf="obj.attributes.next_task_name == 'Create Initial BOQ'" [routerLink]="['/lead/'+obj.attributes.lead_id+'/boq']" (click)="newStatusChange('new')" (click)="newStatusChange(obj.attributes.is_new,obj.id)">{{ obj.attributes.next_task_name }}</button>
+
+		                	<!-- check scope list -->
+		                	<button type="button" class="btn btn-default btn-pink" *ngIf="obj.attributes.next_task_name == 'Scope Checklist'" [routerLink]="['/lead/'+obj.attributes.lead_id+'/detailed-info']" (click)="newStatusChange('new')" (click)="newStatusChange(obj.attributes.is_new,obj.id)">{{ obj.attributes.next_task_name }}</button>
+
+
+		                	<!--  BOOKING FORM -->
+		                	<button type="button" class="btn btn-default btn-pink" *ngIf="obj.attributes.next_task_name == 'Booking form'" [routerLink]="['/lead/'+obj.attributes.lead_id+'/detailed-info']" (click)="newStatusChange('new')" (click)="newStatusChange(obj.attributes.is_new,obj.id)">{{ obj.attributes.next_task_name }}</button>
+
+		                	<!-- SITE REQUEST -->
+		                	
+		                	<button type="button" class="btn btn-default btn-pink" *ngIf="obj.attributes.next_task_name == 'Request site measurement'" [routerLink]="['/lead/'+obj.attributes.lead_id+'/files']" (click)="newStatusChange('new')" (click)="newStatusChange(obj.attributes.is_new,obj.id)">{{ obj.attributes.next_task_name }}</button>
+		                	
+
+		                	<!-- upload measurement -->
+		                	
+		                	<button type="button" class="btn btn-default btn-left-change" *ngIf="obj.attributes.next_task_name == 'upload measurements'" (click)="newStatusChange('new')" (click)="newStatusChange(obj.attributes.is_new,obj.id)">{{ obj.attributes.next_task_name }}</button>
+
+		                	<!-- Site visit   -->
+
+		                	<button type="button" class="btn btn-default btn-left-change" *ngIf="obj.attributes.next_task_name == 'Site Visit'" (click)="newStatusChange(obj.attributes.is_new,obj.id)">{{ obj.attributes.next_task_name }}</button>
+
+
+		                	<!-- EC vIsit -->
+
+		                	<button type="button" class="btn btn-default btn-left-change" *ngIf="obj.attributes.next_task_name == 'EC Visit'" (click)="newStatusChange(obj.attributes.is_new,obj.id)">{{ obj.attributes.next_task_name }}</button>
+
+		                	<!-- Custom Elements Estimation -->
+
+		                	<button type="button" class="btn btn-default btn-left-change" *ngIf="obj.attributes.next_task_name == 'Custom Elements Estimation'" (click)="newStatusChange(obj.attributes.is_new,obj.id)" >{{ obj.attributes.next_task_name }}</button>
+
+		                	<!-- Client PPT -->
+
+		                	<button type="button" class="btn btn-default btn-left-change" *ngIf="obj.attributes.next_task_name == 'Client PPT'" (click)="newStatusChange(obj.attributes.is_new,obj.id)">{{ obj.attributes.next_task_name }}</button>
+
+		                	<!-- Discount Proposal -->
+
+		                	<button type="button" class="btn btn-default btn-left-change" *ngIf="obj.attributes.next_task_name == 'Discount Proposal'" (click)="newStatusChange(obj.attributes.is_new,obj.id)">{{ obj.attributes.next_task_name }}</button>
+
+		                	
+
+		                	<!-- Custom Elements Feasibility -->
+
+
+		                	<button type="button" class="btn btn-default btn-left-change" *ngIf="obj.attributes.next_task_name == 'Custom Elements Feasibility'" (click)="newStatusChange(obj.attributes.is_new,obj.id)">{{ obj.attributes.next_task_name }}</button>
+
+		                	<!-- Custom Elements Estimation -->
+
+		                	<button type="button" class="btn btn-default btn-left-change" *ngIf="obj.attributes.next_task_name == 'Custom Elements Estimation'" (click)="newStatusChange(obj.attributes.is_new,obj.id)">{{ obj.attributes.next_task_name }}</button>
+
+		                	<!-- Client final PPT with 3D render -->
+
+		                	<button type="button" class="btn btn-default btn-left-change" *ngIf="obj.attributes.next_task_name == 'Client final PPT with 3D render'" (click)="newStatusChange(obj.attributes.is_new,obj.id)">{{ obj.attributes.next_task_name }}</button>
+
+
+
+
+
+
+
+
+
+
+		                	<!-- Assign ss for site measurement -->
+
+		                	<button type="button" class="btn btn-default btn-left-change" *ngIf="role == 'designer' && obj.attributes.next_task_name == 'Assign SS for site measurement'" (click)="newStatusChange(obj.attributes.is_new,obj.id)" (click)="newStatusChange(obj.attributes.is_new,obj.id)">{{ obj.attributes.next_task_name }}</button>
+
+		                	<button type="button" class="btn btn-default btn-pink" *ngIf="role == 'community_manager' && obj.attributes.next_task_name == 'Assign SS for site measurement'" [routerLink]="['/community_manager/site-request']" (click)="newStatusChange(obj.attributes.is_new,obj.id)">{{ obj.attributes.next_task_name }}</button>
+
+
+		                	<!---------- Boq Tasks from here ------------------>
+		                	<button type="button" class="btn btn-default btn-pink" *ngIf ="role == 'designer'  && ['Proposal Sharing','Create Proposal'].includes(obj.attributes.next_task_name)==true" [routerLink]="['/lead/'+obj.attributes.lead_id+'/proposals']" (click)="newStatusChange(obj.attributes.is_new,obj.id)">{{ obj.attributes.next_task_name }}</button> 
+		                	   
+		                	   <button type="button" class="btn btn-default btn-pink" *ngIf ="role == 'community_manager' && ['Proposal Sharing','Create Proposal'].includes(obj.attributes.next_task_name)==true" [routerLink]="['/lead/'+obj.attributes.lead_id+'/proposals']" (click)="newStatusChange(obj.attributes.is_new,obj.id)" >{{ obj.attributes.next_task_name }}</button> 
+
+
+		                	   <!--  Client Approval -->
+
+		                	   
+
+		                	   <button type="button" class="btn btn-default btn-left-change" *ngIf ="obj.attributes.next_task_name == 'Client Approval'" (click)="newStatusChange(obj.attributes.is_new,obj.id)">Waiting For {{ obj.attributes.next_task_name }}</button>
+
+
+		                	   <!--  For Payemnet Addition -->
+
+		                	   
+
+		                	   <button type="button" class="btn btn-default btn-pink" *ngIf="role == 'designer' && obj.attributes.next_task_name == 'Payment Addition'" [routerLink]="['/lead/'+obj.attributes.lead_id+'/payments']" (click)="newStatusChange(obj.attributes.is_new,obj.id)">{{ obj.attributes.next_task_name }}</button>
+
+		                	   <button type="button" class="btn btn-default btn-pink" *ngIf="role == 'community_manager' && obj.attributes.next_task_name == 'Payment Addition'" [routerLink]="['/lead/'+obj.attributes.lead_id+'/payments']" (click)="newStatusChange(obj.attributes.is_new,obj.id)">{{ obj.attributes.next_task_name }}</button>
+
+
+
+
+		                	   <!-- Payment verification  -->
+
+		                	  
+		                	   <button type="button" class="btn btn-default btn-left-change" *ngIf ="role == 'designer' && obj.attributes.next_task_name == 'Payment Verification'" [routerLink]="['/lead/'+obj.attributes.lead_id+'/payments']" (click)="newStatusChange(obj.attributes.is_new,obj.id)">Waiting For {{ obj.attributes.next_task_name }}</button>
+
+
+		                	   <button type="button" class="btn btn-default btn-pink" *ngIf="role == 'community_manager' && obj.attributes.next_task_name == 'Payment Verification'" (click)="newStatusChange(obj.attributes.is_new,obj.id)">{{ obj.attributes.next_task_name }}</button>
+
+
+		                	   <!-- For discount Approval -->
+
+		                	  
+
+		                	   <button type="button" class="btn btn-default btn-left-change" *ngIf ="role == 'designer' && obj.attributes.next_task_name == 'Discount Approval'" (click)="newStatusChange(obj.attributes.is_new,obj.id)">Waiting For {{ obj.attributes.next_task_name }}</button>
+
+		                	    <button type="button" class="btn btn-default btn-pink" *ngIf ="role == 'community_manager' && obj.attributes.next_task_name == 'Discount Approval'" [routerLink]="['/lead/'+obj.attributes.lead_id+'/proposals']"  (click)="newStatusChange(obj.attributes.is_new,obj.id)">{{ obj.attributes.next_task_name }}</button>
+
+
+		                	   <!-- Approve by category -->
+
+
+		                	   <button type="button" class="btn btn-default btn-left-change" *ngIf ="obj.attributes.next_task_name == 'Approve Final BOQ by Category'" (click)="newStatusChange(obj.attributes.is_new,obj.id)">Waiting For {{ obj.attributes.next_task_name }}</button>
+
+		                	   <!-- Upload Cad Files -->
+		                	   
+		                	   <button type="button" class="btn btn-default btn-left-change" *ngIf ="obj.attributes.next_task_name == 'Upload CAD files'"  (click)="newStatusChange(obj.attributes.is_new,obj.id)">{{ obj.attributes.next_task_name }}</button>
+
+		                	   <!-- Approve by CM -->
+
+		                	    
+
+		                	    <button type="button" class="btn btn-default btn-left-change" *ngIf ="role =='designer' && obj.attributes.next_task_name == 'Approve Final BOQ by CM'" (click)="newStatusChange(obj.attributes.is_new,obj.id)" >{{ obj.attributes.next_task_name }}</button>
+
+		                	    <button type="button" class="btn btn-default btn-pink" *ngIf ="role == 'community_manager' && obj.attributes.next_task_name == 'Approve Final BOQ by CM'" [routerLink]="['/lead/'+obj.attributes.lead_id+'/proposals']">{{ obj.attributes.next_task_name }}</button>
+
+
+
+
+		                	    <!--  Cm approval for less than 10 % payment -->
+		                	    <button type="button" class="btn btn-default btn-left-change" *ngIf ="role == 'designer' && obj.attributes.next_task_name == 'CM Approval for less than 10% Payment'" (click)="newStatusChange(obj.attributes.is_new,obj.id)" >{{ obj.attributes.next_task_name }}</button>
+
+		                	    <button type="button" class="btn btn-default btn-pink" *ngIf ="role == 'community_manager' && obj.attributes.next_task_name == 'CM Approval for less than 10% Payment'" [routerLink]="['/lead/'+obj.attributes.lead_id+'/payments']" (click)="newStatusChange(obj.attributes.is_new,obj.id)">{{ obj.attributes.next_task_name }}</button>
+
+		                	    <!-- Cm Approval for less than 40% payment -->
+		                	    <button type="button" class="btn btn-default btn-left-change" *ngIf ="role == 'designer' &&  obj.attributes.next_task_name == 'CM Approval for less than 40% Payment'"  (click)="newStatusChange(obj.attributes.is_new,obj.id)">{{ obj.attributes.next_task_name }}</button>
+
+		                	    <button type="button" class="btn btn-default btn-pink" *ngIf ="role == 'community_manager' && obj.attributes.next_task_name == 'CM Approval for less than 40% Payment'" [routerLink]="['/lead/'+obj.attributes.lead_id+'/payments']" (click)="newStatusChange(obj.attributes.is_new,obj.id)">{{ obj.attributes.next_task_name }}</button>
+
+		                	    <!-- Sli creation -->
+		                	    <button type="button" class="btn btn-default btn-left-change" *ngIf ="role == 'designer' &&  obj.attributes.next_task_name == 'SLI Creation'"  (click)="newStatusChange(obj.attributes.is_new,obj.id)">{{ obj.attributes.next_task_name }}</button>
+
+
+                        </td> 
+		               <td>
+		               	<span class="status-check" *ngIf="obj.attributes.time_left < 0 ">{{ convertToAbs(obj.attributes.time_left) }} hrs over</span>
+
+		               	<button type="button" class="btn btn-sm btn-left" *ngIf=  "obj.attributes.time_left > 0">{{obj.attributes.time_left }} hrs left</button>
+		               </td> 
+		               <td class="capitalize">{{ obj.attributes.next_task_stage }}</td> 
+		               <td>{{ obj.attributes.lead_qualified_date | date:'dd/MM/yyyy - h:mm a' }}</td> 
+		               <td>{{ obj.attributes.end_time | date:'dd/MM/yyyy - h:mm a' }}</td> 
+		               <td><span class="text-danger" *ngIf="obj.attributes.is_new == true" >New!</span></td> 
+		               <td class="capitalize">{{ obj.attributes.project_status | replaceChar }}</td>
+		               <td><i class="fa fa-plus-square-o square-icon" aria-hidden="true" [routerLink]="['/lead/'+obj.attributes.lead_id+'/boq']"></i></td>
+		               <td class="capitalize">{{ obj.attributes.task_owner_name }}</td> 
+		               
+		            </tr>
+	             
+	             
+	              
+
+	            
+	            </tbody>     
+	        </table>
+	        <div class="text-center" *ngIf="boqProjectDeatil && boqProjectDeatil.length >0">
+                <pagination-controls autoHide="true" (pageChange)="current_page = getAllProjectDetails($event,search_filter)"></pagination-controls>
+            </div>
+	      </div>
+	      
+	          
+	       
+	</div>
+    
+
+      
+
+  
+</div>
+
+
+<!-- MOdal For boq task -->
+
+<div class="modal fade boqTaskModal"  tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+	    <div class="modal-content">
+	    	<button type="button" class="close custom-close" data-dismiss="modal" aria-label="Close">
+		        <span aria-hidden="true">&times;</span>
+		    </button>
+	        <div class="row mt-4 justify-content-center">
+			  <div class="col-sm-2">
+			    <div class="card text-center active card-body-out"  [ngClass]="{'active': selectSection == 'outstanding'}">
+			        <div class="card-body ">
+			          <h5 class="card-title" *ngIf="boqTaskCount">{{ boqTaskCount.outstanding }}</h5>
+			          <p class="card-text"><img src="../../../assets/img/shape.svg" *ngIf="shapeImage == true "><img src="../../../assets/img/vectorpaint.svg" *ngIf="shapeImage == false "><br><small>Outstanding Tasks</small></p>
+			          
+			        </div>
+			    </div>
+			    
+			  </div>
+			  <div class="col-sm-2" *ngIf="boqTaskCount">
+			    <div class="card text-center card-body-complete" [ngClass]="{'active': selectSection == 'completed-task'}">
+			        <div class="card-body">
+			          <h5 class="card-title">{{ boqTaskCount.completed}}</h5>
+			          <p class="card-text"><img src="../../../assets/img/check.svg"><br><small >Completed Tasks</small></p>
+			          
+			        </div>
+			    </div>
+			    
+			  </div>
+			  <div class="col-sm-2" *ngIf="boqTaskCount">
+			    <div class="card text-center card-body-overdue"  [ngClass]="{'active': selectSection == 'overdue-task'}">
+			        <div class="card-body ">
+			          <h5 class="card-title card-title-change" [ngClass]="{'active': selectSection == 'overdue-task'}">{{ boqTaskCount.overdue}}</h5>
+			          <p class="card-text"><img src="../../../assets/img/exclamation.svg" *ngIf="exclamImage == false"><img src="../../../assets/img/vectorpaint2.svg" *ngIf="exclamImage == true"><br><small >Overedue Tasks</small></p>
+			          
+			        </div>
+			    </div>
+			    
+			  </div>
+			  
+
+			</div>
+			<div class="row px-5 mt-4">
+				<div class="col-12">
+				    <div class="row mx-0 bg-change">
+				      <div class="col-sm-4">
+				        <div class="text my-3">
+				          {{ client_name }}
+				        </div>
+				        
+				      </div>
+				      <div class="col-sm-4">
+				        <div class="text my-3">
+				          PROJECT ID-{{ project_id }}
+				        </div>
+				        
+				      </div>
+				      <div class="col-sm-4">
+				        <div class="text my-3">
+				          LEAD ID-{{ lead_id }}
+				        </div>
+				        
+				      </div>
+				      
+				    </div>
+				    
+				</div>
+				<div class="col-12">
+				    <div class="row px-3 rounded" >
+				      <div class="col-12 bg-secondary">
+				        <div class="boq_row">
+				          <p class="my-3">{{ boq_reference }}</p>
+				          
+				        </div>
+				        
+				      </div>
+				      
+				    </div>
+				    
+				</div>
+				<div class="col-md-12">
+				      <div class="tableDiv" >
+				          <table class="table table-striped">
+
+				            <thead class="thead-dark">
+
+				                <tr>
+				                  <th scope="col" class="firstTh"></th>
+				                  <th scope="col">Progress</th>
+				                  <th scope="col">TASKS</th>
+				                  <!-- <th scope="col">OWNER </th> -->
+				                  <th scope="col">STATUS</th>
+				                  <th scope="col">TIMER</th>
+				                  <!-- <th scope="col">OUTPUT</th> -->
+				                  <th scope="col" class="lastTh"></th>
+				                    
+				                </tr>
+				            </thead>
+				                <ng-container>
+				                  <tr *ngFor="let obj of taskList">
+				                    <td></td>
+				                    <td>
+				                      
+				                      <img src="../../../assets/img/designer/boq-check-red.svg" *ngIf="obj.attributes.task_escalation && obj.attributes.task_escalation.progress == 'yes'">
+
+				                        <img src="../../../assets/img/designer/oval.svg" *ngIf="!obj.attributes.task_escalation">
+				                        <img src="../../../assets/img/designer/oval.svg" *ngIf="obj.attributes.task_escalation && obj.attributes.task_escalation.progress == 'no'">
+				                    </td>
+				                    <td>{{ obj.attributes.task_name }}<span *ngIf="obj.attributes.optional  == true">(Optional)</span></td>
+				                    <!-- <td>{{ obj.owner }}</td> -->
+				                    <td>
+				                      <span *ngIf="obj.attributes.task_escalation && obj.attributes.task_escalation.progress == 'yes'">Done</span>
+				                      <span *ngIf="!obj.attributes.task_escalation"><button class="btn btn-sm btn-sec">Not Initiated</button></span></td>
+				                    <td><button type="button" class="btn btn-sm btn-left" *ngIf="obj.attributes.task_escalation && obj.attributes.task_escalation.timer > 0 && obj.attributes.task_escalation.progress != 'yes'">{{ obj.attributes.task_escalation.timer }} hrs left</button>
+				                    <span *ngIf="obj.attributes.task_escalation && obj.attributes.task_escalation.timer < 0">{{ convertToAbs(obj.attributes.task_escalation.timer) }} hrs Over</span>  
+				                    <span class="timer" *ngIf="obj.attributes.task_escalation && obj.attributes.task_escalation.timer > 0 && obj.attributes.task_escalation.progress == 'yes'" >On Time</span> 
+				                    </td>
+				                    <!-- <td>{{ obj.tasks | replaceChar }}</td> -->
+				                    <td></td>
+
+				                </tr>
+				                </ng-container>
+				                
+				                
+				                
+				             
+				            <tbody>
+				                
+				            </tbody>     
+				        </table>
+				        <div class="row justify-content-center">
+				          <div class="col-md-6">
+				            <div class="progressRow my-3">
+				              <img src="../../../assets/img/designer/prebid d.svg">
+				                        <!--   Pre 10% stage -->
+				              <img src="../../../assets/img/designer/10per.svg" class="rect" (click)="FortyChangeCheck()" *ngIf="this.stage != 'tenPercent'" class="rect">
+
+				              <img src="../../../assets/img/designer/10perD.svg" class="rect" (click)="FortyChangeCheck()" *ngIf="this.stage == 'tenPercent'"> 
+				                        
+
+				                        <!--  Pre 10-40% stage -->
+				              <img src="../../../assets/img/designer/ten-to-fortyL.svg" class="rect2" (click)="FortyChange()" id="fortyImage" *ngIf="this.stage != 'tenForty' && flag == false">
+				              
+				              <img src="../../../assets/img/designer/ten-to-forty.svg" class="rect2" (click)="FortyChange()" *ngIf="this.stage == 'tenForty'">
+
+				              <img src="../../../assets/img/designer/ten-to-fortyL.svg" class="rectChange"  *ngIf="this.stage != 'tenForty' && flag == true">
+
+				              <!-- 40% stage -->
+
+				              <img src="../../../assets/img/designer/fortyL.svg"  class="rect3" (click)="progressChange('forty')" >
+				              
+
+				                        <!-- Production  -->
+				              <img src="../../../assets/img/designer/prodL.svg"  class="rect4">
+				              <img src="../../../assets/img/designer/deliveryL.svg"  class="rect5">
+				              
+				            </div>
+				            
+				          </div>
+				          
+				        </div>
+				      </div>			         
+				</div>			  
+			</div>
+	    </div>
+	</div>  
+  
+</div>
+
+
+<!-- MOdal Ends here -->
+
+
+
+<!-- Modal for Project task -->
+<div class="modal fade"  tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" id="projectTaskModal">
+	<div class="modal-dialog">
+	    <div class="modal-content">
+	    	<button type="button" class="close custom-close" data-dismiss="modal" aria-label="Close">
+		        <span aria-hidden="true">&times;</span>
+		    </button>
+	      
+
+			<div class="row mt-4 justify-content-center">
+				<div class="col-sm-2" *ngIf="projectTaskCount">
+					<div class="card text-center active card-body-out"  [ngClass]="{'active': selectSection == 'outstanding'}">
+					    <div class="card-body ">
+					      <h5 class="card-title">{{ projectTaskCount.outstanding}}</h5>
+					      <p class="card-text"><img src="../../../assets/img/shape.svg" *ngIf="shapeImage == true "><img src="../../../assets/img/vectorpaint.svg" *ngIf="shapeImage == false "><br><small>Outstanding Tasks</small></p>
+					      
+					    </div>
+					</div>
+					
+				</div>
+				<div class="col-sm-2" *ngIf="projectTaskCount">
+					<div class="card text-center card-body-complete"  [ngClass]="{'active': selectSection == 'completed-task'}">
+					    <div class="card-body">
+					      <h5 class="card-title">{{ projectTaskCount.completed}}</h5>
+					      <p class="card-text"><img src="../../../assets/img/check.svg"><br><small >Completed Tasks</small></p>
+					      
+					    </div>
+					</div>
+					
+				</div>
+				<div class="col-sm-2" *ngIf="projectTaskCount">
+					<div class="card text-center card-body-overdue" [ngClass]="{'active': selectSection == 'overdue-task'}">
+					    <div class="card-body ">
+					      <h5 class="card-title card-title-change" [ngClass]="{'active': selectSection == 'overdue-task'}">{{ projectTaskCount.overdue}}</h5>
+					      <p class="card-text"><img src="../../../assets/img/exclamation.svg" *ngIf="exclamImage == false"><img src="../../../assets/img/vectorpaint2.svg" *ngIf="exclamImage == true"><br><small >Overedue Tasks</small></p>
+					      
+					    </div>
+					</div>
+					
+				</div>
+			</div>
+			<div class="row px-5 mt-4">
+				<div class="col-12">
+					<div class="row mx-0 bg-change">
+						<div class="col-sm-4">
+							<div class="text my-3">
+								
+							</div>
+							
+						</div>
+						<div class="col-sm-4">
+							<div class="text my-3">
+								PROJECT ID-{{ projectId }}
+							</div>
+							
+						</div>
+						<div class="col-sm-4">
+							<div class="text my-3">
+								LEAD ID-{{ lead_id }}
+							</div>
+							
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="col-md-12" *ngIf="selectSection == 'outstanding'">
+				    <div class="tableDiv" >
+				        <table class="table table-striped">
+
+					        <thead class="thead-dark">
+
+					            <tr>
+					              <th scope="col" class="firstTh"></th>
+					              <th scope="col">Progress</th>
+					              <th scope="col">TASKS</th>
+					              <!-- <th scope="col">OWNER </th> -->
+					              <th scope="col">STATUS</th>
+					              <th scope="col">TIMER</th>
+					              <!-- <th scope="col">OUTPUT</th> -->
+					              <th scope="col" class="lastTh"></th>
+					                
+					            </tr>
+					        </thead>
+					            <ng-container>
+						          	<tr *ngFor="let obj of taskList">
+							          	<td></td>
+							          	<td>
+							          		
+							          		<img src="../../../assets/img/designer/boq-check-red.svg" *ngIf="obj.attributes.task_escalation && obj.attributes.task_escalation.progress == 'yes'">
+
+							          	    <img src="../../../assets/img/designer/oval.svg" *ngIf="!obj.attributes.task_escalation">
+							          	    <img src="../../../assets/img/designer/oval.svg" *ngIf="obj.attributes.task_escalation && obj.attributes.task_escalation.progress == 'no'">
+							          	</td>
+							          	<td>{{ obj.attributes.task_name }}</td>
+							          	<!-- <td>{{ obj.owner }}</td> -->
+							          	<td>
+							          		<span *ngIf="obj.attributes.task_escalation && obj.attributes.task_escalation.progress == 'yes'">Done</span>
+							          		<span *ngIf="!obj.attributes.task_escalation"><button type="button" class="btn btn-sm btn-sec">Not Initialized</button></span></td>
+							          	<td>
+							          		<button type="button" class="btn btn-sm btn-left" *ngIf="obj.attributes.task_escalation && obj.attributes.task_escalation.timer > 0 && obj.attributes.task_escalation.progress != 'yes'">{{ obj.attributes.task_escalation.timer }} hrs left</button>
+						                    <span *ngIf="obj.attributes.task_escalation && obj.attributes.task_escalation.timer < 0">{{ convertToAbs(obj.attributes.task_escalation.timer) }} hrs Over</span>  
+						                    <span class="timer" *ngIf="obj.attributes.task_escalation && obj.attributes.task_escalation.timer > 0 && obj.attributes.task_escalation.progress == 'yes'" >On Time</span>
+						                </td>
+							          	<!-- <td>{{ obj.tasks | replaceChar }}</td> -->
+							          	<td></td>
+
+							        </tr>
+					            </ng-container>
+					           
+					           
+					         
+					        <tbody>
+					            
+					        </tbody>     
+					    </table>
+					    <div class="row justify-content-center">
+					    	<div class="col-md-6">
+					    		<div class="progressRow my-3">
+					    			<img src="../../../assets/img/designer/prebid d.svg" (click)="progressChange('pre-bid')">
+			             
+					    			<img src="../../../assets/img/designer/rect.svg" class="rect">
+					    			<img src="../../../assets/img/designer/rect.svg" class="rect2">
+					    			<img src="../../../assets/img/designer/rect.svg" class="rect3">
+					    			<img src="../../../assets/img/designer/rect.svg" class="rect4"> 
+					    			<img src="../../../assets/img/designer/rect2.svg"  class="rect5">
+					    			
+					    		</div>
+					    		
+					    	</div>
+					    	
+					    </div>
+				    </div>
+				      
+				          
+				       
+				</div>			  
+			</div>
+	    </div>
+	</div>  
+  
+</div>
+
+<!-- ENds here -->
+
+

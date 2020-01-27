@@ -1,0 +1,320 @@
+<div class="row ss-top-menu">
+  <div class="col-xl-5 col-lg-5 col-md-5 col-sm-5 col-xs-5">
+    <span class="ss-text-light" style="vertical-align: -webkit-baseline-middle;">Dashboard <i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-link addCursor" (click) = "backClicked()" style="vertical-align: -webkit-baseline-middle;">Projects</span>
+    <span style="vertical-align: -webkit-baseline-middle;" > <i class="rightArrow fa fa-angle-right"></i>  </span>
+    <span class="ss-text-dark capitalize" style="vertical-align: -webkit-baseline-middle;" *ngIf="project_name">{{project_name}}</span>
+  </div>
+</div>
+<div class="rk-ui-notification" *ngIf="successalert">
+  <span id="notificationMessageText">{{successMessage}}</span>
+  <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+
+
+<div id="navcontainer" class="nav-chnage">
+
+  <ul class="nav nav-tabs tabs-chng" id="myTab" role="tablist" >
+    <li class="nav-item nav-items">
+      <a class="nav-link active addCursor text-center mr-3" (click)="selectSet('initial_design')" [ngClass]="{'active': state == 'initial_design'}">Initial Design</a>
+    </li>
+    <li class="nav-item nav-items">
+      <a class="nav-link  addCursor text-center mr-3" (click)="selectSet('final_design')" [ngClass]="{'active': state == 'final_design'}">Final Design</a>
+    </li>
+    <li class="nav-item nav-items">
+      <a class="nav-link  addCursor text-center mr-3" (click)="selectSet('custom')" [ngClass]="{'active': state == 'custom'}" >CUSTOM ELEMENT</a>
+    </li>
+    <li class="nav-item nav-items">
+      <a class="nav-link  addCursor text-center mr-3" (click)="selectSet('floorplan')" [ngClass]="{'active': state == 'floorplan'}" >FLOORPLAN</a>
+    </li>
+    <li class="nav-item nav-items">
+      <a class="nav-link  addCursor text-center mr-3" (click)="selectSet('cad')" [ngClass]="{'active': state == 'cad'}" >CAD Drawings / Elevations</a>
+    </li>
+    <li class="nav-item nav-items">
+      <a class="nav-link  addCursor text-center mr-3" (click)="selectSet('uploaded-boq')" [ngClass]="{'active': state == 'uploaded-boq'}" >Uploaded BOQs</a>
+    </li>
+    <li class="nav-item nav-items">
+      <a class="nav-link  addCursor text-center mr-3" (click)="selectSet('uploaded-ppt')" [ngClass]="{'active': state == 'uploaded-ppt'}" >Uploaded PPTs</a>
+    </li>
+
+  </ul>
+</div>
+
+<div class="container-fluid container-set">
+  <div class="row" style="padding: 16px" *ngIf="this.state == 'initial_design'">
+      <div class="col-md-12" >
+
+        <div class="tableDiv " *ngIf="approve_boq_list && approve_boq_list.length>0">
+          <div class="table-responsive">
+            <table class="table ">
+              <thead class="thead-dark">
+                <tr>
+                  <th class="text-center">#</th>
+                  <th>Reference No.</th>
+                  <th>Created Date</th>
+                  <th>Last Updated</th>
+                  <th>Status</th>
+                  <!-- <th>Discounted Amount</th> -->
+                  <th>Total Amount</th>
+                  <th>Paid Amount</th>
+                  <!-- <th>Pending Amount</th> -->
+                  <th>Percent Discount</th>
+                  <th class="lastTh">Discount Status</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let obj of approve_boq_list; let i = index" [attr.data-index]="i">
+
+
+                <td class="text-center ">{{i+1}} </td>
+                  <td class="capitalize addCursor" style="color: blue;"><a class="addCursor ss-link" href="" [routerLink]="['/projects/'+project_id+'/boq/'+obj.quotation.id]">{{obj.quotation.reference_number}}</a></td>
+                  <td class="">{{obj.created_at | date:'dd/MMM/yyy h:mm a'}}</td>
+                  <td>{{obj.updated_at | date:'dd/MMM/yyy h:mm a'}}</td>
+                  <td class="capitalize">{{obj.quotation.status}}</td>
+                  <!-- <td class="capitalize minWidthForTd"><i class="fa fa-inr mr-1"></i>{{obj.final_amount }}</td> -->
+                  <td class="minWidthForTd">
+                    <i class="fa fa-inr mr-1"></i>
+                    <span *ngIf="obj.quotation.total_amount" >{{obj.quotation.total_amount}}</span>
+                    <span *ngIf="!obj.quotation.total_amount">0</span>
+                  </td>
+                  <td class="minWidthForTd">
+                    <i class="fa fa-inr mr-1"></i>
+                    <span *ngIf="obj.quotation.paid_amount">{{obj.quotation.paid_amount}}</span>
+                    <span *ngIf="!obj.quotation.paid_amount">0</span>
+                  </td>
+                  <!-- <td class="minWidthForTd"><i class="fa fa-inr mr-1"></i> {{obj.quotation.balance}}</td> -->
+                  <td>
+                    <span *ngIf="obj.discount_value">{{obj.discount_value}}</span>
+                    <span *ngIf="!obj.discount_value">0</span>
+                  </td>
+                  <td>{{obj.discount_status | replaceChar}}</td>
+
+                  <td>
+                    <div class="row">
+                      <!-- <div class="col-md-6" *ngIf="obj.proposal_type == 'final_design' && ['true','false'].includes(obj.quotation.category_approval) == true">
+                        <button type="button" class="btn btn-primary btn-sm btn-success" (click)="confirmAndApproveQuote(obj.quotation.id,'true')">Approve Quote</button>
+
+                      </div>
+                      <div class="col-md-6" *ngIf="obj.proposal_type == 'final_design' && ['true','false'].includes(obj.quotation.category_approval) == true">
+
+                        <button type="button" class="btn btn-primary btn-sm btn-danger" (click)="confirmAndApproveQuote(obj.quotation.id,'false')" *ngIf="obj.quotation.cm_approval == true">Reject Quote</button>
+                      </div> -->
+                    </div>
+
+                  </td>
+
+
+
+              </tr>
+
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="col-md-12 not-found " *ngIf="approve_boq_list && approve_boq_list.length== 0">
+            <div class="boq-img">
+              <img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+            </div>
+            <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing to show...</p>
+          </div>
+      </div>
+
+  </div>
+  <div class="row" style="padding: 16px" *ngIf="this.state == 'final_design'">
+      <div class="col-md-12" >
+
+        <div class="tableDiv " *ngIf="approve_boq_list && approve_boq_list.length>0">
+          <div class="table-responsive">
+            <table class="table ">
+              <thead class="thead-dark">
+                <tr>
+                  <th class="text-center">#</th>
+                  <th>Reference No.</th>
+                  <th>Created Date</th>
+                  <th>Last Updated</th>
+                  <th>Status</th>
+                  <!-- <th>Discounted Amount</th> -->
+                  <th>Total Amount</th>
+                  <th>Paid Amount</th>
+                  <!-- <th>Pending Amount</th> -->
+                  <th>Percent Discount</th>
+                  <th class="lastTh">Discount Status</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let obj of approve_boq_list; let i = index" [attr.data-index]="i">
+
+
+                <td class="text-center ">{{i+1}} </td>
+                  <td class="capitalize addCursor" style="color: blue;"><a class="addCursor ss-link" href="" [routerLink]="['/projects/'+project_id+'/boq/'+obj.quotation.id]">{{obj.quotation.reference_number}}</a></td>
+                  <td class="">{{obj.created_at | date:'dd/MMM/yyy h:mm a'}}</td>
+                  <td>{{obj.updated_at | date:'dd/MMM/yyy h:mm a'}}</td>
+                  <td class="capitalize">{{obj.quotation.status}}</td>
+                  <!-- <td class="capitalize minWidthForTd"><i class="fa fa-inr mr-1"></i>{{obj.final_amount }}</td> -->
+                  <td class="minWidthForTd">
+                    <i class="fa fa-inr mr-1"></i>
+                    <span *ngIf="obj.quotation.total_amount" >{{obj.quotation.total_amount}}</span>
+                    <span *ngIf="!obj.quotation.total_amount">0</span>
+                  </td>
+                  <td class="minWidthForTd">
+                    <i class="fa fa-inr mr-1"></i>
+                    <span *ngIf="obj.quotation.paid_amount">{{obj.quotation.paid_amount}}</span>
+                    <span *ngIf="!obj.quotation.paid_amount">0</span>
+                  </td>
+                  <!-- <td class="minWidthForTd"><i class="fa fa-inr mr-1"></i> {{obj.quotation.balance}}</td> -->
+                  <td>
+                    <span *ngIf="obj.discount_value">{{obj.discount_value}}</span>
+                    <span *ngIf="!obj.discount_value">0</span>
+                  </td>
+                  <td>{{obj.discount_status | replaceChar}}</td>
+
+                  <td>
+                    <div class="row">
+
+                      <div class="col-md-6" *ngIf="obj.proposal_type == 'final_design' && [true,false].includes(obj.quotation.category_approval) == false">
+                        <button type="button" class="btn btn-primary btn-sm btn-success" (click)="confirmAndApproveQuote(obj.quotation.id,true)" *ngIf="obj.have_approved_cad_files == true">Approve </button>
+
+                      </div>
+                      <div class="col-md-6" *ngIf="obj.proposal_type == 'final_design' && [true,false].includes(obj.quotation.category_approval) == false">
+
+                        <button type="button" class="btn btn-primary btn-sm btn-danger" (click)="confirmAndApproveQuote(obj.quotation.id,false)" *ngIf="obj.quotation.cm_approval != false && obj.have_approved_cad_files == true">Reject </button>
+                      </div>
+                    </div>
+
+                  </td>
+
+
+
+              </tr>
+
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="col-md-12 not-found " *ngIf="approve_boq_list && approve_boq_list.length== 0">
+            <div class="boq-img">
+              <img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+            </div>
+            <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing to show...</p>
+          </div>
+      </div>
+
+  </div>
+
+
+  <!-- List For Custom Element -->
+  <div class="row" style="padding: 16px" *ngIf="this.state == 'custom' ">
+    <div class="col-md-4" *ngFor="let obj of customList;let i = index" [attr.data-index]="i">
+          <div class="card myCard mb-4">
+
+            <div class="ribbon ribbon-top-right">
+
+            <span class="pull-right" *ngIf="obj.photo != '/images/original/missing.png'"><a  href="{{obj.photo}}" download target="_blank"><i class="fa fa-download dwnld" aria-hidden="true"></i></a></span>
+            <img  *ngIf="obj.image_available == true" class="card-img-top px-2 pt-2" src="{{ obj.photo }}" alt="Card image cap">
+            <img  *ngIf="obj.photo == '/images/original/missing.png'" class="card-img-top px-2 pt-2" src="../../../../../assets/img/no_image.svg" alt="Card image cap">
+            <img  *ngIf="obj.image_available == false" class="card-img-top px-2 pt-2" src="../../../../../assets/img/no_image.svg" alt="Card image cap">
+            <div class="card-body py-2">
+              <h6 class="capitalize hdng-chng">{{ obj.name }}
+              </h6>
+              <p>Shutter Finish:<span class="ml-2">{{ obj.shutter_finish }}</span></p>
+              <p>Core Material:<span class="ml-2">{{ obj.core_material }}</span></p>
+              <p>Dimension:<span class="ml-2">{{ obj.dimension }}</span></p>
+              <p>Remark:<span class="ml-2">{{ obj.designer_remark }}</span></p>
+              <p>Price:<span class="ml-2">{{ obj.ask_price }}</span></p>
+              <p>Status:<span class="ml-2">{{ obj.status |replaceChar }}</span></p>
+              <p *ngIf="obj.price">My Price:<span class="ml-2">{{ obj.price }}</span></p>
+              <p *ngIf="obj.category_remark">My Remark:<span class="ml-2">{{ obj.category_remark }}</span></p>
+              <p *ngIf="obj.timeline">Time of Delivery:<span class="ml-2">{{ obj.timeline }} days</span></p>
+              <div class="col-12" *ngIf="obj.status==='pending'">
+                  <div class="border-change text-center pb-0">
+                      <button class="category-btn btn rounded" data-toggle="modal" data-target="#approveModal" (click)="setDocId(obj.id,'approved')">Approve</button>
+                      <button class="category-btn btn rounded" data-toggle="modal" data-target="#rejectModal" (click)="setDocId(obj.id,'rejected')">Reject</button>
+                    </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+    </div>
+    <div class="col-md-12 not-found " *ngIf="customList && customList.length==0 ">
+        <div class="boq-img">
+          <img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+        </div>
+        <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing to show...</p>
+    </div>
+
+  </div>
+  <app-category-floorplan [floorplan_list] = 'floorplan_list' *ngIf="this.state == 'floorplan'"></app-category-floorplan>
+  <app-category-cad-elevation [cad_list] = 'cad_list' *ngIf="this.state == 'cad'"></app-category-cad-elevation>
+  <app-category-boq [boq_list] = 'boq_list' *ngIf="this.state == 'uploaded-boq'"></app-category-boq>
+  <app-category-ppt [ppt_list] = 'boq_list' *ngIf="this.state == 'uploaded-ppt'"></app-category-ppt>
+</div>
+<div class="modal fade" id="approveModal" role="dialog" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="col-12 text-right">
+            <button type="button" class="close pull-right" data-dismiss="modal" style="height: 38px;"
+            (click)="closeModals()">&times;</button>
+          </div>
+        </div>
+        <div class="modal-body mb-5">
+            <div class="row pb-0">
+                <div class="col-12 pb-0">
+                  <form [formGroup]="priceForm">
+                    <div class="row m-0 p-0 pl-5 pr-5">
+                      <div class="col-xs-6 col-md-6 p-0 pr-2 pt-2 text-left">My Price:<span class="text-danger">*</span></div>
+                      <div class="col-xs-6 col-md-6 p-0 d-inline-block pull-right">
+                        <input type="number" class="mb-2 form-control" placeholder="Price" formControlName="price" name="price">
+                        <div *ngIf="priceErroralert" class="text-danger">
+                                <div [hidden]="priceForm.controls['price'].valid">Enter valid price.</div>
+                          </div>  
+                      </div>
+                    </div>
+                    <div class="row m-0 p-0 pl-5 pr-5">
+                      <div class="col-xs-6 col-md-6 p-0 pr-2 pt-2 text-left">My Remark:</div>
+                      <div class="col-xs-6 col-md-6 p-0 d-inline-block pull-right">
+                        <textarea type="text" class="form-control" placeholder="Remarks..." formControlName="category_remark" rows="4"></textarea>
+                      </div>
+                    </div>
+                    <div class="border-change text-center pb-0 mt-4">
+                      <button class="category-btn p-2 btn rounded" type="submit" (click)="onSubmit()">Submit</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<div class="modal fade" id="rejectModal" role="dialog" data-keyboard="false" data-backdrop="static">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <div class="col-12 text-right">
+              <button type="button" class="close pull-right" data-dismiss="modal" style="height: 38px;"
+              (click)="closeModals()">&times;</button>
+            </div>
+          </div>
+          <div class="modal-body mb-5">
+              <div class="row pb-0">
+                  <div class="col-12 pb-0">
+                    <form [formGroup]="rejectForm">
+                      <div class="row m-0 p-0 pl-5 pr-5">
+                        <div class="col-xs-6 col-md-6 p-0 pr-2 pt-2 text-left">My Remark:</div>
+                        <div class="col-xs-6 col-md-6 p-0 d-inline-block pull-right">
+                          <textarea type="text" class="form-control" placeholder="Remarks..." formControlName="category_remark" rows="4"></textarea>
+                        </div>
+                      </div>
+                      <div class="border-change text-center pb-0 mt-4">
+                        <button class="category-btn p-2 btn rounded" type="submit" (click)="onSubmit()">Submit</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+          </div>
+        </div>
+      </div>
+</div>

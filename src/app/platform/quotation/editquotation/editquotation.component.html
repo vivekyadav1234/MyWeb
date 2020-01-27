@@ -1,0 +1,400 @@
+<div class="row ss-top-menu">
+	<div class="col-12">
+  	<span class="ss-link" style="vertical-align: -webkit-baseline-middle;" [routerLink]="['/']">Dashboard </span> 
+    <span style="vertical-align: -webkit-baseline-middle;"><i class="rightArrow fa fa-angle-right"></i> </span>
+		<span class="ss-text-dark addCursor" style="vertical-align: -webkit-baseline-middle;" (click) = "backClicked()" > BOQ </span>
+    <span style="vertical-align: -webkit-baseline-middle;"> <i class="rightArrow fa fa-angle-right"></i></span>
+		<span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;" *ngIf="quotation">{{quotation.reference_number}} </span>
+    <span style="vertical-align: -webkit-baseline-middle;"><i class="fa fa-pencil ml-2" aria-hidden="true"></i></span>
+     <span class="pull-right">
+     <!--  <button class="btn rk-btn-red addCursor " type="button" data-toggle="modal" data-target="#updateSectionModal">UPDATE SECTION</button> -->
+     <button class="btn btn-outline-secondary pull-right btn-lg bt-boq" type="button" data-toggle="modal" data-target="#addProductModal" (click)="getCatalogueProducts('all','all')">Add Product</button></span>
+	</div>
+</div>
+
+<ul class="nav nav-tabs tabs-chng" id="myTab" role="tablist" *ngIf="quotation">
+  <li class="nav-item nav-items" *ngFor="let key of tabsArr">
+    <a class="nav-link addCursor text-center mr-3" (click)="getProductBasedOnSection(key)" [ngClass]="{'active': productKey == key.section_name}">{{key.section_name | uppercase}}</a>
+  </li>
+</ul>
+<div class="container-fluid container-set">
+  <div class="row" style="padding: 16px">
+    <div class="col-md-12 ss-table">
+      <div class="row ">
+        <div class="table-responsive table-res">
+          <table class="table ">
+            <thead class="thead-dark">
+              <tr>
+                <th scope="col">Section</th>
+                <th scope="col">Product</th>
+                <th scope="col">Qty</th>
+                <th scope="col">PRICE</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let mycartProd of boqProducts_all; let x=index; " [attr.data-index]="x"   class="box-list">
+                <td>{{ mycartProd.section_name }}</td>
+                <td>{{ mycartProd.name}}</td>
+                <td>{{ mycartProd.quantity }}</td>
+                <td><i class="fa fa-inr"></i>{{  mycartProd.quantity * mycartProd.rate}}</td>
+                
+              </tr>
+            </tbody>
+          </table>    
+        </div>  
+      </div>
+      <div>
+        <button class="btn btn-primary float-right cartBtn mt-3" data-toggle="modal" data-target="#myCart" (click)="myCartProducts()">MY CART <i class="fa fa-arrow-right ml-4"></i></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- <div id="updateSectionModal" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content" style="top: 66px;">
+      <div class="modal-header">
+        <h6 class="modal-title textColor">Update Section</h6>
+      </div>
+      <div class="modal-body">
+        <div>
+          <form formControlName="deletSectionForm">
+            <span *ngFor="let key of Object.keys(quotation.boqjobs)" class="mr-2">
+              <input type="checkbox" name="section" value="{{key}}"> {{key}}
+            </span>
+          </form>
+
+          <form [formGroup]="selectSectionTypeForm">
+            <div *ngFor="let sec of sectionsList">
+              <input type="checkbox" name="section" value="{{sec.id}}-{{sec.name}}" class="sectionType-class" (change)="onCheckChange($event)"><span class="ml-2 spanFontSize">{{sec.name}}</span>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btnCancel modalBtn ml-3 mr-4 addCursor" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div> -->
+
+<div class="modal fade" id="addProductModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog my-2 mx-2" role="document">
+    <div class="modal-content" id="allproductsRow">
+      <div class="modal-header">
+        <div class="container-fluid">
+          <div class="row justify-content-center">
+            <div class="col-5">
+              <div class="ss-searchbox">
+                <i class="fa fa-search"></i>
+                <input class="form-control" type="text" placeholder="Type product name to search..." #search (keyup)="0">
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <span class="rk-textColor">Choose from :</span>
+              <select class="form-control selectCatalogue ml-2" (change)="setProductSource($event.target.value)">
+                <option value="catalogue" [selected]="product_source=='catalogue' ">Catalogue</option>
+                <option value="project" [selected]="product_source=='project' ">This Project</option>
+              </select>
+              <i class="downArrow fa fa-angle-down"></i>
+            </div>
+          </div>
+        </div>
+        <button type="button" class="close addProductModalClose" data-dismiss="modal" aria-label="Close" (click)="closeModal()">
+            <span aria-hidden="true"><img src="../../../assets/img/cross-out.svg" style="width:20px;"></span>
+        </button>
+      </div>
+      <div class="modal-body pt-0">
+        <div class="row" *ngIf="product_source=='catalogue' ">
+          <div class="col-md-2">
+            <div class="mx-2 sec-chng">
+              <div class="mb-3">
+                <h6 class="rk-textColor py-2" style="border-bottom: 1px solid lightgray;">By Section<span class="pull-right">-</span></h6>
+                <div class="aa-text" *ngFor="let data of sectionsList">
+                  <input type="radio" name="section" class="mr-1" value="{{data.id}}"  (click)="getCatalogueProducts(data.name,data.id)"> <span class="sideOption">{{data.name}}</span><span class="pull-right">{{data.count}}</span>
+                  <br>
+                </div>
+              </div>
+              <div class="mb-3"  *ngIf="products_catalogue && subsections && subsections.length>0">
+                <h6 class="rk-textColor py-2" style="border-bottom: 1px solid lightgray;">By Category<span class="pull-right">-</span></h6>
+                <div class="aa-text" *ngFor="let subsec of subsections">
+                  <input type="radio" name="category" class="mr-1" value="{{subsec.id}}" (click)="getCatalogueSubsectionProducts(subsec.id,subsec.name)"> <span class="sideOption" >{{subsec.name}}</span><span class="pull-right">{{subsec.count}}</span>
+                  <br>
+                </div>
+              </div>
+              <div class="mb-3" *ngIf="products_catalogue && product_configurations && product_configurations.length>0">
+                <h6 class="rk-textColor py-2" style="border-bottom: 1px solid lightgray;">By Configurations<span class="pull-right">-</span></h6>
+                <div class="aa-text" *ngFor="let config_prod of product_configurations">
+                  <input type="radio" name="configuration" class="mr-1" value="{{config_prod.id}}" (click)="getCatalogueConfigurationProducts(config_prod.id,config_prod.name,products_catalogue.section.id)"> <span class="sideOption" >{{config_prod.name}}</span><span class="pull-right">{{config_prod.count}}</span>
+                  <br>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-10 bgColor">
+            <div class="row justify-content-center">
+              <div class="col-11">
+                <div class="row" *ngIf="products_catalogue && products_arr.length>0; else no_product">
+                  <div class="col-sm-3" *ngFor="let product of products_arr | category: search.value">
+                    <div class="card card-chng mb-5">
+                      <img class="card-img-top" src="{{product.image_urls[0]}}" alt="No Image">
+                      <div class="card-body">
+                        <h6 class="card-title textColor1 rk-textColor">{{product.name}}</h6>
+                        <p class="card-text textColor2">Color : {{product.color}}</p>
+                        <p class="textColor2">Price : &#8377; {{product.price}}</p>
+                      </div>
+                      <button class="btn btn-block button" (click)="viewmoreProductDetails(product.id,selectedsectionId)">View More</button>
+                    </div>
+                  </div>
+                  
+                </div>
+                <ng-template #no_product></ng-template>
+                <div class="row" *ngIf="products_catalogue && products_arr.length==0 ">
+                  <p class="text-center">No product available</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row justify-content-center" *ngIf="product_source=='project' ">
+          <div class="col-md-10 mt-5">
+            <div class="row" *ngIf="products_catalogue && products_catalogue.products && products_catalogue.products.length>0; else no_product">
+              <div class="col-sm-3" *ngFor="let product of products_catalogue.products">
+                <div class="card mb-5">
+                  <img class="card-img-top" src="{{product.image_urls[0]}}" alt="No Image">
+                  <div class="card-body">
+                    <h6 class="card-title textColor1 rk-textColor">{{product.name}}</h6>
+                    <p class="card-text textColor2">Color : {{product.color}}</p>
+                    <p>Price : &#8377; {{product.price}}</p>
+                  </div>
+                  <button class="btn btn-block button" (click)="viewmoreProductDetails(product.id,product.section_id)">View More</button>
+                </div>
+              </div>
+            </div>
+            <ng-template #no_product><div class="text-center">No product available</div></ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <div class="modal-content modal-change" id="viewproductRow" style="display: 'none'!important">
+      <div class="modal-header" *ngIf="product_details">
+          <div class="col-sm-9">
+            <a (click)="backToProducts()" class="addCursor" style="color: #1caede;"><i class="fa fa-arrow-left mr-2"></i>Back to products</a>
+          </div>
+          <div class="col-sm-2 pull-right">
+            <button type="button" class="close addProductModalClose" data-dismiss="modal" aria-label="Close" (click)="closeModal()">
+              <span aria-hidden="true"><img src="../../../assets/img/cross-out.svg" style="width:20px;"></span>
+            </button>
+          </div>
+      </div>
+      <div class="modal-body" *ngIf="product_details">
+        <div class="row justify-content-center">
+          <div class="col-11">
+            <div class="row">
+              <div class="col-md-6 cl-chng"> 
+                <div class="row">
+                 <!--  <div class="col-md-4">
+                    <div class="row mt-4">
+                      <div class="col-md-12">
+                        <div class="card" style="width: 5.5rem;">
+                          <div class="card-body  body-chng">
+                            
+                            
+                           
+                          </div>
+                        </div>
+                      </div>
+                    </div> 
+                  </div>
+                 <div class="row">
+                    <div class="col-md-12">
+                      <div class="card" style="width: 5.5rem;">
+                        <div class="card-body  body-chng"> 
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="card" style="width: 5.5rem;">
+                        <div class="card-body  body-chng">
+                        </div>
+                      </div>
+                    </div> 
+                  </div>
+                   <div class="row">
+                    <div class="col-md-12">
+                      <div class="card" style="width: 5.5rem;">
+                        <div class="card-body  body-chng">
+                        </div>
+                      </div>
+                    </div>
+                  </div>  
+                  
+                </div> -->
+                <div class="col-md-8">
+                  <div class="mainDiv">
+                    <img class="addCursor mb-2" src="{{product_details.image_urls[0]}}" width="100%" height="400px;">
+                  </div>
+                </div>  
+              </div>
+            </div>  
+            <div class="col-md-6 cl-chngs" *ngIf="product_details">
+              <div class="row infos-change">
+                <div class="col-12">
+                    <div class="text-chng">
+                      <h4>{{ product_details.name }}</h4>
+                    </div>
+                  <div class="row">
+                    <div class="col-md-6 price-chng">
+                      Rs. {{ product_details.sale_price }}
+                    </div>
+                    <div class=" col-md-6 sku-chng">
+                      SKU Code : {{product_details.unique_sku}}
+                    </div>
+                  </div>
+                  <hr>
+                </div>
+              </div>
+              <div class="row p-0 img-chng">
+                <div class="col-md-3 mt-4 " *ngFor="let variation of product_variations" (click)="showVariationDetails(variation)">
+                  <div class="card" style="width: 5.5rem;">
+                    <div class="card-body  body-chng">
+                      <img src="{{variation.image_urls[0]}}" height="50px" width="50px">
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+              <br>
+              <form [formGroup]="modalQuantityandProductSelectionForm" (ngSubmit)="addProductToBoqs(product_details,modalQuantityandProductSelectionForm.value); modalQuantityandProductSelectionForm.reset(); " class="col-10 productDetailsSpan">
+                <label>Quantity : </label>
+                <input class="form-control ml-3" type="number" name="productQty" style="width: 30%; display: inline-block;" formControlName="productQty" min="1" max="{{product_details.qty}}"><br/>
+                <button class="btn btn-primary btn-lg  skuBtn pull-right" type="submit">Select Product</button>
+              </form>
+            </div>
+          </div>   
+          <div class="row mt-5">
+            <div class="col-md-12 details-info">
+              <p class="marg-chng">Items Details</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <div class="row">
+                <div class="col-md-12 details-infos">
+                  <div class="text-infos">
+                    Product Information
+                  </div>
+                  <hr style="border-top: 2px dashed #a2a0a2;">
+                  <div class="row">
+                    <div class="col-md-4">
+                      <ul class="font-chng">
+                        <li>Color: {{ product_details.color}}</li>
+                        <li>Configuration: {{ product_details.product_config}}</li>
+                        <li>Measurement Unit: {{ product_details.measurement_unit}}</li>
+                      </ul>
+                    </div>
+                    <div class="col-md-4">
+                      <ul class="font-chng">
+                        <li>Lead Time: {{ product_details.lead_time}}</li>
+                        <li>Finish: {{ product_details.finish}}</li>
+                        <li>Dimension Remark: {{ product_details.dimension_remark}}</li>
+                      </ul>
+                    </div>
+                    <div class="col-md-4">
+                      <ul class="font-chng">
+                        <li>Dimension(mm): {{ product_details.width}}*{{ product_details.height}}*{{ product_details.length}}</li>
+                        <li>Material: {{ product_details.material}}</li>
+                        <li>Remarks: {{ product_details.remark}}</li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-12">
+                      <ul class="font-chngs" style="margin-top: 0px;">
+                        <li>Warranty: {{ product_details.warranty}}</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div> 
+          </div>
+        </div>  
+      </div>
+    </div>
+  </div>  
+</div>
+
+<div class="modal fade" id="myCart" tabindex="-1" role="dialog" aria-labelledby="myCartLabel" aria-hidden="true">
+  <div class="modal-dialog mt-0" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="myCartLabel">My Cart</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cartTotal=0">
+          <span aria-hidden="true"><img src="../../../assets/img/cross-out.svg" style="width:20px;"></span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12 ss-table">
+            <div class="row">
+              <div class="table-responsive table-res">
+                <table class="table ">
+                  <thead class="thead-dark">
+                    <tr>
+                      <th scope="col">SECTION</th>
+                      <th scope="col">PRODUCT</th>
+                      <th scope="col">QTY</th>
+                      <th scope="col">PRICE</th>
+                      
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="box-list" *ngFor="let mycartProd of boqProducts_all; let x=index; " [attr.data-index]="x">
+                      <td>{{mycartProd.section_name}}</td>
+                      <td>{{mycartProd.name}}</td>
+                      <td>{{mycartProd.quantity}}</td>
+                      <td> {{mycartProd.quantity * mycartProd.rate}}</td>
+                    </tr>
+                    
+                  </tbody>
+                </table>
+              </div>  
+            </div>
+          </div>
+        </div>
+        <div class="row justify-content-center">
+          <div class="col-10">
+            <div class="row">
+              <div class="col-8">
+                <p>Total:</p>
+              </div>
+              <div class="col-4">
+                <p *ngIf="cartTotal">&#8377; {{cartTotal}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row cartFooter">
+          <div class="col-5 p-0">
+            <div class="text-center subTotal">
+              <p class="m-0">Sub Total</p>
+              <span *ngIf="cartTotal">&#8377; {{cartTotal}}</span>
+            </div>
+          </div>
+          <div class="col-7 p-0 addCursor" (click)="editQuotation()">
+            <div class="text-center checkout">
+              <p class="m-0 pt-3">CHECKOUT <i class="fa fa-arrow-right ml-4"></i></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

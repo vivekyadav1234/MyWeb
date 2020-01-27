@@ -1,0 +1,97 @@
+<div class="row ss-top-menu">
+  <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-xs-8">
+    <span class="ss-text-light">Dashboard <i class="rightArrow fa fa-angle-right"></i></span>
+      <span class="ss-text-dark">Lead Management <i class="rightArrow fa fa-angle-right"></i></span> <span class="capitalize ss-text-dark">Site Supervisors</span>
+    </div>
+  <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-xs-4">
+      <button class="bt-boq btn btn-outline-secondary  pull-right" type="button" data-toggle="modal" *ngIf = "is_champion=='true'" data-target="#inviteChampionModal" (click)="sitesupervisorinvitechampions.getChampionList()">Invite Level 2 & Level 3 User</button>
+    <input class="form-control mr-sm-2" type="text" placeholder="Search by Name/ Status/ Role/ Date(dd-mm-yyyy)" #search (keyup)="0" style="font-size: 12px;">
+  </div>
+</div>
+
+<div class="rk-ui-notification err" *ngIf="erroralert"  style="z-index: 10000;">
+  <span id="notificationMessageText">{{errorMessage}}</span>
+  <a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+<div class="rk-ui-notification" *ngIf="successalert"  style="z-index: 10000;">
+  <span id="notificationMessageText">{{successMessage}}</span>
+  <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+
+<!-- <div class="row justify-content-end">
+  <div class="col-12 my-2">
+    <div class="filterDiv pull-right">
+      <p class="d-inline-block m-0">Filter By - </p>
+      <select class="filterSelect" (change)="filterColumDropdownChange($event.target.value)" [(ngModel)]="filtercol1Val" id="filter1dropdown">
+        <option value="all"><span class="capitalize" selected>All</span></option>
+        <option value="lead_status"><span class="capitalize">Status</span></option>
+        <option value="source"><span class="capitalize">Lead Type</span></option>
+        <option value="lead_source"><span class="capitalize">Lead Source</span></option>
+        <option value="created_at"><span class="capitalize">Date of Acquisition</span></option>
+      </select>
+      <select class="filterSelect" [(ngModel)]="filtercol2Val" (change)="filterColum2DropdownChange($event.target.value)" id="filter2dropdown" style="display: none">
+        <option disabled value="">Select</option>
+        <option *ngFor="let item of filtercol2Arr"  value="{{item}}"><span class="capitalize">{{item | replaceChar | ucwords}}</span></option>
+      </select>
+      <div style="display: none;" id="fromDateFilter"><label class="ml-2 mr-2">From Date</label><input type="date" name="" [(ngModel)]="fromDateFilter"></div>
+      <div style="display: none;" id="toDateFilter"><label class="ml-2 mr-2">To Date</label><input type="date" name="" [(ngModel)]="toDateFilter" [min]="fromDateFilter"></div>
+      <button class="filterBtn" (click)="filterSubmit()">GO</button>
+    </div>
+  </div>
+</div> -->
+
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="tableDiv table-responsive">
+      <p *ngIf="siteSupervisors && siteSupervisors.length ==0" class="text-center">No Site Supervisors Available</p>
+      <table class="table" *ngIf="siteSupervisors && siteSupervisors.length >0">
+        <thead>
+          <tr>
+            <th class="firstTh">#</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Contact</th>
+            <th>Assigned CM</th>
+            <th class="lastTh">Assign CM</th>
+          </tr>
+        </thead>
+        <tbody>
+
+         <tr *ngFor="let sitesupervisor of siteSupervisors | category: search.value | sort: {property: column, direction: direction}; let i = index" [attr.data-index]="i">
+         	<td>{{i+1}}</td>
+         	<td>{{sitesupervisor.name}}</td>
+         	<td>{{sitesupervisor.email}}</td>
+         	<td>{{sitesupervisor.contact}}</td>
+          <td>
+            <span *ngIf="sitesupervisor.assigned_cm">{{sitesupervisor.assigned_cm.email}}</span>
+          </td>
+         	<td>
+         		<select class="form-control" (change) = "selectCm($event.target.value)">
+         			<option>Select CM</option>
+         			<option *ngFor="let cm of cmList" value="{{cm.id}}" [selected] = "sitesupervisor.assigned_cm == cm.id" >{{cm.name}} - {{cm.email}}</option>
+         		</select>
+
+         		<input type="button" name="" value="Go" (click) = "assignSiteSupervisorToCm(sitesupervisor.id)">
+         	</td>
+         </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Invite Champion Modal -->
+<div class="modal fade customModal" id="inviteChampionModal" tabindex="-1" role="dialog" aria-labelledby="inviteChampionModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title modalTitle" id="inviteChampionModalLabel">User Details</h5>
+      </div>
+
+      <div class="modal-body">
+        <app-invite-champions #sitesupervisorinvitechampions></app-invite-champions>
+      </div>
+    </div>
+  </div>
+</div>

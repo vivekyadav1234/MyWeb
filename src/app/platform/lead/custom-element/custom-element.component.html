@@ -1,0 +1,98 @@
+<div class="row ss-top-menu">
+  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6">
+    <span class="ss-link" style="vertical-align: -webkit-baseline-middle;" [routerLink]="['/']">Dashboard</span> 
+    <span style="vertical-align: -webkit-baseline-middle;"><i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-link" style="vertical-align: -webkit-baseline-middle;" routerLink="/community_manager/wip" *ngIf="(role=='city_gm' || role=='business_head' || role=='community_manager' || role=='design_manager')">Wip</span>
+    <span class="ss-link" style="vertical-align: -webkit-baseline-middle;" routerLink="/designer/wip" *ngIf="role=='designer'">Wip</span>
+    <span style="vertical-align: -webkit-baseline-middle;"><i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-link" style="vertical-align: -webkit-baseline-middle;" [routerLink]="['/community_manager/leads']" [queryParams]="{lead_status: lead_status}" *ngIf="(role=='city_gm' || role=='business_head' || role=='community_manager' || role=='design_manager')">Lead</span>
+    <span class="ss-link" style="vertical-align: -webkit-baseline-middle;" [routerLink]="['/designer/leads']" [queryParams]="{customer_status: lead_details.lead_status}" *ngIf="role=='designer'">Lead </span>
+    <span style="vertical-align: -webkit-baseline-middle;"><i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;" *ngIf="lead_details && lead_details.user_reference">{{lead_details.user_reference.name}} - {{lead_details.project_details.name}}</span>
+  </div>
+</div>
+<div class="rk-ui-notification" *ngIf="successalert">
+  <span id="notificationMessageText">{{successMessage}}</span>
+  <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+<div class="row px-4">
+	<app-shared-top-menu [lead_id]='lead_id' [lead_details]='lead_details' [lead_status]='lead_status' [custom_tab]='"active"'></app-shared-top-menu>
+	<div class="col-12">
+    <div class="row bg-white mb-5">
+      <div class="col-md-12">
+        <div class="form">
+          <form [formGroup]="customForm" (ngSubmit)="addCustom(customForm.value)">
+        	  <div class="row">
+              <div class="col-md-12"> 
+              	<div class="change-div">
+                  <button class="btn btn-pink pull-right" type="submit" [disabled]="!customForm.valid">Send For Approval</button>
+              	</div>
+              </div>
+            </div>	
+          	<fieldset formArrayName="custom_elements">
+              <div class="row ml-5 mr-5" style="border-top:1px solid #e2dbdb;margin-top: 1rem;" *ngFor="let item of getAttributes(customForm); let i=index" [formGroup]="item">
+        	 	    <div class="col-sm-12 mt-4">
+        	 	  	  <div class=" addCursor mr-1">
+
+        	 	  	  	 <i class="fa fa-trash  iconBox pull-right" (click)="customForm.get('custom_elements').removeAt(i)"></i>
+        	 	  	  </div>
+                      
+                 </div>
+                <div class="row">
+                	<div class="col-md-4 mt-3">
+                		<label class="name">Type<span class="text-danger">*</span></label>
+                    <select formControlName="category_split" class="form-control">
+                      <option value="" disabled>Select Type</option>
+                      <option value="panel"  >Panel</option>
+                      <option value="non_panel" >Non Panel</option>
+                      <option value="services">Services</option>
+                    </select>
+                  </div>
+                	<div class="col-md-4 mt-3">
+                		<label class="name">Name <span class="text-danger">*</span></label>
+                		<input type="text" formControlName="name" class="form-control" placeholder="Enter  Name">
+                	</div>
+                	<div class="col-md-4 mt-3">
+                		<label class="dimension">Dimension <span class="text-danger">*</span></label>
+                		<input type="text" formControlName="dimension" class="form-control" placeholder="Enter Dimension">
+                	</div>
+
+                	<div class="col-md-4 mt-3">
+                		<label class="core_material">Core material <span class="text-danger">*</span></label>
+                		<input type="text" formControlName="core_material" class="form-control" placeholder="Enter Core Material">
+                	</div>
+                	<div class="col-md-4 mt-3">
+                		<label class="shutter_finish">Finish<span class="text-danger">*</span></label>
+                		<input type="text" formControlName="shutter_finish" class="form-control" placeholder="Enter Finish">
+                	</div>
+                	<div class="col-md-4 mt-3">
+                		<label class="designer_remark">Remarks<span class="text-danger">*</span></label>
+                		<input type="text" formControlName="designer_remark" class="form-control" placeholder="Enter Remarks">
+                	</div>
+                  <div class="col-md-4 mt-3">
+                		<label class="photo">Upload Image</label>
+                		<input type="file" formControlName="photo" class="form-control" placeholder="Enter Image" (change)="onChange($event,i)">
+                	</div>	
+
+                  <div class="col-md-4 mt-3">
+                		<label class="ask_price"><strong>Ask Price<span class="text-danger">*</span></strong></label>
+                		<input type="number" formControlName="ask_price" class="form-control" placeholder="Enter Your Ask price">
+                	</div>
+                </div>  	
+              </div>
+            </fieldset> 
+            <!--  <pre>{{ customForm.value | json }}</pre> -->
+            <div class="row line-chng">
+	            <div class="col-md-12 mt-2"> 
+	            	<div class="change-div">
+	               <a (click)="pushAttributes(customForm)" class="addIcon">Add New Custom Element</a>
+	            	</div>
+	            </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+	</div>
+	
+</div>

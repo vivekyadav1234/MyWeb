@@ -1,0 +1,95 @@
+.marginTop{
+    margin-top: 4.2rem;
+    /* background-color: #F0F0F0; */
+}
+.body_height{
+    /*min-height: 90vh;*/
+    /*background-color: #F0F0F0;*/
+}
+.title{
+    padding: 1.4rem 0rem;
+    background-color: #f7f7f7;
+    position: fixed;
+    width: 83.4%;
+    z-index: 4;
+    border-bottom: 1px solid #ccc;
+}
+.title h3{
+    margin-bottom: 0;
+    margin-left: 10px;
+    font-size: 20px;
+    color: rgba(0, 0, 0, 0.55);
+}
+.title h3 span{
+    color: #000;
+}
+.card{
+    /*margin: 0;*/
+    border: none;
+}
+
+.dropdown a{
+    color: #000;
+}
+.downloadTemp{
+    position: absolute;
+    right: 0rem;
+}
+
+
+.openDesignToolBtn{
+    border-radius: 6px;
+    border: 1px solid #000;
+    background-color: transparent;
+    z-index: 1;
+    font-size: 13px;
+    padding: 5px 9px;
+}
+.leadheadDashboardContainer .card {
+    box-shadow: 0 1px 1px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+    border-radius: 0px;
+    border: 1px solid #dcdcdc;
+}
+.statusCardHeadingColor{
+    color: #504c4c;
+}
+.statusCardTextColor1 {
+    color: #2196f3;
+}
+.statusCardTextColor2 {
+    color: #ffc107;
+}
+.statusCardTextColor3 {
+    color: #7cc329;
+}
+.statusCardTextColor4 {
+    color: #3f51b5;
+}
+.statusCardTextColor5{
+    color: #c10202;
+}
+.statusCardTextColor6 {
+    color: #ff0202;
+}
+
+
+#wip-box{
+  display: none;
+}
+
+#wip-box::before{
+  content: "";
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 15px solid white;
+  margin-left: 48%;
+  position: absolute;
+  margin-top: -15px;
+}
+
+.table td{
+  min-width:13rem;
+}

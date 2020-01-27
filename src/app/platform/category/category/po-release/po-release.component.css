@@ -1,0 +1,248 @@
+.wine-red{
+	color: #8d0528;
+}
+
+.modal-centered-on-screen{
+	transform: translate(0, -50%);
+    top: 30%;
+    margin: 0 auto;
+}
+.table{
+	min-width: 100%;
+  background-color: #ECF0F1!important
+}
+.table td, .table th{
+	text-align: left;
+}
+.table tr{
+  border-bottom-left-radius: 7px;
+}
+.firstTd{
+  border-bottom-left-radius: 5px;
+  border-top-left-radius: 5px;
+}
+.lastTd{
+  border-bottom-right-radius: 5px;
+  border-top-right-radius: 5px;
+}
+.table {
+    border-collapse: collapse !important;
+
+}
+.btn-custom{
+	border-radius: 20px;
+	background-color: #2cc990;
+  border-color: #2cc990;
+  box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+  font-size: 10px;
+  font-weight: 600;
+}
+.btn-modify{
+  border-radius: 20px;
+  background-color: none;
+  border-color: none;
+  box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+  font-size: 13px;
+  font-weight: 600;
+  color: #231f20;
+
+}
+.left-align{
+	text-align: left !important;
+}
+.tr-bckclr td{
+  background-color: white;
+
+
+}
+.tr-shadow{
+	box-shadow: 0px 4px 4px 0 rgba(0, 0, 0, 0.16) !important;
+  border-top: 9px solid #ECF0F1;
+  border-bottom: 2px solid #e9ecef;
+}
+.fs{
+	font-size: 1.5625rem;
+}
+
+.fcw{
+	color: #231f20;
+	font-weight: 600;
+}
+.mrl-3{
+	margin: 0 3rem 0 3rem;
+}
+.border-btm{
+	border-bottom: 1px solid black;
+}
+.cust-modal-footer{
+	border: none !important;
+	margin-bottom: 30px;
+}
+.final-body-head{
+	font-weight: bold;
+    text-align: left;
+    border-bottom: 1px solid;
+    padding-bottom: .5rem;	
+}
+.text-align-left{
+	text-align: left;
+}
+.text-align-right{
+	text-align: right;
+}
+.no-brd{
+	box-shadow : none !important;
+}
+.txt-bld{
+	font-weight: bold;
+}
+
+/* Vivek's Code re-using*/
+
+.select {
+ padding:4px;
+ margin: 0;
+ background: #fff;
+ color:#888;
+ border:1px solid;
+ outline:none;
+ display: inline-block;
+ -webkit-appearance:none;
+ -moz-appearance:none;
+ appearance:none;
+ cursor:pointer;
+ width: 170px;
+ -webkit-border-radius: 0px;
+ -moz-border-radius: 0px;
+ border-radius: 4px;
+}
+
+ /*@media screen and (-webkit-min-device-pixel-ratio:0) {
+ select {padding-right:18px}
+}*/
+
+label {
+	position:relative
+}
+.input-label:after {
+	content:"\f107";
+  font-family: FontAwesome;
+  color: #000;
+  position: absolute; right: 0; top: 0;
+  z-index: 1;
+  text-align: center;
+  width: 10%;
+  height: 100%;      
+  pointer-events: none;
+  box-sizing: border-box;   
+  padding-right: 17.8rem;
+  font-size: 1.6rem;
+  color:black!important;
+  padding-right:18px
+}
+.input-label:before {
+	content:'';
+	right:4px; top:4px;
+	width:23px; height:18px;
+	position:absolute;
+	pointer-events:none;
+	display:block;
+}
+
+
+.btn4{
+	padding: 5px;
+    margin: 0;
+    background: #fff;
+    color: #808080;
+    border: 1px solid #707070;
+    outline: none;
+    font-family: SourceSansPro;
+    display: inline-block;
+    cursor: pointer;
+    width: 302.2px;
+    height: 40px!important;
+    border-radius: 4px;
+    font-weight: normal;
+    font-size: 18px!important;
+}
+.btn1{
+	height: 50px;
+    width: 132px;
+}
+.modal-md{
+	width: 426px!important;
+}
+
+ input[type=checkbox]:before {
+    font-family: "FontAwesome";
+    content: "\f00c";
+    font-size: 13px;
+    color: transparent !important;
+    background: white;
+    display: block;
+    width: 17px;
+    height: 17px;
+    border: 1px solid #a5a5a5;
+    margin-right: 7px;
+    border-radius: 3px;
+    
+}
+input[type=checkbox]:checked:before {
+
+  color: black !important;  
+  content: "\f00c";
+  font-size: 12px;
+  text-align: center;
+  
+}
+.expanded-col{
+  display: none;
+}
+.expand tr{
+  border-top: 1px solid #e7e1e1;
+}
+.expand td {
+  background-color: white;
+}
+.change-back{
+  background: #ECF0F1 !important;
+}
+.tr-shadow td{
+ padding: 0.3rem 0.75rem;
+}
+.btn-cancel{
+  border-radius: 20px;
+  background-color: #ff4e66;
+  border-color: #ff4e66;
+  color: white;
+  font-size: 10px;
+  font-weight: 600;
+  -webkit-box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+  box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+}
+.btn-prev{
+  border-radius: 20px;
+  background-color: #ffffd0;
+  border-color: none;
+  -webkit-box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+  box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+  font-size: 10px;
+  font-weight: 600;
+  color: #231f20;
+
+}
+.back-green{
+  background: #c5ffea !important; 
+}
+.btn-rel{
+  border-radius: 20px;
+  background-color: green;
+  color: white;
+  font-size: 10px;
+  font-weight: 600;
+  -webkit-box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+  box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+  
+
+}

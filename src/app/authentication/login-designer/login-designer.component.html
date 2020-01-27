@@ -1,0 +1,28 @@
+<div class="wrapper">
+  <form [formGroup]="logindesignerForm" (ngSubmit)="submit(logindesignerForm.value)" class="form-signin">
+    <app-error-label [control]="logindesignerForm" [submitted]="submitted"></app-error-label>
+    <h2 class="form-signin-heading">Login</h2>
+    <app-input-field [attribute]="'Email'"
+             [type]="'email'"
+             [placeholder]="'Email Address'"
+             [icon]="'user icon'"
+             [control]="logindesignerForm.controls['email']"
+             [submitted]="submitted">
+          </app-input-field>
+    <br>
+    <app-input-field [attribute]="'Password'"
+             [type]="'password'"
+             [placeholder]="'Password'"
+             [icon]="'lock icon'"
+             [control]="logindesignerForm.controls['password']"
+             [submitted]="submitted">
+          </app-input-field>
+    <br>
+    <button class="btn btn-lg c-btn-primary btn-block" type="submit">Login</button>
+    <div class="ui error message"></div>
+    <br>
+    <div class="ui message">
+      New to us? <a routerLink="/signupdesigner">Register</a>
+    </div>
+  </form>
+</div>

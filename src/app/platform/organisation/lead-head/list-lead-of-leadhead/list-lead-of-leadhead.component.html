@@ -1,0 +1,882 @@
+<div class="row ss-top-menu">
+	<div class="col-xl-7 col-lg-7 col-md-7 col-sm-7 col-xs-7">
+		<span class="ss-text-light addCursor" routerLink="/">Dashboard <i class="rightArrow fa fa-angle-right"></i></span>
+    	<span class="ss-text-dark">Lead Management <i class="rightArrow fa fa-angle-right"></i></span> <span class="capitalize ss-text-dark">{{breadcrumval  | replaceChar}}</span>
+  	</div>
+  	<!-- <div class="col-xl-5 col-lg-5 col-md-5 col-sm-5 col-xs-5">
+
+	</div> -->
+	<div class="col-xl-5 col-lg-5 col-md-5 col-sm-5 col-xs-5">
+		<div class="dropdown pull-right">
+			<a class="btn addCursor downloadBtn btn-pink mr-3" (click)="smartShareEmail()">Download Smartshare Report</a>
+			<button class="btn btn-pink dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				Action
+			</button>
+			<div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="font-size: 15px;">
+				<a class="dropdown-item addCursor" data-toggle="modal" data-target="#addNewLeadModal">Add Lead</a>
+				<a class="dropdown-item addCursor" data-toggle="modal" data-target="#exampleModal">Upload Excel</a>
+				<a class="dropdown-item addCursor" (click)="downloadExcel()">Download Lead</a>
+				<a class="dropdown-item addCursor" (click)="downloadQuestionnaire()">Download Profile Questionnaire Report</a>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="rk-ui-notification err" *ngIf="erroralert"  style="z-index: 10000;">
+	<span id="notificationMessageText">{{errorMessage}}</span>
+	<a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+<div class="rk-ui-notification" *ngIf="successalert"  style="z-index: 10000;">
+	<span id="notificationMessageText">{{successMessage}}</span>
+	<a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+
+
+<div class="container-set mt-4 filterRow">
+	<div class="row">
+		<div class="col-sm-11">
+			<div class="row" style="">
+				<div class="nav nav-tabs tabs-chng ml-3 mt-1">
+				  <div class="nav-item col-md-2">
+				  	<angular2-multiselect [data]="dropdownList" [(ngModel)]="selectedItems"
+				    [settings]="dropdownSettings"
+				    (onSelect)="onItemSelect($event,'LeadType',0)"
+				    (onDeSelect)="OnItemDeSelect($event,'LeadType',0)"
+				    (onSelectAll)="onSelectAll($event,'LeadType',0)"
+				    (onDeSelectAll)="onDeSelectAll($event,'LeadType',0)"></angular2-multiselect>
+
+				  </div>
+				  <div  class="nav-item col-md-2">
+				  	<angular2-multiselect [data]="dropdownList2" [(ngModel)]="selectedItems2"
+				    [settings]="dropdownSettings2"
+				    (onSelect)="onItemSelect($event,'Status',1)"
+				    (onDeSelect)="OnItemDeSelect($event,'Status',1)"
+				    (onSelectAll)="onSelectAll($event,'Status',1)"
+				    (onDeSelectAll)="onDeSelectAll($event,'Status',1)"></angular2-multiselect>
+
+				  </div>
+				  <div  class="nav-item col-md-2">
+				  	<angular2-multiselect [data]="dropdownList3" [(ngModel)]="selectedItems3"
+				    [settings]="dropdownSettings3"
+				    (onSelect)="onItemSelect($event,'LeadSource',2)"
+				    (onDeSelect)="OnItemDeSelect($event,'LeadSource',2)"
+				    (onSelectAll)="onSelectAll($event,'LeadSource',2)"
+				    (onDeSelectAll)="onDeSelectAll($event,'LeadSource',2)"></angular2-multiselect>
+
+				  </div>
+				  <div  class="nav-item col-md-2">
+				  	<angular2-multiselect [data]="dropdownList4" [(ngModel)]="selectedItems4"
+				    [settings]="dropdownSettings4"
+				    (onSelect)="onItemSelect($event,'Campaign',3)"
+				    (onDeSelect)="OnItemDeSelect($event,'Campaign',3)"
+				    (onSelectAll)="onSelectAll($event,'Campaign',3)"
+				    (onDeSelectAll)="onDeSelectAll($event,'Campaign',3)"></angular2-multiselect>
+
+				  </div>
+				  <div  class="nav-item col-md-2">
+					<angular2-multiselect [data]="dropdownList5" [(ngModel)]="selectedItems5"
+				    [settings]="dropdownSettings5"
+				    (onSelect)="onItemSelect($event,'Agent',4)"
+				    (onDeSelect)="OnItemDeSelect($event,'Agent',4)"
+				    (onSelectAll)="onSelectAll($event,'Agent',4)"
+				    (onDeSelectAll)="onDeSelectAll($event,'Agent',4)"></angular2-multiselect>
+				 </div>
+					<div class="nav-item col-md-2">
+					    <angular2-multiselect [data]="dropdownList6" [(ngModel)]="selectedItems6"
+					    [settings]="dropdownSettings6"
+					    (onSelect)="onItemSelect($event,'DateColumn',5)"
+					    (onDeSelect)="OnItemDeSelect($event,'DateColumn',5)"
+					    (onSelectAll)="onSelectAll($event,'DateColumn',5)"
+					    (onDeSelectAll)="onDeSelectAll($event,'DateColumn',5)"></angular2-multiselect>
+					</div>
+					<div class="nav-item col-md-2 pt-3">
+						<angular2-multiselect [data]="dropdownList7" [(ngModel)]="selectedItems7"
+						[settings]="dropdownSettings7"
+						(onSelect)="onItemSelect($event,'CMType',6)"
+						(onDeSelect)="OnItemDeSelect($event,'CMType',6)"
+						(onSelectAll)="onSelectAll($event,'CMType',6)"
+						(onDeSelectAll)="onDeSelectAll($event,'CMType',6)"></angular2-multiselect>
+					</div>
+					<div class="nav-item col-md-2 pt-3">
+						<angular2-multiselect [data]="dropdownList8" [(ngModel)]="selectedItems8"
+						[settings]="dropdownSettings8"
+					  (onSelect)="onItemSelect($event,'DigitalPhysical',7)"
+					  (onDeSelect)="OnItemDeSelect($event,'DigitalPhysical',7)"
+					  (onSelectAll)="onSelectAll($event,'DigitalPhysical',7)"
+						(onDeSelectAll)="onDeSelectAll($event,'DigitalPhysical',7)"></angular2-multiselect>
+					</div>
+					<div class="nav-item col-md-2 pt-3">
+						<angular2-multiselect [data]="dropdownList9" [(ngModel)]="selectedItems9"
+						[settings]="dropdownSettings9"
+					  (onSelect)="onItemSelect($event,'InternalExternal',8)"
+					  (onDeSelect)="OnItemDeSelect($event,'InternalExternal',8)"
+					  (onSelectAll)="onSelectAll($event,'InternalExternal',8)"
+						(onDeSelectAll)="onDeSelectAll($event,'InternalExternal',8)"></angular2-multiselect>
+					</div>
+					<div class="nav-item col-md-2 pt-3">
+						<angular2-multiselect [data]="dropdownList10" [(ngModel)]="selectedItems10"
+						[settings]="dropdownSettings10"
+					  (onSelect)="onItemSelect($event,'mkw_fhi',9)"
+					  (onDeSelect)="OnItemDeSelect($event,'mkw_fhi',9)"
+					  (onSelectAll)="onSelectAll($event,'mkw_fhi',9)"
+						(onDeSelectAll)="onDeSelectAll($event,'mkw_fhi',9)"></angular2-multiselect>
+					</div>
+
+					<div  class="nav-item col-md-2 pt-3" id="fromDateLi">
+						<div class="dateDiv">
+							<span class="fromDateSpan addCursor" (click)="fromDate()">From Date <i class="fa fa-caret-down"></i></span>
+							<input name="from_date" class="form-control2 frm-chng fromDate" [(ngModel)]="from_date" type="date">
+						</div>
+					</div>
+					<div class="nav-item col-md-2 pt-3" id="toDateLi">
+						<div class="dateDiv">
+							<span class="toDateSpan addCursor" (click)="toDate()">To Date <i class="fa fa-caret-down"></i></span>
+							<input name="to_date" class="form-control2 frm-chng toDate" [(ngModel)]="to_date" type="date">
+						</div>
+					</div>
+					<div  class="nav-item pt-3 col-md-4">
+					  	<div class="ss-searchbox">
+				      		<i class="fa fa-search"></i>
+				      		<input class="form-control " name="search" type="text" placeholder="Type name, email, contact to search..." [(ngModel)]="search">
+				    	</div>
+					</div>
+				</div>
+
+				<!-- <button (click)="filterData()">Filter</button> -->
+			</div>
+		</div>
+		<div class="col-sm-1 text-center pt-4 mt-1">
+			 <img src="assets/img/dashboard/submit.png" class="ml-1 sendIcon filterRowIcon" (click)="filterData()">
+		</div>
+	</div>
+</div>
+
+<div class="mt-4 container-set">
+	<div class="row">
+	    <div class="col-md-12">
+	      <div class="tableDiv table-responsive">
+	        <p class="text-center" *ngIf="filteredLeads &&  filteredLeads.length==0 ">No Leads</p>
+	        <div class='paginated_container' ng-controller='PaginatedUserListCtrl'>
+		        <table class="table" *ngIf="filteredLeads &&  filteredLeads.length>0" >
+		          <thead>
+		            <tr>
+		              <th class="text-center firstTh">#</th>
+		              <th>Lead ID <i class="fa ml-2 fa-sort" *ngIf="column != 'id'" (click)="sortFunc(filteredLeads,{property: 'id', direction: '1'})"></i><i class="fa ml-2 fa-sort-asc" *ngIf="column == 'id' && direction=='1' " (click)="sortFunc(filteredLeads,{property: 'id', direction: '-1'})"></i><i class="fa ml-2 fa-sort-desc" *ngIf="column == 'id' && direction=='-1' " (click)="sortFunc(filteredLeads,{property: 'id', direction: '1'})"></i></th>
+
+		              <th>Name <i class="fa ml-2 fa-sort" *ngIf="column != 'name'" (click)="sortFunc(filteredLeads,{property: 'name', direction: '1'})"></i><i class="fa ml-2 fa-sort-asc" *ngIf="column == 'name' && direction=='1' " (click)="sortFunc(filteredLeads,{property: 'name', direction: '-1'})"></i><i class="fa ml-2 fa-sort-desc" *ngIf="column == 'name' && direction=='-1' " (click)="sortFunc(filteredLeads,{property: 'name', direction: '1'})"></i></th>
+
+		              <th class="minWidthForTd">Status <i class="fa ml-2 fa-sort" *ngIf="column != 'lead_status'" (click)="sortFunc(filteredLeads,{property: 'lead_status', direction: '1'})"></i><i class="fa ml-2 fa-sort-asc" *ngIf="column == 'lead_status' && direction=='1' " (click)="sortFunc(filteredLeads,{property: 'lead_status', direction: '-1'})"></i><i class="fa ml-2 fa-sort-desc" *ngIf="column == 'lead_status' && direction=='-1' " (click)="sortFunc(filteredLeads,{property: 'lead_status', direction: '1'})"></i></th>
+
+		              <th class="minWidthForTd">Role</th>
+		              <th class="minWidthForTd">Contact</th>
+		              <th class="minWidthForTd">Source</th>
+		              <th class="minWidthForTd">Campaign</th>
+		              <th class="minWidthForTd">Last Status Update </th>
+		              <th class="minWidthForTd">Acquisition Date</th>
+		              <th class="minWidthForTd">Qualification Date</th>
+		              <th class="minWidthForTd">Assigned CS Agent</th>
+		              <th class="minWidthForTd">Assigned CM</th>
+		              <th *ngIf="lead_status==undefined || (lead_status!='lost' && lead_status!='lost_after_5_tries' && lead_status!='qualified')" class="minWidthForTd">Assign CS Agent</th>
+		              <th class="minWidthForTd">Assign CM</th>
+		              <th class="minWidthForTd">REFERRAL PARTNER</th>
+		              <th class="minWidthForTd">REFERRAL TYPE</th>
+		              <th class="minWidthForTd">ARRIVAE CHAMPION PROGRAM</th>
+									<th class="minWidthForTd">FROM FASTTRACK PAGE</th>
+		              <th class="minWidthForTd">UTM Medium</th>
+		              <th class="minWidthForTd">UTM Term</th>
+		              <th class="minWidthForTd">UTM Content</th>									
+		              <th></th>
+		              <th class="lastTh"></th>
+		              <!-- <th class="lastTh"> Follow Up Date</th> -->
+		            </tr>
+		          </thead>
+		          <tbody>
+		            <tr *ngFor="let data of filteredLeads | paginate: { itemsPerPage: per_page, currentPage: current_page, totalItems: total_page  } let i = index; " [attr.data-index]="i" id="filteredLeadRow{{i}}">
+		            	<td class="text-center">{{((current_page-1) * per_page) + (i+1)}}</td>
+		              	<td>{{data.id}}</td>
+		              	<td class="capitalize">
+		              		<ng-container *ngIf="data.lead_type =='customer' ">
+		              			<span *ngIf="data.name!=null" (click)=" passDataToModal(data.id,data.name,data.contact,data)" data-toggle="modal" data-target="#questionnaireModal"  style="color: #007bff;" class="addCursor">{{data.name}}</span><span *ngIf="data.name==null || data.name==''" (click)=" passDataToModal(data.id,data.name,data.contact,data)" data-toggle="modal" data-target="#questionnaireModal"  style="color: #007bff;" class="addCursor">Unnamed</span>
+		              		</ng-container>
+		              		<ng-container  *ngIf="data.lead_type !='customer' ">
+		              			<span *ngIf="data.name!=null">{{data.name}}</span><span *ngIf="data.name==null || data.name==''">Unnamed</span>
+		              		</ng-container>
+		              	</td>
+		              	<td class="capitalize minWidthForTd">{{data.lead_status | replaceChar}}
+		              		<p *ngIf="data.lead_status=='follow up' || data.lead_status=='follow_up'">{{data.follow_up_time | date:'dd MMM, y , h:mm a'}}</p>
+		              		<p *ngIf="data.lead_status=='lost'" class="mt-1">(<span class="text-danger">Reason</span> - {{data.lost_reason | replaceChar}})</p>
+		              		<p *ngIf="data.lead_status=='lost' && (data.lost_reason=='others' || data.lost_reason=='non_serviceable_area' || data.lost_reason=='out_of_scope' || data.lost_reason=='general_inquiry/not_interested' || data.lost_reason=='language_barrier' || data.lost_reason=='already_done_with_other_vendor'|| data.lost_reason=='low_budget')" class="mt-1">(<span class="text-danger">Remarks</span> - {{data.lost_remark}})</p>
+		              		<p *ngIf="data.lead_status=='follow up' || data.lead_status=='follow_up'" class="mt-1">(<span class="text-danger">Remarks</span> - {{data.remark}})</p>
+		              	</td>
+		              	<td class="capitalize minWidthForTd">{{data.lead_type}}</td>
+		              	<td class="minWidthForTd">{{data.contact}}</td>
+		              	<td class="minWidthForTd capitalize">{{data.lead_source | replaceChar}}</td>
+		              	<td class="minWidthForTd capitalize">{{data.lead_campaign | replaceChar}}</td>
+		             	<td class="minWidthForTd">{{data.status_updated_at | date:'dd MMM, y , h:mm a'}}</td>
+		             	<td class="minWidthForTd">{{data.created_at | date:'dd MMM, y , h:mm a'}}</td>
+		             	<td class="minWidthForTd" *ngIf="data.lead_status == 'qualified'">{{data.status_updated_at | date:'dd MMM, y , h:mm a'}}</td>
+		             	<td class="minWidthForTd" *ngIf="data.lead_status != 'qualified'"></td>
+		             	<td class="minWidthForTd"><p *ngIf="data.agent==null">Not Assigned</p><p *ngIf="data.agent!=null">{{data.agent.uid}}</p></td>
+		             	<td class="minWidthForTd"><p *ngIf="data.assigned_cm==null">Not Assigned</p><p *ngIf="data.assigned_cm!=null">{{data.assigned_cm}}</p></td>
+		              	<td id="lastTdEditForm" class="minWidthForTd" *ngIf="lead_status==undefined || (lead_status!='lost' && lead_status!='lost_after_5_tries' && lead_status!='qualified')">
+		              		<ng-container *ngIf="data.lead_status==undefined || (data.lead_status!='lost' && data.lead_status!='lost_after_5_tries' && data.lead_status!='qualified')">
+			               		<select class="form-control" style="width: 77%; display: inline-block;font-size: 14px;" (change)="onDropdownChange(data.id,$event.target.value,i)" id="assigndropdown{{data.id}}">
+		                    		<option value="">Assign CS Agent</option>
+		                    		<option *ngFor="let agent of csagentsArr" value="{{agent.id}}">{{agent.name}} - {{agent.email}}</option>
+		                  		</select>
+		                  		<img src="assets/v3/img/sendbutton1.svg" class="ml-1 sendIcon addCursor" (click)="assignLeadToAgent(data.id,i)">
+	                  		</ng-container>
+		              	</td>
+		              	<td>
+		              		<ng-container *ngIf="data.lead_type=='customer' && data.lead_status=='qualified'">
+		              			<select class="form-control" style="width: 77%; display: inline-block;font-size: 14px;" (change)="onCMDropdownChange(data.id,$event.target.value,i)" id="assigncmdropdown{{data.id}}">
+                    			<option value="">Assign CM</option>
+                    			<option *ngFor="let cm of cmlistArr" value="{{cm.id}}">{{cm.name}} - {{cm.email}}</option>
+                  			</select>
+                  			<img src="assets/v3/img/sendbutton1.svg" class="ml-1 sendIcon addCursor" (click)="assignCmToLead(data.id,i)">
+                  		</ng-container>
+		              	</td>
+		              	<td>
+		              		{{data.referal_partner_name}}
+		              	</td>
+		              	<td>
+		              		{{data.referrer_type | replaceChar}}
+		              	</td>
+		              	<td>
+		              		<div class="ml-5" *ngIf="data.is_from_arrivae_champion==true">
+		              			YES
+		              		</div>
+
+		              		<div class="ml-5" *ngIf="data.is_from_arrivae_champion==false">
+		              			<p>NO</p>
+		              		</div>
+		              	</td>
+		              	<td>
+		              		<div class="ml-5" *ngIf="data.from_fasttrack_page">
+		              			YES
+		              		</div>
+
+		              		<div class="ml-5" *ngIf="!data.from_fasttrack_page">
+		              			<p>NO</p>
+		              		</div>
+										</td>
+										<td>
+											{{data.utm_medium}}
+										</td>
+										<td>
+											{{data.utm_term}}
+										</td>
+										<td>
+											{{data.utm_content}}
+										</td>
+
+		              	<td><a class="addCursor ss-link" data-target="#logModal" data-toggle="modal" (click)="viewLeadLog(data.id,i)"><img src="assets/v3/img/LogIcon.svg"></a></td>
+		              	<td>
+		              		<i class="ion-android-more-vertical ss-3-dot-drop" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"
+		              		*ngIf="(data.lead_type && (data.lead_type=='designer') && (data.lead_status != 'qualified')) || (data.lead_type =='customer') ||((data.lead_type =='broker')&& (data.lead_status != 'qualified'))||((data.lead_type =='manufacturer')&& (data.lead_status != 'qualified'))"></i>
+
+		              		 
+		              		<div class="dropdown-menu pt-2 pb-2"  style="font-size: 14px;">
+				              <a class="dropdown-item" href="#" *ngIf="role && role=='designer'" (click)="callToLead(lead.contact)">
+				                <i class="ion-ios-telephone"></i>
+				                Call Lead
+				              </a>
+				              <a class="dropdown-item addCursor" *ngIf="data.lead_status != 'qualified'" data-toggle="modal" data-target="#editLeadModal" (click)="setUpdatedLead(data)">
+				                <i class="ion-edit"></i>
+				                Edit
+				              </a>
+				              <a class="dropdown-item addCursor" (click)="deleteLead(data.id)" *ngIf="data.lead_status != 'qualified'">
+				                <i class="ion-ios-trash"></i>
+				                Delete
+				              </a>
+				              <a class="dropdown-item addCursor" (click)="getSalesLifecycleData(data.id)"
+				              *ngIf="data.lead_type =='customer'">  
+				               Sales Life Cycle Report
+				              </a>
+                            </div>
+		              	</td>
+		            </tr>
+		          </tbody>
+		        </table>
+		        <div class="text-center" *ngIf="filteredLeads && filteredLeads.length >0">
+		         <pagination-controls autoHide="true" (pageChange)="current_page = getFiletredLeads($event)"></pagination-controls>
+		        </div>
+		      </div>
+	      </div>
+	    </div>
+	</div>
+</div>
+
+
+<div class="modal fade" id="editLeadModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg" role="document">
+		<form (ngSubmit)="updateLeadFormSubmit(updateLeadForm.value); " [formGroup]="updateLeadForm" class="form-horizontal" enctype="multipart/form-data" id="addLeadForm">
+        	<div class="modal-content">
+		        <div class="modal-header">
+		          <h5 class="modal-title modalTitle" id="exampleModalLabel"> Lead Details</h5>
+		        </div>
+		        <div class="modal-body">
+		          <div class="row mx-2">
+		            <div class="col-sm-10 col-md-6 mb-2">
+		              <div class="form-group">
+		                <label class="text-left">Name <span>*</span></label>
+		                <input type="text" class="form-control" name="name" placeholder="Enter Lead Name" formControlName="name" required>
+		                <div *ngIf="updateLeadForm.controls['name'].errors && !updateLeadForm.controls['name'].pristine" class="text-danger">
+		                  <div [hidden]="!updateLeadForm.controls['name'].errors.required">Name is required.</div>
+		                </div>
+		              </div>
+		            </div>
+		            <div class="col-sm-10 col-md-6 mb-2">
+		              <div class="form-group">
+		                <label class="text-left">Lead Email <span>*</span></label>
+		                <input type="text" class="form-control" name="email" placeholder="Enter Lead Email" formControlName="email">
+		                <div *ngIf="updateLeadForm.controls['email'].errors && !updateLeadForm.controls['email'].pristine" class="text-danger">
+		                  <div [hidden]="!updateLeadForm.controls['email'].errors.required">Email is required.</div>
+		                  <div [hidden]="updateLeadForm.controls['email'].valid || addLeadForm.controls['email'].errors.required">Enter valid email.</div>
+		                </div>
+		              </div>
+		            </div>
+		            <div class="col-sm-10 col-md-6 mb-2">
+		              <div class="form-group">
+		                <label class="text-left">Lead Contact <span>*</span></label>
+		                <input type="number" class="form-control" name="contact" placeholder="Enter Lead Contact" formControlName="contact" required min="0" (keydown)="numberCheck($event)">
+		                <div *ngIf="updateLeadForm.controls['contact'].errors && !updateLeadForm.controls['contact'].pristine" class="text-danger">
+		                  <div [hidden]="!updateLeadForm.controls['contact'].errors.required">Contact is required.</div>
+		                </div>
+		              </div>
+		            </div>
+		            <div class="col-sm-10 col-md-6 mb-2">
+		              <div class="form-group">
+		                <label class="text-left">Pincode</label>
+		                <input type="number" class="form-control" name="pincode" placeholder="Enter Lead Pincode" formControlName="pincode" min="0" (keydown)="numberCheck($event)">
+		              </div>
+		            </div>
+
+		            <div class="col-sm-10 col-md-6">
+		              <div class="form-group">
+		                <label class="text-left">Select Lead Type <span>*</span></label>
+		                <select formControlName="lead_type_id" class="form-control" readonly>
+		                	<option value="" disabled>Select</option>
+		                  <option value="{{type?.id}}" *ngFor="let type of lead_types">{{type?.name}}</option>
+		                </select>
+		              </div>
+		            </div>
+		            <div class="col-sm-10 col-md-6">
+		              <div class="form-group">
+		                <label class="text-left">Select Lead Source <span>*</span></label>
+		                <select formControlName="lead_source_id" class="form-control capitalize">
+		                  <option value="" disabled>Select</option>
+		                  <option value="{{src?.id}}" *ngFor="let src of lead_sources">{{src?.name | replaceChar}}</option>
+		                </select>
+		              </div>
+		            </div>
+		            <div class="col-sm-10 col-md-6">
+		              <div class="form-group">
+		                <label class="text-left">Select Lead Campaign</label>
+		                <select formControlName="lead_campaign_id" class="form-control capitalize">
+		                  <option value="" disabled>Select</option>
+		                  <option value="{{camp?.id}}" *ngFor="let camp of lead_campaigns">{{camp?.name | replaceChar}}</option>
+		                </select>
+		              </div>
+								</div>
+			          <div class="col-sm-10 col-md-6">
+			            <div class="form-group">
+			              <label class="text-left">Referrer User Type</label>
+			              <select formControlName="referrer_type" class="form-control capitalize" (change)="onChangeOfLeadSource($event.target.value)">
+			                <option value="" disabled>Select</option>
+			                <option value="{{src?.name}}" *ngFor="let src of lead_referrer_list">{{src?.name | replaceChar}}</option>
+			              </select>
+			            </div>
+			          </div>
+			          <div class="col-sm-10 col-md-6 mb-2">
+			            <div class="form-group">
+			              <label class="text-left">Referrer User</label>
+			              <select formControlName="referrer_id" class="form-control capitalize" placeholder="Select Referrer User">
+			                <option value="" disabled>Select</option>
+			                <option value="{{camp?.id}}" *ngFor="let camp of userList">{{camp?.name }} - {{ camp?.email}}</option>
+			              </select>
+			            </div>
+			          </div>
+		            <div class="col-sm-10 col-md-6" *ngIf="updateLeadForm.controls['lead_type_name'].value=='designer'">
+		              <div class="form-group">
+		                <label class="text-left">Instagram Id</label>
+		                <input type="text" formControlName="instagram_handle" name="" class="form-control">
+		              </div>
+		            </div>
+		            <div class="col-sm-10 col-md-6" *ngIf="updateLeadForm.controls['lead_type_name'].value=='designer'">
+		              <div class="form-group">
+		                <label class="text-left">Upload CV</label>
+		                <input type="file" name="" class="form-control" (change)="uploadCV($event)" name="attachment_file">
+		                <a href="https://{{updateLeadForm.controls['lead_cv'].value}}" *ngIf="updateLeadForm.controls['lead_cv'].value &&  updateLeadForm.controls['lead_cv'].value!='/images/original/missing.png'" onerror="this.src='./assets/img/no_image.svg'" target="_blank">View CV</a>
+		               
+		              </div>
+		            </div>
+
+		            <div class="col-md-6">
+		              <div class="form-group">
+		                <label class="text-left">Change Status</label>
+		                <select class="form-control capitalize" (change)="setLeadStatus($event.target.value)" formControlName="lead_status">
+		                  <option value="" disabled>Select</option>
+		                  <option value="qualified">Qualified</option>
+	                      <option value="follow_up">Follow Up</option>
+	                      <option value="lost">Lost</option>
+	                      <option value="not_contactable">Not Contactable</option>
+	                      <option value="delayed_possession" *ngIf="updateLeadForm.controls['lead_type_name'].value =='customer'">Delayed Possession</option>
+	                      <option value="delayed_project" *ngIf="updateLeadForm.controls['lead_type_name'].value =='customer'">Delayed Project</option>
+
+
+		                </select>
+		              </div>
+		            </div>
+		            <div class="col-md-6" id="datetime" *ngIf="updateLeadForm.controls['lead_status'].value=='follow_up'">
+		            	<div class="form-group">
+		            		<label class="text-left">Follow up Time *</label>
+		            		<!-- <input type="datetime-local" formControlName="follow_up_time" name="" class="form-control"> -->
+		            		<input [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1" placeholder="Enter Date and Time" formControlName="follow_up_time" class="form-control">
+                		<owl-date-time #dt1 ></owl-date-time> 
+		            	</div>
+		            </div>
+		            <div class="col-md-6" id="remarkId" *ngIf="updateLeadForm.controls['lead_status'].value=='follow_up'">
+		            	<div class="form-group">
+		            		<label class="text-left">Follow Up Remark *</label>
+		            		<input type="text" name="" class="form-control" formControlName="remark">
+		            	</div>
+		            </div>
+		            <div class="col-md-6" id="delayedTime" *ngIf="updateLeadForm.controls['lead_status'].value=='delayed_possession'">
+		            	<div class="form-group">
+		            		<label class="text-left">Delayed Possession Date</label>
+		            		<input name="startDateNew" id="startDateNew" class="date-picker" (focus)="callChangeNew1()" formControlName="follow_up_time"  placeholder="Choose A Month..."/> 
+		            	</div>
+		            </div>
+		            <div class="col-md-6" id="delayedTimeProject" *ngIf="updateLeadForm.controls['lead_status'].value=='delayed_project'">
+		            	<div class="form-group">
+		            		<label class="text-left">Delayed Project Date</label>
+		            		<input name="startDateNewpro" id="startDateNewpro" class="date-picker"  (focus)="callChangeNew1()" formControlName="follow_up_time"  placeholder="Choose A Month..."/> 
+		            	</div>
+		            </div>
+		            <div class="col-md-6" id="addleadFormlostReason" style="display: none;">
+		              <div class="form-group">
+		                <label for="example-text-input" class="text-left">Reason for Lost <span class="text-danger">*</span></label>
+		                <div class="">
+		                  <select class="form-control capitalize" id="lost_reason" formControlName="lost_reason" (change)="reasonForLostDropdownChange($event.target.value)">
+		                    <option value="" disabled>Select Reason</option>
+		                    <option *ngFor="let reason of lostReasonsArr" value="{{reason}}">{{reason | replaceChar}}</option>
+		                  </select>
+		                  </div>
+		              </div>
+		            </div>
+		            <div class="col-md-6"  id="lostremark" *ngIf="updateLeadForm.controls['lead_status'].value=='lost'">
+		            	<div  class="form-group">
+		            		<label >Remarks</label>
+                      		<textarea class="form-control" rows="2" formControlName="lost_remark"></textarea>
+		            	</div>
+		            </div>
+
+		            <div class="col-sm-12 mt-3 text-right">
+		              <div class="mt-3">
+		              <button type="submit" [disabled]="!updateLeadForm.valid" class="rk-interalBtnColor addCursor">Update</button>
+		              <button class="cancle ml-3 addCursor rk-btnCancel" data-dismiss="modal">Cancel</button>
+		              </div>
+		            </div>
+		            <!-- <pre>{{updateLeadForm.value | json}}</pre> -->
+		          </div>
+		        </div>
+      		</div>
+    	</form>
+	</div>
+</div>
+
+<div class="modal fade customModal" id="addNewLeadModal" tabindex="-1" role="dialog" aria-labelledby="addNewLeadModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg" role="document">
+		<form (ngSubmit)="addLeadFormSubmit(addLeadForm.value); " [formGroup]="addLeadForm" class="form-horizontal" enctype="multipart/form-data" id="addLeadForm">
+        	<div class="modal-content">
+		        <div class="modal-header">
+		          <h5 class="modal-title modalTitle" id="exampleModalLabel"> Lead Details</h5>
+		        </div>
+		        <div class="modal-body">
+		          <div class="row mx-2">
+		            <div class="col-sm-10 col-md-6 mb-2">
+		              <div class="form-group">
+		                <label class="text-left">Name </label>
+		                <input type="text" class="form-control" name="name" placeholder="Enter Lead Name" formControlName="name">
+		              </div>
+		            </div>
+		            <div class="col-sm-10 col-md-6 mb-2">
+		              <div class="form-group">
+		                <label class="text-left">Lead Email </label>
+		                <input type="email" class="form-control" name="email" placeholder="Enter Lead Email" formControlName="email">
+		                <div *ngIf="addLeadForm.controls['email'].errors && !addLeadForm.controls['email'].pristine" class="text-danger">
+		                  <div [hidden]="addLeadForm.controls['email'].valid || addLeadForm.controls['email'].errors.required">Enter valid email.</div>
+		                </div>
+		              </div>
+		            </div>
+		            <div class="col-sm-10 col-md-6 mb-2">
+		              <div class="form-group">
+		                <label class="text-left">Lead Contact <span>*</span></label>
+		                <input type="number" class="form-control" name="contact" placeholder="Enter Lead Contact" formControlName="contact" required min="0" (keydown)="numberCheck($event)">
+		                <div *ngIf="addLeadForm.controls['contact'].errors && !addLeadForm.controls['contact'].pristine" class="text-danger">
+		                  <div [hidden]="!addLeadForm.controls['contact'].errors.required">Contact is required.</div>
+		                </div>
+		              </div>
+		            </div>
+		            <div class="col-sm-10 col-md-6 mb-2">
+		              <div class="form-group">
+		                <label class="text-left">Pincode</label>
+		                <input type="number" class="form-control" name="pincode" placeholder="Enter Lead Pincode" formControlName="pincode" min="0" (keydown)="numberCheck($event)">
+		              </div>
+		            </div>
+
+		            <div class="col-sm-10 col-md-6">
+		              <div class="form-group">
+		                <label class="text-left">Select Lead Type <span>*</span></label>
+		                <select formControlName="lead_type_id" class="form-control" (change)="onChangeOfLeadType($event.target.value)">
+		                	<option value="" disabled>Select</option>
+		                  <option value="{{type.id}}" *ngFor="let type of lead_types">{{type.name}}</option>
+		                </select>
+		              </div>
+		            </div>
+		            <div class="col-sm-10 col-md-6">
+		              <div class="form-group">
+		                <label class="text-left">Select Lead Source <span>*</span></label>
+		                <select formControlName="lead_source_id" class="form-control capitalize">
+		                  <option value="" disabled>Select</option>
+		                  <option value="{{src.id}}" *ngFor="let src of lead_sources">{{src.name | replaceChar}}</option>
+		                </select>
+		              </div>
+		            </div>
+		            <div class="col-sm-10 col-md-6">
+		              <div class="form-group">
+		                <label class="text-left">Select Lead Campaign </label>
+		                <select formControlName="lead_campaign_id" class="form-control capitalize">
+		                  <option value="" disabled>Select</option>
+		                  <option value="{{camp.id}}" *ngFor="let camp of lead_campaigns">{{camp.name | replaceChar}}</option>
+		                </select>
+		              </div>
+		            </div>
+		            <!--Dropdown added-->
+			          <div class="col-sm-10 col-md-6">
+			            <div class="form-group">
+			              <label class="text-left">Referrer User Type</label>
+			              <select formControlName="referrer_type" class="form-control capitalize" (change)="onChangeOfLeadSource($event.target.value)">
+			                <option value="" disabled>Select</option>
+			                <option value="{{src.name}}" *ngFor="let src of lead_referrer_list">{{src.name | replaceChar}}</option>
+			              </select>
+			            </div>
+			          </div>
+			          <!--Dropdown added-->
+			          <div class="col-sm-10 col-md-6 mb-2" *ngIf="['display_dealer_referral','non_display_dealer_referral','client_referral','design_partner_referral','broker','employee_referral','dealer','arrivae_champion','others','associate_partner','non_display_dealer'].includes(addLeadForm.controls['lead_source_type'].value) == true ">
+			            <div class="form-group">
+			              <label class="text-left">Referrer User</label>
+			              <ng-select formControlName="referrer_id" class="form-control capitalize border-0 p-0" placeholder="Select Referrer User">
+			                <ng-option value="" disabled>Select</ng-option>
+			                <ng-option value="{{camp.id}}" *ngFor="let camp of userList">{{camp.name }} - {{ camp.email}}</ng-option>
+			              </ng-select>
+			            </div>
+			          </div>
+		            <div class="col-sm-10 col-md-6 mb-2" *ngIf="addLeadForm.controls['lead_type_name'].value=='designer'">
+		              <div class="form-group">
+		                <label class="text-left">Instagram Id</label>
+		                <input type="text" class="form-control" name="instagram_handle" placeholder="Enter Instagram Id" formControlName="instagram_handle">
+		              </div>
+		            </div>
+		            <div class="col-sm-10 col-md-6 mb-2" *ngIf="addLeadForm.controls['lead_type_name'].value=='designer'">
+		            	<div class="form-group">
+		                <label class="text-left">Upload CV</label>
+		                <input type="file" name="" class="form-control" (change)="uploadCV($event)" name="attachment_file">
+		              </div>
+		            </div>
+		            <div class="col-sm-12 mt-3 text-right">
+		              <div class="mt-3">
+		              <button type="submit" [disabled]="!addLeadForm.valid" class="rk-interalBtnColor addCursor">Add</button>
+		              <button class="cancle ml-3 addCursor rk-btnCancel" data-dismiss="modal">Cancel</button>
+		              </div>
+		            </div>
+		          </div>
+		        </div>
+      		</div>
+    	</form>
+	</div>
+</div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <form (ngSubmit)="submitExcelUpload(); uploadExcelForm.reset()" #uploadExcelForm="ngForm" class="form-horizontal" enctype="multipart/form-data">
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title modalTitle" id="exampleModalLabel">Upload Lead Excel</h5>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+        	<div class="form-group col-sm-12">
+            	<a href="https://s3.amazonaws.com/arrivae-assets/lead/Lead_sample_file.xlsx" class="addCursor pull-right" download style="text-decoration: none;">Download sample excel file</a>
+            </div>
+            <div class="form-group col-sm-12 mt-2">
+              <!-- <label class="text-left">Upload Lead Excel*</label> -->
+              <input class="form-control" type="file" (change)="onChange($event)" name="attachment_file" ngModel #attachment_file="ngModel">
+            </div>
+            <p id="extErrorMsg" class="text-danger d-none col-sm-10">Check File extension (File should be in xls or xlsx format).</p>
+            <p class="col-sm-10 lableSize">Note* - only .xlsx or .xls files are allowed.  </p>
+            <div class="form-group col-sm-6 mt-2">
+               <label class="text-left">Select Lead Source <span>*</span></label>
+               <select class="form-control" name="sourceOfBulkLeads" [(ngModel)]="sourceOfBulkLeads">
+					<option value="" disabled>Select Lead Source</option>
+					<option *ngFor=" let src of lead_sources" value="{{src.id}}">{{src.name}}</option>
+              	</select>
+			</div>
+			<div class="form-group col-sm-6 mt-2">
+              <label class="text-left">Select Lead Type <span>*</span></label>
+              <select class="form-control" name="typeOfBulkLeads" [(ngModel)]="typeOfBulkLeads">
+				<option value="" disabled>Select Lead Type</option>
+				<option *ngFor=" let type of lead_types" value="{{type.id}}">{{type.name}}</option>
+              </select>
+            </div>
+            <div class="form-group col-sm-6 mt-2">
+              <label class="text-left">Select Lead Campaign </label>
+              <select class="form-control" name="campignOfBulkLeads" [(ngModel)]="campignOfBulkLeads">
+				<option value="" disabled>Select Lead Campaign</option>
+				<option *ngFor=" let camp of lead_campaigns" value="{{camp.id}}">{{camp.name}}</option>
+              </select>
+            </div>
+            <hr class="my-3">
+            <div class="text-right col-sm-12">
+              <button type="submit" class="rk-interalBtnColor addCursor" [disabled]="basefile==undefined">Upload</button>
+              <button class="ml-2 cancel addCursor" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+      </div>
+    </div>
+    </form>
+  </div>
+</div>
+
+
+<div class="modal fade customModal" id="questionnaireModal" tabindex="-1" role="dialog" aria-labelledby="questionnaireModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static" style="overflow-y:auto">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+        <h5 class="modal-title modalTitle" id="exampleModalLabel"> Lead Questionnaire</h5>
+        <!-- <button type="button" class="close close1 addCursor" data-dismiss="modal">
+          <img class="close" (click)="closeModal();"  src="https://www.homepolish.com/assets/close-ee1bfd7a4473933b6dd934b2c284dc856361b63581c8f43b8cdc1abe07c91765.svg">
+        </button> -->
+      </div>
+      <div class="modal-body">
+      	<app-leadquestionnaire [leadDetails]="leaddetailsForModal" (close)="closeModal($event)"></app-leadquestionnaire>
+      	
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade customModal" id="logModal" tabindex="-1" role="dialog" aria-labelledby="logModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+	          <h5 class="modal-title modalTitle" id="logModalLabel"> Activity Log</h5>
+	          <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="clearLogs();">
+	            <img class="close" data-dismiss="modal" src="https://www.homepolish.com/assets/close-ee1bfd7a4473933b6dd934b2c284dc856361b63581c8f43b8cdc1abe07c91765.svg">
+	          </button>
+	        </div>
+	        <div class="modal-body">
+	            <div class="row justify-content-center" style="background: #ECF0F1">
+	            	<div class="col-sm-11">
+	            		<div class="row leadDetailsMainDiv" *ngIf="lead_logs">
+					      <div class="col-md-12 pl-4 borderBottom">
+					        <div class="leadDetailsDiv">
+					          <p class="my-2 vColor">Lead Details</p>
+					        </div>
+					      </div>
+					      <div class="col-md-4 my-4 pl-4">
+					        <p class="vColor fontSize14 mb-2 capitalize">Name: <span class="text-dark">{{lead_logs.name}}</span></p>
+					        <p class="vColor fontSize14 mb-2">Role: <span class="text-dark capitalize">{{lead_logs.lead_type}}</span></p>
+					      </div>
+					      <div class="col-md-4 my-4">
+					        <p class="vColor fontSize14 mb-2">Contact: <span class="text-dark">{{lead_logs.contact}}</span></p>
+					        <p class="vColor fontSize14 mb-2">Status: <span class="text-dark capitalize">{{lead_logs.lead_status | replaceChar}}</span></p>
+					      </div>
+					      <div class="col-md-4 my-4">
+					        <p class="vColor fontSize14 mb-2">Date of Acquisition: <span class="text-dark">{{lead_logs.created_at | date:'dd MMM, y , h:mm a'}}</span></p>
+					        <p class="vColor fontSize14 mb-2 capitalize">Assigned CS Agent: <span class="text-dark" *ngIf="lead_logs.agent">{{lead_logs.agent.name}}</span><span class="text-dark" *ngIf="!lead_logs.agent">Not Assigned</span></p>
+					      </div>
+					    </div>
+					    <div class="row my-4">
+						    <div class="col-md-6">
+						        <!-- <p class="vColor fontSize14 mb-2">DATE RANGE</p> -->
+						    </div>
+						    <div class="col-md-6">
+						        <div class="row">
+						          <div class="col-7">
+						            <p class="vColor fontSize14 mb-2">USER</p>
+						            <div class="dropdown">
+
+						              <button class="dropdown-toggle dropdown-toggle1 dropdownButton dropdownButton1" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						                <img src="../../assets/img/images/original/missing.png" class="img-fluid myFluit mr-2">
+						                <span>All (logs)</span>
+						              </button>
+
+						              <div class="dropdown-menu dropdownMenu py-1" aria-labelledby="dropdownMenuButton">
+						                <a class="dropdown-item dropdown-item1 mt-2" (click) = "filterLogs($event, 'all')">
+						                  <img src="../../assets/img/images/original/missing.png" class="img-fluid myFluit mr-2">
+						                  All (logs)
+						                </a>
+
+						                <a class="dropdown-item dropdown-item1 mt-2" *ngFor="let owner of log_owners" (click) = "filterLogs($event,owner.email)">
+						                  <img src="../../assets/img{{owner.image}}" class="img-fluid myFluit mr-2" onError="this.src='../../assets/img/images/original/missing.png'">
+						                  {{owner.name}}
+						                </a>
+						              </div>
+
+						            </div>
+						          </div>
+						          <div class="col-5">
+						            <p class="vColor fontSize14 mb-2">SORT BY</p>
+						            <div class="dropdown">
+						              <button class="dropdown-toggle dropdown-toggle1 dropdownButton dropdownButton2" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						                Oldest First
+						              </button>
+						              <div class="dropdown-menu py-1 border-0" aria-labelledby="dropdownMenuButton">
+						                <a class="dropdown-item dropdown-item1" (click)="sortlog('created_at', 'oldest')">Oldest First</a>
+						                <a class="dropdown-item dropdown-item1" (click)="sortlog('created_at', 'newest')">Newest First</a>
+						              </div>
+						            </div>
+						          </div>
+						        </div>
+						      </div>
+						</div>
+						<div class="row mb-5">
+						    <div class="col-md-12">
+						        <!-- <h5 class="my-3 vColor1">Today <span class="vDate vColor ml-1">Thu Jun 23</span></h5> -->
+						        <!-- *ngFor="let log of filtered_logs" -->
+						        <div class="row" *ngFor = "let log of filtered_logs | sortDatewise:{property:columnlog, direction:directionlog}">
+						          <div class="col-md-12">
+						            <div class="row customRow mt-2 mb-1" data-toggle="collapse" attr.data-target="#{{log.custom_id}}" aria-expanded="false" aria-controls="collapseExample">
+						              <div class="col-1 text-center">
+						                <!-- <img src="../../assets/v3/img/profile.jpeg" class="img-fluid"> -->
+						                <img src="../../assets/img{{log.user_image}}" class="img-fluid" onError="this.src='../../assets/img/images/original/missing.png'"/>
+						              </div>
+						              <div class="col-11 pl-0" *ngIf="log.exotel==false">
+						                <p class="mb-0 mt-1 vColor1">
+						                  <span class="vPara capitalize" *ngIf="log.name">{{log.name}}({{log.role}}) </span>
+						                  <span class="vPara" *ngIf="!log.name">Someone </span>
+						                  made changes on
+						                  <span class="vPara">" {{log.date}} "</span></p>
+						                <span class="vDate vColor">{{log.time}}</span>
+						                <i class="cusDownArrow fa fa-caret-down"></i>
+						              </div>
+						              <div class="col-11 pl-0" *ngIf="log.exotel==true">
+						                <p class="mb-0 mt-1 vColor1">
+						                  <span class="vPara capitalize" *ngIf="log.whodunnit">{{log.whodunnit}}({{log.role}}) </span>
+						                  <span class="vPara" *ngIf="!log.whodunnit">Someone </span>
+						                  called at
+						                  <span class="vPara">" {{log.called_at | date: 'dd MMM, y '}} "</span></p>
+						                <span class="vDate vColor">{{log.called_at | date:'h:mm a'}}</span>
+						                <i class="cusDownArrow fa fa-caret-down"></i>
+						              </div>
+						            </div>
+
+						            <div class="row collapse" id="{{log.custom_id}}" *ngIf="log.exotel==false">
+						              <div class="col-md-12 p-0">
+						                <div class="card card-body">
+						                  <table class="table table-responsive">
+						                    <tbody>
+						                      <tr>
+						                        <th style="border: 0;">Field</th>
+						                        <th style="border: 0;">Original Value</th>
+						                        <th style="border: 0;">New Value</th>
+						                      </tr>
+						                      <tr *ngFor = "let object of log.object_changes">
+						                        <td style="border: 0;" class="vColor1">{{object.name}}</td>
+						                        <td style="border: 0;">{{object.initial}}</td>
+						                        <td style="border: 0;">{{object.final}}</td>
+						                      </tr>
+						                    </tbody>
+						                  </table>
+						                </div>
+						              </div>
+						            </div>
+
+						            <div class="row collapse" id="{{log.custom_id}}" *ngIf="log.exotel==true">
+						              <div class="col-md-12 p-0">
+						                <div class="card card-body">
+						                  <table class="table table-responsive">
+						                    <tbody>
+						                      <tr>
+						                        <th style="border: 0;">Status</th>
+						                        <th style="border: 0;">Duration</th>
+						                        <th style="border: 0;">Recording Url</th>
+						                      </tr>
+						                      <tr>
+						                        <td style="border: 0;" class="vColor1">{{log.status}}</td>
+						                        <td style="border: 0;">{{log.duration}}</td>
+						                        <td style="border: 0;">
+						                        	<audio controls *ngIf="log.recording_url!=null && log.recording_url!='' ">
+																			  <source src="{{log.recording_url}}" type="audio/mpeg">
+																			Your browser does not support the audio element.
+																			</audio>
+						                        	<span *ngIf="log.recording_url==null || log.recording_url=='' ">NA</span>
+						                    		</td>
+						                      </tr>
+						                    </tbody>
+						                  </table>
+						                </div>
+						              </div>
+						            </div>
+						          </div>
+						        </div>
+						      </div>
+								</div>
+
+	            	</div>
+	            </div>
+	        </div>
+		</div>
+	</div>
+</div>
+
+
+<!-- Modal Changes -->
+<div class="modal fade" id="AssignModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header border-bottom">
+        <h5 class="modal-title" id="exampleModalLongTitle">Assign</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="resetDropDown()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+	    <div class="modal-body">
+	      	<div class="form-group row">
+	            <label for="example-text-input" class="col-4 col-form-label">Assign CM: </label>
+	            <div class="col-8">
+	               <select class="form-control" style="width: 77%; display: inline-block;font-size: 14px;" (change)="onCMDropdownChangeModal($event.target.value)" id="cmSelect">
+	               	    <option value="" selected>Select CM</option>
+            			<!-- <option *ngFor="let cm of cmlistArray" value="{{cm.id}}" >{{cm.name}} - {{cm.email}}</option> -->
+            			<ng-container *ngFor="let cm of cmlistArr">
+                          <option value="{{cm.id}}">{{cm.name}} - {{cm.email}}</option>
+                        </ng-container>
+          			</select>
+	                
+	            </div>
+	        </div>
+	        <div class="form-group row">
+	            <label for="example-text-input" class="col-4 col-form-label">Assign Designer: </label>
+	            <div class="col-8">
+	               <select class="form-control" style="width: 77%; display: inline-block;font-size: 14px;" (change)="onDesignerDropdownChangeModal($event.target.value)" id="designerSelect">
+	               	    <option value="" selected>Select Designer</option>
+            			<ng-container *ngFor="let designer of designerArr">
+                          <option value="{{designer.id}}">{{designer.name}} - {{designer.email}}</option>
+                        </ng-container>
+          			</select>
+	                
+	            </div>
+	        </div>
+
+
+	        
+	    </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary cursor-pointer" data-dismiss="modal" (click)="resetDropDown()">Close</button>
+        <button type="button" class="btn btn-primary btn-pink cursor-pointer" (click)="assignCmToLeadTwo(cmIdValue,assignDesignerId)">Submit</button>
+      </div>
+    </div>
+  </div>
+</div>

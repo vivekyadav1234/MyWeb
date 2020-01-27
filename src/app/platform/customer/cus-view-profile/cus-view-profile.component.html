@@ -1,0 +1,69 @@
+<div class="marginTop row">
+  <div class="col-12" *ngIf="erroralert">
+    <div class="alert-box grid-100" *ngIf="errorMessage">
+      <div class="alert alert-danger mt-3 text-center">
+        <a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a>
+        {{errorMessage}}
+      </div>
+    </div>
+  </div>
+  <div class="col-12" *ngIf="successalert">
+    <div class="alert-box grid-100" *ngIf="successMessage">
+      <div class="alert alert-success mt-3 text-center">
+        <a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+        {{successMessage}}
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="row justify-content-center bg-color py-5" style="min-height: 90vh;">
+  <div class="col-11 mt-4">
+
+    <div class="row">
+      <div class="col-md-7 bg-white">
+        <form class="viewProfileForm">
+          <div class="row" *ngIf="profile">
+            <div class="col-12">
+              <div class="view-show">
+                <img src="assets/v3/img/profile.svg" class="icon-chng">
+
+              </div>
+              <div class="view-text">
+                Your profile
+              </div>
+              
+            </div>
+            <div class="col-6 mb-5">
+              <input type="text" class="form-control productInput" placeholder=" {{profile.name}}" readonly/>
+            </div>
+            <div class="col-6 mb-5">
+              <input type="text" class="form-control productInput" placeholder="{{profile.email}}" readonly/>
+            </div>
+            <div class="col-6 mb-5">
+              <input type="text" class="form-control productInput" placeholder="{{profile.contact}}" readonly/>
+            </div>
+            <div class="col-6 mb-5">
+              <input type="text" class="form-control productInput" placeholder="{{profile.pincode != '' && profile.pincode != null && profile.pincode || 'Pincode'}}" readonly/>
+            </div>
+           
+          </div>
+        </form>
+      </div>
+      <div class="col-md-5 profile-chng" *ngIf="profile">
+        <div class="row justify-content-end">
+          <div class="col-11 bg-white profile-chng">
+            <div class="imgdiv">
+              <img src="assets/v3/img/profile.jpeg" width="100px" class="img-chng">
+            </div>
+            <div class="txtDiv">
+              <p>PREFERED CUSTOMER<br><span class="capitalize" style="color: black;">{{ profile.name }}</span></p>
+            </div>
+           
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

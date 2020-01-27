@@ -1,0 +1,154 @@
+ <div class="row ss-top-menu">
+  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6">
+    <span class="ss-link" style="vertical-align: -webkit-baseline-middle;" [routerLink]="['/']">Dashboard</span> 
+    <span style="vertical-align: -webkit-baseline-middle;"><i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-link" style="vertical-align: -webkit-baseline-middle;" [routerLink]="['/community_manager/leads']" [queryParams]="{lead_status: lead_status}" *ngIf="(role=='city_gm' || role=='business_head' || role=='community_manager' || role=='design_manager')">Lead</span>
+    <span class="ss-link" style="vertical-align: -webkit-baseline-middle;" [routerLink]="['/designer/leads']" [queryParams]="{customer_status: lead_details.lead_status}" *ngIf="role=='designer'">Lead </span>
+    <span *ngIf="lead_details" class="capitalize" style="vertical-align: -webkit-baseline-middle;"><i class="rightArrow fa fa-angle-right"></i> {{lead_details.lead_status | replaceChar}}</span>
+    <span style="vertical-align: -webkit-baseline-middle;"><i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-text-dark capitalize" style="vertical-align: -webkit-baseline-middle;" *ngIf="lead_details && lead_details.user_reference">{{lead_details.user_reference.name}}</span>
+  </div>
+</div>
+<div class="rk-ui-notification" *ngIf="successalert">
+  <span id="notificationMessageText">{{successMessage}}</span>
+  <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+<div class="row px-4">
+  <app-shared-top-menu [lead_id]='lead_id' [lead_details]='lead_details' [lead_status]='lead_status' [detailed_info_tab]='"active"'></app-shared-top-menu>
+  <div class="col-12">
+    <div class="row bg-white mb-5">
+      <div class="col-md-12 mt-4">
+          <app-sms-call></app-sms-call>
+      </div>
+      <div class="col-md-12">
+        <ul class="nav nav-tabs tabs-chng mt-4"  id="myTab" role="tablist">
+          <li class="nav-item nav-items">
+            <a class="nav-link active addCursor text-center mr-3" (click)="getSet('csq')" [ngClass]="{'active': selectedSet == 'csq'}">Questionnaire</a>
+          </li>
+          <!-- <li class="nav-item nav-items" *ngIf="isProjectInWip()">
+            <a class="nav-link addCursor text-center mr-3" (click)="getSet('reqsheet')" [ngClass]="{'active': selectedSet == 'reqsheet'}">Requirement Sheet</a>
+          </li> -->
+          <!-- <li class="nav-item nav-items">
+             <a class="nav-link addCursor text-center mr-3" (click)="getSet('scopedoc')" [ngClass]="{'active': selectedSet == 'scopedoc'}">Scope Document</a>
+          </li> -->
+          <li class="nav-item nav-items">
+             <a class="nav-link addCursor text-center mr-3" (click)="getSet('bookform')" [ngClass]="{'active': selectedSet == 'bookform'}">Booking Form</a>
+          </li>
+
+          <li class="nav-item nav-items">
+             <a class="nav-link addCursor text-center mr-3" (click)="getSet('questionnaire')" [ngClass]="{'active': selectedSet == 'questionnaire'}">Client Questionnaire</a>
+          </li>
+
+        </ul>
+
+        <div class="csq mt-4 px-5" *ngIf="this.selectedSet == 'csq'">
+          <app-leadquestionnaire [leadDetails]="lead_details"></app-leadquestionnaire>
+        </div>
+
+        <div class="reqsheet" *ngIf="this.selectedSet == 'reqsheet'">
+          <app-requirement-sheet></app-requirement-sheet>
+        </div>
+
+        <div class="scopedoc" *ngIf="this.selectedSet == 'scopedoc'">
+          <app-scope-document></app-scope-document>
+        </div>
+
+        <div class="bookform" *ngIf="this.selectedSet == 'bookform'">
+          <app-booking-form></app-booking-form>
+        </div>
+
+        <div class="bookform" *ngIf="this.selectedSet == 'questionnaire'">
+          <app-designerquestionnaire [leadid] = "lead_id"></app-designerquestionnaire>
+        </div>
+
+        <div class="bf_2" *ngIf="this.selectedSet == 'bf_2'">
+          <form [formGroup]="designerBookingForm1" (ngSubmit)="designerBookingForm1Submit(designerBookingForm1.value,'bookingForm2')">
+            <div  class="row question mt-4">
+              <div class="col-md-6 mt-3">
+                  <label class="customLabel"><strong>Customer Name </strong></label>
+                  <input type="text" class="form-control" placeholder="{{customerDetails.name}}" readonly formControlName="customer_name">
+              </div>
+              <div class="col-md-6 mt-3">
+                  <label class="customLabel"><strong>Customer Age </strong></label>
+                <input type="text" class="form-control" placeholder="" formControlName="customer_age">
+              </div>
+              <div class="col-md-12 mt-4">
+                  <label class="customLabel"><strong>Profession / Background of the Client </strong></label>
+                  <input type="text" class="form-control" placeholder="" formControlName="profession">
+              </div>
+
+              <div class="col-md-12 mt-4">
+                  <label class="customLabel"><strong>Family Background of members staying in the house </strong></label>
+                  <input type="text" class="form-control" placeholder="" formControlName="family_profession">
+              </div>
+              <div class="col-md-12 mt-4">
+                  <label class="customLabel"><strong>How old is the kitchen</strong></label>
+                  <input type="text" class="form-control" placeholder="" formControlName="mk_age">
+              </div>
+
+              <div class="col-md-12 mt-4">
+                  <label class="customLabel"><strong>Lifestyle of the members staying in the house</strong></label>
+                  <input type="text" class="form-control" placeholder="" formControlName="mk_lifestyle">
+              </div>
+              <div class="col-md-12 mt-4">
+                  <label class="customLabel"><strong>Are they planning to gut the kitchen area</strong> </label>
+                  <input type="text" class="form-control" placeholder="" formControlName="mk_gut_kitchen">
+              </div>
+              <div class="col-md-12 mt-4">
+                  <label class="customLabel"><strong>Are they planning to keep the same layout & simply make cosmetic changes</strong></label>
+                  <input type="text" class="form-control" formControlName="mk_same_layout">
+              </div>
+              <div class="col-md-12 mt-4">
+                  <label class="customLabel"><strong>What kind of improvements are they looking for in a new kitchen (Upgraded electrical service, Better lighting, Additional storage space. ) </strong></label>
+                  <input type="text" class="form-control" formControlName="mk_improvements">
+              </div>
+              <div class="col-md-12 mt-4">
+                  <label class="customLabel"><strong>Some special requirements in a new kitchen?</strong> </label>
+                  <input type="text" class="form-control" formControlName="mk_special_requirements">
+              </div>
+              <div class="col-md-12 mt-4">
+                <label class="customLabel"><strong>Who is the primary cook? And what kind of cooking they have on a regular basis (Veg / Non Veg) </strong></label>
+                <input class="form-control" type="text" formControlName="mk_cooking_details">
+              </div>
+              <div class="col-md-12 mt-4">
+                  <label class="customLabel"><strong>List of appliances/white goods/smaller electrical appliances(Microwave / Oven / Mixie)</strong> </label>
+                  <input type="text" class="form-control" formControlName="mk_appliances">
+              </div>
+              <div class="col-md-12 mt-4">
+                <label class="customLabel"><strong> What is the family eating area as in  like kitchen area, dining table, counter space?</strong></label>
+                  <input type="text" class="form-control" formControlName="mk_family_eating_area">
+              </div>
+              <div class="col-md-12 mt-4">
+                  <label class="customLabel"><strong>How often do they entertain guests?</strong> </label>
+                  <input type="text" class="form-control" formControlName="mk_guest_frequence">
+              </div>
+              <div class="col-md-12 mt-4">
+                  <label class="customLabel"><strong>Storage patterns like monthly, yearly, as required basis?</strong> </label>
+                  <input type="text" class="form-control" formControlName="mk_storage_patterns">
+              </div>
+              <div class="col-md-12 mt-4">
+                  <label class="customLabel"><strong>What kind of cabinets facing they are looking at (Glossy / Matt)</strong> </label>
+                  <input type="text" class="form-control" formControlName="mk_cabinet_finishing">
+              </div>
+              <div class="col-md-12 mt-4">
+                  <label class="customLabel"><strong>Counter top material/backsplash materials to be discussed</strong> </label>
+                  <input type="text" class="form-control" formControlName="mk_countertop_materials">
+              </div>
+              <div class="col-md-12 mt-4">
+                  <label class="customLabel"><strong>Any colour/mood for the look preferred?</strong> </label>
+                  <input type="text" class="form-control" formControlName="mk_mood">
+              </div> 
+            </div>
+            <div class="row">
+              <div class="col-md-12 mt-4">
+                <button class="btn btn-pink pull-right" id="designerBookingForm2Button">SUBMIT</button>
+               
+              </div>
+            </div>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

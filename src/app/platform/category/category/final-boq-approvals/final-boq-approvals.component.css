@@ -1,0 +1,188 @@
+.close{
+    font-size:40px;
+    font-weight: 300;
+    color: #8c031f!important;
+}
+.card{
+    width: 38%;
+    margin-left: 8%;
+    box-shadow: 1px 1px 7px 0px #dadada;
+    border:none;
+}
+.modal-body{
+    margin-left: 0px;
+}
+a, a:hover{
+  text-decoration: none;
+  color:black;
+}
+.optionMenu{
+	float: right;
+	padding: 5px 10px 3px 10px;
+	margin-top: 3px;
+	border-radius: 50px;
+	border: 1px solid #dedede;
+	color: #5a5a5a;
+	cursor: pointer;
+}
+.myCollapse{
+	margin-top: 7px;
+}
+.pArrow{
+	position: absolute;
+	width: 10px;
+	height: 10px;
+	background-color: #fff;
+	-ms-transform: rotate(45deg);
+	-webkit-transform: rotate(45deg);
+	transform: rotate(45deg);
+	right: 28px;
+	margin-top: -5px;
+	border: 1px solid #ccc;
+}
+.optionDiv{
+	width: 90%;
+    display: inherit;
+}
+.approve{
+	background-color: #a7eaaf;
+	width: 48%;
+}
+.reject{
+	background-color: #ffcbcb;
+	width: 48%;
+}
+.approve:hover{
+	background-color: #118e1a;
+	color: #fff !important;
+}
+.reject:hover{
+	background-color: #a70303;
+	color: #fff !important;
+}
+.rk-ui-notification, .rk-ui-notification.err{
+  z-index: 1060;
+}
+/*  Css FOr Invoice modal start here*/
+
+.border-right{
+  border-right: 2px solid black;
+
+}
+
+.logo{
+  padding: 17px 25px;
+  text-align: center;
+
+}
+.logo img{
+  width: 145px;
+}
+.quoteFont
+{
+  font-family: Courier;
+  text-align: center;
+  padding: 18px 24px;
+  font-size: 1.5rem;
+}
+.address{
+  text-align: center;
+  font-size: .9rem;
+  padding-left: 30px;
+  padding-right: 30px;
+}
+#InvoiceModal p{
+  font-family: 'Helvetica';
+  font-size: 0.8rem;
+  word-wrap: break-word;
+}
+
+#InvoiceModal .table-bordered td, #InvoiceModal .table-bordered th {
+  border: 2px solid #0e1013;
+  font-size: .9rem;
+  min-width: 9rem;
+}
+#InvoiceModal .table-bordered {
+  border-collapse: collapse;
+}
+#InvoiceModal .table td, #InvoiceModal .table th {
+  padding: 0.25rem;
+  background: #fff;
+  color: #000;
+}
+#InvoiceModal .minTdWidth{
+  width: 30%;
+}
+#InvoiceModal .spanChange{
+  margin-left: -12px;
+}
+#InvoiceModal .rowChng td:nth-child(1) {
+  width: 60px;  
+}
+#InvoiceModal .rowChng td:nth-child(2) {
+  width: 90px;  
+}  
+
+#InvoiceModal .rowChng td:nth-child(3) {
+  width: 130px;  
+}  
+#InvoiceModal .rowChng td:nth-child(4) {
+  width: 240px;  
+}  
+#InvoiceModal .rowChng td:nth-child(5) {
+  width: 70px;  
+}  
+#InvoiceModal table th{
+  text-align: center;
+}   
+#InvoiceModal .rowChng td{
+  font-family: 'Helvetica';
+  font-size: .7rem;
+} 
+
+.borders {
+  border:2px solid black;
+}
+.text{
+  text-align: center;
+  font-family: 'Helvetica';
+  font-size: .9rem;
+}
+.custom-close{
+  position: absolute;
+  right: -53px;
+  top: -37px;
+  border: none;
+  height: 3rem;
+  text-align: center;
+  width: 3rem;
+  background-color: transparent;
+  color: #fff;
+  z-index: 9;
+  font-size: 42px;
+  cursor: pointer;
+  outline: none;
+}
+a, a:hover{
+  text-decoration: none;
+  color:black;
+}
+.btn-red {
+  font-family: 'roboto';
+  background: darkred;
+  border: darkred;
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+.btn-reject{
+  background: #d6d6d6;
+  border: #d6d6d6;
+  color: gray;
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+table th{
+    min-width: auto !important;
+}

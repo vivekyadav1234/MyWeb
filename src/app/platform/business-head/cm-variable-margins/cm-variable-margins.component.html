@@ -1,0 +1,235 @@
+<div class="row ss-top-menu">
+  <div class="col-sm-6">
+    <span class="ss-text-dark "  style="vertical-align: -webkit-baseline-middle;">Dashboard</span>
+    <span style="vertical-align: -webkit-baseline-middle;"> <i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;">CM-Variable-Margins</span>
+  </div>
+  <div class="col-sm-6">
+      <!-- <button class="addCursor btn btn-pink float-right downloadBtn mr-2" data-toggle="modal" data-target="#addNewLeadModal">Add Lead</button> -->
+      <button class="addCursor btn btn-pink float-right downloadBtn mr-2" data-toggle="modal" *ngIf = "is_champion=='true'" data-target="#inviteChampionModal" (click)="cminvitechampions.getChampionList()">Invite Level 2 & Level 3 User</button>
+    </div>
+</div>
+<div class="rk-ui-notification err" *ngIf="erroralert"  style="z-index: 10000;">
+	<span id="notificationMessageText">{{errorMessage}}</span>
+	<a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+<div class="rk-ui-notification" *ngIf="successalert"  style="z-index: 10000;">
+	<span id="notificationMessageText">{{successMessage}}</span>
+	<a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+
+<div class="mt-4 container-set">
+	<div class="row">
+	  <div class="col-md-12 text-right mb-3">
+	  	<ng-container *ngIf="role && role=='business_head'"><button class="rk-interalBtnColor addCursor rk-form-fontsize " data-toggle="modal" data-target="#importmarginsmodal">Import CM Variable Margins</button></ng-container>
+	  </div>
+	  <div class="col-md-12">
+	  	<select class="form-control capitalize mt-4 mb-5 col-5 addCursor" (change)="getVariablePriceForCM($event.target.value)" [disabled]="role && role=='community_manager'" [(ngModel)]="selected_cm_id">
+	  		<option disabled value="">Choose CM</option>
+	  		<option *ngFor="let cm of cmList" value="{{cm.id}}">{{cm.name}} - {{cm.email}}</option>
+	  	</select>
+	  	<div class="mt-3" [ngClass]="{'d-none':!cm_mkw_variable_pricing_data}">
+        <div id="navcontainer">
+          <ul class="nav nav-tabs tabs-chng" id="myTab" role="tablist">
+            <li class="nav-item nav-items">
+              <a class="nav-link addCursor text-center mr-3 rk-form-fontsize" [ngClass]="{'active': selectedsectionName == 'full_home'}" (click)="changeSectionTab('full_home')">Full Home Factors</a>
+            </li>
+            <li class="nav-item nav-items">
+              <a class="nav-link addCursor text-center mr-3 rk-form-fontsize" [ngClass]="{'active': selectedsectionName == 'mkw'}" (click)="changeSectionTab('mkw')">MKW Factors</a>
+            </li>
+          </ul>
+        </div>
+        <div class="container-fluid container-set mb-3" style="background: #fff;">
+          <div class="row rowContainer" style="padding: 16px;" id="fullhomeRow">
+
+            <div class="col-md-12" *ngIf="role && role=='business_head' && cm_mkw_variable_pricing_data && Object.keys(cm_mkw_variable_pricing_data.full_home_factors).length>0">
+              <div class="iconBox addCursor mr-1 pull-right text-center" (click)="deleteVariablePriceInstance(cm_mkw_variable_pricing_data.id,'full_home')"> 
+                <i class="fa fa-trash"></i>
+              </div>
+            </div>
+
+            <div class="col-md-12 rk-form-fontsize">
+              <div *ngIf="cm_mkw_variable_pricing_data">
+                <pre *ngIf="Object.keys(cm_mkw_variable_pricing_data.full_home_factors).length>0">{{cm_mkw_variable_pricing_data.full_home_factors | json}}</pre>
+                <p *ngIf="Object.keys(cm_mkw_variable_pricing_data.full_home_factors).length==0" class="text-center mt-2">This CM doesn't have variable pricing instance for Full Home. Global default values will be used.</p>
+              </div>
+              <div *ngIf="!cm_mkw_variable_pricing_data">This CM doesn't have variable pricing instance. Global default values will be used.</div>
+            </div>
+          </div>
+          <div class="row rowContainer" style="padding: 16px;" id="mkwRow">
+
+            <div class="col-md-12" *ngIf="role && role=='business_head' && cm_mkw_variable_pricing_data && Object.keys(cm_mkw_variable_pricing_data.mkw_factors).length>0">
+              <div class="iconBox addCursor mr-1 pull-right text-center" (click)="deleteVariablePriceInstance(cm_mkw_variable_pricing_data.id,'mkw')"> 
+                <i class="fa fa-trash"></i>
+              </div>
+            </div>
+
+            <div class="col-md-12 rk-form-fontsize">
+              <div *ngIf="cm_mkw_variable_pricing_data">
+                <pre *ngIf="Object.keys(cm_mkw_variable_pricing_data.mkw_factors).length>0">{{cm_mkw_variable_pricing_data.mkw_factors | json}}</pre>
+                <p *ngIf="Object.keys(cm_mkw_variable_pricing_data.mkw_factors).length==0" class="text-center mt-2">This CM doesn't have variable pricing instance for MKW. Global default values will be used.</p>
+              </div>
+              <div *ngIf="!cm_mkw_variable_pricing_data">This CM doesn't have variable pricing instance. Global default values will be used.</div>
+            </div>
+          </div>
+        </div>
+	  	</div>
+      <div class="mt-3 px-3 py-4 text-center" [ngClass]="{'d-none':cm_mkw_variable_pricing_data || (selected_cm_id=='')}" style="background: #fff;">
+        This CM doesn't have variable pricing instance. Global default values will be used.
+      </div>
+	  </div>
+	</div>
+</div>
+
+<div class="modal fade customModal" id="importmarginsmodal" tabindex="-1" role="dialog" aria-labelledby="addNewLeadModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+	<div class="modal-dialog modal-lg py-5" role="document">
+  	<div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title modalTitle" id="exampleModalLabel"> Import File</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="closemodal()">
+          <img class="close" data-dismiss="modal" src="https://www.homepolish.com/assets/close-ee1bfd7a4473933b6dd934b2c284dc856361b63581c8f43b8cdc1abe07c91765.svg">
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row mx-2">
+          <div class="col-sm-12 col-md-12 mb-2">
+            <div class="form-group">
+              <label class="text-left">Select CM <span class="text-danger">*</span></label>
+              <select class="form-control capitalize" [(ngModel)]="import_selected_cmid">
+					  		<option disabled value="">Choose CM</option>
+					  		<option *ngFor="let cm of cmList" value="{{cm.id}}">{{cm.name}} - {{cm.email}}</option>
+					  	</select>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-12 mb-2">
+            <div class="form-group">
+              <label class="text-left">Select Type <span class="text-danger">*</span></label>
+              <select class="form-control capitalize" [(ngModel)]="import_selected_type">
+					  		<option disabled value="">Choose Type</option>
+					  		<option value="full_home">Full Home</option>
+					  		<option value="mkw">MKW</option>
+					  	</select>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-12 mb-2">
+          	<div class="form-group">
+              <label class="text-left">Upload File <span class="text-danger">*</span></label>
+              <input class="form-control ss-form-control" type="file" (change)="onChange($event)" name="attachment_file" ngModel #attachment_file="ngModel" id="upload_input">
+              <p id="extErrorMsg" class="text-danger d-none col-sm-10 rk-form-fontsize mt-2">Check File extension (File should be in yml format).</p>
+            </div>
+          </div>
+          <div class="col-sm-12 mt-3 text-right">
+          	<button type="submit" class="rk-interalBtnColor addCursor" (click)="importVariablePriceForCm()" [disabled]="(import_selected_type==''||import_selected_cmid=='' || basefile==undefined)">Import</button>
+          </div>
+        </div>
+      </div>
+		</div>
+	</div>
+</div>
+
+ <div class="modal fade customModal" id="addNewLeadModal" tabindex="-1" role="dialog" aria-labelledby="addNewLeadModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <form (ngSubmit)="addLeadFormSubmit(addLeadForm.value); " [formGroup]="addLeadForm" class="form-horizontal" enctype="multipart/form-data" id="addLeadForm">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title modalTitle" id="exampleModalLabel"> Lead Details</h5>
+              </div>
+              <div class="modal-body">
+                <div class="row mx-2">
+                  <div class="col-sm-10 col-md-6 mb-2">
+                    <div class="form-group">
+                      <label class="text-left">Name </label>
+                      <input type="text" class="form-control" name="name" placeholder="Enter Lead Name" formControlName="name">
+                    </div>
+                  </div>
+                  <div class="col-sm-10 col-md-6 mb-2">
+                    <div class="form-group">
+                      <label class="text-left">Lead Email </label>
+                      <input type="email" class="form-control" name="email" placeholder="Enter Lead Email" formControlName="email">
+                      <div *ngIf="addLeadForm.controls['email'].errors && !addLeadForm.controls['email'].pristine" class="text-danger">
+                        <div [hidden]="addLeadForm.controls['email'].valid || addLeadForm.controls['email'].errors.required">Enter valid email.</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-10 col-md-6 mb-2">
+                    <div class="form-group">
+                      <label class="text-left">Lead Contact <span>*</span></label>
+                      <input type="number" class="form-control" name="contact" placeholder="Enter Lead Contact" formControlName="contact" required min="0" (keydown)="numberCheck($event)">
+                      <div *ngIf="addLeadForm.controls['contact'].errors && !addLeadForm.controls['contact'].pristine" class="text-danger">
+                        <div [hidden]="!addLeadForm.controls['contact'].errors.required">Contact is required.</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-10 col-md-6 mb-2">
+                    <div class="form-group">
+                      <label class="text-left">Pincode</label>
+                      <input type="number" class="form-control" name="pincode" placeholder="Enter Lead Pincode" formControlName="pincode" min="0" (keydown)="numberCheck($event)">
+                    </div>
+                  </div>
+  
+                  <div class="col-sm-10 col-md-6">
+                    <div class="form-group">
+                      <label class="text-left">Select Lead Type <span>*</span></label>
+                      <select formControlName="lead_type_id" class="form-control" (change)="onChangeOfLeadType($event.target.value)">
+                        <option value="" disabled>Select</option>
+                        <option value="{{type.id}}" *ngFor="let type of lead_types">{{type.name}}</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-sm-10 col-md-6">
+                    <div class="form-group">
+                      <label class="text-left">Select Lead Source <span>*</span></label>
+                      <select formControlName="lead_source_id" class="form-control capitalize">
+                        <option value="" disabled>Select</option>
+                        <option value="{{src.id}}" *ngFor="let src of lead_sources">{{src.name}}</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-sm-10 col-md-6">
+                    <div class="form-group">
+                      <label class="text-left">Select Lead Campaign </label>
+                      <select formControlName="lead_campaign_id" class="form-control capitalize">
+                        <option value="" disabled>Select</option>
+                        <option value="{{camp.id}}" *ngFor="let camp of lead_campaigns">{{camp.name}}</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-sm-10 col-md-6 mb-2" *ngIf="addLeadForm.controls['lead_type_name'].value=='designer'">
+                    <div class="form-group">
+                      <label class="text-left">Instagram Id</label>
+                      <input type="text" class="form-control" name="instagram_handle" placeholder="Enter Instagram Id" formControlName="instagram_handle">
+                    </div>
+                  </div>
+                  <div class="col-sm-10 col-md-6 mb-2" *ngIf="addLeadForm.controls['lead_type_name'].value=='designer'">
+                    <div class="form-group">
+                      <label class="text-left">Upload CV</label>
+                      <input type="file" name="" class="form-control" (change)="uploadCV($event)" name="attachment_file">
+                    </div>
+                  </div>
+                  <div class="col-sm-12 mt-3 text-right">
+                    <div class="mt-3">
+                    <button type="submit" [disabled]="!addLeadForm.valid" class="rk-interalBtnColor addCursor">Add</button>
+                    <button class="cancle ml-3 addCursor rk-btnCancel" data-dismiss="modal">Cancel</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </form>
+    </div>
+  </div> 
+
+<!-- Invite Champion Modal -->
+<div class="modal fade customModal" id="inviteChampionModal" tabindex="-1" role="dialog" aria-labelledby="inviteChampionModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title modalTitle" id="inviteChampionModalLabel">User Details</h5>
+      </div>
+
+      <div class="modal-body">
+        <app-invite-champions #cminvitechampions></app-invite-champions>
+      </div>
+    </div>
+  </div>
+</div>

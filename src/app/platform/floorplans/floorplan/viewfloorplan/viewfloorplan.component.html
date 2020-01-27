@@ -1,0 +1,65 @@
+<div class="row title">
+  <h3>Dashboard / <span [routerLink]="['/projects/view/'+id]" routerLinkActive="active" [queryParams]="{customer_status: customer_status}" class="addCursor">Project</span> / <span>Floorplan Details</span></h3>
+</div>
+<div class="row inputForm bg_dashboard justify-content-center">
+  <div class="col-12" *ngIf="erroralert">
+    <div class="alert-box grid-100" *ngIf="errorMessage">
+      <div class="alert alert-danger mt-3 text-center">
+        <a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a>
+        {{errorMessage}}
+      </div>
+    </div>
+  </div>
+  <div class="col-12" *ngIf="successalert">
+    <div class="alert-box grid-100" *ngIf="successMessage">
+      <div class="alert alert-success mt-3 text-center">
+        <a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+        {{successMessage}}
+      </div>
+    </div>
+  </div>
+  <!-- <div class="col-12">
+    <button class="button button_emi mt-3" >BACK</button>
+  </div> -->
+	<div class="col-11">
+		<div class="card text-center">
+		  <div class="card-body card_main">
+		  	<div class="row justify-content-center">
+            <div class="col-sm-12 col-md-6" *ngIf="floorplan">
+              <input type="text" value={{floorplan.name}} class="form-control" readonly>
+              <textarea value={{floorplan.details}} class="form-control" readonly></textarea>
+            </div>
+            <div class="col-sm-6 col-md-5" *ngIf="floorplan">
+               <div class="text-right my-2" *ngIf="role && (role=='designer' || role=='admin') ">
+                  <button class="button changeButton" (click)="editFloorplan()">
+                      Edit<i class="fa fa-pencil ml-2" aria-hidden="true"></i>
+                  </button>
+
+                  <button class="button changeButton" (click)="confirmAndDelete()">
+                      Delete<i class="fa fa-times ml-2" aria-hidden="true"></i>
+                  </button>
+                </div>
+              <div class="card card_box">
+                <p *ngIf="floorplan.attachment_file_content_type == null">No Floorplan File or Image Uploaded.</p>
+                <img *ngIf="!(floorplan.attachment_file_content_type == 'image/png' || floorplan.attachment_file_content_type == 'image/jpg' || floorplan.attachment_file_content_type == 'image/jpeg' || floorplan.attachment_file_content_type == 'image/svg' || floorplan.attachment_file_content_type == null)" src="https://d2wtye2lnn1ee2.cloudfront.net/assets/v3/img/fileicon.png" class="card-img-top add_proj_img" height="120px;" width="80px">
+
+							  <img class="card-img-top add_proj_img" src={{floorplan.attachment_file}} *ngIf="floorplan.attachment_file_content_type == 'image/png' || floorplan.attachment_file_content_type == 'image/jpg' || floorplan.attachment_file_content_type == 'image/jpeg' || floorplan.attachment_file_content_type == 'image/svg' ">
+
+						  </div>
+               <a href="{{floorplan.attachment_file}}" *ngIf="(floorplan.attachment_file_content_type == 'image/png' || floorplan.attachment_file_content_type == 'image/jpg' || floorplan.attachment_file_content_type == 'image/jpeg' || floorplan.attachment_file_content_type == 'image/svg') " download>Download Floorplan Image</a>
+
+                <a href="{{floorplan.attachment_file}}" *ngIf="!(floorplan.attachment_file_content_type == 'image/png' || floorplan.attachment_file_content_type == 'image/jpg' || floorplan.attachment_file_content_type == 'image/jpeg' || floorplan.attachment_file_content_type == 'image/svg' || floorplan.attachment_file_content_type == null) ">Download Floorplan File</a>
+
+            </div>
+		  	</div>
+        <div class="row mt-5">
+           <div class="col-md-12">
+                <button class="button button_emi mr-4" [routerLink]="['/projects/'+id+'/floorplandesign/'+fpid+'/create']" routerLinkActive='active' *ngIf="role && (role=='designer' || role=='admin' || role =='design_head') " [queryParams]="{customer_status: customer_status}">Upload design</button>
+                <button class="button button_emi mr-4" [routerLink]="['/projects/'+id+'/floorplandesign/'+fpid+'/view']" routerLinkActive='active' [queryParams]="{customer_status: customer_status}">View design</button>
+                 <button class="button button_emi " *ngIf="role && (role=='designer' || role=='admin' || role == 'design_head') "><a href="http://house.infurnia.com/" target="_blank" style="text-decoration: none;color: #fff;">Open  Design Tool</a></button>
+            </div>
+        </div>
+		  </div>
+		</div>
+	</div>
+</div>

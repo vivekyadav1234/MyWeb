@@ -1,0 +1,59 @@
+<div class="row title">
+  <div class="col-lg-10 col-md-10 col-sm-10"><h3>Dashboard / <span>Call logs</span></h3></div>
+  <div class="col-lg-2 col-md-2 col-sm-2"><button class="openDesignToolBtn"><a href="http://house.infurnia.com/" target="_blank" class="pull-right" style="text-decoration: none;color: black;" *ngIf="role && (role=='designer' || role=='admin') ">Open  Design Tool</a></button></div>
+</div>
+
+<!-- customers table starts-->
+<div class="row body_height justify-content-center">
+  <div class="col-12" *ngIf="successalert">
+    <div class="alert-box grid-100" *ngIf="successMessage">
+      <div class="alert alert-success mt-3 text-center">
+          <a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+          {{successMessage}}
+        </div>
+    </div>
+  </div>
+  <div class="col-12" *ngIf="erroralert">
+    <div class="alert-box grid-100" *ngIf="errorMessage">
+      <div class="alert alert-success mt-3 text-center">
+          <a class="close link" data-dismiss="alert"  (click)="erroralert=false">×</a>
+          {{errorMessage}}
+        </div>
+    </div>
+  </div>
+  <div class="col-12 table-responsive p-0">
+    <div *ngIf="callLogs && callLogs.length == 0" class="text-center my-5">No Lead with status {{customer_status | replaceChar}} !</div>
+    <table class="table table-hover" *ngIf="callLogs && callLogs.length != 0">
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>To</th>
+          <th>From</th>
+          <th>Time</th>
+          <th>Duration</th>
+          <th>Recording</th>
+          <!-- <th>Action</th> -->
+          <!-- <th>Action</th> -->
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor=" let obj of callLogs">
+          <td>{{obj.call_type}}</td>
+          <td>{{obj.call_to}}</td>
+          <td>{{obj.call_from}}</td>
+          <td>{{obj.call_time}}</td>
+          <td>{{obj.duration}}</td>
+          <td>
+            <audio controls>
+              <source src="{{obj.recording_url}}" type="audio/mpeg">
+              Your browser does not support the audio element.
+            </audio>
+          </td>
+          <!-- <td>{{obj.pincode}}</td> -->
+          <!-- <td><i data-toggle="tooltip" title="Call" data-placement="top" class="fa fa-phone-square" aria-hidden="true" style="cursor: pointer;" (click)="callToLead(obj.id)"></i></td> -->
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<!-- customers table ends-->

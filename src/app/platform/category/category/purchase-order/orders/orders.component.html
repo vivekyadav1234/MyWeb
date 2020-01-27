@@ -1,0 +1,188 @@
+<div class="row ss-top-menu">
+  <div class="col-xl-5 col-lg-5 col-md-5 col-sm-5 col-xs-5">
+    <span class="ss-text-light" style="vertical-align: -webkit-baseline-middle;">Dashboard <i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;">BOQs</span>
+  </div>
+</div>
+
+<div class="row">
+  <div class="rk-ui-notification err" *ngIf="erroralert">
+    <span id="notificationMessageText">{{errorMessage}}</span>
+    <a class="close rk-linknotification" (click)="erroralert=false">×</a>
+  </div>
+  <div class="col-12" *ngIf="successalert">
+    <div class="alert-box grid-100" *ngIf="successMessage">
+      <div class="alert alert-success mt-3 text-center">
+        <a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+        {{successMessage}}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row line-items-list">
+  <div class="col-12 bg-white pt-10" *ngIf="order_details">
+  	<div class="row">
+  		<br>
+  		<div class="col-3">
+  			<b>Project Id: </b> {{ order_details.project_details.id }}
+  		</div>
+        <div class="col-3">
+  			<b>Project Name: </b> {{ order_details.project_details.name }}
+  		</div>
+  		<div class="col-3">
+  			<b>BOQ Ref: </b> {{ order_details.reference_number }}
+  		</div>
+  		<div class="col-3">
+  			<b>Lead Name: </b> {{ order_details.lead_name }}
+  		</div>
+  	</div>
+  	<hr>
+    <div class="row" *ngIf="order_details.vendor_details && order_details.vendor_details.length == 0">
+      <div class="col-12 not-found text-center">
+        <div class="boq-img">
+          <img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+        </div>
+        <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing to show...</p> 
+      </div>
+    </div>
+  	<div class="row bg-white" *ngFor="let obj of order_details.vendor_details;">
+      <div class="col-12">
+          <div class="row">
+        		<div class="col-12 ">
+              <p>
+                <b>Vendor Name: </b> {{ obj[0] }}
+              </p>
+        		</div>
+          </div>
+          <div class="row">
+            <div class="col-12 vendor-items" *ngFor="let element of obj[1];" >
+              <div class="row">
+                <div class="col-4">
+                  <span class="vendor-items-span">Job Element: </span> {{ element.job_element_name }}
+                </div>
+                <div class="col-4">
+                  <span class="vendor-items-span">Description: </span> {{ element.description }}
+                </div>
+                <div class="col-4">
+                  <span class="vendor-items-span">Created At: </span> {{ element.created_at | date:'dd/MM/yyyy - h:mm a' }}
+                </div>
+              </div>
+            	<div class="row">
+                <div class="col-4">
+                  <span class="vendor-items-span">Cost: Rs.</span> {{ element.cost }}
+                </div>
+                <div class="col-4">
+                  <span class="vendor-items-span">Tax Type: </span> {{ element.tax_type }}
+                </div>
+                <div class="col-4">
+                  <span class="vendor-items-span">Tax %: </span> {{ element.tax_percent}}
+                </div> 
+              </div>
+              <div class="row">
+                <div class="col-4">
+                  <span class="vendor-items-span">Quantity: </span> {{ element.quantity }}
+                </div>
+                <div class="col-4">
+                  <span class="vendor-items-span">UOM: </span> {{ element.unit_of_measurement }}
+                </div>
+                <div class="col-4">
+                  <span class="vendor-items-span">Delivery Date: </span> {{ element.deliver_by_date | date:'dd/MM/yyyy - h:mm a' }}
+                </div> 
+              </div>
+              <div class="row">
+                <div class="col-4">
+                  <span class="vendor-items-span">Final Amount: </span> {{ element.final_amount }}
+                </div>
+                <div class="col-4">
+                  <span class="vendor-items-span">Recommended: </span> {{ element.recommended }}
+                </div>
+                <div class="col-4" *ngIf="element.po_created">
+                  <span class="vendor-items-span">Shipping Address: </span> {{ element.shipping_address }}
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-4" *ngIf="element.po_created">
+                  <span class="vendor-items-span">Status: </span> {{ element.status }}
+                </div>
+              </div>
+              <div class="row" *ngIf="element.po_created">
+                <div class="col-12" *ngFor="let milestone of element.milestone_details;let i = index;">
+                  <div class="row">
+                    <div class="col-12"><b>Milestone: {{i+1}}</b></div>
+                  </div>
+                  <div class="row">
+                    <!-- <div class="col-4">
+                      <span class="vendor-items-span">Interval: </span> {{ milestone.interval }}
+                    </div> -->
+                    <div class="col-4">
+                      <span class="vendor-items-span">Percentage Amount: </span> {{ milestone.percentage_amount }}
+                    </div>
+                    <div class="col-4">
+                      <span class="vendor-items-span">Description: </span> {{ milestone.description }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <br>
+              <div class="row"> 
+                <div class="col-12" *ngIf="!element.po_created">
+                  <button class="btn btn-pink pull-right" (click)="setFormValues( element.job_element_vendor_id, order_details.project_details.id)">Create Order</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        <hr>
+      </div>
+  	</div>
+  </div>
+</div>
+
+
+<!-- Modal to add milestone -->
+<div id="addMilestoneModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content modal-change">
+        <div class="modal-header modal-header-chng">
+          <h4 class="modal-title modal-title-change">Other Details</h4>
+          <div class="iconbox">
+            <button type="button" class="close close-icon" data-dismiss="modal" (click)="resetForm()">&times;</button>
+          </div>
+        </div>
+      
+        <div class="modal-body modal-body-change">
+          <div class="row" >
+            <div class="col-12">
+              <div class="form">
+                <form [formGroup]="milestoneForm" (ngSubmit)="onMilestoneFormSubmit()">
+                  <div class="row">
+                    <div class="col-12 form-group">
+                      <label>Shipping Address<span class="text-danger">*</span></label>
+                      <input type="text" class="form-control" formControlName="shippingAddress">
+                    </div>
+                  </div>
+                  <!-- <div class="row">
+                    
+                  </div> -->
+                  <div formArrayName="milestoneElements"
+                    *ngFor="let item of milestoneForm.get('milestoneElements')['controls']; let i = index;">
+                      <div class="row" [formGroupName]="i">
+                        <div class="col-12 form-group">
+                          <label>Milestone: {{i+1}}</label>
+                          <input class="form-control" type="number" formControlName="percentage_amount" placeholder="% Amount" (change)="checkValidity()">
+                          <!-- <input class="form-control" formControlName="interval" placeholder="Interval (days)"> -->
+                          <input class="form-control" formControlName="description" placeholder="enter description">
+                        </div>
+                      </div>
+                      <br>
+                  </div>
+                  <span class="addMilestoneBtn" (click)="addMilestoneElement()">Add Milestone</span>
+                  <button type="submit" id="milestoneSubmitBtn" class="btn btn-pink pull-right" [disabled]="!milestoneForm.valid">Confirm</button>
+                </form>
+              </div>
+            </div>             
+          </div>
+        </div>
+      </div>
+    </div>
+</div>

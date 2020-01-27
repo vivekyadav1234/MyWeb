@@ -1,0 +1,73 @@
+<form [formGroup]="scopeForm">
+  <div class="form-group">
+    <div class="row form-group m-0 ml-3 mr-3 mt-4" *ngFor="let sheet of scopeForm.get('scope_spaces_attributes')['controls']; let i=index" [formGroup]="sheet" style="border: 1px solid #e8e8e8;">
+      <div class="col-sm-12 pt-2 pb-2" style="background-color: #efefef;">
+        <div class="row m-0">
+          <div class="col-sm-6" style="font-size: 19px;font-weight: 600;color: #8f0521;">
+            {{this.scopeForm.value.scope_spaces_attributes[i].space_type | replaceChar}}
+          </div>
+          <div class="col-sm-6 text-right">
+            <button type="button" class="btn btn-pink" (click)="scopeForm.get('scope_spaces_attributes').removeAt(i)">Delete Section</button>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-8 mt-4">
+        <label class="customLabel"><strong>Space name</strong></label>
+        <input type="text" class="form-control" formControlName="space_name" placeholder="">
+      </div>
+
+      <div class="row form-group m-0 pb-3" *ngFor="let qna of scopeForm.get('scope_spaces_attributes')['controls'][i].get('scope_qnas_attributes').controls; let j=index" [formGroup]="qna" style="width: 100%;">
+        <div class="col-md-8 mt-4">
+          <label class="customLabel" style="color: #8f0521;font-size: 19px;"><strong>{{this.scopeForm.value.scope_spaces_attributes[i].scope_qnas_attributes[j].question | replaceChar}}</strong></label>
+
+          <div class="type-data w-100">
+            <label class="customLabel"><strong> Arrivae Scope</strong></label>
+            <select class="form-control" formControlName="arrivae_scope">
+              <option value="n/a">N/A</option>
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
+          </div>
+
+          <div class="type-data w-100">
+            <label class="customLabel"><strong> Client Scope</strong></label>
+            <select class="form-control" formControlName="client_scope">
+              <option value="n/a">N/A</option>
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
+          </div>
+
+          <div class="type-data w-100">
+            <label class="customLabel"><strong> Remark</strong></label>
+            <textarea class="form-control" formControlName="remark"></textarea>
+          </div>
+
+
+        </div>
+      </div>
+
+
+    </div>
+
+    <div class="row m-0 mt-3 ml-3 mr-3 pt-2 pb-2" style="background-color: #EFEFEF;">
+      <div class="col-sm-12" style="display: inline-flex;">
+        <select class="form-control col-sm-4 mr-2" (change) = "selectSpace($event)">
+          <option value="modular_kitchen">Modular Kitchen</option>
+          <option value="services">Services</option>
+          <option value="complimentary_items">Complimentary Items</option>
+          <option value="bought_out_items">Bought Out Items</option>
+          <option value="master_bed_room">Master Bed Room</option>
+          <option value="kids_bed_room">Kids Bed Room</option>
+          <option value="guest_bed_room">Guest Bed Room</option>
+          <option value="living_room">Living Room</option>
+          <option value="foyer">Foyer</option>
+          <option value="pooja_room">Pooja Room</option>
+        </select>
+        <button type="button" class="btn btn-pink" (click)="addSpace()">Add Space</button>
+      </div>
+    </div>
+    
+  </div>
+  <button class="btn btn-pink float-right mb-3" value="submit" (click)="scopeFormSubmit()">Submit</button>
+</form>

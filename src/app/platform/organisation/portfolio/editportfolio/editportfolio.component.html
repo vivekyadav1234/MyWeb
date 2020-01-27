@@ -1,0 +1,109 @@
+<div class="marginTop row">
+	<div class="col-12" *ngIf="erroralert">
+		<div class="alert-box grid-100" *ngIf="errorMessage">
+			<div class="alert alert-danger mt-3 text-center">
+				<a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a>
+				{{errorMessage}}
+			</div>
+		</div>
+	</div>
+	<div class="col-12" *ngIf="successalert">
+		<div class="alert-box grid-100" *ngIf="successMessage">
+			<div class="alert alert-success mt-3 text-center">
+				<a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+				{{successMessage}}
+			</div>
+		</div>
+	</div>
+
+</div>
+
+<div class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header card-header-icon" data-background-color="rose">
+                        <i class="material-icons">Update Portfolio Details</i>
+                    </div>
+                    <div class="card-content">
+
+                        <form (ngSubmit)="onSubmit(editPortfolioForm.value); editPortfolioForm.reset();" #editPortfolioForm="ngForm">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group label-floating">
+                                        <label class="control-label">Seg</label>
+                                        <select class="form-control"  name="segment" [(ngModel)]="segment" (change)="firstDropDownChanged($event.target.value)">
+                                            <option value="Home" [selected]="segment == 'Home'">Home</option>
+                                            <option value="Office" [selected]="segment == 'Office'">Office</option>
+
+                                             <!-- <option *ngFor="let v of segments" value="{{v}}" [attr.selected]="segment == v">
+                                                   {{v}}
+                                            </option> -->
+
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group label-floating">
+                                        <label class="control-label"> Price</label>
+                                        <input type="number" class="form-control" name="price_cents" [(ngModel)]="price_cents" min=0>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                	<div class="form-group label-floating">
+                                		<label class="control-label"> Space</label>
+                                		<select class="form-control" name="space" [(ngModel)]="space" (change)="spaceDropDownChanged($event.target.value)">
+                                            <option *ngFor="let v of spaces" value="{{v}}" [selected]="space == v">
+                                                   {{v}}
+                                            </option>
+                                        </select>
+                                	</div>
+                                </div>
+                                <div class="col-md-6">
+                                	<div class="form-group label-floating">
+                                		<label class="control-label"> Theme</label>
+                                		<select class="form-control" name="theme" [(ngModel)]="theme">
+                                            <option *ngFor="let v of themes" value="{{v}}" [selected]="theme == v" >
+                                                   {{v}}
+                                               </option>
+                                        </select>
+                                	</div>
+                                </div>
+                                <div class="col-md-6">
+                                	<div class="form-group label-floating">
+                                		<label class="control-label"> Lifestage</label>
+                                		<select class="form-control" name="lifestage" [(ngModel)]="lifestage">
+                                            <option *ngFor="let v of lifestages" value="{{v}}" [selected]="lifestage == v">
+                                                   {{v}}
+                                               </option>
+                                        </select>
+                                	</div>
+                                </div>
+                                <div class="col-md-6">
+                                	<div class="form-group label-floating">
+                                		<label class="control-label"> Element</label>
+                                		<select class="form-control" name="element" [(ngModel)]="element">
+                                            <option *ngFor="let v of elements" value="{{v}}" [selected]="element == v">
+                                                   {{v}}
+                                               </option>
+                                        </select>
+                                	</div>
+                                </div>
+                                <div class="col-md-6">
+                                	<div class="form-group label-floating">
+                                		<label class="control-label"> Upload Image</label>
+                                	   <input type="file" class="form-control" (change)="onChange($event)" name="attachment_file" ngModel #attachment_file="ngModel">
+
+                                 	</div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-rose pull-right">Update</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

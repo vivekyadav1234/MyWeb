@@ -1,0 +1,196 @@
+.table td{
+    padding: 0.7rem 0.75rem;
+    vertical-align: middle;
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.7);
+    border: none;
+}
+.minWidthForTd{
+  min-width: 185px;
+}
+.table th {
+    padding: .9rem;
+    vertical-align: middle;
+    border: none;
+    font-size: 12px;
+    text-transform: uppercase;
+    color: #fff;
+    background-color: #5A5A5A;
+}
+.table{
+  border-collapse: separate;
+  border-spacing: 0 5px;
+}
+.tableDiv tbody{
+  background-color: #fff;
+}
+.tableDiv{
+  overflow-x:scroll;
+}
+
+.tableDiv tbody tr{
+  box-shadow: 1px 1px 7px 0px #dadada;
+  border-radius: 5px;
+}
+.firstTh{
+  border-radius: 5px 0 0 0;
+}
+.lastTh{
+  border-radius: 0px 5px 0 0;
+}
+#leadDetailsModal .modal-header{
+     background: #F4f4f4;
+    padding-top: 0px;
+}
+#leadDetailsModal label{
+    color: #848484;
+}
+#leadDetailsModal .form-control{
+    font-size: 13px;
+}
+.modal{
+     padding-top: 39px;
+}
+.rk-interalBtnColor{
+    width: 226px;
+}
+ .labelColor{
+    color: #515151 !important;
+}
+.lableSize{
+    font-size: 14px;
+}
+.modalTitle{
+    padding: 10px 18px;
+    position: relative;
+    bottom: -17px;
+    background: #fff;
+    color: #848484;
+    font-size: 16px;
+    font-weight: normal;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+.filterRow{
+  background-color: #fff;
+}
+.filterRow .col-sm-11 {
+  padding: 10px 10px;
+}
+.filterRow .col-sm-11 .row{
+  margin-left: 0px; margin-right: 0px;
+}
+.filterRow .row .col-sm-1{
+  padding: 10px 10px 0px 0px;
+   border-left: 1px solid #d3d3d3;
+}
+.sendIcon{
+  height: 25px;
+  margin-top: -3px;
+}
+.filterRow{
+  box-shadow: 0 0 10px #bbb4b4;
+  border-radius: 5px;
+  min-height: 55px;
+}
+:host ::ng-deep .selected-list .c-btn{
+  box-shadow: 0px 0px 0px #959595 !important;
+}
+:host ::ng-deep .c-btn{
+  border: none !important;
+}
+
+:host ::ng-deep  .selected-list .fa-angle-down , .selected-list .fa-angle-up
+{
+  right: 0px !important;
+
+}
+.frm-chng{
+  border: 1px solid rgba(241, 237, 237, 0.15);
+  font-size: 0.8rem;
+  margin-top: -3px;
+  width: 108%;
+  cursor: pointer;
+}
+
+.frm-chng::-webkit-input-placeholder { /* Chrome */
+  color: black;
+  font-size: 16px;
+  font-family:  "Roboto";
+  font-weight: bold;
+}
+.frm-chng:-ms-input-placeholder { /* IE 10+ */
+  color: black;
+}
+.frm-chng::-moz-placeholder { /* Firefox 19+ */
+  color: black;
+  opacity: 1;
+}
+.frm-chng:-moz-placeholder { /* Firefox 4 - 18 */
+  color: black;
+  opacity: 1;
+}
+.fromDate,.toDate{
+  display: none;
+}
+
+input.frm-chng::placeholder{ 
+  font-family:fontAwesome; 
+  font-size:12px; 
+  color: black;
+}
+
+input.frm-chng{ 
+  font-family:  "Roboto";
+}
+
+:host ::ng-deep .custom-class-dropdown .pure-checkbox input[type="checkbox"]:checked + label:before{
+  background: #96001F!important;
+  border-color: #96001F !important;
+}
+
+:host ::ng-deep .custom-class-dropdown .pure-checkbox input[type="checkbox"] + label:after{
+  border-color: white !important;
+}
+
+:host ::ng-deep  .list-filter{
+  width: 194px !important;
+
+}
+.ss-searchbox{
+  padding: 7px 10px 7px 10px;
+  margin-left: 10px;
+}
+.ss-searchbox i{
+  font-size: 13px;
+}
+.ss-searchbox input{
+      padding: 0 0.5rem;
+}
+.ss-searchbox input {
+  width: 90%;
+  margin-top: 2px;
+}
+
+.nav-item.itm-chng .fromDateSpan .fa-caret-down, .nav-item.itm-chng .toDateSpan .fa-caret-down{
+  position: relative;
+  font-size: 12pt;
+  top:1px;
+}
+.nav-item.itm-chng .fromDate,.nav-item.itm-chng .toDate  {
+  padding: 0.3rem 0.4rem;
+  border: 1px solid rgba(90, 88, 88, 0.15);
+}
+:host ::ng-deep .c-btn.disabled{
+  cursor: not-allowed !important;
+  background: white !important;
+
+}
+.tabs-chng{
+  border-bottom: none;
+}
+.itm-chng{
+  min-width: 87px;
+  max-width: 104px;
+  font-size: 12px;
+}

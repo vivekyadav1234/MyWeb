@@ -1,0 +1,248 @@
+<div class="rk-ui-notification" *ngIf="successalert">
+  <span id="notificationMessageText">{{successMessage}}</span>
+  <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+
+<div class="row mt-4">
+  <div class="col-md-12">
+    <div class="phone pull-right">
+      <a   data-tooltip1="CALL/SMS TO CUSTOMER" data-toggle="modal" data-target="#alternateNumberModal"><i class="cursor-pointer" (click)="getCustomerDetails()" style="    font-size: 1rem; color: #8F0020;">CALL/SMS</i></a>&nbsp;&nbsp;
+      <a   data-tooltip2="SMS HISTORY"><i class="fa fa-history cursor-pointer"style="font-size: 1.5rem; color: #8F0020;" data-target="#SmsModalHistory" data-toggle="modal" (click)="getSmsHis()"></i></a>
+      <a data-tooltip1="Munites of Meeting" class="ml-2 cursor-pointer" data-toggle="modal" data-target="#mom-modal" (click) ="getMOMevents();">
+        <img src="../../assets/img/MOM.svg" style="width: 20px;margin-top: -12px;">
+      </a>
+    </div>
+
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="SmsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Send SMS</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group row">
+            <label for="example-text-input" class="col-2 col-form-label">SMS: </label>
+            <div class="col-10">
+                <textarea rows="1" cols="4" name="sms_send" id="sms_send" class="form-control"></textarea>
+                
+            </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary cursor-pointer" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary btn-pink" (click)="sendSmsToLead()">Send</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- Modal for sms history -->
+<div id="SmsModalHistory" class="modal fade" role="dialog" data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content modal-change">
+      <div class="modal-header modal-header-chng">
+        <h4 class="modal-title modal-title-change">SMS History</h4>
+        <div class="iconbox">
+          <button type="button" class="close close-icon" data-dismiss="modal">&times;</button>
+        </div>
+      </div>
+      <div class="modal-body modal-body-change">
+        <div class="row">
+          <div class="col-md-12" *ngIf="smsList && smsList.length>0">
+
+
+            <div class="tableDiv">
+              <div class="table-responsive">
+                <table class="table ">
+                  <thead class="thead-dark">
+                    <tr>
+                      <th scope="col" class="firstTh">#</th>
+                      <th scope="col">SENT ON</th>
+                      <!-- <th scope="col">UPDATED AT</th> -->
+                      <th scope="col">MESSAGES</th>                     
+                      <th class="lastTh"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                   <tr  *ngFor="let sms of smsList; let i = index; " [attr.data-index]="i" class="box-list">
+                    <td>{{ i +1 }}</td>
+                    <td>{{ sms.created_at | date:'dd/MM/yyyy - h:mm a' }}</td>
+                    <!-- <td>{{ sms.updated_at | date:'dd/MM/yyyy - h:mm a' }}</td> -->
+                    <td>{{ sms.message }}</td>
+                    
+                    
+                    <!-- <td>{{ proposal.discount_status }}</td> -->
+                  
+                  </tr>
+                      
+                  </tbody>
+                </table>  
+                <!-- <p>{{paymentForm.value | json}}</p> -->
+              </div>
+            </div>          
+          </div>
+          <div class="col-md-12" *ngIf="smsList">
+            <p>{{ smsList.length }}</p>
+            <div class="boq-img" >
+              <img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+            </div>
+            <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing to show...</p>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- His -->
+
+<!-- Modal -->
+<div class="modal fade mt-5" id="alternateNumberModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg mt-4" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Select Contact</h5>
+          <button (click)="contact_number_for_sms = undefined" type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div class="bg-light col-12 font-weight-bold pr-0">
+                <label for="example-text-input" class="col-4">Name </label>
+                <label for="example-text-input" class="col-4">Relation </label>
+                <!-- <label for="example-text-input" class="col-3">Contact </label> -->
+            </div>
+          <div class="form-group" *ngFor="let user of customerDetails">
+            
+            <div class="col-12">
+                <label for="example-text-input" class="col-4">{{user.name}} </label>
+                <label for="example-text-input" class="col-4">{{user.relation}} </label>
+                <!-- <label for="example-text-input" class="col-3">{{user.contact}} </label> -->
+                <label><i class="fa fa-phone cursor-pointer" (click)="callToLead(user.contact)" style="    font-size: 1.5rem; color: #8F0020;"></i></label>
+                <a  class="pl-5" (click)="contact_number_for_sms=user.contact" data-tooltip="SEND SMS"><i class="fa fa-envelope-o cursor-pointer"style="font-size: 1.5rem; color: #8F0020;" data-target="#SmsModal" data-toggle="modal"></i></a>&nbsp;&nbsp;
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+<!--MOM modal-->
+<div class="modal fade mt-5" id="mom-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" style="overflow:auto;">
+  <div class="modal-dialog modal-dialog-centered modal-lg mt-4" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">ADD/SHARE MOM</h5>
+        <button (click)="contact_number_for_sms = undefined" type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div *ngIf = "mom_events.length>0">
+          <table class="table">
+            <tr>
+              <th>EVENT NAME</th>
+              <th>MOM STATUS</th>
+              <th>EVENT STATUS</th>
+              <th>SCHEDULE DATE AND TIME</th>
+              <th class="lastTh"></th>
+            </tr>
+
+            <tr *ngFor="let events of mom_events">
+              <td>{{events.agenda  | replaceChar}}</td>
+              <td>{{events.mom_status}}</td>
+              <td>{{events.status}}</td>
+              <td>{{events.datetime}}</td>
+              <td>
+                <div *ngIf="events.mom_status=='pending'">
+                  <a class="btn btn-pink" [routerLink]="['/mom-form']" [queryParams]="{id: events.id}" target="_blank">Add MOM</a>
+                </div>
+
+                <div *ngIf="events.mom_status=='present'">
+                  <a class="btn btn-pink" href="#" [routerLink]="['/mom-edit']" [queryParams]="{id: events.id}" target="_blank">Edit</a>
+                  <button class="btn btn-pink" (click) = "deleteMOM(events.id)">Delete</button>
+                  <a class="btn btn-pink" href="#" data-toggle="modal" data-target="#view-mom" (click) = "momView(events.id)">View MOM</a>
+                  <a class="btn btn-pink mt-1" href="#" data-toggle="modal" data-target="#share-mom" (click) = "share(events)">Share MOM</a>
+                </div>
+
+                <div *ngIf="events.mom_status=='shared'">
+                  <a class="btn btn-pink" href="#" data-toggle="modal" data-target="#view-mom" (click) = "momView(events.id)">View MOM</a>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div class="col-12" *ngIf = "mom_events.length==0">
+          <div class="boq-img text-center">
+            <img src="../../../assets/img/desktop.png">
+          </div>
+          <p class="nothing-to-show pb-4 text-center">Nothing to show...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!--Share MOM Modal-->
+<div class="modal fade mt-5" id="share-mom" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered mt-4" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Share MOM</h5>
+        <button (click)="contact_number_for_sms = undefined" type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <form [formGroup]="mom" (ngSubmit)= "momShare()">
+          <p class="ml-3" style="font-weight: 500">Choose participants to share MOM</p>
+          <div *ngFor="let user of user_list">
+            <ng-container >
+              <input class="mt-2 ml-3" type="checkbox" value="{{user.email}}" (change)="OnEmailSelect($event)">
+             <label class="form-check-label" for="{{user.email}}" style="padding-left: 0.25rem;">{{user.name}} ({{user.email}})</label>
+            </ng-container>
+          </div>
+          
+          <button class="btn btn-pink mt-4 ml-3" type="submit">Share MOM</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--View mom modal-->
+<div class="modal fade mt-5" id="view-mom" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg mt-4" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">View MOM</h5>
+        <button (click)="contact_number_for_sms = undefined" type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body" *ngIf="view_mom">
+        <p>{{view_mom.mom_description}}</p>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-pink" (click) = "closeViewMoM()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

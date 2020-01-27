@@ -1,0 +1,80 @@
+<div class="row ss-top-menu">
+  <div class="col-sm-12">
+    <span class="ss-text-dark "  style="vertical-align: -webkit-baseline-middle;">Dashboard</span>
+    <span style="vertical-align: -webkit-baseline-middle;"> <i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;">Change BOQ Margin</span>
+  </div>
+</div>
+<div class="rk-ui-notification err" *ngIf="erroralert"  style="z-index: 10000;">
+<span id="notificationMessageText">{{errorMessage}}</span>
+<a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+<div class="rk-ui-notification" *ngIf="successalert"  style="z-index: 10000;">
+<span id="notificationMessageText">{{successMessage}}</span>
+<a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+<div class="mt-4 container-set">
+  <div class="col-12 m-auto pt-4 card">
+    <div class="col-12">
+     <span class="col-6">Enter BOQ Reference Number</span> 
+    </div>
+    <div class="col-12 mt-3 mb-4">
+      <input class="col-6 form-control" type="text" [(ngModel)]="reference_value"/>
+    </div>
+
+    <div class="col-12 text-center mb-4">
+      <button class="btn btn-pink" (click)="getBOQByReference()">Search</button>
+    </div>
+  </div>
+</div>
+<div class="bg-white mt-5 p-3" *ngIf="showBOQDiv && boq_details">
+  <div class="border">
+   <div class="col-4 d-inline-block">Reference Number: </div> 
+   <div class="col-4 d-inline-block">{{boq_details.reference_number}}</div>
+   <div class="col-4 d-inline-block">Project Name: </div> 
+   <div class="col-4 d-inline-block">{{boq_details.project_name}}</div>
+   <div class="col-4 d-inline-block">Created At: </div> 
+   <div class="col-4 d-inline-block">{{boq_details.created_at | date: 'd/M/yy'}}</div>
+   <div class="col-4 d-inline-block">Updated At: </div> 
+   <div class="col-4 d-inline-block">{{boq_details.updated_at | date: 'd/M/yy'}}</div>
+   <div class="col-4 d-inline-block">Total Amount:</div> 
+   <div class="col-4 d-inline-block">{{boq_details.total_amount}}<span class="ml-4" style="font-size: 19px;color:#8F0020" data-toggle="modal" data-target="#updateBOQMargin"><i class="fas fa-edit"></i></span></div>
+   <div class="col-4 d-inline-block">Status: </div> 
+   <div class="col-4 d-inline-block">{{boq_details.status}}</div>
+  <!--V:toggle to Disable PM FEES: </div>  -->
+   <div class="col-6 d-inline-block mt-2 hello"><span style="vertical-align:sub;">Disable PM FEE:</span><label class="switch pull-right" (change) = "DisablePmFee($event)" for="Checker"><input type="checkbox" id="Checker" [checked]="boq_details.pm_fee_disabled == true"><div class="slider round"></div></label>  </div> 
+  </div>
+</div>
+<div *ngIf="showBOQDiv && !boq_details">
+  <div class="bg-white boq-img col-12 d-inline-block text-center">
+    <img src="../../../assets/img/desktop.png">
+  </div>
+  <p class="col-12 nothing-to-show text-center">Nothing to show...</p>
+</div>
+
+<div class="modal fade m-auto" id="updateBOQMargin" role="dialog">
+  <div class="modal-dialog mt-5 pt-4">
+      <!-- Modal content-->
+    <div class="modal-content">
+      <div class="">
+          <div class="pull-right m-2">
+            <button type="button" class="close pull-right" data-dismiss="modal" (click)="closeUpdateBOQModal()">&times;</button>
+          </div>
+      </div>
+      <div class="modal-body">
+        <div class="col-12 mr-5 text-center">
+          <h4>Update BOQ Value</h4>
+        </div>
+        <div class="p-2 mt-3">
+          <div class="row">
+            <div class="col-12 mb-0 pt-2 pb-2 m-auto">
+              <span class="mr-1 pull-left">Enter Amount</span>
+              <input type="number" class="form-control mt-2 d-inline filterSelectBox capitalize" [(ngModel)]="boq_amount">
+            </div>
+            <button (click)="updateBOQDetails()" class="btn btn-pink category-btn col-sm-3 d-block m-auto mt-5 p-2 rounded">Update</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

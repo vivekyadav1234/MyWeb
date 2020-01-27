@@ -1,0 +1,81 @@
+/* ======================================== */
+.vColor{
+  color: #888;
+  font-weight: 100;
+}
+.vColor1{
+  color: #5a5a5a;
+  font-weight: 100;
+}
+.fontSize14{
+	font-size: 14px;
+}
+.dropdownButton{
+  padding: 5px 12px;
+  width: 10rem;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  outline: none;
+  color: #515151;
+  text-align: left;
+  border: 1px solid #ecf0f1;
+}
+.dropdownButton.dropdownButton1{
+	width: 14rem;
+
+}
+.dropdown-item{
+  padding: 3px 10px;
+  border-bottom: 1px solid #ecf0f1;
+  font-size: 15px;
+  color: #515151 !important;
+}
+.dropdown-toggle::after{
+  float: right;
+  margin-top: 10px;
+}
+.myFluit{
+	border-radius: 50px;
+	width: 1.5rem;
+	box-shadow: 0 0 0px 2px #ccc;
+}
+.dropdownMenu.show{
+	width: 14rem;
+	border: 1px solid #e8e8e8;
+}
+/* ======================================== */
+
+.leadDetailsMainDiv{
+  background-color: #fff;
+  margin-top: 1.8rem;
+}
+.borderBottom{
+	border-bottom: 1px solid #f1f1f1;
+}
+.customRow{
+	background-color: #fff;
+	height: 3.7rem;
+}
+.customRow img{
+	border-radius: 50px;
+  width: 62%;
+  margin-top: 13px;
+  box-shadow: 0 0 0px 2px #ccc;
+}
+.vPara{
+	font-size: 18px;
+	color: #000;
+}
+.vDate{
+  font-size: 10px;
+}
+.cusDownArrow{
+	float: right;
+	margin-top: -8px;
+	font-size: 18px;
+	margin-right: 10px;
+}
+.card-body{
+	border-radius: 0;
+}

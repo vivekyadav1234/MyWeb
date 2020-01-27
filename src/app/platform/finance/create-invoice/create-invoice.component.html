@@ -1,0 +1,377 @@
+<div class="rk-ui-notification err" *ngIf="erroralert" style="z-index: 10000;">
+  <span id="notificationMessageText">{{errorMessage}}</span>
+  <a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+<div class="rk-ui-notification" *ngIf="successalert" style="z-index: 10000;">
+  <span id="notificationMessageText">{{successMessage}}</span>
+  <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+<div class="row px-4">
+  <div class="col-md-12">
+    <div class="row">
+      <div class="col-md-12 text-center mb-5"> 
+        <div class="customer-details"><span style="color: #93001E;font-size: 24px;">Invoice Details</span> <hr style="width: 20%;"></div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 p-0 mb-5">
+        <table class="table table-striped mb-0 pb-0" *ngIf="this.project_id_Invoice">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Lead ID</th>
+              <th>Client Name</th>
+              <th>Designer + <br/> Community Manager</th>
+              <th>% of Payment Collected</th>
+              <th>Total BOQ Value</th>
+              <th></th>
+              <th></th>
+              <th></th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody style="background-color:whitesmoke!important;" class="filter-design"> 
+            <tr>
+              <td></td>
+              <td>{{this.project_id_Invoice.lead_id}}</td>
+              <td> {{this.project_id_Invoice.lead_name}}</td>
+              <td>{{this.project_id_Invoice.cm}}/{{this.project_id_Invoice.designer}}</td>
+              <td>{{this.project_id_Invoice.paid_amount?.toFixed(3) | currency: 'INR':"symbol" }}(<span class="highlight">{{((this.project_id_Invoice.paid_amount/this.project_id_Invoice.total_amount)*100)?.toFixed(3)}}%</span>)</td>
+              <td>{{this.project_id_Invoice.total_amount?.toFixed(3) | currency: 'INR':"symbol" }}</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<form [formGroup]="CreateInvoiceForm" *ngIf="this.project_id_Invoice">
+  <div class="row justify-content-center">
+    <div class="col-md-12">
+    	 
+    	<div class="row"> 
+        <div class="col-sm-4">
+	        <div class="form-group">
+	          <label class="customLabel">Customer Lead ID</label>
+	          <input type="number" class="form-control" formControlName="customer_lead_id">
+	        </div>
+	      </div>
+	      <div class="col-sm-4">
+	        <div class="form-group">
+	          <label class="customLabel">Customer Billing Name</label>
+	          <input type="text" class="form-control" formControlName="customer_billing_name">
+	        </div>
+	      </div>
+	      <div class="col-sm-4">
+	        <div class="form-group">
+	          <label class="customLabel">Customer Shipping Name</label>
+	          <input type="text" class="form-control" placeholder="Enter Pincode" formControlName="customer_shipping_name">
+	        </div>
+	      </div>
+      </div>
+      <div class="row"> 
+        <div class="col-sm-4">
+	        <div class="form-group">
+	          <label class="customLabel">Customer GST</label>
+	          <input type="text" class="form-control" formControlName="customer_gst">
+	        </div>
+	      </div>
+	      <div class="col-sm-4">
+	        <div class="form-group">
+	          <label class="customLabel">Phone Number</label>
+	          <input type="number" class="form-control" formControlName="phone">
+	        </div>
+	      </div>
+	      <div class="col-sm-4">
+	        <div class="form-group">
+	          <label class="customLabel">Email ID</label>
+	          <input type="text" class="form-control" placeholder="Enter Pincode" formControlName="email_id">
+	        </div>
+	      </div>
+      </div>
+      <div class="row"> 
+        <div class="col-sm-4">
+	        <div class="form-group">
+	          <label class="customLabel">Customer Billing Address</label>
+	          <input type="text" class="form-control" formControlName="customer_billing_address">
+	        </div>
+	      </div>
+	      <div class="col-sm-4">
+	        <div class="form-group">
+	          <label class="customLabel">Customer Shipping Address</label>
+	          <input type="text" class="form-control" formControlName="customer_shipping_address">
+	        </div>
+	      </div>
+	      <div class="col-sm-4">
+	        <div class="form-group">
+	          <label class="customLabel">Arrivae Billing Address</label>
+	          <input type="text" class="form-control" placeholder="Enter Pincode" formControlName="arrivae_billing_address">
+	        </div>
+	      </div>
+      </div>
+      <div class="row"> 
+        <div class="col-sm-4">
+	        <div class="form-group">
+	          <label class="customLabel">Arrivae Dispatch Address</label>
+	          <input type="text" class="form-control" formControlName="arrivae_dispatch_address">
+	        </div>
+	      </div>
+	      <div class="col-sm-4">
+	        <div class="form-group">
+	          <label class="customLabel">Arrivae PAN</label>
+	          <input type="text" class="form-control" formControlName="arrivae_pan">
+	        </div>
+	      </div>
+	      <div class="col-sm-4">
+	        <div class="form-group">
+	          <label class="customLabel">Arrivae GST</label>
+	          <input type="text" class="form-control" placeholder="Enter Pincode" formControlName="arrivae_gst">
+	        </div>
+	      </div>
+      </div>
+     <!--  <div class="row">
+      	<div class="col-sm-12 col-md-12 mb-3">
+	        <button class="cancle ml-3 mt-3 pull-right addCursor rk-btnCancel arrColr" (click)="getslidetails();" target="_self" data-toggle="modal" data-target="#PickedItems">Pick Items from BOQ</button>   
+	      </div>
+      </div> -->
+    </div>
+  </div>
+</form>
+<div class="row">
+  <div class="col-sm-12 col-md-12 mb-3" *ngIf="!this.currentInvoiceId">
+    <button class="cancle ml-3 mt-3 pull-right addCursor rk-btnCancel arrColr" (click)="getslidetails('','','');" target="_self" data-toggle="modal" data-target="#PickedItems">Pick Items From  BOQ Line Item List</button>   
+  </div>
+</div>
+<div class="row mt-4 px-3" *ngIf="this.addedSliProduct && this.addedSliProduct.length>=0">
+  <div class="col-12">
+    <div class="tableDiv project-table">
+      <table class="table">
+        <thead class="ss-thead">
+          <tr>
+            <th>Invoice Label</th>
+            <th>Edit</th>
+            <th>Change Mapping</th>
+            <th>Value before Tax</th>
+            <th>HSN Code</th>
+            <th>Quantity</th>
+            <th>Quantity Edit</th>
+            <th>Tax %</th>
+            <th>Final Value</th>
+            <th> </th>
+          </tr>
+        </thead>
+        <tbody class="" *ngIf="this.addedSliProduct">
+        <tr  *ngFor="let item of this.addedSliProduct; let i = index">         
+          <td>{{item.label}} </td>
+          <td><i class="fa fa-pencil" data-toggle="modal" data-target="#EditlabelProduct" (click)="EditlabelProduct(item);" *ngIf="item.status !='released'"></i></td>
+          <td><button class="addCursor rk-btnCancel arrColr"  (click)="getslidetails(item.id,'remobutton',item);" target="_self" data-toggle="modal" data-target="#PickedItems" *ngIf="item.status !='released'">Change Mapping</button></td>
+          <td>{{item.amount | currency: 'INR':"symbol"}}</td>
+          <td>
+            <label  class="label4" *ngIf="item.status !='released'">
+              <select class="easy-drop-down addCursor"(change)="selectedHsnChange($event.target.value,item,item.id,item.label)">
+                <option value="" disabled="true" *ngIf="item.hsn_code !=null" selected>{{item.hsn_code}}</option>
+                <option value="" disabled="true" *ngIf="item.hsn_code == null" selected>Select HSN</option>
+                <option value="94031010"> 94031010 </option>
+                <option value="94031090"> 94031090 </option>
+                <option value="94032010"> 94032010 </option>
+                <option value="94032090"> 94032090 </option>
+                <option value="94033010"> 94033010 </option>
+                <option value="94033090"> 94033090 </option>
+                <option value="94034000"> 94034000 </option>
+                <option value="94035010"> 94035010 </option>
+                <option value="94035090"> 94035090 </option>
+                <option value="94036000"> 94036000 </option>
+                <option value="94037000"> 94037000 </option>
+                <option value="94038100"> 94038100 </option>
+                <option value="94038900"> 94038900 </option>
+                <option value="94039000"> 94039000 </option>
+                <option value="995443">995443</option>
+              </select>
+            </label>
+          </td>
+          <td>
+            <span *ngIf="enableEditIndex != i">{{item.quaunity}}</span>
+            <input id="numberfield" type="number" [(ngModel)]="item.quaunity" *ngIf="enableEdit && enableEditIndex == i" style="width: 70px;"/>
+          </td>
+          <td>
+            <span *ngIf="item.status !='released'"> 
+              <button *ngIf="enableEdit && enableEditIndex == i" (click)="enableEdit=false; cancel(); item.quaunity=1" class="btn cancelbutton p-0" >Cancel</button>
+              <button *ngIf="enableEdit && enableEditIndex == i" id="saveBtn" class="btn savebutton p-0" (click)="saveSegment()" type="submit">Save</button>
+              <a  class="table-row-action edit-action addCursor" *ngIf="i != enableEditIndex || enableEditIndex == null" (click)="enableEditMethod($event, i)"><i class="fa fa-pencil"></i></a>
+            </span>
+          </td>
+          <td>{{item.tax |  number : '1.2-2'}}%</td>
+          <td>{{item.amount_with_tax |  number : '1.2-2'}}</td> 
+          <td><input type="checkbox" name="list_name" value="{{item.id}}" (click) = "restructureHash($event,item)" [checked]="this.currentInvoiceId==item.parent_invoice_id && item.status=='created'" *ngIf="this.currentInvoiceId && item.status!='released'"/>
+          <input type="checkbox" name="list_name" value="{{item.id}}" (change)="SelectedInvoiceCreate('item',$event)" *ngIf="!this.currentInvoiceId && item.status!='created' && item.status!='released'"/>
+          </td> 
+        </tr>
+        </tbody>
+      </table>
+      <div class="row">
+        <div class="col-sm-12 col-md-12 mb-3" *ngIf="this.SelectedInvoiceSliId && this.SelectedInvoiceSliId.length != 0">
+          <button class="cancle addCursor ml-3 mt-3 pull-right addCursor rk-btnCancel arrColr"  (click)="FinalInvoiceCreatedSubmition(CreateInvoiceForm.value);" *ngIf="!this.currentInvoiceId">Create Invoice</button>
+        </div>
+        <div class="col-sm-12 col-md-12 mb-3" *ngIf="this.currentInvoiceId">
+          <button class="cancle addCursor ml-3 mt-3 pull-right addCursor rk-btnCancel arrColr"  (click)="UpadateInvoiceSubmition(CreateInvoiceForm.value);" *ngIf="this.currentInvoiceId">Update Invoice</button>   
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- modal Picked Items from BOQ -->
+<div class="modal fade " id="PickedItems"   tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="overflow-x: auto !important;
+    overflow-y: auto!important;">
+  <div class="modal-lg modal-dialog stoped" style="max-width:1350px !important;margin:auto;margin-top:3rem;overflow: auto;">
+      <div class="modal-content">
+         <div class="modal-header mt-2" style="border-bottom: 1px solid">
+            <h6 style="font-size:1.5rem" class="modal-title   pt-3 " id="exampleModalLabel">Picked Items from BOQ</h6>
+            <button class="close mr-4 mb-3 pull-right addCursor" style="height: 30px;font-size: 40px;font-weight: 300; color: #8c031f" type="button" class="close" data-dismiss="modal" (click)="removeModal()">×</button>
+          </div>
+          <div class="modal-body">
+            <ng-container>
+            <table class="table table-striped mb-0">
+              <thead>
+                <tr class="align-tr">
+                    <th>Lead ID</th>
+                    <th>Client Name</th>
+                    <th>Designer + Community Manager</th>
+                    <th>% of Payment Collected</th>
+                    <th>Total BOQ Value</th>
+                    <th></th>
+                    <th><i class="fa fa-info-circle" style="font-size: 23px;cursor:pointer"></i></th>
+                    <th></th>
+                    <th></th>
+                    <th>
+                      <span *ngIf="this.checkedList && this.checkedList.length>0"> 
+                      <button class="btn btn-outline-secondary addCursor btn-alt mt-1" (click)="HideShow();" *ngIf="!this.removebutton" style="background-color: #8c031f;color: white;width:">Add Product</button>
+                      <button class="cancle ml-4 pull-right addCursor rk-btnCancel" *ngIf="this.removebutton"  (click)="UpadetAddedProductsList(AddProductForm.value,'updateLabel');" style="background-color: #8c031f;color: white;width: 71%;height: 38px;">Update</button> 
+                      </span>
+                    </th>
+                </tr>
+              </thead>
+            </table>
+            <div  class="accordion" id="PickedItemsAccordion">
+              <div class="card">
+                <div class="card-header p-0 m-0" id="headingOne">
+                  
+                    <div data-toggle="collapse" data-target="#collapsePickedItemsOne" aria-expanded="true" class="collapsed d-flax">
+                      <table class="table table-striped mb-0 pb-0">
+                        <thead>
+                          <tr class="align-tr" *ngIf="this.projectDetails">
+                        	  <th>{{this.projectDetails.lead_id}}</th>
+                            <th style="width: 12%;">{{this.projectDetails.lead_name}}</th>
+                            <th style="width: 24%;">{{this.projectDetails.cm}}/{{this.projectDetails.designer}}</th>
+                            <th style="width: 24%;">{{this.projectDetails.paid_amount?.toFixed(3) | currency: 'INR':"symbol" }}(<span class="highlight">{{((this.projectDetails.paid_amount/this.projectDetails.total_amount)*100)?.toFixed(3)}}%</span>)</th>
+                            <th class="text-left" style="width: 18%;">{{this.projectDetails.total_amount?.toFixed(3) | currency: 'INR':"symbol" }}</th>
+                            <th class=" " style="width: 17%"></th>
+                          </tr>
+                        </thead>
+                      </table>
+                    </div>
+                </div>
+                <div id="collapsePickedItemsOne" class="collapsed" data-parent="#PickedItemsAccordion">
+                  <div  class="card-body">
+                    <div>
+                      <table class="table">
+                        <thead>
+                          <tr class="align-tr">
+                              <th>BOQ Number</th>
+                              <th>Space</th>
+                              <th>Type</th>
+                              <th>Segment</th>
+                              <th>Line Item</th>
+                              <th>Quantity</th>
+                              <th>Final Value after Discount</th>
+                              <th>50% Collection Date</th>
+                              <th></th>
+                              <th>Invoice Status</th>
+                          </tr>
+                        </thead>
+                        <tbody class="subline-parameter">
+                          <tr *ngFor="let item of this.lineItemsList">
+                            <td>{{item.boq_number}}</td>
+                            <td>{{item.space}}</td>
+                            <td>{{item.job_type}}</td>
+                            <td>{{item.job_segment | replaceChar}}</td>
+                            <td>{{item.job_name}}</td>
+                            <td>{{item.job_quantity}}</td>
+                            <td>{{item.job_amount?.toFixed(3) | currency: 'INR':"symbol"}}</td>
+                            <td>{{item.fifty_approved_date | date:'dd/MM/yyyy'}}</td>
+                            <td>
+                               <input type="checkbox" [(ngModel)]="item.is_invoice" name="list_name" value="{{item.lead_id}}" (change)="isAllSelectedVal()"/>  
+                            </td>
+                            <td>{{item.invoice_status}}</td> 
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div> 
+<!-- modal Picked Items from BOQ SubmitProduct -->
+<div class="modal fade" id="SubmitProduct"  tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-sm modal-dialog" style="margin-top:15rem">
+    <div class="modal-content">
+      <div class="">
+        <button class="close pull-right addCursor" style="height: 30px;font-size: 40px;font-weight: 300; color: #8c031f;margin-right: 20px;" type="button" class="close" data-dismiss="modal" (click)="openForSelect()">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="row"> 
+			    <div class="col-sm-12">
+            <form [formGroup]="AddProductForm">
+  				    <div class="form-group">
+  				      <label class="customLabel"></label>
+  				      <input type="text" class="form-control" placeholder="Enter Invoice Label" formControlName="label">
+  				    </div>  
+            </form>  
+				  </div>
+	      </div>
+	      <div class="row">
+      	<div class="col-sm-12 col-md-12 mb-3">
+	        <button class="cancle ml-3 mt-3 pull-right addCursor rk-btnCancel" (click)="SubmitAddedProduct(AddProductForm.value);" style="background-color: #8c031f;color: white">Submit</button> 
+          <!-- <button class="cancle ml-3 mt-3 pull-right addCursor rk-btnCancel" *ngIf="this.removebutton"  (click)="UpadetAddedProductsList(AddProductForm.value,'updateLabel');" style="background-color: #8c031f;color: white">Update</button>  -->  
+	      </div>
+      </div>
+      </div>
+    </div>
+  </div>
+</div> 
+<!-- modal Edit label -->
+<div class="modal fade" id="EditlabelProduct"  tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-sm modal-dialog" style="margin-top:15rem">
+    <div class="modal-content">
+      <div class="">
+        <button class="close pull-right addCursor" style="height: 30px;font-size: 40px;font-weight: 300; color: #8c031f;margin-right: 20px;" type="button" class="close" data-dismiss="modal" (click)="closeEditmodal()">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="row"> 
+          <div class="col-sm-12">
+            <form [formGroup]="EditProductForm">
+              <div class="form-group">
+                <label class="customLabel"></label>
+                <input type="text" class="form-control" placeholder="Enter Invoice Label" formControlName="label">
+              </div>  
+            </form>  
+          </div>
+        </div>
+        <div class="row">
+        <div class="col-sm-12 col-md-12 mb-3">
+          <button class="cancle ml-3 mt-3 pull-right addCursor rk-btnCancel"  (click)="UpadetAddedProductsList(AddProductForm.value,'EditLabel');" style="background-color: #8c031f;color: white">Submit</button>   
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+</div> 
+

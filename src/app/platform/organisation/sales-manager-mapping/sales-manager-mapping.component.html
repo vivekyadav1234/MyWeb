@@ -1,0 +1,96 @@
+<div class="row ss-top-menu">
+  <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-xs-8">
+    <span class="ss-text-light"
+      [routerLink]="['/']">Dashboard <i class="rightArrow fa fa-angle-right"></i></span>
+      <span class="ss-text-dark">Lead Management <i class="rightArrow fa fa-angle-right"></i></span> <span class="capitalize ss-text-dark">SalesManager</span>
+    </div>
+  <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-xs-4">
+    <div class="ss-searchbox">
+      <i class="fa fa-search"></i>
+      <input class="form-control" type="text" placeholder="Type in name, contact, status, role, date, designer to search..." #search (keyup.enter)="onKey($event)">
+    </div>
+  </div>
+</div>
+
+<div class="rk-ui-notification err" *ngIf="erroralert"  style="z-index: 10000;">
+  <span id="notificationMessageText">{{errorMessage}}</span>
+  <a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+<div class="rk-ui-notification" *ngIf="successalert"  style="z-index: 10000;">
+  <span id="notificationMessageText">{{successMessage}}</span>
+  <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+
+
+
+
+<div class="row mt-5 px-5">
+  <div class="col-md-12">
+    <div class="tableDiv table-responsive">
+      <table class="table" *ngIf="referreresList && referreresList.length >0">
+        <thead>
+          <tr>
+            <th class="firstTh">#</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Roles</th>
+            <th>Contact</th>
+            <th>Assigned SM</th>
+            <th >Assign SM</th>
+            <th class="lastTh"></th>
+          </tr>
+        </thead>
+        <tbody>
+
+         <tr *ngFor="let refer of referreresList  | paginate: { itemsPerPage: per_page, currentPage: current_page, totalItems: total_page  }; let i = index" [attr.data-index]="i">
+         	<td>{{((current_page-1) * per_page) + (i+1)}}</td>
+         	<td>{{refer.name}}</td>
+         	<td>{{refer.email}}</td>
+          <td>
+            <ng-container *ngFor="let rol of refer.roles">
+              <span class="capitalize">{{ rol | underScore }}</span>
+             </ng-container> 
+            
+          </td>
+         	<td>{{refer.contact}}</td>
+          <td>
+            <span *ngIf="refer.sales_manager">{{refer.sales_manager.email}}</span>
+          </td>
+         	<td>
+         		<select class="form-control" (change) = "selectSM($event.target.value)">
+         			<option value="" disabled>Select Sales Manager</option>
+              <ng-container *ngIf="!refer.sales_manager">
+         			  <option *ngFor="let sm of salesManagerList" value="{{sm.id}}">{{sm.name}} - {{sm.email}}</option>
+                
+              </ng-container> 
+              <ng-container *ngIf="refer.sales_manager">
+                <option *ngFor="let sm of salesManagerList" value="{{sm.id}}"  [selected]="refer.sales_manager.id === sm.id">{{sm.name}} - {{sm.email}}</option>
+                 
+              </ng-container> 
+         		</select>
+
+         		
+         	</td>
+          <td>
+            <input type="button" name="" value="Assign" class="btn btn-pink" (click) = "assignToSlaesManager(refer.id)">
+            
+          </td>
+         </tr>
+        </tbody>
+      </table>
+      <div class="text-center" *ngIf="referreresList && referreresList.length >0">
+          <pagination-controls autoHide="true" (pageChange)="current_page = getReferrerList($event)"></pagination-controls>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-12 bg white">
+
+    
+  </div>
+  <div class="col-md-12 not-found " *ngIf="referreresList && referreresList.length==0 ">
+    <div class="boq-img">
+      <img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+    </div>
+    <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing to show...</p>
+  </div>
+</div>

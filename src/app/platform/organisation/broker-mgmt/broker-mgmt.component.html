@@ -1,0 +1,369 @@
+<div class="row ss-top-menu">
+  <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-xs-3">
+    <span class="ss-text-light" style="vertical-align: -webkit-baseline-middle;">Dashboard <i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;">Broker Management</span>
+  </div>
+  <!--  -->
+</div>
+
+<div class="marginTop row">
+  <div class="col-12" *ngIf="erroralert">
+    <div class="alert-box grid-100" *ngIf="errorMessage">
+      <div class="alert alert-danger mt-3 text-center">
+        <a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a>
+        {{errorMessage}}
+      </div>
+    </div>
+  </div>
+  <div class="col-12" *ngIf="successalert">
+    <div class="alert-box grid-100" *ngIf="successMessage">
+      <div class="alert alert-success mt-3 text-center">
+        <a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+        {{successMessage}}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- <div class="row justify-content-end">
+  <div class="col-md-6">
+    <div class="filterMainDiv">
+      <span class="ss-text-dark mr-2">Filter By</span>
+      <select class="filterSelect form-control" (change)="filterColumDropdownChange($event.target.value)" [(ngModel)]="filtercol1Val" id="filter1dropdown">
+        <option value="all"><span class="capitalize" selected>All</span></option>
+        <option value="lead_status"><span class="capitalize">Status</span></option>
+        <option value="kyc_approved"><span class="capitalize">KYC Status</span></option>
+      </select>
+      <i class="downArrow fa fa-angle-down"></i>
+      <select class="filterSelect form-control" [(ngModel)]="filtercol2Val" (change)="filterColum2DropdownChange($event.target.value)" id="filter2dropdown" style="display: none">
+        <option disabled value="">Select</option>
+        <option *ngFor="let item of filtercol2Arr"  value="{{item}}"><span class="capitalize">{{item | replaceChar | ucwords}}</span></option>
+      </select>
+      <button class="filterBtn" (click)="filterSubmit()">GO</button>
+    </div>
+  </div>
+</div> -->
+
+<div class="container-set mt-4 filterRow">
+  <div class="row">
+    <div class="col-sm-11">
+      <div class="row" style="">
+        <ul class="nav nav-tabs tabs-chng ml-3 mt-1">
+            <li class="nav-item itm-chng">
+              <angular2-multiselect [data]="dropdownList" [(ngModel)]="selectedItems" 
+              [settings]="dropdownSettings" 
+              (onSelect)="onItemSelect($event,'LeadType',0)" 
+              (onDeSelect)="OnItemDeSelect($event,'LeadType',0)"
+              (onSelectAll)="onSelectAll($event,'LeadType',0)"
+              (onDeSelectAll)="onDeSelectAll($event,'LeadType',0)"></angular2-multiselect>
+            </li>
+            <li  class="nav-item itm-chng">
+              <angular2-multiselect [data]="dropdownList2" [(ngModel)]="selectedItems2" 
+              [settings]="dropdownSettings2" 
+              (onSelect)="onItemSelect($event,'Status',1)" 
+              (onDeSelect)="OnItemDeSelect($event,'Status',1)"
+              (onSelectAll)="onSelectAll($event,'Status',1)"
+              (onDeSelectAll)="onDeSelectAll($event,'Status',1)"></angular2-multiselect>
+            </li>
+            <li  class="nav-item itm-chng">
+              <angular2-multiselect [data]="dropdownList3" [(ngModel)]="selectedItems3" 
+              [settings]="dropdownSettings3" 
+              (onSelect)="onItemSelect($event,'LeadSource',2)" 
+              (onDeSelect)="OnItemDeSelect($event,'LeadSource',2)"
+              (onSelectAll)="onSelectAll($event,'LeadSource',2)"
+              (onDeSelectAll)="onDeSelectAll($event,'LeadSource',2)"></angular2-multiselect>
+           </li>
+            <li  class="nav-item itm-chng">
+              <angular2-multiselect [data]="dropdownList4" [(ngModel)]="selectedItems4" 
+              [settings]="dropdownSettings4" 
+              (onSelect)="onItemSelect($event,'Campaign',3)" 
+              (onDeSelect)="OnItemDeSelect($event,'Campaign',3)"
+              (onSelectAll)="onSelectAll($event,'Campaign',3)"
+              (onDeSelectAll)="onDeSelectAll($event,'Campaign',3)"></angular2-multiselect>
+            </li>
+          <li  class="nav-item itm-chng">
+            <angular2-multiselect [data]="dropdownList5" [(ngModel)]="selectedItems5" 
+              [settings]="dropdownSettings5" 
+              (onSelect)="onItemSelect($event,'Agent',4)" 
+              (onDeSelect)="OnItemDeSelect($event,'Agent',4)"
+              (onSelectAll)="onSelectAll($event,'Agent',4)"
+              (onDeSelectAll)="onDeSelectAll($event,'Agent',4)"></angular2-multiselect>
+          </li>
+
+          <li class="nav-item">
+              <angular2-multiselect [data]="dropdownList6" [(ngModel)]="selectedItems6" 
+              [settings]="dropdownSettings6" 
+              (onSelect)="onItemSelect($event,'DateColumn',5)" 
+              (onDeSelect)="OnItemDeSelect($event,'DateColumn',5)"
+              (onSelectAll)="onSelectAll($event,'DateColumn',5)"
+              (onDeSelectAll)="onDeSelectAll($event,'DateColumn',5)"></angular2-multiselect>
+          </li>
+          <li  class="nav-item itm-chng ml-1" style="padding: 5px 10px; max-width: 149px;" id="fromDateLi">
+              <span class="fromDateSpan addCursor" (click)="fromDate()">From Date <i class="fa fa-caret-down"></i></span>
+                <input name="from_date" class="form-control frm-chng fromDate" [(ngModel)]="from_date" type="date">
+          </li>
+          <li class="nav-item itm-chng" style="padding: 5px 10px; max-width: 149px;" id="toDateLi">
+              <span class="toDateSpan addCursor" (click)="toDate()">To Date <i class="fa fa-caret-down"></i></span>
+              <input name="to_date" class="form-control frm-chng toDate" [(ngModel)]="to_date" type="date">
+          </li>
+          <li  class="nav-item">
+              <div class="ss-searchbox">
+                  <i class="fa fa-search"></i>
+                  <input class="form-control " type="text" placeholder="Type name, email, contact to search..." [(ngModel)]="search">
+              </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-sm-1 text-center">
+       <img src="assets/img/dashboard/submit.png" class="ml-1 sendIcon filterRowIcon" (click)="filterData()">
+    </div>
+  </div>
+</div>
+
+<div class="mt-4 container-set">
+  <div class="row">
+      <div class="col-md-12">
+        <div class="tableDiv table-responsive">
+          <p class="text-center" *ngIf="leads &&  leads.length==0 ">No Leads</p>
+          <table class="table" *ngIf="leads &&  leads.length>0">
+            <thead>
+              <tr>
+                <th class="text-center firstTh">#</th>
+                <th (click)="sort('name')">Name <i class="fa ml-2" [ngClass]="{'fa-sort': column != 'name', 'fa-sort-asc': (column == 'name' && !isDesc), 'fa-sort-desc': (column == 'name' && isDesc) }" aria-hidden="true" ></i></th>
+                <th (click)="sort('lead_status')">Status <i class="fa ml-2" [ngClass]="{'fa-sort': column != 'lead_status', 'fa-sort-asc': (column == 'lead_status' && !isDesc), 'fa-sort-desc': (column == 'lead_status' && isDesc) }" aria-hidden="true"></i></th>
+                <th>Contact</th>
+                <th>Email Id</th>
+                <th>Source</th>
+                <th>Campaign</th>
+                <th>KYC Status</th>
+                <th>Last Status Update </th>
+                <th class="lastTh">Acquisition Date</th> 
+              </tr>
+            </thead>
+            <tbody>
+              <!-- <tr *ngIf="(leads | category: search.value).length==0">
+                <td colspan="10" class="text-center">No Match</td>
+              </tr> -->
+              <tr *ngFor="let data of leads | paginate: { itemsPerPage: per_page, currentPage: current_page, totalItems: total_page  } let i = index; " [attr.data-index]="i">
+                  <td class="text-center">{{((current_page-1) * per_page) + (i+1)}}</td>
+                  <td class="capitalize addCursor" data-toggle="modal" data-target="#leadDetailsModal" (click)="viewLeadDetails(data.id,data.user_reference)" style="color: #007bff"><span *ngIf="data.name!=null">{{data.name}}</span><span *ngIf="data.name==null">Unnamed</span></td>
+                  <td class="capitalize">{{data.lead_status | replaceChar}}<p *ngIf="data.lead_status=='follow up' || data.lead_status=='follow_up'">{{data.follow_up_time | date:'dd MMM, y , h:mm a'}}</p><p *ngIf="data.lead_status=='lost'" class="mt-1">(<span class="text-danger">Remarks</span> - {{data.lost_remark}})</p></td>
+                  <td>{{data.contact}}</td>
+                  <td>{{data.email}}</td>
+                  <td class="capitalize">{{data.lead_source | replaceChar}}</td>
+                  <!-- <td class="minWidthForTd capitalize">{{data.lead_source | replaceChar}}</td> -->
+                  <td class="minWidthForTd capitalize">{{data.lead_campaign | replaceChar}}</td>
+                  <td>
+                    <span *ngIf="data.lead_status !='qualified'">Not Approved</span>
+                    <span *ngIf="data.lead_status =='qualified'">
+                      <span *ngIf=" data.user_reference ==null || data.user_reference.kyc_approved == false">Not Approved</span>
+                      <span *ngIf="data.user_reference !=null && data.user_reference.kyc_approved == true">Approved</span>
+                    </span>
+                  </td>
+                <td class="minWidthForTd">{{data.status_updated_at | date:'dd MMM, y , h:mm a'}}</td>
+                <td class="minWidthForTd lastTh">{{data.created_at | date:'dd MMM, y , h:mm a'}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="text-center">
+            <pagination-controls autoHide="true" (pageChange)="current_page = getFiletredLeads($event)"></pagination-controls>
+          </div>
+        </div>
+      </div>
+  </div>
+</div>
+
+<div class="modal fade" id="leadDetailsModal" tabindex="-1" role="dialog" aria-labelledby="leadDetailsModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content" *ngIf=" leadDetails && leadDetails.lead_status != 'qualified'">
+      <div class="modal-header">
+        <h5 class="modal-title modalTitle addClass" id="exampleModalLabel">Lead Details</h5>
+          <img class="close" (click)="closeModal()" data-dismiss="modal" src="https://www.homepolish.com/assets/close-ee1bfd7a4473933b6dd934b2c284dc856361b63581c8f43b8cdc1abe07c91765.svg">
+      </div>
+      <div class="modal-body leadView" *ngIf="leadDetails">
+        <div class="col-12" *ngIf="successalertmodal">
+          <div class="alert-box grid-100" *ngIf="successMessageModal">
+            <div class="alert alert-success mt-3 text-center">
+              <a class="close link" data-dismiss="alert"  (click)="successalertmodal=false">×</a>
+              {{successMessageModal}}
+            </div>
+          </div>
+        </div>
+        <div class="col-12" *ngIf="erroralertmodal">
+          <div class="alert-box grid-100" *ngIf="errorMessageModal">
+            <div class="alert alert-danger mt-3 text-center">
+              <a class="close link" data-dismiss="alert" (click)="erroralertmodal=false">×</a>
+              {{errorMessageModal}}
+            </div>
+          </div>
+        </div>
+        <div class="row addClass">
+          <div class="col-sm-12 col-md-6">
+            <div class="form-group">
+              <label>Lead Name</label>
+              <input type="text" class="form-control" placeholder="{{leadDetails.name}}" readonly>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-6">
+            <div class="form-group">
+              <label>Lead Contact</label>
+              <input type="text" class="form-control" placeholder="{{leadDetails.contact}}" readonly>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-6">
+            <div class="form-group">
+              <label>Date Of Acquisition (dd-mm-yyyy)</label>
+              <input type="text" class="form-control" placeholder="{{leadDetails.created_at}}" readonly>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-6">
+            <div class="form-group">
+              <label>Lead Source</label>
+              <input type="text" class="form-control" placeholder="{{leadDetails.source}}" readonly>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-6">
+            <div class="form-group">
+              <label>Lead Status</label>
+              <input type="text" class="form-control" placeholder="{{leadDetails.lead_status | replaceChar}}" readonly>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-6" *ngIf="leadDetails.lead_status=='lost'">
+             <div class="form-group">
+              <label>Remarks</label>
+              <input type="text" class="form-control" placeholder="{{leadDetails.lost_remark}}" readonly>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-6">
+            <div class="form-group">
+              <label>Lead Email</label>
+              <input type="text" class="form-control" placeholder="{{leadDetails.email}}" readonly>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-6">
+            <div class="form-group">
+              <label>Pincode</label>
+              <input type="text" class="form-control" placeholder="{{leadDetails.pincode}}" readonly>
+            </div>
+          </div>
+          <div class="col-12">
+            <div class="form-group">
+              <form [formGroup]="leadStatusUpdateForm">
+                <div class="row">
+                  <div class="col-6">
+                    <label>Change Status</label>
+                    <select class="form-control" (change)="setLeadStatus($event.target.value)" formControlName="lead_status">
+                      <option value="" disabled>Select Status</option>
+                      <option value="qualified">Qualified</option>
+                      <option value="lost">Lost</option>
+                    </select>
+                  </div>
+                  <div class="col-6" style="display: none;" id="lostremark">
+                    <div class="form-group">
+                      <label >Remarks</label>
+                      <textarea class="form-control" rows="2" formControlName="lost_remark"></textarea>
+                    </div>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <button class="rk-interalBtnColor addCursor" (click)="updateStatus(leadStatusUpdateForm.value,leadDetails.id,leadDetails.user_reference)" [disabled]="!leadStatusUpdateForm.valid">Update</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-content" *ngIf=" leadDetails && leadDetails.lead_status == 'qualified'">
+      <div class="modal-header">
+        <h5 class="modal-title modalTitle addClass" id="exampleModalLabel">Broker Details</h5>
+        <img class="close" (click)="closeModal()" data-dismiss="modal" src="https://www.homepolish.com/assets/close-ee1bfd7a4473933b6dd934b2c284dc856361b63581c8f43b8cdc1abe07c91765.svg">
+      </div>
+      <div class="modal-body leadView" *ngIf="brokerDetails">
+        <div class="col-12" *ngIf="successalertmodal">
+          <div class="alert-box grid-100" *ngIf="successMessageModal">
+            <div class="alert alert-success mt-3 text-center">
+              <a class="close link" data-dismiss="alert"  (click)="successalertmodal=false">×</a>
+              {{successMessageModal}}
+            </div>
+          </div>
+        </div>
+        <div class="col-12" *ngIf="erroralertmodal">
+          <div class="alert-box grid-100" *ngIf="errorMessageModal">
+            <div class="alert alert-danger mt-3 text-center">
+              <a class="close link" data-dismiss="alert" (click)="erroralertmodal=false">×</a>
+              {{errorMessageModal}}
+            </div>
+          </div>
+        </div>
+        <div class="row addClass">
+          <div class="col-sm-12 col-md-6">
+            <div class="form-group">
+              <label>Name</label>
+              <input type="text" class="form-control" placeholder="{{brokerDetails.name}}" readonly>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-6">
+            <div class="form-group">
+              <label>Contact</label>
+              <input type="text" class="form-control" placeholder="{{brokerDetails.contact !='' && brokerDetails.contact != null && brokerDetails.contact || 'NA'}}" readonly>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-6">
+            <div class="form-group">
+              <label>Email</label>
+              <input type="text" class="form-control" placeholder="{{brokerDetails.email !='' && brokerDetails.email != null && brokerDetails.email || 'NA'}}" readonly>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-6">
+            <div class="form-group">
+              <label>Pincode</label>
+              <input type="text" class="form-control" placeholder="{{brokerDetails.pincode !='' && brokerDetails.pincode != null && brokerDetails.pincode || 'NA'}}" readonly>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-6">
+            <div class="form-group">
+              <label>GST</label>
+              <input type="text" class="form-control" placeholder="{{brokerDetails.gst_number !='' && brokerDetails.gst_number != null && brokerDetails.gst_number || 'NA'}}" readonly>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-6">
+            <div class="form-group">
+              <label>Pan</label>
+              <input type="text" class="form-control" placeholder="{{brokerDetails.pan !='' && brokerDetails.pan != null && brokerDetails.pan || 'NA'}}" readonly>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-6">
+            <div class="form-group">
+              <label>KYC Status</label>
+              <input type="text" class="form-control" placeholder="{{ brokerDetails.kyc_approved != true && 'Not Approved' || 'Approved' }}" readonly>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-6">
+            <div class="form-group">
+              <label>Address Proof</label><br>
+              <a download href="{{brokerDetails.address_proof}}" *ngIf="brokerDetails.address_proof !='/images/original/missing.png'">Download Address Proof</a>
+              <span *ngIf="brokerDetails.address_proof =='/images/original/missing.png'">Not Available</span>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-12">
+            <button type="button" class="btn btn-success" (click)="approveBrokerKYCData(brokerDetails.id,true)">Approved</button>
+            <button type="button" class="btn btn-danger" (click)="approveBrokerKYCData(brokerDetails.id,false)">Rejected</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="editLeadDetailsModal" role="dialog" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title mt-5 addClass" id="exampleModalLabel">Lead Details</h5>
+          <img class="close" (click)="closeModal()" data-dismiss="modal" src="https://www.homepolish.com/assets/close-ee1bfd7a4473933b6dd934b2c284dc856361b63581c8f43b8cdc1abe07c91765.svg">
+      </div>
+    </div>
+  </div>
+</div>

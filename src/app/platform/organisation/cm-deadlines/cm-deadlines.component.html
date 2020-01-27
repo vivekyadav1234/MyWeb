@@ -1,0 +1,117 @@
+<div class="row ss-top-menu">
+  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6">
+    <span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;">Deadlines</span>
+  </div>
+  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6">
+  </div>
+</div>
+<div class="row">
+  <div class="col-12" *ngIf="erroralert">
+    <div class="alert-box grid-100" *ngIf="errorMessage">
+      <div class="alert alert-danger mt-3 text-center">
+        <a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a>
+        {{errorMessage}}
+      </div>
+    </div>
+  </div>
+  <div class="col-12" *ngIf="successalert">
+    <div class="alert-box grid-100" *ngIf="successMessage">
+      <div class="alert alert-success mt-3 text-center">
+        <a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+        {{successMessage}}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row p-3">
+  <div class="col-md-12 pt-3 pb-3 bg-white">
+    <div class="row">
+      <div class="col-md-8">
+        <span class="theme-font">Deadlines </span>
+      </div>
+      <div class="col-md-4">
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-4">
+    <div class="ss-card p-4 cursor-pointer mt-3" [routerLink]="['/community_manager/actionable/list']" [queryParams]="{customer_status: 'qualified'}">
+      <div class="ss-card-head pt-2 pb-4">
+        <span>
+          <img src="/assets/img/dashboard/qualified_assigned.png">
+        </span>
+        <span class="theme-font ml-4">
+          NO ACTION
+        </span>
+      </div>
+      <div class="ss-card-body text-center pt-5 pb-5">
+        <span class="h1">{{statusCountArr.deadline_qualified}}</span>
+      </div>
+      <div class="ss-card-footer pt-4 pb-2">
+        <span> Lead assigned but no status update for more than 1 day.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="ss-card p-4 cursor-pointer mt-3" [routerLink]="['/community_manager/actionable/list']" [queryParams]="{customer_status: 'follow_up'}">
+      <div class="ss-card-head pt-2 pb-4">
+        <span>
+          <img src="/assets/img/dashboard/qualified_assigned.png">
+        </span>
+        <span class="theme-font ml-4">
+          FOLLOW UP
+        </span>
+      </div>
+      <div class="ss-card-body text-center pt-5 pb-5">
+        <span class="h1">{{statusCountArr.deadline_follow_up}}</span>
+      </div>
+      <div class="ss-card-footer pt-4 pb-2">
+        <span> Follow up leads which were scheduled but no status update for more than 1 day.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+    <div class="ss-card p-4 cursor-pointer mt-3" [routerLink]="['/community_manager/actionable/list']" [queryParams]="{customer_status: 'not_contactable'}">
+      <div class="ss-card-head pt-2 pb-4">
+        <span>
+          <img src="/assets/img/dashboard/qualified_assigned.png">
+        </span>
+        <span class="theme-font ml-4">
+          NOT CONTACTABLE
+        </span>
+      </div>
+      <div class="ss-card-body text-center pt-5 pb-5">
+        <span class="h1">{{statusCountArr.deadline_not_contactable}}</span>
+      </div>
+      <div class="ss-card-footer pt-4 pb-2">
+        <span> Not contactable leads which were scheduled but no status update for more than 1 day.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-4">
+  	<div class="ss-card p-4 cursor-pointer mt-3 mb-5">
+    <!-- <div class="ss-card p-4 cursor-pointer mt-3 mb-5" [routerLink]="['/community_manager/actionable/list']" [queryParams]="{meetings_for: 'no_design'}"> -->
+      <div class="ss-card-head pt-2 pb-4">
+        <span>
+          <img src="/assets/img/dashboard/qualified_assigned.png">
+        </span>
+        <span class="theme-font ml-4">
+          NO DESIGN
+        </span>
+      </div>
+      <div class="ss-card-body text-center pt-5 pb-5">
+        <span class="h1">0</span>
+      </div>
+      <div class="ss-card-footer pt-4 pb-2">
+        <span> No design submitted after assigning leads to design partner for more than 4 days.</span>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,67 @@
+.ss-text-light
+{
+  vertical-align: -webkit-baseline-middle;
+  cursor: pointer;
+}
+
+.ss-text-dark{
+    vertical-align: -webkit-baseline-middle;
+}
+.table td{
+    padding: 0.7rem 0.75rem;
+    vertical-align: middle;
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.7);
+    border: none;
+}
+.table th {
+
+    padding: .9rem;
+    vertical-align: middle;
+    border: none;
+    font-size: 12px;
+    text-transform: uppercase;
+    color: #fff;
+    background-color: #5A5A5A;
+}
+.table{
+  border-collapse: separate;
+  border-spacing: 0 5px;
+}
+.tableDiv tbody{
+  background-color: #fff;
+}
+.tableDiv{
+  overflow-x:scroll;
+}
+
+.tableDiv tbody tr{
+  box-shadow: 1px 1px 7px 0px #dadada;
+  border-radius: 5px;
+}
+.firstTh{
+  border-radius: 5px 0 0 0;
+}
+.lastTh{
+  border-radius: 0px 5px 0 0;
+}
+select.form-control:not([size]):not([multiple]){
+  font-size: 14px;
+}
+.inputBorder {
+    border-color: red;
+}
+.sendIcon{
+  margin-top: -4px;
+  height: 27px;
+}
+
+a.pop{
+  cursor: pointer;
+  color: #007bff;
+}
+.time-chng{
+  font-size: 12px;
+  font-weight: bolder;
+}
+

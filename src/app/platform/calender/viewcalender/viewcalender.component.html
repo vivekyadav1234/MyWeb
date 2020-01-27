@@ -1,0 +1,627 @@
+<div class="row ss-top-menu">
+    <div class="col-6">
+        <!-- <span class="ss-text-light" style="vertical-align: -webkit-baseline-middle;">
+      Project
+      <i class="rightArrow fa fa-angle-right"></i> 
+    </span> -->
+        <span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;">Calender</span>
+    </div>
+    <div class="col-6">
+        <div class="row">
+            <div class="col-md-12">
+                <button type="button" class="btn btn-pink pull-right" data-toggle="modal" (click)="setCurrentTimestamp()" data-target="#eventModal" *ngIf="role != 'sitesupervisor'">
+          CREATE EVENT
+        </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-12" *ngIf="erroralert">
+    <div class="alert-box grid-100" *ngIf="errorMessage">
+        <div class="alert alert-danger mt-3 text-center">
+            <a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a> {{errorMessage}}
+        </div>
+    </div>
+</div>
+<div class="col-12" *ngIf="successalert">
+    <div class="alert-box grid-100" *ngIf="successMessage">
+        <div class="alert alert-success mt-3 text-center">
+            <a class="close link" data-dismiss="alert" (click)="successalert=false">×</a> {{successMessage}}
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5" *ngIf="designer_list">
+    <div class="col-sm-12 text-right mb-4">
+        <button class="rk-interalBtnColor mr-2 addCursor" (click)="actionable_Filter('')">All</button>
+        <button class="rk-interalBtnColor mr-2 addCursor" (click)="actionable_Filter('cm')">CM Actionable</button>
+        <button class="rk-interalBtnColor mr-2 addCursor" (click)="actionable_Filter('designer')">Designer Actionable</button>
+    </div>
+    <div class="col-sm-6">
+        <span>Filter by Designer</span>
+        <select class="form-control col-sm-5" (change)="filterDesigner($event)">
+      <option value="all">All</option>
+      <option *ngFor="let designer of designer_list" value="{{designer.id}}">
+        {{designer.name}} - {{designer.email}}
+      </option>
+    </select>
+    </div>
+</div>
+
+<div class="row my-4">
+    <div class="col-md-12">
+        <div class="calendar-container calendarMB">
+            <div id='calendar' #calendar></div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="eventModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" *ngIf="role != 'sitesupervisor'">
+    <div class="modal-dialog modal-lg" role="document" style="margin-top: 5rem;">
+        <div class="modal-content">
+            <div class="modal-header" style="border-bottom: 1px solid #e4e4e4;">
+                <h6 class="modal-title" id="exampleModalLabel">Schedule a meeting </h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <form [formGroup]="meetingform" (ngSubmit)="createEvent()">
+                            <div class="form-group row">
+                                <label class="col-3 col-lg-2 col-form-label">Project *</label>
+                                <div class="col-9 col-lg-10">
+                                  <select class="form-control" formControlName="project" required="true" (change)="onProjectChange($event.target.value)">
+                                    <option value=null>Choose your project</option>
+                                    <option *ngFor="let lead of leads" [value]="lead.ownerable_id">{{lead.ownerable_id}} - {{lead.name}} - {{lead.project_name}}</option>
+                                  </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-3 col-lg-2 col-form-label">Agenda *</label>
+                                <div class="col-9 col-lg-10">
+                                    <select class="form-control" formControlName="agenda" (change)="firstMeeting()"  required="true" id="agendaType">
+                                      <option value=null>Choose an agenda</option>
+                                      <option value="first_meeting">First Meeting</option>
+                                      <option value="follow_up_call">Follow Up Call</option>
+                                      <option value="follow_up_meeting">Follow Up Meeting</option>
+                                      <option value="design_and_boq_presentation">Design and BOQ Presentation</option>
+                                      <!-- <option *ngFor="let lang of langs" [value]="lang">{{lang}}</option> -->
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-3 col-lg-2 col-form-label">Type *</label>
+                                <div class="col-9 col-lg-10">
+                                    <select disabled class="form-control" formControlName="contact_type" id="typeSel" type='select' required="true">
+                                      <option value=null disabled>Choose type of interaction</option>
+
+                                     <ng-container *ngIf="loc == 'follow_up_call'">
+                                        <option value="phone_call"id="phone_call">Phone Call</option>
+                                        <option value="video_call">Video Call</option>
+                                      </ng-container>
+
+                                      <ng-container *ngIf="loc == 'first_meeting'">
+                                        <option value="experience_center">EC Visit</option>
+                                        <option value="site_visit">Site Visit</option>
+                                      </ng-container>
+
+                                      <ng-container *ngIf="loc == 'follow_up_meeting'">
+                                        <option value="experience_center">EC Visit</option>
+                                        <option value="site_visit">Site Visit</option>            
+                                      </ng-container>
+
+                                      <ng-container *ngIf="loc == 'design_and_boq_presentation'">
+                                        <option value="experience_center">EC Visit</option>
+                                        <option value="site_visit">Site Visit</option>
+                                        <option value="video_call">Video Call</option>
+                                      </ng-container>
+
+                                      <!-- <option *ngFor="let lang of langs" [value]="lang">{{lang}}</option> -->
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-3 col-lg-2 col-form-label">Description</label>
+                                <div class="col-9 col-lg-10">
+                                    <input type="text" class="form-control" formControlName="description" placeholder="What is this meeting about?">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-2 col-form-label">Date *</label>
+                                <div class="col-10">
+                                    <input type="datetime-local" formControlName="scheduled_at" class="form-control" required="true" min="{{todayDate}}">
+                                </div>
+                            </div>
+
+                            <div class="form-group row ">
+                                <label class="col-3 col-lg-2 col-form-label">Location</label>
+                                <div class="col-9 col-lg-10">
+                                    <input type="text" class="form-control" formControlName="location" placeholder="Enter the location">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-3 col-lg-2 col-form-label">Notify To *</label>
+                                <div class="col-9 col-lg-10">
+                                    <div class="form-check pull-left" *ngFor="let user of projectUsers" style="margin-left: 1.3rem;margin-right: 2rem;">
+                                        <input type="checkbox" class="form-check-input" name="users" value="{{user.email}}" id="{{user.email}}" (change)="onMeetingUserChange($event,'meeting')">
+                                        
+                                        <label class="form-check-label" for="{{user.email}}" style="padding-left: 0.25rem;">{{user.name}}</label>
+                                    </div>
+                                </div>
+                                <div class="col-3 col-lg-2"></div>
+                                <div class="col-9 col-lg-10 pull-right">
+                                    <input type="text" class="form-control meeting-control" formControlName="email" placeholder="Add semi-colon for multiple emails">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col-12 text-right">
+                                    <button type="submit" class="btn btn-pink" [disabled]="!meetingform.valid">Send invites</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+
+                        </form>
+                        <!-- <pre>{{meetingform.value | json}}</pre> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="viewEventModal" tabindex="-1" role="dialog" aria-labelledby="viewEventModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document" style="margin-top: 5rem;">
+        <div class="modal-content" style="overflow: auto">
+            <div class="modal-header" style="border-bottom: 1px solid #e4e4e4;">
+                <h6 class="modal-title" id="viewEventModalLabel"> details </h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="phone pull-right">
+                <a  data-toggle="modal" data-target="#alternateNumberModal"><i class="fa fa-phone cursor-pointer" (click)="getCustomerDetails()" style="    font-size: 1.5rem; color: #8F0020;"></i></a>&nbsp;&nbsp;
+              <!-- <i class="fa fa-phone cursor-pointer" (click)="callFromCalenderToLead()" style="    font-size: 1.5rem; color: #8F0020;"></i> -->
+            </div>
+          </div>  
+          <div class="col-md-12">
+            <div class="form-group row">
+              <label class="col-3 col-form-label">Lead</label>
+              <div class="col-9 modal-lead">
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-3 col-form-label">Project</label>
+              <div class="col-9 modal-project">
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-3 col-form-label">Agenda</label>
+              <div class="col-9 modal-agenda">
+
+              </div>
+            </div>
+
+            <div class="form-group row" id="furemark-hide">
+              <label class="col-3 col-form-label">Follow up Remark</label>
+              <div class="col-9 modal-furemark">
+
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-3 col-form-label">Type</label>
+              <div class="col-9 modal-type">
+
+              </div>
+            </div>
+
+            <div class="form-group row des-chng">
+              <label class="col-3 col-form-label">Description</label>
+              <div class="col-9 modal-description">
+
+              </div>
+            </div>
+
+            <div class="form-group row">
+              <label class="col-3 col-form-label">Date</label>
+              <div class="col-9 modal-date">
+                
+              </div>
+            </div>
+
+            <div class="form-group row location-chng">
+              <label class="col-3 col-form-label">Location</label>
+              <div class="col-9 modal-location">
+                
+              </div>
+            </div>
+            <div class="form-group row" id="designer-hide">
+              <label class="col-3 col-form-label">Designer</label>
+              <div class="col-9 modal-designer">
+
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-3 col-form-label">Members</label>
+              <div class="col-9 modal-members">
+
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-3 col-form-label">Status</label>
+              <div class="col-9 modal-status">
+
+              </div>
+            </div>
+            <div class="form-group row" id="status-change" *ngIf="role == 'designer'">
+                <label class="col-3 col-form-label">Change Status</label>
+                <div class="col-9">
+                 <select (change) = "onStatusChange($event.target.value)">
+                    <option>Change Status</option>
+                    <option value="not_contactable" >Not Contactable</option>
+                    <option value="follow_up" >Follow Up</option>
+                    <option value="wip" >WIP</option>
+                  </select>
+                </div>
+            </div>
+
+            
+
+            <div class="form-group row" id="remark-hide">
+              <label class="col-3 col-form-label">Remarks</label>
+              <div class="col-9 modal-remark">
+
+              </div>
+
+            </div>
+            <div class="modal-footer" style="justify-content: flex-start;">
+              <button type="button" id="btn-hide" class="btn btn-pink" (click)="updateStatus('reschedule')">Reschedule</button>
+              <button type="button" id="btn-hides" class="btn btn-pink" (click)="updateStatus('done')">Mark done</button>
+              <button type="button" id="btn-cancel-hide" class="btn btn-pink" (click)="updateStatus('cancelled')">Meeting Cancel</button>
+              <button type="button" id="mom-add" class="btn btn-pink" data-toggle="modal" data-target="#addmom" (click) = showcreateMOM()>Add MOM</button>
+              <a class="btn btn-pink" id="momview" href="#" data-toggle="modal" data-target="#view-mom" (click) = "showMOM()">View MOM</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--MOM Modal-->
+<div class="modal fade" id="addmom" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" *ngIf="role != 'sitesupervisor'">
+  <div class="modal-dialog modal-lg" role="document" style="margin-top: 5rem;">
+    <div class="modal-content">
+      <div class="modal-header" style="border-bottom: 1px solid #e4e4e4;">
+        <h6 class="modal-title" id="exampleModalLabel">Add MOM </h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <form [formGroup]="mom" (ngSubmit)="createMOM()">
+          <textarea formControlName = "mom_description" rows="4" cols="50" name="comment" placeholder="Enter Description..">
+          </textarea>
+          <div class="mt-3" *ngFor= "let user of calEvent">
+            <input type="checkbox" [(ngModel)]="Emails" value="{{user.email}}" (change)="OnEmailSelect($event)">
+            <label class="form-check-label" for="{{user.email}}" style="padding-left: 0.25rem;">{{user.name}} ({{user.email}})</label>
+          </div>
+          
+          <button class="btn btn-pink mt-3" type="submit" (click)="createMOM()" [disabled]="!mom.valid">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--View mom modal-->
+<div class="modal fade mt-5" id="view-mom" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg mt-4" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">View MOM</h5>
+        <button type="button" class="close" (click) = "closeViewMoM()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body" *ngIf = "view_mom" style="overflow-y: auto;">
+        <p>{{view_mom.mom_description}}</p>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-pink" (click) = "closeViewMoM()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="updateEventModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" *ngIf="role != 'sitesupervisor'">
+    <div class="modal-dialog modal-lg" role="document" style="margin-top: 5rem;">
+        <div class="modal-content">
+            <div class="modal-header" style="border-bottom: 1px solid #e4e4e4;">
+                <h6 class="modal-title" id="exampleModalLabel">Schedule a meeting </h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <form [formGroup]="updatemeetingform" (ngSubmit)="updateEvent()">
+                            <div class="form-group row">
+                                <label class="col-3 col-lg-2 col-form-label">Project *</label>
+                                <div class="col-9 col-lg-10">
+                                    <select class="form-control" formControlName="project" required="true" (change)="onProjectChange($event.target.value)" disabled="true" >
+                                      <option value=null>Choose your project</option>
+                                      <option *ngFor="let lead of leads" [value]="lead.ownerable_id">{{lead.ownerable_id}} - {{lead.name}} - {{lead.project_name}}</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-3 col-lg-2 col-form-label">Agenda *</label>
+                                <div class="col-9 col-lg-10">
+                                    <select class="form-control" formControlName="agenda" disabled="true">
+                                      <option value=null>Choose an agenda</option>
+                                      <option value="first_meeting">First Meeting</option>
+                                      <!-- <option value="briefing_sales_pitch">Briefing/Sales Pitch</option> -->
+                                      <option value="follow_up_meeting">Follow Up Meeting</option>
+                                      <option value="follow_up_call">Follow Up Call</option>
+                                      <option value="design_and_boq_presentation">Design and BOQ Presentation</option>
+                                      <!-- <option *ngFor="let lang of langs" [value]="lang">{{lang}}</option> -->
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                              <label class="col-2 col-form-label">Type *</label>
+                              <div class="col-10">
+                                <select disabled class="form-control" formControlName="contact_type" required="true" id="typeSel" type='select'>
+                                  <option value=null disabled>Choose type of interaction</option>
+
+                                  <ng-container *ngIf="loc == 'follow_up_call'">
+                                    <option value="phone_call"id="phone_call">Phone Call</option>
+                                    <option value="video_call">Video Call</option>
+                                  </ng-container>
+
+                                  <ng-container *ngIf="loc == 'first_meeting'">
+                                    <option value="experience_center">EC Visit</option>
+                                    <option value="site_visit">Site Visit</option>
+                                  </ng-container>
+
+                                  <ng-container *ngIf="loc == 'follow_up_meeting'">
+                                    <option value="experience_center">EC Visit</option>
+                                    <option value="site_visit">Site Visit</option>            
+                                  </ng-container>
+
+                                  <ng-container *ngIf="loc == 'design_and_boq_presentation'">
+                                    <option value="experience_center">EC Visit</option>
+                                    <option value="site_visit">Site Visit</option>
+                                    <option value="video_call">Video Call</option>
+                                  </ng-container>
+                                  
+                                  <!-- <option *ngFor="let lang of langs" [value]="lang">{{lang}}</option> -->
+                                </select>
+                              </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-3 col-lg-2 col-form-label">Description</label>
+                                <div class="col-9 col-lg-10">
+                                    <input type="text" class="form-control" formControlName="description" placeholder="What is this meeting about?">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-2 col-form-label">Date *</label>
+                                <div class="col-10">
+                                    <input type="datetime-local" formControlName="scheduled_at" class="form-control" min="{{todayDate}}">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-3 col-lg-2 col-form-label">Location</label>
+                                <div class="col-9 col-lg-10">
+                                    <input type="text" class="form-control" formControlName="location" placeholder="Enter the location">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group row">
+                                <label class="col-3 col-lg-2 col-form-label">Remarks *</label>
+                                <div class="col-9 col-lg-10">
+                                    <input type="text" class="form-control" formControlName="remark" placeholder="Reason For Reschedule">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-3 col-lg-2 col-form-label">Notify To *</label>
+                                <div class="col-9 col-lg-10">
+                                    <div class="form-check pull-left" *ngFor="let user of projectUsers" style="margin-left: 1.3rem;margin-right: 2rem;">
+                                       <!-- <pre>{{ projectUsers.value | json  }}</pre> -->
+                                        <input type="checkbox" class="form-check-input" name="users" value="{{user.email}}" id="update-{{user.email}}" (change)="onMeetingUserChange($event,'update')">
+                                        <label class="form-check-label" for="update-{{user.email}}" style="padding-left: 0.25rem;">{{user.name}}</label>
+                                    </div>
+                                </div>
+                                <div class="col-3 col-lg-2"></div>
+                                <div class="col-9 col-lg-10 pull-right">
+                                    <input type="text" class="form-control meeting-control" formControlName="email" placeholder="Add semi-colon for multiple emails">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col-12 text-right">
+                                    <button type="submit" class="btn btn-pink" [disabled]="!updatemeetingform.valid">Send invites</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+
+                        </form>
+                        <!-- <pre>{{updatemeetingform.value | json}}</pre> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- For REMARK MODAL -->
+<div class="modal fade" id="markModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" *ngIf="role != 'sitesupervisor'">
+    <div class="modal-dialog modal-lg" role="document" style="margin-top: 5rem;">
+        <div class="modal-content">
+            <div class="modal-header" style="border-bottom: 1px solid #e4e4e4;">
+                <h6 class="modal-title" id="exampleModalLabel">Give a Remark </h6>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <form [formGroup]="markDoneform" (ngSubmit)="remarkEvent()">
+
+                            <div class="form-group row">
+                                <label class="col-2 col-form-label">Remarks:</label>
+                                <div class="col-10">
+                                    <input type="text" class="form-control" formControlName="remark" placeholder="Enter Your Remarks..">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col-12">
+                                    <button type="submit" class="btn btn-pink" [disabled]="!markDoneform.valid">Submit</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Status modal -->
+<div class="modal fade" id="statusModal" tabindex="-1" role="dialog" aria-labelledby="SmsModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg mobModal" role="document" style="width: 55rem;margin-top: 55px;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5>Follow-up Details</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <img class="close" data-dismiss="modal" src="https://www.homepolish.com/assets/close-ee1bfd7a4473933b6dd934b2c284dc856361b63581c8f43b8cdc1abe07c91765.svg">
+    </button>
+      </div>
+      <div class="modal-body">
+
+        <div class="form-group row">
+          <label for="example-text-input" class="col-2 col-form-label">Callback Date</label>
+          <div class="col-10">
+            <input type="datetime-local" name="followup-details" id="followup-details" class="form-control" (change) = "disableDate()">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="example-text-input" class="col-2 col-form-label">Remarks </label>
+          <div class="col-10">
+            <textarea rows="1" name="followup_remarks" id="followup_remarks" class="form-control"></textarea>
+            <!-- <input type="da" name="followup-details" id="followup-details" class="form-control"> -->
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <input type="button" id="followup-button" value="Update" class="btn btn-pink" (click) = "onCallbackChange('follow_up')" >
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Status modal end -->
+
+<div class="modal fade" id="loststatusModal" tabindex="-1" role="dialog" aria-labelledby="SmsModalTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg mobModal" role="document" style="width: 55rem;">
+    <form [formGroup]="statusChangeForm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5>Lost Details</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <img class="close" data-dismiss="modal" src="https://www.homepolish.com/assets/close-ee1bfd7a4473933b6dd934b2c284dc856361b63581c8f43b8cdc1abe07c91765.svg">
+          </button>
+        </div>
+        <div class="modal-body">
+
+          <div class="form-group row">
+            <label for="example-text-input" class="col-3 col-form-label">Reason for Lost <span class="text-danger">*</span></label>
+            <div class="col-9">
+              <select class="form-control" id="lost_reason" formControlName="reson_for_lost" (change)="reasonForLostDropdownChange($event.target.value)">
+                <option value="" disabled>Select Reason</option>
+                <option value="not_in_scope">Not in Scope</option>
+                <option value="low_budget">Low Budget</option>
+                <option value="out_of_area">Out of Area</option>
+                <option value="not_interested">Not Interested</option>
+                <option value="already_done_with_other_vendor">Already done with Other Vendor</option>
+                <option value="others">Others </option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row" id="lostRemarkRow">
+            <label for="example-text-input" class="col-3 col-form-label">Remarks <span class="text-danger">*</span> </label>
+            <div class="col-9">
+              <textarea rows="1" name="lost_remarks" id="lost_remarks" class="form-control" formControlName="lost_remarks"></textarea>
+            </div>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <input type="button" id="lost-button" value="Update" class="btn btn-pink addCursor" (click) = "onCallbackChange('lost')" [disabled]="!statusChangeForm.valid">
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade mt-5" id="alternateNumberModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg mt-4" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle">Select Contact</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <div class="bg-light col-12 font-weight-bold pr-0">
+                    <label for="example-text-input" class="col-4">Name </label>
+                    <label for="example-text-input" class="col-4">Relation </label>
+                    <!-- <label for="example-text-input" class="col-3">Contact </label> -->
+                </div>
+              <div class="form-group" *ngFor="let user of customerDetails">
+                
+                <div class="col-12">
+                    <label for="example-text-input" class="col-4">{{user.name}} </label>
+                    <label for="example-text-input" class="col-4">{{user.relation}} </label>
+                    <!-- <label for="example-text-input" class="col-3">{{user.contact}} </label> -->
+                    <label><i class="fa fa-phone cursor-pointer" (click)="callFromCalenderToLead(user.contact)" style="    font-size: 1.5rem; color: #8F0020;"></i></label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+

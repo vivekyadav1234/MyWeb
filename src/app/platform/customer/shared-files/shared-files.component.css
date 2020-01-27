@@ -1,0 +1,131 @@
+.bgColor{
+	background-color: #f3f5f7;
+}
+.innerDivBg{
+	background-color: #fff;
+	border-radius: 5px;
+	box-shadow: 0 1px 5px #ccc;
+}
+.innerDiv h1{
+	font-weight: 300;
+	font-size: 2.2rem;
+	color: #333;
+}
+.innerDiv p{
+	font-size: 17px;
+  color: #656565;
+  font-weight: 400;
+}
+
+.myCardBody{
+	background-color: #f3f5f7;
+}
+.myCardBody h5{
+	color: #555;
+	font-weight: 400;
+}
+.myCardBody h6{
+	color: #444;
+	font-weight: 400;
+	font-size: 15px;
+}
+.myCardBody p{
+  margin-bottom: 5px;
+  color: #9a9494;
+  font-weight: 300;
+}
+.myCardBody h4 i{
+	color: #777;
+	margin: 0 5px;
+	cursor: pointer;
+}
+.boq-img{
+	text-align: center;
+}
+.myCardBody h4 i:hover{
+	color: #444;
+}
+.bgDiv{
+	background-color: #f3f5f7;
+}
+.headerBg{
+  background-color: #505050;
+  border-radius: 5px 5px 0px 0px;
+  padding: 10px 0;
+}
+.headerBg p{
+  display: inline-block;
+  color: #bfbfbf;
+  font-weight: 300;
+  margin-bottom: 0;
+  padding: 10px 22px;
+  border-radius: 35px;
+  font-size: 14px;
+}
+.headerBg p.active{
+  border: 1px solid #dcdcdc;
+  color: #fff;
+}
+.proposalBoxBg{
+	background-color: #fff;
+  padding: 11px 22px;
+  box-shadow: 0 1px 4px #ccc;
+  white-space: nowrap;
+  overflow-x: auto;
+}
+.proposalBox{
+	width: 13rem;
+	padding: 10px 15px;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	display: inline-block;
+}
+.proposalBox.addShadow{
+	box-shadow: 0 0 3px #bbbbbb;
+	border: 1px solid darkred;
+}
+.proposalBoxImg img{
+	border: 1px solid #ccc;
+	border-radius: 50px;
+	padding: 1px;
+	width: 100%;
+}
+.proposalBoxBody h6{
+	color: #333;
+}
+.proposalBoxBody p{
+	font-size: 13px;
+	color: #777;
+	font-weight: 400;
+}
+.proposalBoxBody span{
+	position: absolute;
+  font-size: 11px;
+  color: #777;
+  bottom: -8px;
+  right: 7px;
+}
+.myCard{
+	border: none;
+	box-shadow: 0 0 6px #ccc;
+}
+.mainBody{
+	background-color: #fff;
+	box-shadow: 0 0px 4px #ccc;
+	padding: 20px 6px 10px 6px;
+	margin-bottom: 2.4rem;
+  min-height: 75vh;
+}
+.ppt,.boq{
+	padding: 6px;
+	border: 1px solid #eaeaea;
+}
+.pptNon{
+	display: none;
+}
+.boqNon{
+	display: none
+}
+.boq-img{
+	text-align: center;
+}

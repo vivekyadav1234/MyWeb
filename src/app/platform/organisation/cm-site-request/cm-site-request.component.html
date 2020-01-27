@@ -1,0 +1,118 @@
+<div class="row ss-top-menu">
+  <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-xs-4">
+    <span class="ss-text-light" style="vertical-align: -webkit-baseline-middle;">Dashboard </span>
+    <span style="vertical-align: -webkit-baseline-middle;"> <i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-text-light" style="vertical-align: -webkit-baseline-middle;">Wip </span>
+  </div>
+  <div class="col-xl-5 col-lg-5 col-md-5 col-sm-5 col-xs-5">
+    <div class="ss-searchbox">
+      <i class="fa fa-search"></i>
+      <input class="form-control" type="text" placeholder="Type in name, contact, status, role, date to search..." #search (keyup)="0">
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12" *ngIf="erroralert">
+    <div class="alert-box grid-100" *ngIf="errorMessage">
+      <div class="alert alert-danger mt-3 text-center">
+        <a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a>
+        {{errorMessage}}
+      </div>
+    </div>
+  </div>
+  <div class="col-12" *ngIf="successalert">
+    <div class="alert-box grid-100" *ngIf="successMessage">
+      <div class="alert alert-success mt-3 text-center">
+        <a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+        {{successMessage}}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row body_height justify-content-center">
+  <div class="col-12">
+    <h5 *ngIf=" requestList && requestList.length == 0 " class="text-center my-5">No requests Available</h5>
+    <div class="tableDiv">
+      <table class="table" *ngIf="requestList && requestList.length >0">
+        <thead class="ss-thead">
+          <tr>
+            <th class="firstTh" style="min-width: 1rem;">#</th>
+            <th style="min-width: 18rem;">Request Type</th>
+            <th>Request Status</th>
+            <th>ADDRESS</th>
+            <th style="min-width: 11rem;">SCHEDULED AT</th>
+            <th style="min-width: 11rem;">RESCHEDULED AT</th>
+            <th>PROJECT</th>
+            <th>DESIGNERS</th>
+            <th>SITESUPERVISOR ASSIGNED</th>
+            <th>Assign Sitesupervisor</th>
+            <th class="lastTh"> ACTION</th>
+          </tr>
+        </thead>
+        <tbody class="ss-tbody">
+          <tr *ngFor=" let obj of requestList; let i = index" [attr.data-index]="i">
+            <td style="min-width: 1rem;">{{i+1}}</td>
+            <td class="capitalize">{{obj.request_type | replaceChar}}</td>
+            <td class="capitalize">{{obj.request_status | replaceChar}}</td>
+            <td class="capitalize">{{obj.address}}</td>
+            <td class="capitalize">{{obj.scheduled_at | date:'dd MMMM, y , h:mm a'}}</td>
+            <td class="capitalize">{{obj.rescheduled_at | date:'dd MMMM, y , h:mm a'}}</td>
+            <td class="capitalize">{{obj.project.name}}</td>
+            <td class="capitalize">
+              <span *ngIf="obj.designer.name">{{obj.designer.name}} ({{obj.designer.email}})</span>
+            </td>
+            <td class="capitalize">
+            	<span *ngIf="obj.sitesupervisor">{{obj.sitesupervisor.name}} ({{obj.sitesupervisor.email}})</span>
+            </td>
+            <td>
+            	<select class="form-control" (change) = "setSupervisor($event.target.value, i)" >
+            		<option>Select Supervisor</option>
+            		<option *ngFor="let ss of ssList" value="{{ss.id}}">{{ss.name}}</option>
+            	</select>
+            	<input type="button" name="" value="Go" [disabled]="i !== selectedIndex" (click) = "assignSiteSupervisor(obj.id)" >
+            </td>
+            <td>
+              <i class="ion-android-more-vertical  ss-3-dot-drop" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"></i>
+              <div class="dropdown-menu pt-2 pb-2" style="font-size: 14px;">
+                <a class="dropdown-item addCursor" (click)="reschedule(obj.id)" >Reschdule</a>
+                <a class="dropdown-item addCursor" (click)="discardRequest(obj.id)">Discard</a>
+              </div>
+            </td>
+
+
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- CREATE SITE MODAL -->
+<div class="modal fade" id="rescheduleModal" tabindex="-1" role="dialog" aria-labelledby="rescheduleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="border-bottom: 1px solid #e4e4e4;">
+        <h6 class="modal-title" id="rescheduleModalLabel">Reschedule the request : </h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label for="scheduled_at" class="ss-form-label mt-4">Reschedule</label>
+              <input type="datetime-local" class="form-control ss-form-control" name="scheduled_at" id="scheduled_at">
+            </div>
+            <div class="form-group">
+              <input type="button" name="" value="Reschedule" class="btn btn-pink float-right" (click) = "rescheduleEvent()">
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

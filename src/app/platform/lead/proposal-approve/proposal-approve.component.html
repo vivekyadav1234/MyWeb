@@ -1,0 +1,514 @@
+<div class="row ss-top-menu">
+  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6">
+    <span class="ss-link" style="vertical-align: -webkit-baseline-middle;" [routerLink]="['/']">Dashboard</span> 
+    <span style="vertical-align: -webkit-baseline-middle;"><i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-link" style="vertical-align: -webkit-baseline-middle;" routerLink="/community_manager/wip" *ngIf="(role=='city_gm' || role=='business_head' || role=='community_manager' || role=='design_manager')">Wip</span>
+    <span class="ss-link" style="vertical-align: -webkit-baseline-middle;" routerLink="/designer/wip" *ngIf="role=='designer'">Wip</span>
+    <span style="vertical-align: -webkit-baseline-middle;"><i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-link" style="vertical-align: -webkit-baseline-middle;" [routerLink]="['/community_manager/leads']" [queryParams]="{lead_status: lead_status}" *ngIf="(role=='city_gm' || role=='business_head' || role=='community_manager' || role=='design_manager')">Lead</span>
+    <span class="ss-link" style="vertical-align: -webkit-baseline-middle;" [routerLink]="['/designer/leads']" [queryParams]="{customer_status:lead_status}" *ngIf="role=='designer'">Lead </span>
+    <span style="vertical-align: -webkit-baseline-middle;"><i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;" *ngIf="lead_details && lead_details.user_reference">{{lead_details.user_reference.name}} - {{lead_details.project_details.name}}</span>
+  </div>
+</div>
+<div class="rk-ui-notification" *ngIf="successalert">
+  <span id="notificationMessageText">{{successMessage}}</span>
+  <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+<div class="rk-ui-notification err" *ngIf="erroralert">
+  <span id="notificationMessageText">{{errorMessage}}</span>
+  <a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+<div class="row px-4">
+   <app-shared-top-menu [lead_id]='lead_id'  [lead_details]='lead_details' [lead_status]='lead_status' [payment_approval_tab]='"active"'></app-shared-top-menu>
+    <div class="col-12">
+	    <div class="row mb-5">
+	        <div class="col-md-12 bg-white pb-3">
+		        <ul class="nav nav-tabs ss-nav-tabs" id="myTab" role="tablist">
+		            <li class="nav-item">
+		              <a class="nav-link active addCursor text-center mr-3" (click)="getSet('Intial_boq')" [ngClass]="{'active': selectedSet == 'Intial_boq'}">Initial BOQ</a>
+		            </li>
+		            <li class="nav-item">
+		              <a class="nav-link  addCursor text-center mr-3" (click)="getSet('Final_boq')" [ngClass]="{'active': selectedSet == 'Final_boq'}">Final BOQ</a>
+		            </li>
+		        </ul>
+
+		        <div class="row mt-4">
+		            <div class="col-md-12" >
+		    	        <div class="tableDiv "  *ngIf="approveList && approveList.length > 0">
+		    	          <div class="table-responsive">
+		    	            <table class="table ">
+			    	            <thead class="thead-dark">
+			    	                <tr>
+				    	                <th scope="col" class="firstTh">#</th>
+				    	                <th scope="col">REFERENCE NUMBER</th>
+				    	                <th scope="col">STATUS</th>
+				    	                <th scope="col">PRICE</th>
+                              <th scope="col">PERCENT DISCOUNT</th>
+                              <th scope="col">PROJECT MANAGEMENT FEE</th>
+				    	                <th scope="col">FINAL AMOUNT</th>
+					                    <th scope="col">PAID AMOUNT</th>
+				                        <th scope="col">LAST PAYMENT STATUS</th>
+			    	                    <th class="lastTh"></th>
+			    	                </tr>
+			    	            </thead>
+			    	            <tbody>
+			    	            	<tr *ngFor="let boq of approveList; let i=index;">
+			    	            		<td>{{ i+1 }}</td>
+			    	            		<td>{{ boq.reference_number}}</td>
+			    	            		<td>{{ boq.status}}</td>
+			    	            		<td>{{ boq.net_amount  | number:'1.2-2'}}</td>
+                            <td>{{ boq.discount_value}}</td>
+                            <td>{{ boq.pm_fee}}</td>
+			    	            		<td>{{ boq.total_amount  | number:'1.2-2'}}</td>
+			    	            		<td>{{ boq.paid_amount  | number:'1.2-2'}}</td>
+			    	            		<td class="capitalize">{{ boq.last_payment_status}}</td>
+			    	            		<td><button class="btn btn-sm btn-pink cursor-pointer" data-target="#quoteModal" data-toggle="modal" (click)="approveModal(boq.id)">View BOQ</button></td>
+
+			    	            		
+			    	            	</tr>
+			    	                
+			                        
+			    	                  
+			    	            </tbody>
+		    	            </table>  
+		    	            <!-- <p>{{paymentForm.value | json}}</p> -->
+		    	          </div>
+		    	        </div>          
+		  	        </div> 
+		            <div class="col-md-12 not-found " *ngIf="approveList && approveList.length== 0">
+			            <div class="boq-img">
+			                <img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+			            </div>
+			            <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing to show...</p> 
+		            </div> 
+		        </div>
+	        </div>
+	    </div>
+    </div>
+</div>
+<!-- Modal For Invoce Boq -->
+<div class="modal fade" id="quoteModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <button type="button" class="close custom-close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <div class="modal-body" *ngIf="selected_boq_details">
+        <div class="container-fluid px-4">
+          <div class="row borders border-bottom-0 border-dark">
+            <div class="col-md-8 border-right border-dark">
+              <div class="logo">
+                 <img src="../../../assets/img/mainLogo.svg" width="100%">
+              </div>   
+              
+            </div>
+            <div class="col-md-4">
+              <p class="quoteFont">Quotation</p>
+            </div>
+            
+          </div>
+          <div class="row borders border-dark">
+            <div class="col-md-8 border-right border-dark">
+              <div class="address">
+                AZB Services LLP
+            B501/502, Everest House, Suren Road, Gundavali
+            Andheri East, Mumbai - 400093
+                
+              </div>   
+              
+            </div>
+            <div class="col-md-4">
+              <div class="row">
+                <div class="col-md-6 border border-top-0 border-dark">
+                  Date
+                </div>
+                <div class="col-md-6 border border-top-0  border-dark">
+                  {{selected_boq_details.generation_date}}
+                </div>
+                
+              </div>
+              <div class="row  ">
+                <div class="col-md-6 border border-dark">
+                  Lead ID
+                </div>
+                <div class="col-md-6 border border-dark">
+                  {{selected_boq_details.lead_id}}
+                </div>
+                
+              </div>
+              <div class="row">
+                <div class="col-md-6 border  border-bottom-0 border-dark">
+                  BOQ Number
+                </div>
+                <div class="p-1 col-md-6 border border-bottom-0 border-dark">
+                  {{selected_boq_details.reference_number}}
+                </div>
+                
+              </div>
+            </div>
+            
+          </div>
+          
+          <div class="row mt-3" id="tableQuote">
+            <table class="table table-bordered">
+              <thead>
+              </thead>
+              <tbody>
+                  <tr>
+                      <td>Name</td>
+                      <td>{{selected_boq_details.lead_name}}</td>
+                      <td>Designer Name</td>
+                      <td>{{selected_boq_details.designer_name}}</td>
+                  </tr>
+                 <!--  <tr>
+                      <td>Contact</td>
+                      <td>{{selected_boq_details.lead_contact}}</td>
+                      <td>Designer Contact</td>
+                      <td>{{selected_boq_details.designer_contact}}</td>
+                  </tr> -->
+                  <tr>
+                      <td class="minTdWidth">Project Name and Address</td>
+                      <td class="minTdWidth">
+                        {{selected_boq_details.project_name}},
+                        <br>
+                        {{selected_boq_details.lead_location}}
+                      </td>
+                      <td>Designer Email ID</td>
+                      <td>{{selected_boq_details.designer_email}}</td>
+                  </tr>
+                  
+              </tbody>
+            </table>
+            
+          </div>
+          <div>
+            <span class="spanChange" *ngIf="selected_boq_details.quotation_body.summary_table_hash">Summary</span>
+            <div class="row mt-3" *ngIf="selected_boq_details.quotation_body.summary_table_hash" id="tableQuote">
+              <table class="table table-bordered">
+                <thead>
+                  <th scope="col">Sr. No.</th>
+                  <th scope="col">Space</th>
+                  <th scope="col">Item</th>
+                  <th scope="col">Amount</th>
+                  
+                  
+                </thead>
+                <tbody>
+                  <ng-container *ngFor="let space of selected_boq_details.all_spaces">
+                    <tr class="rowChng" *ngFor="let item of selected_boq_details.quotation_body.summary_table_hash[space];let i = index">
+                      
+                      <td>{{ i+1 }}</td>
+                      <td>{{ space }}</td>
+                      <td>{{item.section_name}}</td>
+                      <td>{{item.section_price}}</td> 
+                    </tr>
+                    
+                  </ng-container> 
+                  <tr class="rowChng"><td></td><td></td><td>Net Amount</td><td>{{selected_boq_details.net_amount}}</td></tr>
+                  <tr class="rowChng"><td></td><td></td><td>Discount Applied</td><td *ngIf="selected_boq_details.discount_value">{{ selected_boq_details.discount_value }}%</td><td *ngIf="!selected_boq_details.discount_value">0%</td></tr>
+                  <tr class="rowChng"><td></td><td></td><td>Project Management Fee</td><td>{{ selected_boq_details.pm_fee }}</td></tr>
+                  <tr class="rowChng"><td></td><td></td><td>Total</td><td>{{ selected_boq_details.total_amount }}</td></tr> 
+                </tbody>
+                
+              </table>
+            </div>
+          </div>
+            <div class="row  borders border-dark mt-5" *ngIf="selected_boq_details.quotation_body.summary_table_hash">
+              <h6 class="pull-left ml-3 mt-2" >Terms and Conditions</h6>
+              <div class="col-md-12">
+                <div class="pull-left text-change">
+                  
+                  1) Prices are subject to the specifications mentioned above. Changes in specifications mentioned above shall be charged extra. Prices are inclusive of all taxes, landed at site. Any government levies, is payable extra at actual.<br>
+                  2) Mathadi charge as per actual<br>
+                  3) Payment Terms: 10% Booking, 40% on Final Design Submission and 50% PDC along with Final Design Submission<br>
+                  4) Payment Mode: NEFT / RTGS / Cheque<br>
+                  5) Bank Account Details:
+                     Account Name: SINGULARITY FURNITURE PRIVATE LIMITED
+                     Account Number: 02912000003169
+                     IFSC Code: HDFC0000291
+                     Bank and Branch: HDFC Bank, Nariman Point Branch<br>
+                     
+                  6) Offer Validity: 30 Days<br>
+                  7) Order once booked can not be taken back under any circumstances. Advance Amount will not be refunded<br>
+                  8) Safe Storage at Site is client's responsibility<br>
+                  9) Disputes subject to Mumbai Jurisdiction<br>
+                  10) Any extra work shall be charged extra<br>
+                  11) Force Majeure Clause Applies<br>
+                  12) The seller shall have general lien over on goods for payments due to seller from the buyer on account of this or any other PAN Number: AAECP3450G
+                      GST Number: 27AAECP3450G1ZJ
+                  
+                </div>
+                
+              </div>
+              
+            </div>
+            <div class="row borders border-dark mt-3" *ngIf="selected_boq_details.quotation_body.summary_table_hash">
+              <h6 *ngIf="selected_boq_details.timeline['lead_time'] > 0" class="pull-left ml-3 mt-2">Delivery Period {{selected_boq_details.timeline["lead_time"]}}-{{selected_boq_details.timeline["lead_time"]+5}} Days from the date of receipt of 50% Cumulative Payment.</h6>
+              
+            </div>
+          <span class="quoteChng" *ngIf="selected_boq_details.quotation_body.boq_hash">Quotation</span>
+          <div *ngIf="selected_boq_details.quotation_body.boq_hash">
+            <div *ngFor="let space of selected_boq_details.all_spaces">
+              <span class="spanChange">Space:-{{space}}</span>
+              <div class="row mt-3" id="tableQuote">
+                <table class="table table-bordered">
+                  <thead>
+                    <th scope="col">Sr. No.</th>
+                    <th scope="col">Product</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Qty.</th>
+                    
+                  </thead>
+                  <tbody>
+                    <tr class="rowChng" *ngFor="let item of selected_boq_details.quotation_body.boq_hash[space];let i = index">
+                      
+                      <td>{{ i+1}}</td>
+                      <td>{{item.product}}</td>
+                      <td>{{item.name}}</td>
+                      <td>
+                        
+                        <div class="rowChng1" [innerHTML] = "item.description" >
+                    </div>
+                      </td>
+                 
+                      <td>
+                        {{item.quantity}}
+                      </td>
+                          
+                    </tr>
+                  </tbody>
+                  
+                </table>
+              </div>
+            </div>
+          </div>  
+         
+          
+          <div class="row mt-3" *ngIf="selected_boq_details.quotation_body.boq_hash">
+            <div class="col-md-6">
+              
+            </div>
+            <div class="col-md-6">
+              <div class="row">
+                <div class="col-md-8 borders border-bottom-0 border-dark">
+                  <div class="text">
+                    Net Amount
+                  </div>
+                  
+                </div>
+                <div class="col-md-4 borders border-left-0 border-bottom-0 border-dark">
+                  <div class="text">
+                    {{selected_boq_details.net_amount}}
+                    
+                  </div>
+                  
+                </div>
+                <div class="col-md-8 borders border-bottom-0 border-dark">
+                  <div class="text">
+                    Discount Applied
+                    
+                  </div>
+                  
+                </div>
+                <div class="col-md-4 borders border-left-0 border-bottom-0 border-dark">
+                  <div class="text" *ngIf="selected_boq_details && selected_boq_details.discount_value">
+                    {{selected_boq_details.discount_value}}%
+                  </div>
+                  <div class="text" *ngIf="selected_boq_details && !selected_boq_details.discount_value">
+                    0 %
+                  </div>
+                  
+                  
+                </div>
+                <div class="col-md-8 borders border-bottom-0 border-dark">
+                  <div class="text">
+                    Project Management Fee
+                    
+                  </div>
+                  
+                </div>
+                <div class="col-md-4 borders border-left-0 border-bottom-0 border-dark">
+                  <div class="text" *ngIf="selected_boq_details">
+                    {{selected_boq_details.pm_fee || 0}}
+                  </div>
+                </div>
+                
+                
+                <div class="col-md-8 borders border-dark">
+                  <div class="text">
+                    Total
+                    
+                  </div>
+                  
+                </div>
+                <div class="col-md-4 borders border-left-0 border-dark">
+                  <div class="text">
+                    {{selected_boq_details.total_amount}}
+                    
+                  </div>
+                  
+                </div>
+                
+              </div>
+              
+            </div>
+            
+          </div>
+          <span class="quoteChng" *ngIf="selected_boq_details.quotation_body.annexure_table_hash">Annexure</span><br>
+          
+          <ng-container  *ngIf="selected_boq_details.quotation_body.annexure_table_hash && selected_boq_details.quotation_body.annexure_table_hash['annexure_kitchen_images'].length>0">
+              <span class="spanChange">Kitchen</span>
+              <div class="row" *ngFor="let space of selected_boq_details.quotation_body.annexure_table_hash['annexure_kitchen_images']">
+                <div class="col-md-4 borders border-dark border-bottom-0" style="text-align: center;">
+                  <span *ngIf="space.image_url == '/images/original/missing.png'">No Image Available</span>
+                  <img src={{space.image_url}}  *ngIf="space.image_url != '/images/original/missing.png'" class="productImage">
+                  
+                </div>
+                <div class="col-md-8 borders border-bottom-0 border-left-0 rowChng1" [innerHTML] = "space.image_description " >
+                  </div>
+                
+              </div>
+          </ng-container> 
+          <div class="row bordrChng" *ngIf="selected_boq_details.quotation_body.annexure_table_hash && selected_boq_details.quotation_body.annexure_table_hash['annexure_kitchen_images'].length>0">
+            
+          </div>
+
+          <ng-container  *ngIf="selected_boq_details.quotation_body.annexure_table_hash && selected_boq_details.quotation_body.annexure_table_hash['annexure_loose_images'].length > 0">
+            <span class="spanChange mt-2">Furniture</span>
+            <div class="row" *ngFor="let space of selected_boq_details.quotation_body.annexure_table_hash['annexure_loose_images']">
+              <div class="col-md-4 borders border-dark border-bottom-0" style="text-align: center;">
+                <span *ngIf="space.image_url == '/images/original/missing.png'">No Image Available</span>
+                <img src={{space.image_url}}  *ngIf="space.image_url != '/images/original/missing.png'" class="productImage">
+                
+              </div>
+              <div class="col-md-8 borders border-bottom-0 border-left-0 rowChng1" [innerHTML] = "space.image_description " >
+              </div>
+              
+            </div>
+          </ng-container>  
+          <div class="row bordrChng"  *ngIf="selected_boq_details.quotation_body.annexure_table_hash && selected_boq_details.quotation_body.annexure_table_hash['annexure_loose_images'].length > 0">
+            
+          </div>
+
+          <!-- For Wardrobe -->
+
+          <ng-container  *ngIf="selected_boq_details.quotation_body.annexure_table_hash && selected_boq_details.quotation_body.annexure_table_hash['annexure_wardrobe_images'].length > 0">
+            <span class="spanChange">Wardrobe</span>
+            <div class="row" *ngFor="let space of selected_boq_details.quotation_body.annexure_table_hash['annexure_wardrobe_images']">
+              <div class="col-md-4 borders border-dark border-bottom-0" style="text-align: center;">
+                <span *ngIf="space.image_url == '/images/original/missing.png'">No Image Available</span>
+                <img src={{space.image_url}}  *ngIf="space.image_url != '/images/original/missing.png'" class="productImage">
+                
+              </div>
+              <div class="col-md-8 borders border-bottom-0 border-left-0 rowChng1" [innerHTML] = "space.image_description" >
+              </div>
+              
+            </div>
+          </ng-container> 
+          <div class="row bordrChng" *ngIf="selected_boq_details.quotation_body.annexure_table_hash && selected_boq_details.quotation_body.annexure_table_hash['annexure_wardrobe_images'].length > 0">
+            
+          </div>
+
+          <!-- ends here -->
+          
+         
+          <div class="row  borders border-dark mt-5" *ngIf="selected_boq_details.quotation_body.annexure_table_hash  && 
+           !selected_boq_details.quotation_body.summary_table_hash">
+            <h6 class="pull-left ml-3 mt-2" >Terms and Conditions</h6>
+            <div class="col-md-12">
+              <div class="pull-left text-change">
+                
+                1) Prices are subject to the specifications mentioned above. Changes in specifications mentioned above shall be charged extra. Prices are inclusive of all taxes, landed at site. Any government levies, is payable extra at actual.<br>
+                2) Mathadi charge as per actual<br>
+                3) Payment Terms: 10% Booking, 40% on Final Design Submission and 50% PDC along with Final Design Submission<br>
+                4) Payment Mode: NEFT / RTGS / Cheque<br>
+                5) Bank Account Details:
+                   Account Name: SINGULARITY FURNITURE PRIVATE LIMITED
+                   Account Number: 02912000003169
+                   IFSC Code: HDFC0000291
+                   Bank and Branch: HDFC Bank, Nariman Point Branch<br>
+                   
+                6) Offer Validity: 30 Days<br>
+                7) Order once booked can not be taken back under any circumstances. Advance Amount will not be refunded<br>
+                8) Safe Storage at Site is client's responsibility<br>
+                9) Disputes subject to Mumbai Jurisdiction<br>
+                10) Any extra work shall be charged extra<br>
+                11) Force Majeure Clause Applies<br>
+                12) The seller shall have general lien over on goods for payments due to seller from the buyer on account of this or any other PAN Number: AAECP3450G
+                    GST Number: 27AAECP3450G1ZJ
+                
+              </div>
+              
+            </div>
+            
+          </div>
+          <div class="row  borders border-dark mt-5" *ngIf=" selected_boq_details.quotation_body.boq_hash && 
+           !selected_boq_details.quotation_body.summary_table_hash">
+            <h6 class="pull-left ml-3 mt-2" >Terms and Conditions</h6>
+            <div class="col-md-12">
+              <div class="pull-left text-change">
+                
+                1) Prices are subject to the specifications mentioned above. Changes in specifications mentioned above shall be charged extra. Prices are inclusive of all taxes, landed at site. Any government levies, is payable extra at actual.<br>
+                2) Mathadi charge as per actual<br>
+                3) Payment Terms: 10% Booking, 40% on Final Design Submission and 50% PDC along with Final Design Submission<br>
+                4) Payment Mode: NEFT / RTGS / Cheque<br>
+                5) Bank Account Details:
+                   Account Name: SINGULARITY FURNITURE PRIVATE LIMITED
+                   Account Number: 02912000003169
+                   IFSC Code: HDFC0000291
+                   Bank and Branch: HDFC Bank, Nariman Point Branch<br>
+                   
+                6) Offer Validity: 30 Days<br>
+                7) Order once booked can not be taken back under any circumstances. Advance Amount will not be refunded<br>
+                8) Safe Storage at Site is client's responsibility<br>
+                9) Disputes subject to Mumbai Jurisdiction<br>
+                10) Any extra work shall be charged extra<br>
+                11) Force Majeure Clause Applies<br>
+                12) The seller shall have general lien over on goods for payments due to seller from the buyer on account of this or any other PAN Number: AAECP3450G
+                    GST Number: 27AAECP3450G1ZJ
+                
+              </div>
+              
+            </div>
+            
+          </div>
+          <div class="row borders border-dark mt-3" *ngIf="selected_boq_details.quotation_body.annexure_table_hash  && 
+           !selected_boq_details.quotation_body.summary_table_hash">
+            <h6 *ngIf="selected_boq_details.timeline['lead_time'] > 0" class="pull-left ml-3 mt-2">Delivery Period {{selected_boq_details.timeline["lead_time"]}}-{{selected_boq_details.timeline["lead_time"]+5}} Days from the date of receipt of 50% Cumulative Payment.</h6>
+            
+            
+          </div>
+
+          <div class="row borders border-dark mt-3" *ngIf="selected_boq_details.quotation_body.boq_hash  && 
+           !selected_boq_details.quotation_body.summary_table_hash">
+            <h6 *ngIf="selected_boq_details.timeline['lead_time'] > 0" class="pull-left ml-3 mt-2">Delivery Period {{selected_boq_details.timeline["lead_time"]}}-{{selected_boq_details.timeline["lead_time"]+10}} Days from the date of receipt of 50% Cumulative Payment.</h6>
+            
+            
+          </div>
+          <div class="row mt-5">
+            <div class="col-md-6">
+              <button type="button" class="btn btn-secondary btn-lg btn-reject pull-right" (click)="confirmAndReject(selected_boq_details.proposal_doc_id)" *ngIf="[true,false].includes(selected_boq_details.is_approved) == false">Reject</button>
+              
+            </div>
+            <div class="col-md-6">
+              <button type="button" class="btn btn-secondary btn-lg btn-red" (click)="confirmAndApprove(selected_boq_details.proposal_doc_id)" *ngIf="[true,false].includes(selected_boq_details.is_approved) == false">Approve</button>
+
+              
+              
+            </div>
+            
+          </div>
+
+
+          
+          
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--  -->

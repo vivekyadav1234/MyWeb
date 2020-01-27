@@ -1,0 +1,110 @@
+.leadheadDashboardContainer .card {
+  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.2);
+  transition: 0.3s;
+  border-radius: 0px;
+  border: 1px solid #dcdcdc;
+  min-height: 350px;
+}
+
+.statusCardTextColor1 {
+  color: #444444;
+  font-size: 45px
+}
+
+.statusCardHeadingColor {
+  color: #8c031f;
+  font-size: 16px;
+  text-transform: uppercase;
+  font-weight: 900;
+}
+
+.cardHeadingIcon {
+  height: 54px;
+  width: 54px;
+}
+
+.statusCardContent {
+  color: #848484;
+  font-size: 14px;
+  font-weight: lighter
+}
+
+.form-control-change {
+  width: 60%;
+  display: inline-block;
+}
+
+.frm-chng {
+  border: 1px solid rgba(241, 237, 237, 0.15);
+  font-size: 0.8rem;
+  margin-top: -3px;
+  width: 108%;
+  cursor: pointer;
+}
+
+.frm-chng::-webkit-input-placeholder {
+  /* Chrome */
+  color: black;
+  font-size: 16px;
+  font-family: "Roboto";
+  font-weight: bold;
+}
+
+.frm-chng:-ms-input-placeholder {
+  /* IE 10+ */
+  color: black;
+}
+
+.frm-chng::-moz-placeholder {
+  /* Firefox 19+ */
+  color: black;
+  opacity: 1;
+}
+.form-control-change{
+    width: 30%;
+    display: inline-block;
+}
+
+.downloadBtn{
+    border: 1px solid #8F0020;
+    padding: 5px 10px;
+    margin-top: 4px;
+    color: #8F0020 !important;
+}
+.downloadBtn:hover{
+    color: #fff !important;
+    background-color: #8F0020;
+}
+.frm-chng:-moz-placeholder {
+  /* Firefox 4 - 18 */
+  color: black;
+  opacity: 1;
+}
+
+.fromDate, .toDate {
+  display: none;
+}
+
+input.frm-chng::placeholder {
+  font-family: fontAwesome;
+  font-size: 12px;
+  color: black;
+}
+
+input.frm-chng {
+  font-family: "Roboto";
+}
+
+.nav-item.itm-chng .fromDateSpan .fa-caret-down, .nav-item.itm-chng .toDateSpan .fa-caret-down{
+  position: relative;
+  font-size: 12pt;
+  top:1px;
+}
+.nav-item.itm-chng .fromDate,.nav-item.itm-chng .toDate  {
+  padding: 0.3rem 0.4rem;
+  border: 1px solid rgba(90, 88, 88, 0.15);
+}
+
+.fromDate,.toDate{
+  display: none;
+}

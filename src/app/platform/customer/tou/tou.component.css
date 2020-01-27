@@ -1,0 +1,85 @@
+.faqMainDiv{
+  background-color: #f3f5f7;
+}
+.faqDiv{
+  background-color: #fff;
+  padding: 5rem 1rem 3rem 1rem;
+  margin-top: 2rem;
+  border-radius: 5px;
+  margin-bottom: 2rem;
+}
+.faqDiv img{
+  height: 75px;
+}
+.askedDiv h3{
+  font-size: 26px;
+  color: #4c4c4c;
+  font-weight: 400;
+}
+/* .askedDiv p span{
+  font-size: 1.2rem;
+} */
+.askedDiv p{
+  font-size: 16px;
+  word-spacing: 2px;
+  line-height: 28px;
+  color: #737373;
+}
+.hrDiv{
+  border-bottom: 2px solid #eaeaea;
+  width: 99%;
+  margin: auto;
+}
+.conditions h3{
+  font-weight: 400;
+  font-size: 25px;
+  color: #3c3c3c;
+}
+.conditions p{
+  color: #6d6d6d;
+  font-size: 15px;
+  line-height: 25px;
+}
+.note{
+  word-spacing: 2px;
+}
+.note span{
+  font-weight: 500;
+}
+.conditions p .num{
+  font-size: 1.2rem;
+}
+.conditions p .underLine{
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

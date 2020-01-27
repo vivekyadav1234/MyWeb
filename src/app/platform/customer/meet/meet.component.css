@@ -1,0 +1,47 @@
+.bgColor{
+	background-color: #f3f5f7;
+}
+.innerDivBg{
+	background-color: #fff;
+	border-radius: 5px;
+	box-shadow: 0 1px 5px #ccc;
+}
+.innerDiv h1{
+	font-weight: 300;
+	font-size: 2.2rem;
+	color: #333;
+}
+.innerDiv p{
+	font-size: 17px;
+  color: #656565;
+  font-weight: 400;
+}
+.myCard{
+	border: none;
+	box-shadow: 0 0 5px #b0b8bf;
+}
+.myCardBody{
+	background-color: #f3f5f7;
+}
+.myCardBody h5{
+	color: #555;
+	font-weight: 400;
+}
+.myCardBody h6{
+	color: #444;
+	font-weight: 400;
+	font-size: 15px;
+}
+.myCardBody p{
+  margin-bottom: 5px;
+  color: #9a9494;
+  font-weight: 300;
+}
+.myCardBody h4 i{
+	color: #777;
+	margin: 0 5px;
+	cursor: pointer;
+}
+.myCardBody h4 i:hover{
+	color: #444;
+}

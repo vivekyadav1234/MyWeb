@@ -1,0 +1,54 @@
+<div class="row" *ngIf="role && role == 'admin' ">
+
+  <div class="card text-center" *ngIf="projects?.length==0">
+    <div class="card-header">
+      Project List
+    </div>
+    <div class="card-body">
+      <h4 class="card-title">No Projects</h4>
+      <p class="card-text">No Project has been created</p>
+      <a href="#" class="btn btn-primary" [routerLink]="['/projects/create']" routerLinkActive="active">Create Project</a>
+    </div>
+    <div class="card-footer text-muted">
+      Please contact our support team
+    </div>
+  </div>
+
+  <div class="col-md-12">
+    <a href="#" class="btn btn-primary float-right mb-2" [routerLink]="['/projects/create']" routerLinkActive="active">Create Project</a>
+  </div>
+  <div class="col-md-4 col-sm-12 col-xs-12" *ngFor="let project of projects">
+    <div class="card" style="width: 20rem;">
+      <img class="card-img-top" src="../assets/img/card-3.jpeg" alt="projects">
+      <div class="card-body">
+        <h4 class="card-title">
+          <a [routerLink]="['projects/view/'+project.id]" routerLinkActive="active">{{project.name}}</a>
+        </h4>
+        <p class="card-text">
+          {{project.details}}
+        </p>
+        <a [routerLink]="['/projects/edit/'+project.id]" routerLinkActive="active" class="btn btn-primary">Edit</a>
+
+        <a (click)="deleteProjectWithId(project.id)" class="btn btn-primary">Delete</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div *ngIf="role && role == 'design_head'">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Project Name</th>
+        <!-- <th>Project Details</th> -->
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let project of projects">
+        <td>{{ project.name }}</td>
+        <!-- <td>{{ project.details }}</td> -->
+      </tr>
+    </tbody>
+  </table>
+</div>

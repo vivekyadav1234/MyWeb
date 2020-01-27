@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="54px" height="54px" viewBox="0 0 54 54" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48.1 (47250) - http://www.bohemiancoding.com/sketch -->
+    <title>tick-inside-circle</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Desktop-Copy-9" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-248.000000, -181.000000)">
+        <g id="Group-3" transform="translate(-31.000000, 0.000000)" fill="#8C031F" fill-rule="nonzero">
+            <g id="Qualified" transform="translate(256.000000, 149.000000)">
+                <g id="tick-inside-circle" transform="translate(23.000000, 32.000000)">
+                    <path d="M15.93,21.87 L12.15,25.65 L24.3,37.8 L51.3,10.8 L47.52,7.02 L24.3,30.24 L15.93,21.87 Z M48.6,27 C48.6,38.88 38.88,48.6 27,48.6 C15.12,48.6 5.4,38.88 5.4,27 C5.4,15.12 15.12,5.4 27,5.4 C29.16,5.4 31.05,5.67 32.94,6.21 L37.2601059,1.89 C34.02,0.81 30.51,0 27,0 C12.15,0 0,12.15 0,27 C0,41.85 12.15,54 27,54 C41.85,54 54,41.85 54,27 L48.6,27 Z" id="Shape"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

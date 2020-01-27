@@ -1,0 +1,121 @@
+<div class="row title">
+  <div class="col-md-6">
+    <h3>Dashboard / <span class="addCursor" [routerLink]="['/designer/leads']" routerLinkActive="active" [queryParams]="{customer_status: customer_status}">Lead</span> /<span>Project Details</span></h3>
+  </div>
+  <div class="col-md-6">
+    <button class="pull-right button_emi addCursor" [routerLink]="['/project/',id,'list_of_boqs']" routerLinkActive="active" [queryParams]="{customer_status: customer_status}">BOQS</button>
+    <!-- <button class="pull-right button_emi" [routerLink]="['/projects',project.id,'presentation','create']" routerLinkActive="active" *ngIf="project">Create Presentation</button> -->
+    <button class="pull-right button_emi" [routerLink]="['/projects',project.id,'presentation','view']" routerLinkActive="active" *ngIf="project">View Presentation</button>
+  </div>
+</div>
+
+<div class="marginTop row">
+  <div class="col-12" *ngIf="erroralert">
+    <div class="alert-box grid-100" *ngIf="errorMessage">
+      <div class="alert alert-danger mt-3 text-center">
+        <a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a>
+        {{errorMessage}}
+      </div>
+    </div>
+  </div>
+  <div class="col-12" *ngIf="successalert">
+    <div class="alert-box grid-100" *ngIf="successMessage">
+      <div class="alert alert-success mt-3 text-center">
+        <a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+        {{successMessage}}
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row justify-content-center">
+  <div class="col-12">
+    
+  </div>
+  <div class="col-12 mt-4">
+    <!-- <a [routerLink]="['/scheduler/create']" routerLinkActive="active" *ngIf="project" [queryParams]="{project_id:project.id}"><i class="fa fa-plus"></i> Create Scheduler</a> -->
+    <!-- <a [routerLink]="['/project/'+project.id+'/modularproducts/create']" routerLinkActive="active" *ngIf="project"> New Quotation</a> -->
+    <button [routerLink]="['/designer/leads']" routerLinkActive="active" [queryParams]="{customer_status: customer_status}" class="button button_emi mt-3">BACK</button>
+  </div>
+</div>
+
+<div class="row inputForm bg_dashboard justify-content-center">
+  <div class="col-8">
+
+    <!-- <div class="statusBar">
+      <div class="progress">
+        <div class="progress-bar progressBar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+      </div>
+      <p class="preValue ml-2">0%</p>
+    </div> -->
+    <form class="mt-3" *ngIf="project" [formGroup]="editProjectForm" (ngSubmit)="onEditProjetcFormSubmit(editProjectForm.value);" >
+      <div class="inputBox">
+        <label class="productLabel">Project Name :</label>
+        <input type="text" value={{project.name}} class="form-control productInput" formControlName="name"><i id="editPencil" class="fa fa-pencil d-none" aria-hidden="true"></i>
+      </div>
+      <div *ngIf="editProjectForm.controls['name'].errors && !editProjectForm.controls['name'].pristine" class="text-danger">
+        <p class="error" [hidden]="!editProjectForm.controls['name'].errors.required"> Project Name is required.</p>
+      </div>
+      <div class="inputBox mt-3">
+        <label class="productLabel">Project Descriptions :</label>
+        <textarea rows="4" value={{project.details}} class="form-control productInput" formControlName="details"></textarea><i id="editPencil1" class="fa fa-pencil d-none" aria-hidden="true"></i>
+      </div>
+        <div class="col-10 mt-5 text-right">
+          <button class="button mt-2 d-none" type="submit" [disabled]="!editProjectForm.valid" id="editProjectBtn">Update</button>
+          <button class="cancel d-none" id="cancelBtn" (click)="cancelFunc($event)">Cancel</button>
+        </div>
+    </form>
+      <div class="row">
+        <div class="col-md-12">
+          <p class="pull-left mt30">Floorplans</p>
+        </div>
+      </div>
+      <div class="row" *ngIf="project">
+        <div class="col-md-4" *ngIf=" (add_delete_edit_floorplanAccess.length>0) && (add_delete_edit_floorplanAccess.indexOf(role) > -1)">
+          <div class="floorPlanBox my-2 addCursor"  [routerLink]="['/projects/'+project.id+'/floorplan/create']" routerLinkActive="active" [queryParams]="{customer_status: customer_status}">
+          <a class="card-text"><i class="fa fa-plus" aria-hidden="true"></i> Add New</a>
+          <!-- <span><i class="fa fa-remove text_red"></i></span> -->
+          </div>
+        </div>
+        <div class="col-md-4" *ngFor="let fp of floorplan">
+          <div class="floorPlanBox my-2 addCursor"  [routerLink]="['/projects/'+project.id+'/floorplan/view/'+fp.id]" routerLinkActive="active" [queryParams]="{customer_status: customer_status}">
+          <a class="card-text">{{fp.name}}</a>
+          </div>
+        </div>
+      </div>
+  </div>
+  <div class="col-3">
+<!--     <p class="pull-right addCursor ml-3" [routerLink]="['/projects/'+project.id+'/projectdetailsquestionnaire']" routerLinkActive="active" *ngIf="project && (view_showForm.indexOf(role) > -1)">Form</p>
+    <p class="pull-right addCursor ml-3" [routerLink]="['/projects/'+project.id+'/showquestionnaireanswers']" routerLinkActive="active" *ngIf="project && (view_showForm.indexOf(role) > -1)">Show Form</p> -->
+
+    <p class="pull-right addCursor" *ngIf=" (edit_and_delete_ProjectAccess.length>0) && (edit_and_delete_ProjectAccess.indexOf(role) > -1) " (click)="editProject()">Edit</p>
+    <div class="details ml-4">
+    </div>
+    <div style="margin-top: 50px;">
+      <p class="date mt-3">Date:</p>
+    </div>
+
+    <div class="details ml-4">
+      <p class="profileInner"><strong>Created :</strong> <span *ngIf="project">{{project.created_at}}</span></p>
+      <p class="profileInner"><strong>Updated :</strong> <span *ngIf="project">{{project.updated_at}}</span></p>
+    </div>
+  </div>
+ <!--  <div class="msgIcon">
+    <p (click)="toggleCommentBox()"><i class="fa fa-commenting" aria-hidden="true" id="commentboxIcon"></i></p>
+    <div class="card card_box comment_box" id="comment_box" *ngIf="showCommentBox">
+      <h3 class="commentTitle">Comments</h3>
+      <div class="scroll" *ngIf="comments">
+        <div *ngFor="let item of comments" class="text-left">
+          <h6 class="adminMsg"><div class="col-2 pr-0 d-inline-block"><span><i class="fa fa-user-circle" aria-hidden="true"></i></span></div> <div class="col-9 textMsg align-text-top d-inline-block"> <div class="arrowDiv"></div><div class="textDiv">{{item.body}}</div></div></h6>
+        </div>
+      </div>
+      <form (ngSubmit)="onSubmit(postCommentForm.value); postCommentForm.reset()" #postCommentForm="ngForm" class="form-horizontal msgBox">
+        <input class="form-control comment" id="body" name="body" #body="ngModel" autocomplete="off" required ngModel placeholder=" Enter Comment"/>
+        <button class="msgBtn" type="submit" [disabled]="!postCommentForm.valid"><i class="fa fa-paper-plane" aria-hidden="true"></i>
+        </button>
+      </form>
+    </div>
+  </div> -->
+<!--   <div class="col-12 text-center">
+    <button class="back">Back</button>
+  </div> -->
+</div>

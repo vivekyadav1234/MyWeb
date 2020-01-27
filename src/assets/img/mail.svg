@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="71px" height="71px" viewBox="0 0 71 71" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48.1 (47250) - http://www.bohemiancoding.com/sketch -->
+    <title>Mail</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Contact-us-Copy-3" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-943.000000, -358.000000)">
+        <g id="Group-4" transform="translate(895.000000, 359.000000)">
+            <g id="Mail" transform="translate(49.000000, 0.000000)">
+                <circle id="Oval-5" stroke="#8C031F" fill="#8C031F" cx="34.5" cy="34.5" r="34.5"></circle>
+                <g id="close-envelope" transform="translate(18.000000, 22.000000)" fill="#FFFFFF" fill-rule="nonzero">
+                    <path d="M16.9950008,16.9950008 L12.7899521,13.3143692 L0.767202895,23.6206233 C1.2042172,24.0260755 1.79418652,24.2785726 2.44485226,24.2785726 L31.5451494,24.2785726 C32.1933873,24.2785726 32.7809288,24.0260755 33.2155152,23.6206233 L21.2000496,13.3143692 L16.9950008,16.9950008 Z" id="Shape"></path>
+                    <path d="M33.2227988,0.657949318 C32.7857845,0.250069298 32.198243,0 31.5451494,0 L2.44485226,0 C1.79661437,0 1.20907292,0.252497155 0.77205861,0.662805033 L16.9950008,14.5671436 L33.2227988,0.657949318 Z" id="Shape"></path>
+                    <polygon id="Shape" points="0 2.13165868 0 22.3022968 11.7338342 12.331087"></polygon>
+                    <polygon id="Shape" points="22.2561675 12.331087 33.9900017 22.3022968 33.9900017 2.1243751"></polygon>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

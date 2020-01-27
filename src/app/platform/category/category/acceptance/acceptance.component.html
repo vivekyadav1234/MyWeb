@@ -1,0 +1,787 @@
+<!--Messages-->
+<div class="rk-ui-notification" *ngIf="successalert">
+  <span id="notificationMessageText">{{successMessage}}</span>
+  <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+<div class="rk-ui-notification err" *ngIf="erroralert">
+  <span id="notificationMessageText">{{errorMessage}}</span>
+  <a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+
+
+<!--Acceptance collapse data-->
+<div class="container-fluid" >
+	<div class="row pl-3">
+		
+		<div class="col-sm-12 col-lg-12 col-md-12 pr-0">
+			<nav aria-label="breadcrumb" class="w-100">
+			  <ol class="breadcrumb">
+			    <li class="breadcrumb-item  active" (click)="slectBtn('acceptance')">
+			    <button class="btn btn-outline-secondary active" (click)="slectBtn('acceptance')" [ngClass]="{'active': selectSection == 'acceptance'}">Acceptance</button></li>
+			    <li class="breadcrumb-item" style="margin-left: -19px"> <i class="rightArrow fa fa-angle-right"></i></li>
+			    <li class="breadcrumb-item" (click)="slectBtn('split')"  style="margin-left: -19px">
+			     <button class="btn btn-outline-secondary" (click)="slectBtn('split')" [ngClass]="{'active': selectSection == 'split'}">Production Drawing and Spliting</button></li>
+			    <li class="breadcrumb-item" style="margin-left: -19px"> <i class="rightArrow fa fa-angle-right"></i></li>
+					<li class="breadcrumb-item" ><button class="btn btn-outline-secondary" (click)="slectBtn('cutting')" [ngClass]="{'active': selectSection == 'cutting'}">Cutting List and BOM</button></li>
+					<li *ngIf="showQCDetails" class="breadcrumb-item" style="float:right"><button class="btn btn-outline-secondary qc-li "  data-toggle="modal" data-target="#technicianQCModal">Technician QC Status : <span *ngIf="currentTechQCStatus!='Pending'" style="font-size:14px" [ngStyle]="{'color': currentTechQCStatus ? 'green' : 'red' }">{{currentTechQCStatus | passFail}}</span><span *ngIf="currentTechQCStatus=='Pending'" style="font-size:12px">{{currentTechQCStatus }}</span></button></li>
+					<li *ngIf="showQCDetails" class="breadcrumb-item" style="float:right"><button class="btn btn-outline-secondary qc-li "  data-toggle="modal" data-target="#costQCModal">Cost QC Status : <span *ngIf="currentCostQCStatus!='Pending'" style="font-size:14px" [ngStyle]="{'color': currentCostQCStatus ? 'green' : 'red' }">{{currentCostQCStatus | passFail}}</span><span *ngIf="currentCostQCStatus=='Pending'" style="font-size:12px" >{{currentCostQCStatus }}</span></button></li>
+					<li *ngIf="showQCDetails" class="breadcrumb-item" style="float:right"><button class="btn btn-outline-secondary qc-li "  data-toggle="modal"  data-target="#designQCModal" >Design QC Status : <span *ngIf="currentDesignQCStatus!='Pending'" style="font-size:14px" [ngStyle]="{'color': currentDesignQCStatus ? 'green' : 'red' }">{{currentDesignQCStatus | passFail}}</span><span *ngIf="currentDesignQCStatus=='Pending'" style="font-size:12px" >{{currentDesignQCStatus }}</span></button></li>
+			  </ol>
+			</nav>
+
+			<table class="table mt-3" style="background-color: transparent;" *ngIf="selectSection == 'acceptance'">
+				<tr style="border:1px solid">
+					<th class="firstTh tableheadColor tableth2rem thBorderLeftRadius" style="border-left: 1px solid"></th>
+					<th class="tableheadColor tableth11rem">File Name</th>
+					<th class="tableheadColor text-center tableth2rem">Request Date</th>
+					<th class="tableheadColor text-center tableth6rem" style="width:14% !important">Status</th>
+					<th class="tableheadColor text-center">Remark</th>
+					<th class="tableheadColor text-center tableth10rem"></th>
+					<th class="tableheadColor text-center tableth6rem">50% Payment</th>
+					<th class="tableheadColor text-center tableth5rem">Date of Acceptance/Rejection</th>
+					<th class="tableheadColor text-center">Panel/Non-Panel</th>
+					<th class="tableheadColor text-center" style="min-width:80px">Duration</th>
+					<th class="tableheadColor text-center" style="min-width:50px">ETA</th>
+					<th class="tableheadColor text-center thBorderRightRadius"style="border-right: 1px solid" ></th>
+				</tr>
+				<tbody *ngIf="project_list && file_length.length > 0">
+					<ng-container *ngFor="let item of line_item_Arr;let j = index">
+				     <!--BOQ portion-->
+						<tr>
+							<td class="indicatorRow" colspan="10">
+								<div class="boqIndicator btn pl-3 pr-3 text-center">{{changeFileFormat(item)}}</div>
+							</td>
+						</tr>
+						<ng-container *ngFor="let obj of project_list[item];let i = index">
+							<tr class="bg-white" *ngIf="obj.current_status!='Pending'">
+								<td class="text-center pt-3 thBorderLeftRadius">
+								<!-- 	<div class="" *ngIf = "obj.current_status=='Pending acceptance'">
+										<div class="newIndicator ml-2 mt-1"></div>
+									</div> -->
+								</td>
+								<td class="fontsize14">
+									<a  class="cursor-pointer" (click)="downloadBoq(obj.ownerable_id)">{{obj.reference_number}}</a>
+	                <a href="{{obj.url}}" download target="_blank">{{obj.name}}</a>
+									<a class="cursor-pointer" (click)="viewFile(obj.url)" data-toggle="modal" data-target="#viewGalleryModal">{{obj.request_type | replaceChar}}</a>
+								</td>
+								<td class="fontsize12 text-center">{{obj.date_of_sharing | date:'dd/MM/yyyy - h:mm a'}}</td>
+							
+								<td class="fontsize12 text-center">
+									<div *ngIf = "obj.name" class="cursor-pointer">
+										<div class="" *ngIf = "obj.current_status=='Pending acceptance'">
+												<p data-toggle="tooltip" data-placement="top" title="{{obj.status_updated_user.name}} - {{obj.status_updated_user.email}}">
+														{{obj.current_status}}
+												</p>
+										</div>
+					
+										<div class="text-success" *ngIf = "obj.current_status=='Accepted'">
+												<p data-toggle="tooltip" data-placement="top" title="{{obj.status_updated_user.name}} - {{obj.status_updated_user.email}}">
+														{{obj.current_status}}
+												</p>
+										</div>
+
+										<div class="text-danger" *ngIf = "obj.current_status=='Rejected'">
+												<p data-toggle="tooltip" data-placement="top" title="{{obj.status_updated_user.name}} - {{obj.status_updated_user.email}}">
+														{{obj.current_status}}
+												</p>
+										</div>
+									</div>
+
+									<div *ngIf = "obj.reference_number" class="cursor-pointer">
+										<div class="nav-item dropdown" style="margin-top: -20px;">
+						        <a class="nav-link" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> </a>
+						         
+										<div class="text-success" *ngIf = "obj.current_status=='Accepted'">
+											<p data-toggle="tooltip" data-placement="top" title="{{obj.status_updated_user.name}} - {{obj.status_updated_user.email}}"> {{obj.current_status}}<i class="arrow down"></i> </p>
+										</div>
+
+										<div class="text-danger" *ngIf = "obj.current_status=='Rejected'">
+											<p data-toggle="tooltip" data-placement="top" title="{{obj.status_updated_user.name}} - {{obj.status_updated_user.email}}"> {{obj.current_status}}<i class="arrow down"></i> </p>
+										</div>
+                    <div class="" *ngIf = "obj.current_status=='Pending acceptance'">
+											<p data-toggle="tooltip" data-placement="top" title="{{obj.status_updated_user.name}} - {{obj.status_updated_user.email}}"> {{obj.current_status}}<i class="arrow down"></i></p>
+										</div>
+										  <!-- V::hover on status will show segment details & status -->
+						          <div class="dropdown-menu p-0 m-0 Vdiv Vhvr Vbtm" aria-labelledby="navbarDropdownMenuLink">
+						          	<div class="arrow" style="left: 50%;"></div>
+							          <a class="dropdown-item p-0" *ngIf = "obj.status_updated_user_by_segment && (obj.status_updated_user_by_segment.panel ||obj.status_updated_user_by_segment.non_panel || obj.status_updated_user_by_segment.services)"> 
+							          	<div class="col-12" style="background-color: #a9a9a969">Accepted  & Rejected By</div><br>
+							          	<span class="ml-3" *ngIf="obj.status_updated_user_by_segment.non_panel">User Name:{{obj.status_updated_user_by_segment.non_panel.name}}(<span style="color: #8d0528">Non Panel</span>)</span> 
+							          	<br *ngIf="obj.status_updated_user_by_segment.non_panel">
+							            <span class="ml-3" *ngIf="obj.status_updated_user_by_segment.non_panel">Email:{{obj.status_updated_user_by_segment.non_panel.email}}</span>
+							            <hr class="mb-0 p-0" *ngIf="obj.status_updated_user_by_segment.panel">
+							            <span class="ml-3" *ngIf="obj.status_updated_user_by_segment.panel">User Name:{{obj.status_updated_user_by_segment.panel.name}}(<span style="color: #8d0528">Panel</span>)</span><br *ngIf="obj.status_updated_user_by_segment.panel">
+							            <span class="ml-3" *ngIf="obj.status_updated_user_by_segment.panel">Email:{{obj.status_updated_user_by_segment.panel.email}}</span>
+							            <hr class="mb-0 p-0" *ngIf="obj.status_updated_user_by_segment.services">
+							            <span class="ml-3" *ngIf="obj.status_updated_user_by_segment.services">User Name:{{obj.status_updated_user_by_segment.services.name}}(<span style="color: #8d0528">Services</span>)</span><br *ngIf="obj.status_updated_user_by_segment.services">
+							            <span class="ml-3" *ngIf="obj.status_updated_user_by_segment.services">Email:{{obj.status_updated_user_by_segment.services.email}}</span>
+							          </a>
+							          <a class="dropdown-item p-0">
+							          	<div class="col-12" style="background-color: #a9a9a969">Segment & Segment Status</div> 
+							          </a>
+							          <a class="dropdown-item p-0 mt-3" *ngIf = "obj.segments_with_acceptance.panel">
+	                        <span class="ml-3">Panel :{{obj.segments_with_acceptance.panel| replaceChar}}
+	                        <hr class="mb-0 p-0"></span> 
+	                      </a>
+	                      <a class="dropdown-item p-0 mt-3"*ngIf = "obj.segments_with_acceptance.non_panel">
+		                   	  <span class="ml-3">Non Panel:{{obj.segments_with_acceptance.non_panel| replaceChar}}<hr class="mb-0 p-0"></span> 
+		                   	</a>
+		                   	<a class="dropdown-item p-0 mt-3" *ngIf = "obj.segments_with_acceptance.services">
+		                   	  <span class="ml-3">Services:{{obj.segments_with_acceptance.services| replaceChar}}</span>
+							          </a>
+						          </div>
+						        </div>
+									</div>
+	                <div class="text-success" *ngIf = "obj.request_type">
+										<div class="cursor-pointer" *ngIf = "obj.current_status=='Accepted'">
+												<p data-toggle="tooltip" data-placement="top" title="{{obj.status_updated_user.name}} - {{obj.status_updated_user.email}}">
+														{{obj.current_status}}
+												</p>
+										</div>
+									</div>
+									 
+								</td>
+								
+								<td class="fontsize12 text-center">
+						      <div class="pop" title="{{obj.category_comment}}" (mouseenter)="openpopup($event)" style="color: black;" *ngIf = "obj.current_status=='Rejected'">{{obj.category_comment | slice:0:7}}...</div>
+
+						      <div class="pop" title="{{obj.category_comment}}" (mouseenter)="openpopup($event)" style="color: black;" *ngIf = "obj.current_status=='Accepted'">-</div>
+								</td>
+								<td class="text-center">
+									<div class="text-success" *ngIf = "obj.reference_number">
+	                   
+										<div *ngIf = "obj.current_status=='Pending acceptance' || obj.current_status=='Pending'">
+											<!-- ////V:both buttom will be appear according role(category non panel) and relevant category split////// -->
+											<button class="btn btn-success fontsize12 btnHeight pt-1 Vcard" (click) = "acceptFun(obj.id,'non_panel')" *ngIf ="role=='category_non_panel' && obj.segments_with_acceptance.non_panel && obj.segments_with_acceptance.non_panel=='pending_acceptance'">Non Panel Accept</button>
+											<button class="btn btn-danger fontsize12 btnHeight pt-1 Vcard" data-toggle="modal" data-target="#rejectModal" (click) = "handoverId(obj.id,'non_panel');" *ngIf ="role=='category_non_panel' && obj.segments_with_acceptance.non_panel && obj.segments_with_acceptance.non_panel=='pending_acceptance'">Non Panel Reject</button>
+											<!-- ////V:both buttom will be appear according role(category services) and relevant category split////// -->
+											<button class="btn btn-success fontsize12 btnHeight pt-1 Vcard" (click) = "acceptFun(obj.id,'services')" *ngIf ="role=='category_services' && obj.segments_with_acceptance.services && obj.segments_with_acceptance.services=='pending_acceptance'">Services Accept</button>
+											<button class="btn btn-danger fontsize12 btnHeight pt-1 Vcard" data-toggle="modal" data-target="#rejectModal" (click) = "handoverId(obj.id,'services');" *ngIf ="role=='category_services' && obj.segments_with_acceptance.services && obj.segments_with_acceptance.services=='pending_acceptance'">Services Reject</button>
+											<!-- ////V:both buttom will be appear according role(category panel) and relevant category split////// -->
+											<button class="btn btn-success fontsize12 btnHeight pt-1 Vcard" (click) = "acceptFun(obj.id,'panel')" *ngIf ="role=='category_panel' && obj.segments_with_acceptance.panel && obj.segments_with_acceptance.panel=='pending_acceptance'">Panel Accept</button>
+											<button class="btn btn-danger fontsize12 btnHeight pt-1 Vcard" data-toggle="modal" data-target="#rejectModal" (click) = "handoverId(obj.id,'panel');" *ngIf ="role=='category_panel' && obj.segments_with_acceptance.panel && obj.segments_with_acceptance.panel=='pending_acceptance'">Panel Reject</button>
+											<!-- ////V:both buttom will be appear according role(category Head) and relevant category role split////// -->
+											<button class="btn btn-success fontsize12 btnHeight pt-1 Vcard mt-1" (click) = "acceptFun(obj.id,'non_panel')" *ngIf ="role=='category_head' && obj.segments_with_acceptance.non_panel && obj.segments_with_acceptance.non_panel=='pending_acceptance'">Non Panel </button>
+											<button class="btn btn-success fontsize12 btnHeight pt-1 Vcard mt-1" (click) = "acceptFun(obj.id,'services')" *ngIf ="role=='category_head' && obj.segments_with_acceptance.services && obj.segments_with_acceptance.services=='pending_acceptance'">Services </button>
+											<button class="btn btn-success fontsize12 btnHeight pt-1 Vcard mt-1" (click) = "acceptFun(obj.id,'panel')" *ngIf ="role=='category_head' && obj.segments_with_acceptance.panel && obj.segments_with_acceptance.panel=='pending_acceptance'">Panel</button>
+											<button class="btn btn-danger fontsize12 btnHeight pt-1 Vcard mt-1" data-toggle="modal" data-target="#rejectModal" (click) = "handoverId(obj.id,'panel');" *ngIf ="role=='category_head' && obj.segments_with_acceptance.panel && obj.segments_with_acceptance.panel=='pending_acceptance'">P-Reject</button>
+											<button class="btn btn-danger fontsize12 btnHeight pt-1 Vcard mt-1" data-toggle="modal" data-target="#rejectModal" (click) = "handoverId(obj.id,'non_panel');" *ngIf ="role=='category_head' && obj.segments_with_acceptance.non_panel && obj.segments_with_acceptance.non_panel=='pending_acceptance'">N-Reject</button>
+											<button class="btn btn-danger fontsize12 btnHeight pt-1 Vcard mt-1" data-toggle="modal" data-target="#rejectModal" (click) = "handoverId(obj.id,'services');" *ngIf ="role=='category_head' && obj.segments_with_acceptance.services && obj.segments_with_acceptance.services=='pending_acceptance'">S-Reject</button>
+										</div>
+									</div>
+
+									<div *ngIf = "obj.name">
+										<div *ngIf = "obj.current_status=='Pending acceptance' || obj.current_status=='Pending'">
+											<button class="btn btn-success fontsize12 btnHeight pt-1 Vcard" (click) = "acceptFun(obj.id)">Accept</button>
+											<button class="btn btn-danger fontsize12 btnHeight pt-1 Vcard" data-toggle="modal" data-target="#rejectModal" (click) = "handoverId(obj.id);">Reject</button>
+										</div>
+									</div>
+								</td>
+								<td class="fontsize12 text-center">
+									<div *ngIf = "obj.reference_number">
+										{{obj.per_50_check}}
+									</div>
+
+									<div *ngIf = "obj.name">
+										-
+									</div>
+								</td>
+								<td class="fontsize12 text-center">{{obj.status_changed_on | date:'dd/MM/yyyy - h:mm a'}}</td>
+								<td>
+									<div *ngIf = "slectedFile_arr[j]=='Cad Drawings'">
+										<div *ngIf = "obj.panel == false">
+											<label class="select addCursor" style="margin-left: 3.8rem">
+												<select class="bg-white pl-2 addCursor" (change) = "PanelNonChange(obj.ownerable_id, $event)">
+												  <option value="false" selected>Non-Panel</option>
+												  <option value="true">Panel</option>
+												</select>
+											</label>
+										</div>
+
+										<div *ngIf = "obj.panel == true">
+											<label class="select addCursor" style="margin-left: 3.8rem">
+												<select class="bg-white pl-2 addCursor" (change) = "PanelNonChange(obj.ownerable_id, $event)">
+												  <option value="false">Non-Panel</option>
+												  <option value="true" selected>Panel</option>
+												</select>
+											</label>
+										</div>
+									</div>
+									
+									<div *ngIf = "slectedFile_arr[j]=='3-D Files'">
+										<div *ngIf = "obj.panel == false">
+											<label class="select addCursor" style="margin-left: 3.8rem">
+												<select class="bg-white pl-2 addCursor" (change) = "PanelNonChangeForThreeD(obj.id,$event)">
+												  <option value="false" selected>Non-Panel</option>
+												  <option value="true">Panel</option>
+												</select>
+											</label>
+										</div>
+
+										<div *ngIf = "obj.panel == true">
+											<label class="select addCursor" style="margin-left: 3.8rem">
+												<select class="bg-white pl-2 addCursor" (change) = "PanelNonChangeForThreeD(obj.id,$event)">
+												  <option value="false">Non-Panel</option>
+												  <option value="true" selected>Panel</option>
+												</select>
+											</label>
+										</div>
+									</div>
+
+									<div *ngIf = "slectedFile_arr[j]=='Refrence Images'">
+										<div *ngIf = "obj.panel == false">
+											<label class="select addCursor" style="margin-left: 3.8rem">
+												<select class="bg-white pl-2 addCursor" (change) = "PanelNonChangeForThreeD(obj.id,$event)">
+												  <option value="false" selected>Non-Panel</option>
+												  <option value="true">Panel</option>
+												</select>
+											</label>
+										</div>
+
+										<div *ngIf = "obj.panel == true">
+											<label class="select addCursor " style="margin-left: 3.8rem">
+												<select class="bg-white pl-2 addCursor" (change) = "PanelNonChangeForThreeD(obj.id,$event)">
+												  <option value="false">Non-Panel</option>
+												  <option value="true" selected>Panel</option>
+												</select>
+											</label>
+										</div>
+									</div>
+								</td>
+								<td  style='text-align:center'><span *ngIf = "slectedFile_arr[j]!='BOQ'"> </span> <span *ngIf = "slectedFile_arr[j]=='BOQ'">{{obj.duration || 0}}<i  *ngIf="obj.per_50_check=='No'" style="padding-left:6px" data-toggle="modal" data-target="#editDurationModal" (click)="getBoqDetails(obj)" class="fa fa-edit"></i></span></td>
+								<td  style='text-align:center'><span *ngIf = "slectedFile_arr[j]!='BOQ'"> </span> <span *ngIf = "slectedFile_arr[j]=='BOQ'">{{obj.eta || 0}}</span></td>
+								<td class="thBorderRightRadius">
+									<i class="fa  fa-angle-up angle-chng ml-4 mr-2" style="font-size:24px; " (click)="toggleRow(obj)" *ngIf="rowSelected ==  obj.id"></i>
+										  
+								   <i class="fa  fa-angle-down angle-chng ml-3 mr-2" style="font-size:24px; " (click)="toggleRow(obj)" *ngIf="rowSelected !=  obj.id"></i></td>
+							</tr>
+							<tr *ngIf="rowSelected ==  obj.id">
+								<td colspan="10" class="p-0">
+									<table class="table inner-table" style="background-color: transparent;">
+								    <tbody class="aa-tbody" style="background-color: white;">
+	                    <tr *ngFor="let child of child_list">
+	                      <td class="thBorderLeftRadius" style="width: 3%"></td>
+		                    <td class="fontsize12" style="font-weight: 500"><a href="{{child.url}}" download target="_blank">{{child.name}}</a>
+		                    </td>
+		                    <td class="font-weight-bold fontsize12 text-center">{{ child.date_of_sharing | date:'dd.MM.yyyy - h:mm a' }}</td>
+		                    <td class="text-danger fontsize12 text-center">{{ child.current_status }}</td>
+		                    <td class="fontsize12 text-center">{{ child.category_comment }}</td>
+		                    <td class="fontsize12">{{ child.status_changed_on | date:'medium' }}</td>
+		                    <td class="fontsize12"></td>
+		                    <td class="fontsize12"> </td>
+		                    <td class="fontsize12">{{ child.version }}</td>
+		                    <td class="fontsize12 thBorderRightRadius"> </td>
+	                    </tr>
+			              </tbody>
+	                </table>
+					      </td>
+					      <td colspan="10"  class="col-div" *ngIf="child_details">
+	                <div class="w-100 mx-auto p-5 text-center" style="background: #ECF0F1">
+	                  Nothing To Show..
+	                </div>
+	              </td>
+							</tr>
+					  </ng-container>		
+					</ng-container>
+				</tbody>
+				<tbody *ngIf="additionalFiles && additionalFiles.length > 0">
+			     <!--BOQ portion-->
+					<tr>
+						<td class="indicatorRow" colspan="10">
+							<div class="boqIndicator btn pl-3 pr-3 text-center">Additional Files</div>
+						</td>
+					</tr>
+					<tr class="bg-white"  *ngFor="let item of additionalFiles">
+						<td colspan="4" class="text-center pt-3 thBorderLeftRadius fontsize14">Request raised-{{ item.created_at | date:'dd/MM/yyyy - h:mm a' }}</td>
+
+						<td colspan="2" class="fontsize12">Comment-{{item.remarks }}</td>
+
+						<td colspan="3" *ngIf="item.resolved" class="thBorderRightRadius fontsize12">Current Status-<span class="text-success">Resolved</span></td>
+
+						<td colspan="3" *ngIf="!item.resolved" class="thBorderRightRadius fontsize12">Current Status-<span class="text-danger">Pending</span></td>
+						
+					</tr>
+				</tbody>				
+			</table>
+			<div class=" col-12 pb-3 px-5" *ngIf="project_list && file_length.length == 0">
+	      <div class="boq-img text-center">
+	        <img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+	      </div>
+	      <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing to show...</p>
+		  </div>
+			<div class="w-100" *ngIf="selectSection == 'split'">
+			 	<app-split [project_id]='project_is_accept'></app-split>
+			</div>
+			<div class="w-100" *ngIf="selectSection == 'cutting'">
+			 	<app-cutting-list-bom  [project_id]='project_is_accept'></app-cutting-list-bom>
+			</div>
+		</div>
+	</div> 
+</div>
+
+
+<!-- The Reject Modal -->
+<div class="modal" id="rejectModal">
+	<div class="modal-dialog">
+	  <div class="modal-content requestModal">
+  
+		<!-- Modal Header -->
+		<div class="modal-header">
+		  <h4 class="modal-title pl-3 pt-4">Reject Remark</h4>
+		  <button type="button" class="close requestloseBtn" data-dismiss="modal" style="font-size: 31px;">&times;</button>
+		</div>
+  
+		<!-- Modal body -->
+		<div class="modal-body">
+		  <form [formGroup]="reject" class="text-center">
+					<textarea formControlName = "remark_description" rows="6" cols="60" name="comment" placeholder="Enter Comments for Rejection..">
+					</textarea>
+					<br>
+					<button class="btn btn-pink addCursor requestDonebtn mt-2" type="submit" [disabled]="!reject.valid" (click) = "rejectFun()">Done</button>
+				  </form>
+		</div>
+	  </div>
+	</div>
+</div>
+
+	  
+	  
+	  <!-- View Gallery MODAL -->
+	  <div class="modal fade" id="viewGalleryModal">
+		<div class="modal-dialog modal-lg">
+		  <div class="modal-content">
+			<div class="modal-header" style="border-bottom: 1px solid #e4e4e4;">
+			  <h6 class="modal-title">Gallery : </h6>
+			  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			  </button>
+			</div>
+			<div class="modal-body">
+			  <div class="row m-0">
+				 <div class="col-md-4 mt-4" *ngFor="let item of file_list">
+				  <div class="card card-chng">
+					<div class="card-block" style="padding: 1rem;">
+					  <div class="row">
+						<div class="col-md-12">
+						  <p class="mb-0 mt-2" style="font-size:13px;">
+							   
+							<span>Uploaded File Name: </span>
+							<span style="color: #7E7E7E;">{{item[0]}}</span> 
+						  </p>
+						</div>
+						<div class="col-md-12 divbutton mt-2">
+						 <a class="btn btn-pink btn-chng pull-right" href="{{item[1]}}" download target="_blank">
+							Download
+						  </a>
+						</div>
+					  </div>
+					</div>
+				  </div>
+				</div>
+				
+			  </div>
+			</div>
+		  </div>
+		</div>
+	  </div>
+	  <!-- Design QC -->
+	  
+	  <div class="modal fade" style="font-family: 'Open Sans', sans-serif;" id="designQCModal">
+			  <div class="modal-dialog modal-lg" style="max-width:381.4px !important">
+				  <div class="modal-content" >
+					  <div class="modal-header" style="border-bottom: 14px solid #810d0d;">
+						  <h6 class="modal-title" style="color:#8d0528 ; font-size: 18px;font-weight:600;">Design QC</h6>
+						  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							  <span (click)="closeModal('custom-label-1');" aria-hidden="true">&times;</span>
+						  </button>
+					  </div>
+					  <div class="modal-body" style="margin-top:5%;margin-left:2%;margin-right:2%">
+						  <div>
+							  <div class="row qcDiv">
+								  <div class="col-md-7">
+									  <b>Current Status: </b><span *ngIf="!currentDesignQCStatus && currentDesignQCStatus!='Pending'" style="color:#ff2323;padding-left:1rem">Fail</span>
+									  <span *ngIf="currentDesignQCStatus && currentDesignQCStatus!='Pending'" style="color:#2cc990;padding-left:1rem">Pass</span>
+									  <span *ngIf="currentDesignQCStatus == 'Pending'" >Pending</span>
+								  </div>
+								  <div class="col-md-5">
+									  <b style="cursor: pointer;text-decoration: underline;color:#868283" data-dismiss="modal" data-toggle="modal" (click)="viewHistory('design_qc');" data-target="#historyDesignQCModal">View History</b>
+								  </div>
+							  </div>
+							  <div class="row qcDiv">
+								  <div class="col-md-12">
+									  <b>Update Status: </b>
+								  </div>
+							  </div>
+							  <div class="row qcDiv">
+									  <div style="display:flex;justify-content: center" class="col-md-6">
+										  <button (click)="qcStatusChange('design_qc',true)" [ngStyle]="{'background-color': newDesignQCStatus && newDesignQCStatus!='Pending' ? '#2cc990' : 'grey' }" class="qc-button-history pass" >Pass</button>
+									  </div>
+									  <div style="display:flex;justify-content: center"  class="col-md-6">
+											  <button (click)="qcStatusChange('design_qc',false)" [ngStyle]="{'background-color': !newDesignQCStatus && newDesignQCStatus!='Pending' ? '#ff2323' : 'grey' }" class="qc-button-history fail" >Fail</button>
+									  </div>
+							  </div>
+							  <div class="row qcDiv">
+									  <form style="width:100%" class="form-horizontal">
+											  <div class="form-group">
+													  <div class="col-sm-offset-2 col-sm-12">
+															  <label style="width:100%" class="file-upload btn btn-primary arrivae-color custom-file-label" for="inputGroupFile01" id="custom-label-1" >
+																	  Browse for file ... 
+															  </label>
+															  <input style="display:none" id="inputGroupFile01" (change)="fileUpload($event,'custom-label-1');" type="file"  />
+													  </div>
+											  </div>
+									  </form>
+							  </div>
+							  <div class="row qcDiv">
+								  <div class="col-md-12">
+									  <b>Remark:</b>
+								  </div>
+							  </div>
+							  <div class="row qcDiv">
+								  <div class="col-md-12">
+									  <textarea [(ngModel)]="remark" style="width:100%;height:106px"></textarea>
+								  </div>
+							  </div>
+							  <div class="row qcDiv">
+									  <div class="col-md-12" style="display:flex;justify-content: center;">
+											  <button data-dismiss="modal" class="qc-button-history" (click)='updateQC("design_qc")' style="background-color:#8d0528;">Update</button>
+									  </div>
+							  </div>
+						  </div>
+					  </div>
+				  </div>
+			  </div>
+		  </div>
+	  
+	  
+	  <!-- Cost QC -->
+	  
+	  <div class="modal fade" style="font-family: 'Open Sans', sans-serif;" id="costQCModal">
+			  <div class="modal-dialog modal-lg" style="max-width:381.4px !important">
+				  <div class="modal-content" >
+					  <div class="modal-header" style="border-bottom: 14px solid #810d0d;">
+						  <h6 class="modal-title" style="color:#8d0528 ; font-size: 18px;font-weight:600;">Cost QC</h6>
+						  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							  <span (click)="closeModal('custom-label-2');" aria-hidden="true">&times;</span>
+						  </button>
+					  </div>
+					  <div class="modal-body" style="margin-top:5%;margin-left:2%;margin-right:2%">
+						  <div>
+							  <div class="row qcDiv">
+								  <div class="col-md-7">
+									  <b >Current Status: </b><span *ngIf="!currentCostQCStatus && currentCostQCStatus !='Pending'" style="color:#ff2323;padding-left:1rem">Fail</span>
+									  <span *ngIf="currentCostQCStatus && currentCostQCStatus !='Pending' " style="color:#2cc990;padding-left:1rem">Pass</span>
+									  <span *ngIf="currentCostQCStatus == 'Pending'" >Pending</span>
+								  </div>
+								  <div class="col-md-5">
+									  <b style="cursor: pointer;text-decoration: underline;color:#868283" data-dismiss="modal" data-toggle="modal" data-target="#historyCostQCModal" (click)="viewHistory('cost_qc');">View History</b>
+								  </div>
+							  </div>
+							  <div class="row qcDiv">
+								  <div class="col-md-12">
+									  <b>Update Status: </b>
+								  </div>
+							  </div>
+							  <div class="row qcDiv">
+									  <div style="display:flex;justify-content: center" class="col-md-6">
+										  <button  (click)="qcStatusChange('cost_qc',true)" [ngStyle]="{'background-color': newCostQCStatus && newCostQCStatus!='Pending' ? '#2cc990' : 'grey' }" class="qc-button-history pass" >Pass</button>
+									  </div>
+									  <div style="display:flex;justify-content: center" class="col-md-6">
+										  <button (click)="qcStatusChange('cost_qc',false)" [ngStyle]="{'background-color': !newCostQCStatus && newCostQCStatus!='Pending' ? '#ff2323' : 'grey' }" class="qc-button-history fail">Fail</button>
+									  </div>
+							  </div>
+							  <div class="row qcDiv">
+									  <form style="width:100%" class="form-horizontal">
+											  <div class="form-group">
+													  <div class="col-sm-offset-2 col-sm-12">
+															  <label style="width:100%" class="file-upload btn btn-primary arrivae-color custom-file-label" for="inputGroupFile02" id="custom-label-2" >
+																	  Browse for file ... 
+															  </label>
+															  <input style="display:none" id="inputGroupFile02" (change)="fileUpload($event,'custom-label-2');" type="file" />
+													  </div>
+											  </div>
+									  </form>
+							  </div>
+							  <div class="row qcDiv">
+								  <div class="col-md-12">
+									  <b>Remark:</b>
+								  </div>
+							  </div>
+							  <div class="row qcDiv">
+								  <div class="col-md-12">
+									  <textarea [(ngModel)]="remark" style="width:100%;height:106px"></textarea>
+								  </div>
+							  </div>
+							  <div class="row qcDiv">
+									  <div class="col-md-12" style="display:flex;justify-content: center;">
+											  <button data-dismiss="modal" (click)='updateQC("cost_qc")' class="qc-button-history" style="background-color:#8d0528;">Update</button>
+									  </div>
+								  </div>
+						  </div>
+					  </div>
+				  </div>
+			  </div>
+		  </div>
+	  
+		  <!-- History Design QC -->
+	  
+	  <div class="modal fade" style="font-family: 'Open Sans', sans-serif;" id="historyDesignQCModal">
+			  <div class="modal-dialog modal-lg" style="max-width:746.46px !important">
+				  <div class="modal-content" >
+					  <div class="modal-header" style="border-bottom: 14px solid #810d0d;">
+						  <h6 class="modal-title" data-dismiss="modal" data-toggle="modal" data-target="#designQCModal" style="cursor:pointer;color:#8d0528 ; font-size: 18px;font-weight:600;">Go Back</h6>
+						  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							  <span aria-hidden="true">&times;</span>
+						  </button>
+					  </div>
+					  <div class="modal-body" style="margin-top:5%;margin-left:5%;margin-right:5%;font-size: 15px">
+						  <div>
+							  <div class="row qcDiv">
+								  <div class="col-md-7" style="padding-left:0px">
+									  <b> Design QC History </b>
+								  </div>
+							  </div>
+							  <div class="row">
+								  <ng-container *ngIf="history">
+									  <table class="table no-decoration">
+											  <thead>
+												  <tr>
+													  <th (click)="sort('created_at')" style="color:#a7a7a7;width:20%">Date Created<i class="fa ml-2" [ngClass]="{'fa-sort-asc': (column == 'created_at' && !isDesc), 'fa-sort-desc': (column == 'created_at' && isDesc) }" aria-hidden="true"> </i></th>
+													  
+													  <th style="width:23%;color:#a7a7a7;text-align:center">Status</th>
+													  <th style="width:23%;color:#a7a7a7;text-align:center">Remark</th>
+													  <th style="color:#a7a7a7;text-align:center">File Uploaded</th>
+													  <!-- <th style="color:#a7a7a7;widows:60%">Remark</th> -->
+													  <th style="width:23%;color:#a7a7a7;text-align:center">Status updated by</th>
+												  </tr>
+											  </thead>
+											  <tbody style="font-weight:600">
+												  <tr *ngFor="let historyRow of history.project_quality_checks | sortDatewise: {property: column , direction: direction};">
+													  <td>{{historyRow.created_at | date:'short'}}</td>
+													  
+													  <td *ngIf="!historyRow.status" style="color:#ff2323;text-align:center">{{historyRow.status | passFail}}</td>
+													  <td *ngIf="historyRow.status" style="color:#2cc990;text-align:center">{{historyRow.status | passFail}}</td>
+													  <td data-toggle="tooltip" [title]="historyRow.remark || '-'" style="cursor: pointer; text-align:center;max-width:80px;text-overflow:ellipsis;white-space: nowrap;overflow: hidden;">{{historyRow.remark || '-'}}</td>
+													  <td *ngIf="historyRow.file_url" style="color:#2cc990" align="center"><a [href]="historyRow.file_url" target="_blank" download ><i data-toggle="tooltip" title="Click to download file." class="fa fa-file-pdf-o" aria-hidden="true"></i></a>
+													  <td *ngIf="!historyRow.file_url" style="color:#8d0528" align="center"><a><i data-toggle="tooltip" title="No new File Uploaded." class="fa fa-close" aria-hidden="true"></i></a></td>
+													  <td class="text-center">{{historyRow.status_updated_user.name}} {{historyRow.status_updated_user.email}}</td>
+													  <!-- <td>{{historyRow.remark}}</td> -->
+												  </tr>
+											  </tbody>
+										  </table>
+									  </ng-container>
+							  </div>
+						  </div>
+					  </div>
+				  </div>
+			  </div>
+		  </div>
+	  
+		  <!-- Technician QC -->
+	  
+	  <div class="modal fade" style="font-family: 'Open Sans', sans-serif;" id="technicianQCModal">
+			  <div class="modal-dialog modal-lg" style="max-width:381.4px !important">
+				  <div class="modal-content" >
+					  <div class="modal-header" style="border-bottom: 14px solid #810d0d;">
+						  <h6 class="modal-title" style="color:#8d0528 ; font-size: 18px;font-weight:600;">Technician QC</h6>
+						  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							  <span (click)="closeModal('custom-label-3');" aria-hidden="true">&times;</span>
+						  </button>
+					  </div>
+					  <div class="modal-body" style="margin-top:5%;margin-left:2%;margin-right:2%">
+						  <div>
+							  <div class="row qcDiv">
+								  <div class="col-md-7">
+									  
+									  <b >Current Status: </b><span *ngIf="!currentTechQCStatus && currentTechQCStatus != 'Pending'" style="color:#ff2323;padding-left:1rem">Fail</span>
+									  <span *ngIf="currentTechQCStatus && currentTechQCStatus != 'Pending'" style="color:#2cc990;padding-left:1rem">Pass</span>
+									  <span *ngIf="currentTechQCStatus == 'Pending'" >Pending</span>
+								  </div>
+								  <div class="col-md-5">
+									  <b style="cursor: pointer;text-decoration: underline;color:#868283" data-dismiss="modal" data-toggle="modal" data-target="#historyQCModal" (click)="viewHistory('tech_qc');">View History</b>
+								  </div>
+							  </div>
+							  <div class="row qcDiv">
+								  <div class="col-md-12">
+									  <b>Update Status: </b>
+								  </div>
+							  </div>
+							  <div class="row qcDiv">
+									  <div style="display:flex;justify-content: center" class="col-md-6">
+										  <button (click)="qcStatusChange('tech_qc',true)" class="qc-button-history pass" [ngStyle]="{'background-color': newTechQCStatus && newTechQCStatus!='Pending' ? '#2cc990' : 'grey' }" >Pass</button>
+									  </div>
+									  <div style="display:flex;justify-content: center" class="col-md-6">
+											  <button (click)="qcStatusChange('tech_qc',false)" class="qc-button-history fail" [ngStyle]="{'background-color': !newTechQCStatus && newTechQCStatus!='Pending' ? '#ff2323' : 'grey' }" >Fail</button>
+									  </div>
+							  </div>
+							  <div class="row qcDiv">
+									  <form style="width:100%" class="form-horizontal">
+											  <div class="form-group">
+													  <div class="col-sm-offset-2 col-sm-12">
+															  <label style="width:100%" class="file-upload btn btn-primary arrivae-color custom-file-label" for="inputGroupFile03" id="custom-label-3" >
+																	  Browse for file ... 
+															  </label>
+															  <input style="display:none" id="inputGroupFile03" (change)="fileUpload($event,'custom-label-3');" type="file" />
+													  </div>
+											  </div>
+									  </form>
+							  </div>
+							  <div class="row qcDiv">
+								  <div class="col-md-12">
+									  <b>Remark:</b>
+								  </div>
+							  </div>
+							  <div class="row qcDiv">
+								  <div class="col-md-12">
+									  <textarea [(ngModel)]="remark" style="width:100%;height:106px"></textarea>
+								  </div>
+							  </div>
+							  <div class="row qcDiv">
+									  <div class="col-md-12" style="display:flex;justify-content: center;">
+											  <button data-dismiss="modal" (click)='updateQC("tech_qc")' class="qc-button-history" style="background-color:#8d0528;">Update</button>
+									  </div>
+								  </div>
+						  </div>
+					  </div>
+				  </div>
+			  </div>
+		  </div>
+	  
+	  <!-- History Technician QC -->
+	  
+	  <div class="modal fade" style="font-family: 'Open Sans', sans-serif;" id="historyQCModal">
+			  <div class="modal-dialog modal-lg" style="max-width:746.46px !important">
+				  <div class="modal-content" >
+					  <div class="modal-header" style="border-bottom: 14px solid #810d0d;">
+						  <h6 class="modal-title" data-dismiss="modal" data-toggle="modal" data-target="#technicianQCModal" style="cursor:pointer;color:#8d0528 ; font-size: 18px;font-weight:600;">Go Back</h6>
+						  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							  <span aria-hidden="true">&times;</span>
+						  </button>
+					  </div>
+					  <div class="modal-body" style="margin-top:5%;margin-left:5%;margin-right:5%;font-size: 15px">
+						  <div>
+							  <div class="row qcDiv">
+								  <div class="col-md-7" style="padding-left:0px">
+									  <b> Technician QC History </b>
+								  </div>
+							  </div>
+							  <div class="row">
+									  <ng-container *ngIf="history">
+									  <table class="table no-decoration">
+										  <thead>
+											  <tr>
+												  <th (click)="sort('created_at')" style="color:#a7a7a7;width:20%">Date Created<i class="fa ml-2" [ngClass]="{'fa-sort-asc': (column == 'created_at' && !isDesc), 'fa-sort-desc': (column == 'created_at' && isDesc) }" aria-hidden="true"> </i></th>
+												  
+												  <th style="width:23%;color:#a7a7a7;text-align:center">Status</th>
+										  <th style="width:23%;color:#a7a7a7;text-align:center">Remark</th>
+										  <th style="color:#a7a7a7;text-align:center">File Uploaded</th>
+										  <th style="width:23%;color:#a7a7a7;text-align:center">Status updated by</th>
+												  <!-- <th style="color:#a7a7a7;widows:60%">Remark</th> -->
+											  </tr>
+										  </thead>
+										  <tbody style="font-weight:600">
+											  <tr *ngFor="let historyRow of history.project_quality_checks | sortDatewise: {property: column , direction: direction};">
+												  <td>{{historyRow.created_at | date:'short'}}</td>
+												  
+												  <td *ngIf="!historyRow.status" style="color:#ff2323;text-align:center">{{historyRow.status | passFail}}</td>
+										  <td *ngIf="historyRow.status" style="color:#2cc990;text-align:center">{{historyRow.status | passFail}}</td>
+										  <td data-toggle="tooltip" [title]="historyRow.remark || '-'" style="text-align:center;max-width:80px;text-overflow:ellipsis;white-space: nowrap;overflow: hidden;cursor:pointer">{{historyRow.remark || '-'}}</td>
+												  <td *ngIf="historyRow.file_url" style="color:#2cc990" align="center"><a [href]="historyRow.file_url" target="_blank" download ><i data-toggle="tooltip" title="Click to download file." class="fa fa-file-pdf-o" aria-hidden="true"></i></a>
+												  <td *ngIf="!historyRow.file_url" style="color:#8d0528" align="center"><a><i data-toggle="tooltip" title="No new File Uploaded." class="fa fa-close" aria-hidden="true"></i></a></td>
+												  <td class="text-center">{{historyRow.status_updated_user.name}} {{historyRow.status_updated_user.email}}</td>
+											  </tr>
+										  </tbody>
+									  </table>
+								  </ng-container>
+							  </div>
+						  </div>
+					  </div>
+				  </div>
+			  </div>
+		  </div>
+	  
+		  <!-- History Cost QC -->
+	  
+	  <div class="modal fade" style="font-family: 'Open Sans', sans-serif;" id="historyCostQCModal">
+			  <div class="modal-dialog modal-lg" style="max-width:746.46px !important">
+				  <div class="modal-content" >
+					  <div class="modal-header" style="border-bottom: 14px solid #810d0d;">
+						  <h6 class="modal-title" data-dismiss="modal" data-toggle="modal" data-target="#costQCModal" style="cursor:pointer;color:#8d0528 ; font-size: 18px;font-weight:600;">Go Back</h6>
+						  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							  <span aria-hidden="true">&times;</span>
+						  </button>
+					  </div>
+					  <div class="modal-body" style="margin-top:5%;margin-left:5%;margin-right:5%;font-size: 15px">
+						  <div>
+							  <div class="row qcDiv">
+								  <div class="col-md-7" style="padding-left:0px">
+									  <b> Cost QC History </b>
+								  </div>
+							  </div>
+							  <div class="row">
+								  <ng-container *ngIf="history">
+								  <table class="table no-decoration">
+										  <thead>
+											  <tr>
+												  <th (click)="sort('created_at')" style="color:#a7a7a7;width:20%">Date Created<i class="fa ml-2" [ngClass]="{'fa-sort-asc': (column == 'created_at' && !isDesc), 'fa-sort-desc': (column == 'created_at' && isDesc) }" aria-hidden="true"> </i></th>
+												  
+												  <th style="width:23%;color:#a7a7a7;text-align:center">Status</th>
+												  <th style="width:23%;color:#a7a7a7;text-align:center">Remark</th>
+												  <th style="color:#a7a7a7;text-align:center">File Uploaded</th>
+												  <th style="width:23%;color:#a7a7a7;text-align:center">Status updated by</th>
+												  <!-- <th style="color:#a7a7a7;widows:60%">Remark</th> -->
+											  </tr>
+										  </thead>
+										  <tbody style="font-weight:600">
+											  <tr *ngFor="let historyRow of history.project_quality_checks | sortDatewise: {property: column , direction: direction};">
+												  <td>{{historyRow.created_at | date:'short'}}</td>
+												  
+												  <td *ngIf="!historyRow.status" style="color:#ff2323;text-align:center">{{historyRow.status | passFail}}</td>
+										  <td *ngIf="historyRow.status" style="color:#2cc990;text-align:center">{{historyRow.status | passFail}}</td>
+										  <td data-toggle="tooltip" [title]="historyRow.remark || '-'" style="cursor: pointer;text-align:center;max-width:80px;text-overflow:ellipsis;white-space: nowrap;overflow: hidden;">{{historyRow.remark || '-'}}</td>
+												  <td *ngIf="historyRow.file_url" style="color:#2cc990" align="center"><a [href]="historyRow.file_url" target="_blank" download ><i data-toggle="tooltip" title="Click to download file." class="fa fa-file-pdf-o" aria-hidden="true"></i></a>
+												  <td *ngIf="!historyRow.file_url" style="color:#8d0528" align="center"><a><i data-toggle="tooltip" title="No new File Uploaded." class="fa fa-close" aria-hidden="true"></i></a></td>
+												  <td class="text-center">{{historyRow.status_updated_user.name}} {{historyRow.status_updated_user.email}}</td>
+											  </tr>
+										  </tbody>
+									  </table>
+									  </ng-container>
+						  </div>
+						  </div>
+					  </div>
+				  </div>
+			  </div>
+		  </div>
+	  
+			  <!-- Edit Duration Modal -->
+	  
+	  <div class="modal fade" style="font-family: 'Open Sans', sans-serif;" id="editDurationModal">
+		<div class="modal-dialog modal-lg" style="max-width:546.46px !important">
+		  <div class="modal-content" >
+			<div class="modal-header" style="border-bottom: 14px solid #810d0d;">
+			  
+			  <button style="margin-left:98%" type="button" class="close" data-dismiss="modal" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			  </button>
+			</div>
+			<div class="modal-body" style="margin-left:5%;">
+			  <div>
+				<div style="margin-bottom:1rem" class="row qcDiv">
+				  <div class="col-md-7" style="padding-left:0px">
+					<b>Edit Duration: </b>
+				  </div>
+				</div>
+				<div class="row">
+				  <label style="width:30%">
+					Duration
+					<input [(ngModel)]="duration" style="width:40%" type="number">
+					
+				  </label>
+				  <button style="height:1.75rem;background-color: #810d0d;padding-top:0.2rem;color:white" (click)='updateDuration()' class="btn" type="button" data-dismiss="modal" >Update ! </button>
+				
+				</div>
+			  </div>
+			</div>
+		  </div>
+		</div>
+	  </div>

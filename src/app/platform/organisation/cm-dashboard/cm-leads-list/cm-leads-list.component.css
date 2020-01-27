@@ -1,0 +1,366 @@
+/* ################################################### */
+.marginTop{
+  margin-top: 4.3rem;
+}
+.filterMainDiv{
+  margin-top: .7rem;
+  margin-bottom: .3rem;
+}
+.tableDiv{
+  overflow-x: scroll;
+}
+.tableDiv tbody tr{
+  height: 56px;
+}
+.table{
+  border-collapse: separate;
+  border-spacing: 0 5px;
+}
+.table td, .table th{
+  min-width: 10rem;
+}
+.table td{
+  padding: 0.7rem 0.75rem;
+  vertical-align: middle;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.7);
+  border: none;
+}
+.table th {
+  padding: .9rem;
+  vertical-align: middle;
+  border: none;
+  font-size: 12px;
+  color: #dedede;
+  background-color: #4a4a4a;
+}
+.tableDiv tbody{
+  background-color: #fff;
+}
+.tableDiv tbody tr{
+  box-shadow: 1px 1px 7px 0px #dadada;
+  border-radius: 5px;
+}
+.firstTh{
+  border-radius: 5px 0 0 0;
+}
+.lastTh{
+  border-radius: 0px 5px 0 0;
+}
+.myForm-control{
+  width: 11rem;
+}
+select.form-control:not([size]):not([multiple]){
+  font-size: 12px;
+}
+.ss-send-circle {
+  vertical-align: text-top;
+}
+.tableActionBtn{
+  font-size: 28px;
+  float: right;
+  margin-top: 4px;
+  color: #888;
+}
+.ss-3-dot-drop{
+  margin-right: -5px;
+  margin-top: -4px;
+  cursor: pointer;
+}
+.dropdown-menuV{
+  min-width: 5.5rem;
+}
+.dropdown-menuV .dropdown-item{
+  padding: 1px 15px;
+}
+
+.downloadBtn{
+    border: 1px solid #8F0020;
+    padding: 5px 10px;
+    margin-top: 4px;
+    color: #8F0020 !important;
+}
+.downloadBtn:hover{
+    color: #fff !important;
+    background-color: #8F0020;
+}
+/* ################################################### */
+
+
+
+/*Vikarant changes for modal*/
+
+.activeCol{
+    width: 15%;
+}
+.close:focus{
+    outline: none;
+}
+
+.modal-title.vik-title {
+    margin-bottom: 0;
+    line-height: 1.5;
+    border-left: 5px solid #ccc;
+    padding-left: 5px;
+}
+.btnGroup{
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.btnGroup button{
+    background-color: transparent;
+    padding: 3px 10px;
+    border-radius: 0
+}
+.btnGroup  button.actBtn{
+    background-color: #000;
+    color: #fff;
+}
+.btnGroup  button.actBtn:focus{
+    outline: none;
+}
+button.button{
+    padding: 4px 30px;
+    background-color: #cacaca;
+}
+button.button:hover{
+    background-color: #808080;
+    color: #fff;
+}
+.inputBorder {
+  border-color: red;
+}
+
+.modal-dialog.vik-dialog{
+  max-width: 100%;
+  margin-top: 4.3rem;
+  margin-bottom: 0;
+  margin-left: 16.6%;
+}
+
+.hideClass{
+  display: none;
+}
+
+/*Vikarant changes for modal*/
+
+
+.tooltip {
+    position: relative;
+    opacity: 1;
+}
+.tooltip:hover{
+  cursor: pointer;
+}
+.tooltipnone:hover{
+  cursor: inherit;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    display: block;
+    background-color: #af0010;
+    color: #fff;
+    font-size: 12px;
+    text-align: center;
+    border-radius: 5px;
+    padding: 5px 5px;
+    position: relative;
+    z-index: 100;
+    top:-57px;
+    margin-left: -60px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.tooltip .tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #af0010 transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+a.pop{
+  cursor: pointer;
+  color: #007bff;
+}
+.time-chng{
+  font-size: 12px;
+  font-weight: bolder;
+}
+::ng-deep .ui-datepicker-calendar {
+    display: none !important;
+}
+::ng-deep .ui-datepicker-current{
+  display: none !important
+}
+
+
+
+
+
+@media (min-width: 768px) {
+  .mobView{
+    display: none;
+  }
+}
+@media (max-width: 767px) {
+  .lappyView{
+    display: none;
+  }
+  .mobCard a{
+    position: absolute;
+    right: 0rem;
+    font-size: 30px;
+    padding: 0 1rem;
+    z-index: 1;
+  }
+  .mobCard h4{
+    font-size: 18px !important;
+    width: 80%;
+  }
+  .mobCard p{
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 0;
+  }
+  .mobView .tableInner{
+    font-size: 14px;
+    margin-bottom: 5px;
+  }
+  .mobView .custom-select{
+    height: calc(2rem + 2px);
+    font-size: 14px;
+  }
+  .mobView h6 a{
+    color: #8c013f;
+    position: unset;
+    font-size: 20px;
+  }
+  .mobView .pop{
+    position: unset;
+    font-size: 15px;
+  }
+  .borderRight{
+    border: 1px solid #ccc;
+  }
+}
+
+
+
+/* 
+@media (min-width: 768px) {
+  .mobView{
+    display: none;
+  }
+}
+@media (max-width: 767px) {
+  .lappyView{
+    display: none;
+  }
+  .mobView{
+    min-height: 100vh;
+  }
+  .mobCard a{
+    position: absolute;
+    right: 0rem;
+    font-size: 30px;
+    padding: 0 1rem;
+  }
+  .mobCard h4{
+    font-size: 18px !important;
+    width: 80%;
+  }
+  .mobCard p{
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 0;
+  }
+  .mobView .tableInner{
+    font-size: 14px;
+    margin-bottom: 5px;
+  }
+  .mobView .custom-select{
+    height: calc(2rem + 2px);
+    font-size: 14px;
+  }
+  .mobView .pop{
+    position: unset;
+    font-size: 15px;
+  }
+  .borderRight{
+    border-right: 1px solid #ccc;
+  }
+  .callBtn{
+    background-color: #8f080f;
+    text-align: center;
+    padding: 2px 0;
+  }
+  .callBtn span{
+    color: #fff;
+  }
+  .mobModal{
+    width: auto !important;
+  }
+
+} */
+
+/*
+.main{width: 100%; background: #eee;}*/
+ 
+/*//tree view dropdown//////*/
+ dropdown-submenu {
+    position: relative;
+}
+
+.dropdown-submenu>.dropdown-menu {
+    top: 0;
+    bottom: 0;
+    left: 100%;
+    -webkit-border-radius: 0 6px 6px 6px;
+    -moz-border-radius: 0 6px 6px;
+    border-radius: 0 6px 6px 6px;
+}
+
+.dropdown-submenu:hover>.dropdown-menu {
+    display: block;
+}
+
+.dropdown-submenu>a:after {
+    display: block;
+    content: " ";
+    float: right;
+    width: 0;
+    height: 0;
+    border-color: transparent;
+    border-style: solid;
+    border-width: 5px 0 5px 5px;
+    border-left-color: #ccc;
+    margin-top: 5px;
+    margin-right: -10px;
+}
+
+.dropdown-submenu:hover>a:after {
+    border-left-color: #fff;
+}
+
+.dropdown-submenu.pull-left {
+    float: none;
+}
+
+.dropdown-submenu.pull-left>.dropdown-menu {
+    left: -100%;
+    margin-left: 10px;
+    -webkit-border-radius: 6px 0 6px 6px;
+    -moz-border-radius: 6px 0 6px 6px;
+    border-radius: 6px 0 6px 6px;
+}

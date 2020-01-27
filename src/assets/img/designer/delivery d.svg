@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="104px" height="41px" viewBox="0 0 104 41" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48 (47235) - http://www.bohemiancoding.com/sketch -->
+    <title>delivery d</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Designer-WIP-tab" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-826.000000, -788.000000)">
+        <g id="Prod-status" transform="translate(471.500000, 738.000000)">
+            <g id="delivery-d" transform="translate(355.000000, 50.000000)">
+                <path d="M20.25,0 L103.5,0 L86.6455526,20.25 L103.5,40.5 L20.25,40.5 C9.06623382,40.5 1.36961635e-15,31.4337662 0,20.25 L0,20.25 C-1.36961635e-15,9.06623382 9.06623382,5.6071382e-15 20.25,3.55271368e-15 Z" id="Rectangle-16-Copy-7" fill="#8F0021" transform="translate(51.750000, 20.250000) rotate(-180.000000) translate(-51.750000, -20.250000) "></path>
+                <text id="Delivery-Copy" font-family="Roboto-Medium, Roboto" font-size="14" font-weight="400" letter-spacing="0.200000003" fill="#FFFFFF">
+                    <tspan x="26.5" y="25">Delivery</tspan>
+                </text>
+            </g>
+        </g>
+    </g>
+</svg>

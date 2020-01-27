@@ -1,0 +1,153 @@
+
+.card{
+	border-radius: .31rem;
+  box-shadow: 0 0 5px 0 rgba(189, 189, 189, 0.5);
+}
+
+.card-body-complete{
+	border-radius: .31rem;
+}
+
+.table td{
+    padding: 0.7rem 0.75rem;
+    vertical-align: middle;
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.7);
+    border: none;
+    vertical-align: top;
+    text-align: center;
+}
+.minWidthForTd{
+  min-width: 185px;
+}
+.table th {
+    padding: .9rem;
+    vertical-align: middle;
+    border: none;
+    font-size: .8rem;
+    text-transform: uppercase;
+    color: #505050;
+    background-color: #d6d7d8;
+    font-weight: 500;
+    text-align: center;
+}
+.table{
+  border-collapse: separate;
+  border-spacing: 0 5px;
+}
+.tableDiv tbody{
+  background-color: #fff;
+}
+.tableDiv{
+  overflow-x:scroll;
+}
+
+.tableDiv tbody tr{
+  box-shadow: 1px 1px 7px 0px #dadada;
+  border-radius: 5px;
+}
+.firstTh{
+  border-radius: 5px 0 0 0;
+}
+.lastTh{
+  border-radius: 0px 5px 0 0;
+}
+table{
+	background: white;
+}
+table th {
+	font-family: 'Roboto';
+    font-size: 14px;
+    font-weight: 300;
+}
+.btn-left{
+  background-color: rgba(143, 0, 33, 0.8);
+  color: white;
+  font-size: 14px;
+  width: 75px;
+  font-weight: 300;
+}
+.btn-pink{
+	width: 130px;
+}
+.text-color-change{
+	color: #9C0015 !important;
+    font-family: Roboto;
+    font-weight: 400;
+    font-size: 1rem;
+}
+.card-body-complete.active{
+  background-color: green;
+  color: white;
+}
+.card-body-overdue.active{
+  background-color: red;
+  color: white;
+
+}
+.card-body-out.active{
+  background-color: #006DC0;
+  color: white;
+}
+.card-body-out{
+  color: gray;
+}
+.card-title-change{
+  color: red;
+}
+.card-title-change.active{
+  color: white;
+}
+.bg-change{
+
+  text-align: center;
+  border-top-left-radius: .3rem;
+  border-top-right-radius: .3rem;
+  background: #d6d7d8;
+  box-shadow: 0 0 4px 0 #bdbdbd;
+  color: #505050;
+  font-size: 1.125rem;
+} 
+thead tr{
+  box-shadow: 0 0 4px 0 #bdbdbd;
+}
+.rect{
+  position: absolute;
+  left: 104px;
+  cursor: pointer;
+}
+.rect2{
+  position: absolute;
+  left: 193px;
+  cursor: pointer;
+}
+.rect3{
+  position: absolute;
+  left: 283px;
+  cursor: pointer;
+}
+.rect4{
+  position: absolute;
+  left: 373px;
+  cursor: not-allowed;
+}
+.rect5{
+  position: absolute;
+  left: 462px;
+  cursor: not-allowed;
+}
+.boq_row{
+  text-align: center;
+  color: white;
+}
+
+.btn-left{
+  background-color: rgba(143, 0, 33, 0.8);
+  color: white;
+  font-size: 14px;
+  width: 75px;
+  font-weight: 300;
+}
+.btn-sec{
+  background: #D7DFE2;
+}

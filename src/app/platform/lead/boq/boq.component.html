@@ -1,0 +1,598 @@
+<div class="row ss-top-menu">
+  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6">
+    <span class="ss-link" style="vertical-align: -webkit-baseline-middle;" [routerLink]="['/']">Dashboard</span>
+    <span style="vertical-align: -webkit-baseline-middle;"><i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-link" style="vertical-align: -webkit-baseline-middle;" routerLink="/community_manager/wip" *ngIf="(role=='city_gm' || role=='business_head' || role=='community_manager' || role=='design_manager')">Wip</span>
+    <span class="ss-link" style="vertical-align: -webkit-baseline-middle;" routerLink="/designer/wip" *ngIf="role=='designer'">Wip</span>
+    <span style="vertical-align: -webkit-baseline-middle;"><i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-link" style="vertical-align: -webkit-baseline-middle;" [routerLink]="['/community_manager/leads']" [queryParams]="{lead_status: lead_status}" *ngIf="(role=='city_gm' || role=='business_head' || role=='community_manager' || role=='design_manager')">Lead</span>
+    <span class="ss-link" style="vertical-align: -webkit-baseline-middle;" [routerLink]="['/designer/leads']" [queryParams]="{customer_status: lead_details.lead_status}" *ngIf="role=='designer' && lead_details">Lead </span>
+    <span *ngIf="lead_details" class="capitalize" style="vertical-align: -webkit-baseline-middle;"><i class="rightArrow fa fa-angle-right"></i> {{lead_details.lead_status | replaceChar}}</span>
+    <span style="vertical-align: -webkit-baseline-middle;"><i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;" *ngIf="lead_details && lead_details.user_reference">{{lead_details.user_reference.name}} - {{lead_details.project_details.name}}</span>
+  </div>
+</div>
+<div class="rk-ui-notification" *ngIf="successalert">
+  <span id="notificationMessageText">{{successMessage}}</span>
+  <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+<div class="rk-ui-notification err" *ngIf="erroralert">
+  <span id="notificationMessageText">{{errorMessage}}</span>
+  <a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+<div class="row px-4">
+  <app-shared-top-menu [lead_id]='lead_id'  [lead_details]='lead_details' [lead_status]='lead_status' [boq_tab]='"active"'></app-shared-top-menu>
+  <div class="col-12">
+    <div class="row mb-5">
+      <div class="col-md-12 bg-white pb-3">
+        <app-sms-call></app-sms-call>
+
+        <!-- RIYA CODE FROM BOQ STARTS -->
+        <div class="row mt-4">
+          <div class="col-md-12">
+            <button type="button" class="btn btn-pink pull-right bt-boq" data-toggle="modal" data-target="#createquotationModal" *ngIf="selectedQuotationStatus != '10_50_percent'">Create BOQ</button>
+
+          </div>
+        </div>
+
+        <ul class="nav nav-tabs tabs-chng mt-4"  id="myTab" role="tablist">
+          <li class="nav-item nav-items">
+            <a class="nav-link addCursor text-center" (click)="getQuotationListByStatus('pre_10_percent')" [ngClass]="{'active': selectedQuotationStatus == 'pre_10_percent'}">10% BOQs</a>
+          </li>
+          <li class="nav-item nav-items">
+            <a class="nav-link addCursor text-center" (click)="getQuotationListByStatus('10_50_percent')" [ngClass]="{'active': selectedQuotationStatus == '10_50_percent'}">10-50% BOQs</a>
+          </li>
+          <li class="nav-item nav-items">
+            <a class="nav-link active addCursor text-center mr-3" (click)="getQuotationListByStatus('all')" [ngClass]="{'active': selectedQuotationStatus == 'all'}">ALL</a>
+          </li>
+          <li class="nav-item nav-items">
+            <a class="nav-link addCursor text-center mr-3" (click)="getQuotationListByStatus('draft')" [ngClass]="{'active': selectedQuotationStatus == 'draft'}">DRAFT</a>
+          </li>
+          <li class="nav-item nav-items">
+             <a class="nav-link addCursor text-center mr-3" (click)="getQuotationListByStatus('pending')" [ngClass]="{'active': selectedQuotationStatus == 'pending'}">PENDING</a>
+          </li>
+          <li class="nav-item nav-items">
+            <a class="nav-link addCursor text-center mr-3" (click)="getQuotationListByStatus('shared')" [ngClass]="{'active': selectedQuotationStatus == 'shared'}">SHARED</a>
+          </li>
+          <li class="nav-item nav-items">
+             <a class="nav-link addCursor text-center mr-3" (click)="getQuotationListByStatus('paid')" [ngClass]="{'active': selectedQuotationStatus == 'paid'}">PAID</a>
+          </li>
+          <li class="nav-item nav-items">
+            <a class="nav-link addCursor text-center" (click)="getQuotationListByStatus('expired')" [ngClass]="{'active': selectedQuotationStatus == 'expired'}">EXPIRED</a>
+          </li>
+          
+
+        </ul>
+        <div class="container-fluid container-set lappyView">
+          <div class="row" style="padding: 16px;">
+            <div class="col-md-12" *ngIf="quotations && quotations.length>0">
+              <div class="tableDiv">
+                <div class="table-responsive">
+                  <table class="table ">
+                    <thead class="thead-dark">
+                      <tr>
+                        <th scope="col" class="firstTh">#</th>
+                        <th scope="col">REF NO.</th>
+                        <th scope="col" (click)="sort('updated_at')">LAST EDITED ON <i class="fa ml-2" [ngClass]="{'fa-sort': column != 'updated_at','fa-sort-asc': (column == 'updated_at' && !isDesc), 'fa-sort-desc': (column == 'updated_at' && isDesc) }" aria-hidden="true"> </i></th>
+                        <th scope="col" (click)="sort('expiration_date')">PRICE EXPIRY  <i class="fa ml-2" [ngClass]="{'fa-sort': column != 'expiration_date','fa-sort-asc': (column == 'expiration_date' && !isDesc), 'fa-sort-desc': (column == 'expiration_date' && isDesc) }" aria-hidden="true"> </i></th>
+                        <th scope="col" (click)="sort('status')">STATUS <i class="fa ml-2" [ngClass]="{'fa-sort': column != 'status','fa-sort-asc': (column == 'status' && !isDesc), 'fa-sort-desc': (column == 'status' && isDesc) }" aria-hidden="true"> </i></th>
+                        <th>NET AMOUNT </th>
+                        <th>DISCOUNT % </th>
+                        <th>PROJECT MANAGEMENT FEE</th>
+                        <th scope="col" (click)="sort('total_amount')">TOTAL AMOUNT <i class="fa ml-2" [ngClass]="{'fa-sort': column != 'total_amount','fa-sort-asc': (column == 'total_amount' && !isDesc), 'fa-sort-desc': (column == 'total_amount' && isDesc) }" aria-hidden="true"> </i></th>
+                        <th>PARENT BOQ</th>
+                        <th class="lastTh"></th>
+
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr  *ngFor="let boq of quotations | slice : startPage:paginationLimit | sortDatewise: {property: column, direction: direction}; let i = index" [attr.data-index]="i" class="box-list">
+                        <td>{{ i+1 }}</td>
+                        <td>
+                          <!-- <a class="a_hrefLink" [routerLink]="['/project/'+pid+'/boq/'+boq.id]" routerLinkActive='active' *ngIf="boq.modular==false">{{ boq.reference_number }}</a> -->
+
+                          <a class="a_hrefLink" [routerLink]="['/lead/'+lead_details.id+'/project/'+pid+'/boq_modular/'+boq.id]" routerLinkActive='active'>{{ boq.reference_number }}</a>
+                          <p class="text-dark font-weight-bold mt-2">({{boq.stage}})</p>
+                          <span><button  title="Upadted Remark" class="btn-change pop" data-toggle="modal"data-target="#statusModal1" (click)="openBoqRemarkModal(boq.id,boq.remark)"  data-trigger="hover" [attr.data-content] ="boq.remark" (mouseenter)="openpopup($event)"><i class="fa fa-plus-circle" aria-hidden="true"></i></button></span><br>
+                         
+                          
+                        </td>
+                        <td>{{boq.updated_at | date:"dd MMMM, y @ h:mma"}}</td>
+                        <td>{{boq.expiration_date | date:'dd MMMM, y @ h:mma'}}</td>
+                        <td class="capitalize">
+                          <span *ngIf="boq.status!='draft' && boq.status!='pending' ">{{boq.status}}</span>
+                          <select class="form-control" (change)="changeQuotationStatus($event.target.value,boq.id)" *ngIf="boq.status=='draft' || boq.status=='pending' ">
+                            <option value="draft" [selected]="boq.status=='draft'">Draft</option>
+                            <option value="pending" [selected]="boq.status=='pending'">Pending</option>
+                            <!-- <option value="shared" [selected]="boq.status=='shared'">Shared</option>
+                            <option value="paid" [selected]="boq.status=='paid'">Paid</option>
+                            <option value="expired" [selected]="boq.status=='expired'">Expired</option> -->
+                          </select>
+                        </td>
+                        
+                        <td class="minWidthTd"><i class="fa fa-inr mr-1"></i>{{boq.net_amount}}</td>
+                        <td class="minWidthTd text-center">{{boq.discount_value || 0}}</td>
+                        <td class="minWidthTd"><i class="fa fa-inr mr-1"></i>{{boq.pm_fee || 0}}</td>
+                        <td style="width:15%"><i class="fa fa-inr mr-1"></i>{{ boq.total_amount}}</td>
+                        <td>{{ boq.parent_quotation_reference_no }}</td>
+                        <td>
+                          <i class="ion-android-more-vertical  ss-3-dot-drop" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"></i>
+                          <div class="dropdown-menu pt-2 pb-2" style="font-size: 14px;">
+                            <a class="dropdown-item addCursor" (click)="deleteBoq(boq.id)" *ngIf="(boq.status=='draft' || boq.status=='pending') && boq.parent_quotation_id==null">Delete</a>
+                            <a class="dropdown-item addCursor" (click)="downloadPdfCheck(boq.id,'Designer')" data-target="#boqCheckModal" data-toggle="modal" >Download Designer Boq PDF</a>
+                            
+                            <a class="dropdown-item addCursor" (click)="downloadCustomerPdf(boq.id,'Customer')" data-target="#boqCheckModal" data-toggle="modal" >Download Customer Boq PDF</a>
+                           <a class="dropdown-item addCursor"  data-toggle="modal" data-target=".InvoiceModal" (click)="downloadCheatSheet(boq.id)">Download Cheat Sheet</a>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                   <button type="button" class="btn-lg bt-boqs"   (click) = "showMore()" *ngIf="(quotations.length - paginationLimit)>0">Show More BOQs({{ quotations.length - paginationLimit}})</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mobView">
+          <div class="col-md-12 mt-3" *ngIf="quotations && quotations.length>0">
+            <div *ngFor="let boq of quotations | slice : startPage:paginationLimit | sortDatewise: {property: column, direction: direction}; let i = index" [attr.data-index]="i">
+              <div class="card card-body mobCard mb-2">
+                <a data-toggle="collapse" href="#tableDiv{{i}}">
+                  <i class="fa fa-angle-right"></i>
+                </a>
+                <h4 class="ss-link cursor-pointer" [routerLink]="['/project/'+pid+'/boq/'+boq.id]" routerLinkActive='active'>REF NO. : {{ boq.reference_number }}</h4>
+                <div class="row">
+                  <p class="col-7 mb-0">Status: {{ boq.status}}</p>
+                  <h6 class="col-5 mb-0">
+                    <i class="fa fa-inr mr-1"></i>{{ boq.total_amount}}</h6>
+                </div>
+              </div>
+              <div class="collapse" id="tableDiv{{i}}">
+                <div class="card card-body py-0 mb-3 border-0">
+                  <div class="row">
+                    <div class="col-12 py-3 borderRight">
+                      <p class="tableInner">LAST EDITED</p>
+                      <p>{{boq.updated_at | date:"dd MMMM, y @ h:mma"}}</p>
+                    </div>
+                    <div class="col-12 py-3 borderRight">
+                      <p class="tableInner">PRICE EXPIRE</p>
+                      <p>{{boq.expiration_date | date:'dd MMMM, y @ h:mma'}}</p>
+                    </div>
+                    <div class="col-6 callBtn">
+                      <div>
+                        <a class="addCursor" (click)="deleteBoq(boq.id)">Delete</a>
+                      </div>
+                    </div>
+                    <div class="col-6 callBtn">
+                      <div>
+                        <a class="addCursor" (click)="downloadboq(boq.id)">Download Boq</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-12 not-found " *ngIf="quotations && quotations.length==0 ">
+          <div class="boq-img">
+            <img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+          </div>
+          <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing to show...</p>
+        </div>
+        <!-- RIYA CODE FROM BOQ ENDS -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal create quotation -->
+<div id="createquotationModal" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+
+    <!-- Modal content-->
+    <div class="modal-content modal-change">
+      <div class="modal-header">
+        <h6 class="modal-title textColor" style="font-size:18px">Create New BOQ </h6>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="selectBoqTypeForm1">
+          <div>
+            <p class="textColor my-3">
+              <input type="radio" formControlName="boqType" value="create_boq" id="text0" class="mr-2" (change)="checkBoqType('create_boq')">
+              <label for="text0" class="texts" >Create a new Boq</label>
+            </p>
+            <form [formGroup]="selectSectionTypeForm">
+              <div class="sectionDiv">
+                <label>
+                  <span class="sectionType-class1 activeselectColor">Choose Section:</span>
+                </label>
+                <br/>
+
+                <input style="font-size:12px" type="checkbox" name="sections" value="modular_wardrobe" (change)="onCheckChange($event)"> <span class="activeselectColor sectionType-class">Modular Wardrobe</span><br>
+                <input type="checkbox" name="sections" value="modular_kitchen" (change)="onCheckChange($event)" class="sectionType-class"> <span class="activeselectColor sectionType-class">Modular Kitchen</span><br>
+                <input type="checkbox" name="sections" value="loose_furniture" (change)="onCheckChange($event)" class="sectionType-class"><span class="activeselectColor sectionType-class"> Loose Furniture</span><br>
+                <input type="checkbox" name="sections" value="services" (change)="onCheckChange($event)" class="sectionType-class"><span class="activeselectColor sectionType-class"> Services</span><br>
+                <input type="checkbox" name="sections" value="custom_furniture" (change)="onCheckChange($event)" class="sectionType-class"><span class="activeselectColor sectionType-class"> Custom Furniture</span><br>
+              </div>
+            </form>
+          </div>
+          <hr class="custom-hr hrTag" />
+          <!-- <div>
+            <p class="textColor my-3">
+              <input type="radio" formControlName="boqType" value="create_boq_lf" id="text1" class="mr-2" (change)="checkBoqType('create_boq_lf')">
+              <label for="text1" class="texts" >Create a new Boq for Loose Furniture</label>
+            </p>
+          </div>
+          <hr class="custom-hr hrTag" /> -->
+          <div>
+            <p class="textColor my-3">
+              <input type="radio" formControlName="boqType" value="import_boq" id="text2" class="mr-2" (change)="checkBoqType('import_boq')">
+              <label for="text2">Import Existing BOQ</label>
+            </p>
+            <form [formGroup]="importBoqForm">
+              <div class="sorting">
+                <div class="sort right">
+                  <label>
+                    <span class="importType-class1">Select Project:</span></label>
+                    <select style="-webkit-appearance: none;-moz-appearance: none;" class="importType-class form-control ml-3 capitalize" formControlName="project" (change)="importQuotationValue($event.target.value)">
+                      <option value="">Select Project</option>
+                      <option *ngFor="let project of importedProjectList" value="{{project.id}}">{{ project.attributes.lead_name}}-{{project.attributes.name}}</option>
+                    </select>
+                    <span class="pointer"><i class="fa fa-angle-down"></i></span>
+
+                </div>
+              </div>
+                <div class="sorting">
+                  <div class="sort right"><label>
+                    <span class="importType-class1">Select BOQ:</span></label>
+                      <select class="importType-class form-control " (change)="importBoqId($event.target.value)" formControlName="boq" style="margin-left: 31px;-webkit-appearance: none;-moz-appearance: none;">
+                        <option value="">Select BOQ</option>
+                        <ng-container *ngFor="let boq of importquotations">
+                          <option value="{{boq.id}}">{{boq.attributes.reference_number}}</option>
+                        </ng-container>
+                      </select>
+
+                      <span class="pointer"><i class="fa fa-angle-down"></i></span>
+
+                  </div>
+                </div>
+            </form>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer ">
+
+        <button class="btn btn-primary interalBtnColor addCursor modalBtn" (click)="submitForm(selectBoqTypeForm1.value,selectSectionTypeForm.value,importBoqForm.value)" [disabled]="(selectBoqTypeForm1.value.boqType=='import_boq' && (importBoqForm.value.project=='' || importBoqForm.value.project==null ||  importBoqForm.value.project==undefined || importBoqForm.value.boq=='' || importBoqForm.value.boq==undefined || importBoqForm.value.boq== null)) || (selectBoqTypeForm1.value.boqType=='create_boq' && !selectSectionTypeForm.valid)">Create</button>
+         <button type="button" class=" btn btn-primary btnCancel btnchng" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+
+<!-- Status Remark modal -->
+<div class="modal fade" id="statusModal1" tabindex="-1" role="dialog" aria-labelledby="SmsModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document" style="width: 55rem;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5>BOQ REMARK:</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <img class="close" data-dismiss="modal" src="https://www.homepolish.com/assets/close-ee1bfd7a4473933b6dd934b2c284dc856361b63581c8f43b8cdc1abe07c91765.svg">
+    </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group row">
+                    <label for="example-text-input" class="col-2 col-form-label">Remarks </label>
+                    <div class="col-10">
+                        <textarea rows="1" name="boq_remarks" id="boq_remarks" class="form-control"></textarea>
+                        <!-- <input type="da" name="followup-details" id="followup-details" class="form-control"> -->
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="modal-footer">
+                <input type="button" id="followup-button" value="Update" class="btn btn-pink" (click)="onBoqRemarkSubmit()">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Status modal end -->
+
+
+
+
+<!-- Modal For Boq check pdf -->
+
+<div class="modal fade" id="boqCheckModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header border">
+        <h5 class="modal-title" id="exampleModalLabel" style="font-family: 'algerian';">CHOOSE BOQ PDF FORMAT</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="clearCheckBox()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row justify-content-center">
+
+          <div class="col-md-8">
+            <label class="mr-3">
+              <input type="checkbox" value="boq" (change)="selectPdfFormat($event)" [(ngModel)]="isChecked1">
+              BOQ
+            </label>
+            <label class="mr-3">
+              <input type="checkbox" value="annexure" (change)="selectPdfFormat($event)" [(ngModel)]="isChecked2">
+              ANNEXURE
+            </label>
+            <label>
+              <input type="checkbox" value="summary" (change)="selectPdfFormat($event)" [(ngModel)]="isChecked3">
+              SUMMARY
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary cursor-pointer" data-dismiss="modal" (click)="clearCheckBox()">Close</button>
+        <button *ngIf="this.Designertype && this.Designertype=='Designer'" type="button" class="btn btn-pink" (click)="downloadPdf()">Download Designer Boq Pdf</button>
+        <button *ngIf="this.Customertype && this.Customertype=='Customer'" type="button" class="btn btn-pink" (click)="downloadCustomerBoqPdf()">Download Customer Boq Pdf</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- End here -->
+
+<!-- Modal For Invoce Boq -->
+<div class="modal fade InvoiceModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content" id="modalInvoiceId">
+      <button type="button" class="close custom-close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <div class="modal-body" *ngIf="selected_boq_details">
+        <div class="container-fluid px-4">
+          <div class="row borders border-bottom-0 border-dark">
+            <div class="col-md-8 border-right border-dark">
+              <div class="logo">
+                 <img src="../../../assets/img/mainLogo.svg" width="100%">
+              </div>   
+              
+            </div>
+            <div class="col-md-4">
+              <p class="quoteFont">Quotation</p>
+            </div>
+            
+          </div>
+          <div class="row borders border-dark">
+            <div class="col-md-8 border-right border-dark">
+              <div class="address">
+                AZB Services LLP
+            B501/502, Everest House, Suren Road, Gundavali
+            Andheri East, Mumbai - 400093
+                
+              </div>   
+              
+            </div>
+            <div class="col-md-4">
+              <div class="row">
+                <div class="col-md-6 border border-top-0 border-dark">
+                  Date
+                </div>
+                <div class="col-md-6 border border-top-0  border-dark">
+                  {{selected_boq_details.generation_date}}
+                </div>
+                
+              </div>
+              <div class="row  ">
+                <div class="col-md-6 border border-dark">
+                  Lead ID
+                </div>
+                <div class="col-md-6 border border-dark">
+                  {{selected_boq_details.lead_id}}
+                </div>
+                
+              </div>
+              <div class="row">
+                <div class="col-md-6 border  border-bottom-0 border-dark">
+                  BOQ Number
+                </div>
+                <div class="p-1 col-md-6 border border-bottom-0 border-dark">
+                  {{selected_boq_details.reference_number}}
+                </div>
+                
+              </div>
+            </div>
+            
+          </div>
+          
+          <div class="row mt-3">
+            <table class="table1 table-bordered table-css-chng">
+              <thead>
+              </thead>
+              <tbody>
+                  <tr>
+                      <td>Name</td>
+                      <td>{{selected_boq_details.lead_name}}</td>
+                      <td>Designer Name</td>
+                      <td>{{selected_boq_details.designer_name}}</td>
+                  </tr>
+                  <!-- <tr>
+                      <td>Contact</td>
+                      <td>{{selected_boq_details.lead_contact}}</td>
+                      <td>Designer Contact</td>
+                      <td>{{selected_boq_details.designer_contact}}</td>
+                  </tr> -->
+                  <tr>
+                      <td class="minTdWidth">Project Name and Address</td>
+                      <td class="minTdWidth">
+                        {{selected_boq_details.project_name}},
+                        <br>
+                        {{selected_boq_details.lead_location}}
+                      </td>
+                      <td>Designer Email ID</td>
+                      <td>{{selected_boq_details.designer_email}}</td>
+                  </tr>
+                  
+              </tbody>
+            </table>
+            
+          </div>
+          <div *ngFor="let space of selected_boq_details.all_spaces">
+            <span class="spanChange">{{space}}</span>
+            <div class="row mt-3">
+              <table class="table1 table-bordered">
+                <thead>
+                  <th scope="col">Sr. No.</th>
+                  <th scope="col">Product</th>
+                  <th scope="col">Name</th>
+                  <th scope="col">Description</th>
+                  <th scope="col" style="width: 6.6%">BOQ Label</th>
+                  <th scope="col">Rate</th>
+                  <th scope="col">Qty.</th>
+                  <th scope="col">Final Price</th>
+                  
+                </thead>
+                <tbody>
+                  <tr class="rowChng" *ngFor="let item of selected_boq_details.quotation_body.boq_hash[space];let i = index">
+                    <td>{{ i+1}}</td>
+                    <td>{{item.product}}</td>
+                    <td>{{replceUnderScore(item.name)}}</td>
+                    <td>
+                      {{item.description}}
+                    </td>
+                    <td style="width: 7.9%; min-width: 7.9%">
+                      {{item.boq_labels}}
+                    </td>
+                    <td>
+                      {{ item.rate |  number : '1.2-2' }}
+                    </td>
+                    <td>
+                      {{item.quantity}}
+                    </td>
+                    <td>
+                      {{item.price}}
+                    </td>
+                        
+                  </tr>
+                </tbody>
+                
+              </table>
+            </div>
+          </div>
+          
+          <div class="row mt-3">
+            <div class="col-md-6">
+              
+            </div>
+            <div class="col-md-6">
+              <div class="row">
+                <div class="col-md-8 borders border-bottom-0 border-dark">
+                  <div class="text">
+                    Net Amount
+                  </div>
+                  
+                </div>
+                <div class="col-md-4 borders border-left-0 border-bottom-0 border-dark">
+                  <div class="text">
+                    {{selected_boq_details.net_amount}}
+                    
+                  </div>
+                  
+                </div>
+                <div class="col-md-8 borders border-bottom-0 border-dark">
+                  <div class="text">
+                    Discount Applied
+                    
+                  </div>
+                  
+                </div>
+                <div class="col-md-4 borders border-left-0 border-bottom-0 border-dark">
+                  <div class="text" *ngIf="selected_boq_details && selected_boq_details.discount_value">
+                    {{selected_boq_details.discount_value}}%
+                  </div>
+                  <div class="text" *ngIf="selected_boq_details && !selected_boq_details.discount_value">
+                    0 %
+                  </div>
+                  
+                  
+                </div>
+                  <div *ngIf="selected_boq_details" class="col-md-8 borders border-bottom-0 border-dark">
+                    <div class="text">
+                      Project Management Fee ( 8% )
+                      
+                    </div>
+                    
+                  </div>
+                  <div *ngIf="selected_boq_details" class="col-md-4 borders border-left-0 border-bottom-0 border-dark">
+                    <div class="text">
+                      {{selected_boq_details.pm_fee}}
+                    </div> 
+                  </div>
+                <div class="col-md-8 borders border-dark">
+                  <div class="text">
+                    Total
+                    
+                  </div>
+                  
+                </div>
+                <div class="col-md-4 borders border-left-0 border-dark">
+                  <div class="text">
+                    {{selected_boq_details.total_amount}}
+                    
+                  </div>
+                  
+                </div>
+                
+              </div>
+              
+            </div>
+            
+          </div>
+          <div class="row  borders border-dark mt-5">
+            <h6 class="pull-left ml-3 mt-2">Terms and Condition</h6>
+            <div class="col-md-12">
+              <div class="pull-left text-change">
+                
+                1) Prices are subject to the specifications mentioned above. Changes in specifications mentioned above shall be charged extra. Prices are inclusive of all taxes, landed at site. Any government levies, is payable extra at actual.<br>
+                2) Mathadi charge as per actual<br>
+                3) Payment Terms: 10% Booking, 40% on Final Design Submission and 50% PDC along with Final Design Submission.<br>
+                4) Payment Mode: NEFT / RTGS / Cheque<br>
+                5) Bank Account Details:
+                   Account Name: SINGULARITY FURNITURE PRIVATE LIMITED
+                   Account Number: 02912000003169
+                   IFSC Code: HDFC0000291
+                   Bank and Branch: HDFC Bank, Nariman Point Branch<br>
+                   
+                6) Offer Validity: 30 Days<br>
+                7) Order once booked can not be taken back under any circumstances. Advance Amount will not be refunded<br>
+                8) Safe Storage at Site is client's responsibility<br>
+                9) Disputes subject to Mumbai Jurisdiction<br>
+                10) Any extra work shall be charged extra<br>
+                11) Force Majeure Clause Applies<br>
+                12) The seller shall have general lien over on goods for payments due to seller from the buyer on account of this or any other PAN Number: AAECP3450G
+                    GST Number: 27AAECP3450G1ZJ
+                
+              </div>
+              
+            </div>
+            
+          </div>
+          <div class="row borders border-dark mt-3">
+            <h6 class="pull-left ml-3 mt-2">{{selected_boq_details.delivery_tnc}} </h6>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--  -->
+

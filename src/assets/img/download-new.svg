@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="12.563" height="11.923" viewBox="0 0 12.563 11.923">
+    <defs>
+        <style>
+            .cls-1,.cls-2{fill:none;stroke:#231f20;stroke-linecap:round}.cls-1{stroke-linejoin:round}
+        </style>
+    </defs>
+    <g id="Download_icon" data-name="Download icon" transform="translate(.5 .5)">
+        <path id="Path_223" d="M0 0v2.085a1.738 1.738 0 0 0 1.761 1.183h8.475s1.283-.249 1.313-1.183 0-2.085 0-2.085" class="cls-1" data-name="Path 223" transform="translate(0 7.655)"/>
+        <g id="Group_99" data-name="Group 99" transform="translate(3.288)">
+            <path id="Path_224" d="M0 3.436L2.675 0l2.747 3.436" class="cls-1" data-name="Path 224"/>
+            <path id="Path_225" d="M0 0v8.589" class="cls-2" data-name="Path 225" transform="translate(2.661)"/>
+        </g>
+    </g>
+</svg>

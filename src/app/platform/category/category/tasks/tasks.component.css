@@ -1,0 +1,120 @@
+.navigation-indicators{
+    vertical-align: -webkit-baseline-middle;
+}
+.task-cards {
+    margin: 50px!important;
+}
+.task-cards .card{
+    margin-left: 10px;
+    margin-right: 10px;
+    background-color: white!important;
+    color: black;
+    width: 150px;
+    height: 113px;
+    box-shadow: 0 0 5px 0 rgba(189, 189, 189, 0.5);
+}
+
+.task-cards .card.active,
+.task-cards .card.active .card-header,
+.task-cards .card.active .card-footer{
+    background-color:#8c031f!important;
+    color:white;
+}
+
+.task-cards .card-header{
+    font-size:21px;
+}
+.task-cards .card-footer{
+    font-size:13px;
+    word-wrap: break;
+}
+
+.component-parent{
+    padding-left: 41px;
+}
+/* table */
+
+.tableDiv{
+    overflow-x: scroll;
+  }
+  .tableDiv tbody tr{
+    height: 56px;
+  }
+  .table{
+    border-collapse: separate;
+    border-spacing: 0 5px;
+  }
+  .table td, .table th{
+    min-width: 10rem;
+    text-align: center;
+  }
+  .table td{
+    padding: 0.7rem 0.75rem;
+    vertical-align: middle;
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.7);
+    border: none;
+    min-width: 1rem;
+  }
+  .table th {
+    padding: .9rem;
+    vertical-align: middle;
+    border: none;
+    font-size: 12px;
+    color: #dedede;
+    background-color: #4a4a4a;
+    min-width: 12rem;
+  }
+  .tableDiv tbody{
+    background-color: #fff;
+  }
+  .tableDiv tbody tr{
+    box-shadow: 1px 1px 7px 0px #dadada;
+    border-radius: 5px;
+  }
+  .firstTh{
+    border-radius: 5px 0 0 0;
+  }
+  .lastTh{
+    border-radius: 0px 5px 0 0;
+  }
+  .tableActionBtn{
+    font-size: 28px;
+    float: right;
+    margin-top: 4px;
+    color: #888;
+  }
+  /* table */
+  .category-btn {
+    background-color:#8c031f!important;
+    color:white;
+    cursor: pointer;  
+}
+.boq-img img{
+  height: 250px;
+  width: 300px
+}
+.circularIcon{
+    height: 38px;
+    width: 38px;
+    border-radius: 50%;
+    background: #8c031f;
+    top: 34px;
+    color:white!important;
+}
+
+.circularIcon .fa{
+    position: relative;
+    top: 2px;
+    font-size: 16px;
+    left: 5px;
+}
+
+.btn{
+  cursor: pointer !important;
+}
+@media (min-width: 992px){
+  #getUserCategorySplit .modal-lg {
+    max-width:675px;
+ }
+}

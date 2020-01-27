@@ -1,0 +1,64 @@
+<div class="row ss-top-menu">
+	<div class="col-sm-12">
+		<span class="ss-text-dark"  style="vertical-align: -webkit-baseline-middle;">Dashboard <i class="rightArrow fa fa-angle-right"></i></span>
+		<span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;">Migrate CM Data</span>
+	</div>
+</div>
+
+<div class="rk-ui-notification" *ngIf="successalert">
+	<span id="notificationMessageText">{{successMessage}}</span>
+	<a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+<div class="rk-ui-notification err" *ngIf="erroralert">
+	<span id="notificationMessageText">{{errorMessage}}</span>
+	<a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+
+<div class="container mt-3 form-container">
+	<form [formGroup]="migrationForm">
+		<div class="row px-2 py-4">
+			<div class="col-sm-5">
+				<h6 class="count-heading-color">From</h6>
+				<ng-select  [attr.id]="'from_cm'" formControlName="from_id" (change)="cmAssignedData($event,'old','from')">
+	        <ng-option value="">Select CM</ng-option>
+	        <ng-option *ngFor="let from_cm of cmlistArr" value="{{from_cm.id}}">{{from_cm.name}} - {{from_cm.email}}</ng-option>
+	      </ng-select>
+	      <div *ngIf="old_from_cm_data_count" class="mt-4 mb-4 px-2">
+	      	<h6 class="count-heading-color mb-4">Counts</h6>
+	      	<p class="px-3 count-para-color rk-form-fontsize">Designer Count - {{old_from_cm_data_count.designer_count}}</p>
+	      	<p class="px-3 count-para-color rk-form-fontsize">Lead Count - {{old_from_cm_data_count.lead_count}}</p>
+	      	<p class="px-3 count-para-color rk-form-fontsize">Zip Code Count - {{old_from_cm_data_count.zip_code_count}}</p>
+	      </div>
+	      <div *ngIf="new_from_cm_data_count " class="borderTop mt-3 px-2">
+	      	<h6 class="mt-3 count-heading-color mb-4">Updated Counts</h6>
+	      	<p class="px-3 rk-form-fontsize count-para-color">Designer Count - {{new_from_cm_data_count.designer_count}}</p>
+	      	<p class="px-3 rk-form-fontsize count-para-color">Lead Count - {{new_from_cm_data_count.lead_count}}</p>
+	      	<p class="px-3 rk-form-fontsize count-para-color">Zip Code Count - {{new_from_cm_data_count.zip_code_count}}</p>
+	      </div>
+			</div>
+			<div class="col-sm-5">
+				<h6 class="count-heading-color">To</h6>
+				<ng-select  [attr.id]="'to_cm'" formControlName="to_id" (change)="cmAssignedData($event,'old','to')">
+	        <ng-option value="">Select CM</ng-option>
+	        <ng-option *ngFor="let to_cm of cmlistArr" value="{{to_cm.id}}">{{to_cm.name}} - {{to_cm.email}}</ng-option>
+	      </ng-select>
+	      <div *ngIf="old_to_cm_data_count" class="mt-4 mb-4 px-2">
+	      	<h6 class="count-heading-color mb-4">Counts</h6>
+	      	<p class="px-3 rk-form-fontsize count-para-color">Designer Count - {{old_to_cm_data_count.designer_count}}</p>
+	      	<p class="px-3 rk-form-fontsize count-para-color">Lead Count - {{old_to_cm_data_count.lead_count}}</p>
+	      	<p class="px-3 rk-form-fontsize count-para-color">Zip Code Count - {{old_to_cm_data_count.zip_code_count}}</p>
+	      </div>
+	      <div *ngIf="new_to_cm_data_count" class="borderTop mt-3 px-2">
+	      	<h6 class="mt-3 count-heading-color mb-4">Updated Counts</h6>
+	      	<p class="px-3 rk-form-fontsize count-para-color">Designer Count - {{new_to_cm_data_count.designer_count}}</p>
+	      	<p class="px-3 rk-form-fontsize count-para-color">Lead Count - {{new_to_cm_data_count.lead_count}}</p>
+	      	<p class="px-3 rk-form-fontsize count-para-color">Zip Code Count - {{new_to_cm_data_count.zip_code_count}}</p>
+	      </div>
+			</div>
+			<div class="col-sm-2 py-3">
+				<button class="rk-interalBtnColor mt-2 addCursor" (click)="migrateData(migrationForm.value)" [disabled]="!migrationForm.valid" [ngClass]="{'cursor-disable':!migrationForm.valid}">Migrate</button>
+			</div>
+		</div>
+	</form>
+	<!-- <pre>{{migrationForm.value | json}}</pre> -->
+</div>

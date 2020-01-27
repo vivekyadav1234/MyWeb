@@ -1,0 +1,1374 @@
+<div class="row ss-top-menu">
+  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6">
+    <span class="ss-link" style="vertical-align: -webkit-baseline-middle;" [routerLink]="['/']">Dashboard</span>
+    <span style="vertical-align: -webkit-baseline-middle;"><i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-link" style="vertical-align: -webkit-baseline-middle;" routerLink="/community_manager/wip" *ngIf="(role=='city_gm' || role=='business_head' || role=='community_manager' || role=='design_manager')">Wip</span>
+    <span class="ss-link" style="vertical-align: -webkit-baseline-middle;" routerLink="/designer/wip" *ngIf="role=='designer'">Wip</span>
+    <span style="vertical-align: -webkit-baseline-middle;"><i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-link" style="vertical-align: -webkit-baseline-middle;" [routerLink]="['/community_manager/leads']" [queryParams]="{lead_status: lead_status}" *ngIf="(role=='city_gm' || role=='business_head' || role=='community_manager' || role=='design_manager')">Lead</span>
+    <span class="ss-link" style="vertical-align: -webkit-baseline-middle;" [routerLink]="['/designer/leads']" [queryParams]="{customer_status:lead_status}" *ngIf="role=='designer'">Lead </span>
+    <span style="vertical-align: -webkit-baseline-middle;"><i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;" *ngIf="lead_details && lead_details.user_reference">{{lead_details.user_reference.name}} - {{lead_details.project_details.name}}</span>
+  </div>
+</div>
+<div class="rk-ui-notification" *ngIf="successalert">
+  <span id="notificationMessageText">{{successMessage}}</span>
+  <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+<div class="rk-ui-notification err" *ngIf="erroralert">
+  <span id="notificationMessageText">{{errorMessage}}</span>
+  <a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+<div class="row px-4">
+ <app-shared-top-menu [lead_id]='lead_id'  [lead_details]='lead_details' [lead_status]='lead_status' [handover_for_production]='"active"'></app-shared-top-menu>
+  <div class="col-12">
+    <div class="row  bg-white mb-5">
+      <div class="col-md-12  pb-3">
+        <div class="row mt-3 justify-content-center">
+          <div class="col-md-10">
+           <button class="btn btn-add cursor-pointer"  data-toggle="modal" data-target="#addFilesModal" (click)="getFileList()"><i class="fa fa-plus mr-1" aria-hidden="true"></i>Add Files</button>
+           <div class="qc-main-div" *ngIf="all_file_list && all_file_list.project_handover_qcs">
+            <div *ngIf="all_file_list.project_handover_qcs[1]" class="qc-div addCursor" data-toggle="modal" data-target="#costQCModal">Cost QC:{{all_file_list.project_handover_qcs[1].status | passFail}}</div> 
+            <div *ngIf="all_file_list.project_handover_qcs[0]" class="qc-div addCursor" data-toggle="modal"  data-target="#designQCModal">Design QC:{{all_file_list.project_handover_qcs[0].status | passFail}}</div>
+            <div *ngIf="all_file_list.project_handover_qcs[2]" class="qc-div addCursor" data-toggle="modal" data-target="#technicianQCModal">Technician QC:{{all_file_list.project_handover_qcs[2].status | passFail}}</div>
+            <div *ngIf="!all_file_list.project_handover_qcs[1]" class="qc-div addCursor" data-toggle="modal" data-target="#costQCModal">Cost QC: Pending</div> 
+            <div *ngIf="!all_file_list.project_handover_qcs[0]" class="qc-div addCursor" data-toggle="modal"  data-target="#designQCModal">Design QC: Pending</div>
+            <div *ngIf="!all_file_list.project_handover_qcs[2]" class="qc-div addCursor" data-toggle="modal" data-target="#technicianQCModal">Technician QC: Pending</div>
+           </div>
+           <button class="btn btn-hand cursor-pointer pull-right"  data-toggle="modal" data-target="#handoverModal" (click)="gethandoverList()" id="hand-active">Handover</button>
+
+          </div>
+
+        </div>
+      </div>
+      <div class="col-12 pb-3 px-5"  >
+        <div class="tableDiv project-table">
+
+          <table class="table">
+            <thead class="ss-thead">
+              <tr>
+                <th class="firstTh"></th>
+                <th style="min-width: 11rem;">File Name</th>
+                <th class="w-25">Date Of Sharing</th>
+                <th class="w-25">Current Status</th>
+                <th class="w-25">Category Comments</th>
+                <th class="w-25">Accepted On</th>
+                <th *ngIf="(role=='designer' || role=='city_gm' || role=='business_head' || role=='community_manager' || role=='design_manager')" class="w-25">Duration</th>
+                <th *ngIf="(role=='designer' || role=='city_gm' || role=='business_head' || role=='community_manager' || role=='design_manager')" class="w-25">ETA</th>
+                <th style="min-width: 5rem;" class="lastTh w-25 text-center">Revise</th>
+              </tr>
+            </thead>
+            <tbody class="ss-tbody" *ngIf="all_file_list && all_file_list.all_files.length >0" >
+              <ng-container *ngFor="let item of all_file_list.all_files;let i =index">
+
+
+                <div class="heading-chng text-muted font-weight-bold">{{ slectedFile_arr[i] }}</div>
+                <ng-container *ngFor="let obj of all_file_list[item]; let fileIndex = index"
+                 [attr.data-index]="i">
+                  <tr class="addCursor addCursor-table shadow"   (click)="toggleRow(obj,fileIndex,item)">
+                    <td class="FirstTd" [ngClass]="{'active': selectedQuotationStatus == obj.id}">
+                      <div class="cursor-img" [ngClass]="{'active': selectedArrow == fileIndex}"></div>
+                    </td>
+                    <td class="font-weight-bold colr" *ngIf="item == 'Quotation'" (click)="downloadBoq(obj.ownerable_id)" data-toggle="tooltip" title="Click here to download file!">{{ obj.reference_number}}</td>
+                    <td class="font-weight-bold" *ngIf="item == 'SiteMeasurementRequest'" (click)="viewFile(obj.url)" data-toggle="modal" data-target="#viewGalleryModal"> <a class="colr" data-toggle="tooltip" title="Click here to download file!">{{obj.request_type | replaceChar}}</a>
+                    </td>
+                    <td class="font-weight-bold" *ngIf="item != 'Quotation' && item != 'SiteMeasurementRequest'" [ngClass]="{'active': selectedQuotationStatus == obj.id}"> 
+                    <a class="colr" href="{{obj.url}}" download target="_blank" data-toggle="tooltip" title="Click here to download file!">{{obj.name}}</a>
+                    </td>
+                    <td class="font-weight-bold">{{ obj.date_of_sharing | date:'dd.MM.yyyy - h:mm a' }}</td>
+                    <td> 
+                      <div class="nav-item dropdown p-0" style="background-color: #ECF0F1">
+                        <a class="nav-link" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> </a>
+                        <p class="" *ngIf = "obj.current_status=='Pending acceptance'">
+                        {{ obj.current_status }}
+                        </p>
+              
+                        <p  class="text-success" *ngIf = "obj.current_status=='Accepted'">
+                          {{ obj.current_status }}
+                        </p>
+
+                        <p class="text-danger" *ngIf = "obj.current_status=='Rejected'">
+                          {{ obj.current_status }}
+                        </p>
+                        <!-- V:hover on status will show segment details & status -->
+                        <div class="dropdown-menu p-0 m-0 Vdiv Vhvr Vbtm" aria-labelledby="navbarDropdownMenuLink" *ngIf="item == 'Quotation'">
+                          <div class="arrow mb-5 p-0" style="left: 25%; background-color: #ECF0F1;"></div>
+                          <a class="dropdown-item p-0" *ngIf = "obj.status_updated_user_by_segment && (obj.status_updated_user_by_segment.panel || obj.status_updated_user_by_segment.non_panel || obj.status_updated_user_by_segment.services)"> 
+                            <div class="col-12 p-0 pl-3" style="background-color: #a9a9a969">Accepted  & Rejected By</div><br>
+                            <span class="ml-3" *ngIf="obj.status_updated_user_by_segment.non_panel">User Name:{{obj.status_updated_user_by_segment.non_panel.name}}(<span style="color: #8d0528">Non Panel</span>)</span>
+                            <br *ngIf="obj.status_updated_user_by_segment.non_panel">
+                            <span class="ml-3" *ngIf="obj.status_updated_user_by_segment.non_panel">Email:{{obj.status_updated_user_by_segment.non_panel.email}}</span>
+                            <hr class="mb-0 p-0" *ngIf="obj.status_updated_user_by_segment.panel">
+                            <span class="ml-3" *ngIf="obj.status_updated_user_by_segment.panel">User Name:{{obj.status_updated_user_by_segment.panel.name}}(<span style="color: #8d0528">Panel</span>)</span><br *ngIf="obj.status_updated_user_by_segment.panel">
+                            <span class="ml-3" *ngIf="obj.status_updated_user_by_segment.panel">Email:{{obj.status_updated_user_by_segment.panel.email}}</span>
+                            <hr class="mb-0 p-0" *ngIf="obj.status_updated_user_by_segment.services">
+                            <span class="ml-3" *ngIf="obj.status_updated_user_by_segment.services">User Name:{{obj.status_updated_user_by_segment.services.name}}(<span style="color: #8d0528">Services</span>)</span><br *ngIf="obj.status_updated_user_by_segment.services">
+                            <span class="ml-3" *ngIf="obj.status_updated_user_by_segment.services">Email:{{obj.status_updated_user_by_segment.services.email}}</span>
+                          </a>
+                          <a class="dropdown-item p-0">
+                            <div class="col-12 m-0 p-0 pl-3" style="background-color: #a9a9a969">Segment & Segment Status</div> 
+                          </a>
+                          <a class="dropdown-item p-0 mt-3" *ngIf = "obj.segments_with_acceptance.panel">
+                            <span class="ml-3">Panel :{{obj.segments_with_acceptance.panel| replaceChar}}
+                            <hr class="mb-0 p-0"></span> 
+                          </a>
+                          <a class="dropdown-item p-0 mt-3"*ngIf = "obj.segments_with_acceptance.non_panel">
+                            <span class="ml-3">Non Panel:{{obj.segments_with_acceptance.non_panel| replaceChar}}<hr class="mb-0 p-0"></span> 
+                          </a>
+                          <a class="dropdown-item p-0 mt-3" *ngIf = "obj.segments_with_acceptance.services">
+                            <span class="ml-3">Services:{{obj.segments_with_acceptance.services| replaceChar}}</span>
+                          </a>
+                        </div>
+                      </div>
+                    </td>
+                    <td>{{obj.category_comment}}</td>
+                    <td>{{ obj.status_changed_on | date:'medium' }}</td>
+                    <td style="text-align:center"><span *ngIf="item != 'Quotation'"></span><span *ngIf="item == 'Quotation' && role && (role=='designer' || role=='city_gm' || role=='business_head' || role=='community_manager' || role=='design_manager') ">{{ obj.duration || 0}}<i style="padding-left:6px" (click)="getBoqDetails(obj)" data-toggle="modal" data-target="#editDurationModal"  class="fa fa-edit"></i></span></td>
+                    <td><span *ngIf="item != 'Quotation'"></span><span *ngIf="item == 'Quotation'">{{ obj.eta || 0}}</span></td>
+                    <!-- <td></td> -->
+                    
+                    <td class="LastTd text-center" [ngClass]="{'active': selectedQuotationStatus == obj.id}">
+                      <img *ngIf = "!obj.request_type && !obj.reference_number" src="./assets/img/handover/edit.svg"  data-target="#EditModal" data-toggle="modal" (click)="UpdateFile(item,obj)" >
+                      <img *ngIf = "obj.current_status!='Pending acceptance'" src="./assets/img/handover/garbage.png" class="ml-2"  (click)="confirmDelete(obj.id)">
+                    </td>
+                    </tr>
+
+                    <tr *ngIf="obj.expanded" style="background: #ECF0F1">
+                      <td colspan="9"  class="col-div" *ngIf="child_list && (child_list | json) != '{}'">
+                        <div class="w-100 mx-auto p-0">
+                          <table class="table inner-table" >
+                            <thead class="aa-thead">
+                              <tr>
+                                <th></th>
+                                <th style="min-width: 11rem;"></th>
+                                <th class="w-25"></th>
+                                <th class="w-25"></th>
+                                <th class="w-25"></th>
+                                <th class="w-25">Rejected on</th>
+                                <th style="min-width: 5rem;" class="lastTh w-25 text-center">Version</th>
+                              </tr>
+
+                            </thead>
+                            <tbody class="aa-tbody">
+                              <tr  *ngFor="let child of child_list[child_cat]">
+                                <td></td>
+                                <td>
+                                  <a class="colr" href="{{child.url}}" download target="_blank" data-toggle="tooltip" title="Click here to download file!">{{child.name}}</a>
+                                </td>
+                                <td class="font-weight-bold">{{ child.date_of_sharing | date:'dd.MM.yyyy - h:mm a' }}</td>
+                                <td class="text-danger">{{ child.current_status }}</td>
+                                <td>{{ child.category_comment }}</td>
+                                <td>{{ child.status_changed_on | date:'medium' }}</td>
+                                <td>{{ child.version }}</td>
+                              </tr>
+                            </tbody>
+                          </table>
+
+                        </div>
+
+                      </td>
+                      <td colspan="9"  class="col-div" *ngIf="child_list && (child_list | json) == '{}'">
+                        <div class="w-100 mx-auto p-5 text-center" style="background: #ECF0F1">
+                          Nothing To Show..
+                        </div>
+
+                      </td>
+                  </tr>
+                </ng-container>
+
+
+              </ng-container>
+            </tbody>
+
+          </table>
+
+        </div>
+      </div>
+      <div class=" col-12 pb-3 px-5" *ngIf="all_file_list && all_file_list.all_files.length == 0">
+        <div class="boq-img text-center">
+          <img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+          </div>
+          <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing to show...</p>
+
+      </div>
+
+      <!--for additional files-->
+      <div class="col-12">
+        <div class="boqIndicator btn pl-3 pr-3 text-center">
+          Additional Files Requests
+        </div>
+
+        <div class=" col-12 pb-3 px-5" *ngIf="additionalFiles && additionalFiles.length == 0">
+          <div class="boq-img text-center">
+            <img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+          </div>
+          <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing to show...</p>
+        </div>
+
+        <table class="table" *ngIf="additionalFiles && additionalFiles.length > 0">
+          <tr>
+            <th>Created at</th>
+            <th>Remarks</th>
+            <th>Resolve Status</th>
+            <th></th>
+          </tr>
+
+          <tr *ngFor= "let item of additionalFiles">
+            <td>{{item.created_at | date:'dd/MM/yyyy - h:mm a'}}</td>
+            <td>
+              <div class="tooltip1">
+              <a class="pop" (mouseenter)="openpopup($event)" title="{{item.remarks}}" style="color: black;">{{item.remarks | slice:0:7}}...</a>
+              </div>
+            </td>
+            <td class="pl-4">
+              <div class="text-success" *ngIf = "item.resolved == true">
+                Resolved
+              </div>
+
+              <div class="pl-4" *ngIf = "item.resolved == false">
+                -
+              </div>
+            </td>
+            <td>
+              <button class="btn btn-danger addCursor" (click) = "resloveAdditionalFiles(item.project_id,item.id)" *ngIf= "item.resolved == false">Resolve</button>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal For AddFilesModal -->
+<div class="modal fade bd-example-modal-lg modal-top" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="addFilesModal" data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-body modal-body-change">
+        <div class="rk-ui-notification" *ngIf="successalert1">
+          <span id="notificationMessageText">{{successMessage}}</span>
+          <a class="close rk-linknotification" (click)="successalert1=false">×</a>
+        </div>
+        <div class="rk-ui-notification err" *ngIf="erroralert1">
+          <span id="notificationMessageText">{{errorMessage}}</span>
+          <a class="close rk-linknotification" (click)="erroralert1=false">×</a>
+        </div>
+        <div class="row px-3 my-3">
+          <div class="col-md-12">
+            <span class="text-head pull-left">Select files or files to add</span>
+            <span class="pull-right"><img src='./assets/img/finance/close.png' class="cursor-pointer" (click)="closeFiles()"></span>
+
+          </div>
+        </div>
+        <div class="row px-3 my-3">
+          <div class="col-md-12 col-scroll">
+            <div class="accordion" id="accordionExamples">
+              <div class="card card-shadow mt-3">
+                <div class="card-header card-header-link p-0" id="headingOne">
+                  <h2 class="mb-0 panel-title px-2">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOneChange" aria-expanded="true" aria-controls="collapseOneChange">
+                      BOQ
+                    </button>
+                  </h2>
+                </div>
+
+                <div id="collapseOneChange" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExamples">
+                  <div class="card-body card-body-link p-0 pl-3" *ngIf="boq_file_list && boq_file_list.length > 0">
+                    <span class="boq-link ml-3" *ngFor="let obj of boq_file_list;let i = index" [attr.data-index]="i">
+                      <!-- <div class="p-0" *ngIf="obj.per_10_approved_at && obj.parent_quotation_id"> -->
+                      <div class="p-0" *ngIf="obj.parent_quotation_id">
+                        <label class="{{ obj.id }}" (click)="selectBoqList(obj,i)">
+                          <input type="checkbox" class="d-none" [checked]="obj.checked" id=obj{{obj.id}}>{{ obj.reference_number }}
+
+                        </label>
+                      </div>
+                    </span>
+                  
+                  </div>
+                  <div class="card-body card-body-link" *ngIf="boq_file_list && boq_file_list.length == 0">
+                    <span class="text-muted">No Files Found......</span>
+                  </div>
+                </div>
+              </div>
+              <div class="card card-shadow mt-3">
+                <div class="card-header card-header-link p-0" id="headingTwo">
+                  <h2 class="mb-0 panel-title px-2">
+                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwoChange" aria-expanded="false" aria-controls="collapseTwoChange">
+                       Floor Plan / Layout
+                    </button>
+                  </h2>
+                </div>
+                <div id="collapseTwoChange" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExamples">
+                  <div class="card-body card-body-link" >
+                    <ng-container *ngIf="floorplan_file_list && floorplan_file_list.length !=0">
+                      <span class="boq-link ml-3" *ngFor="let obj of floorplan_file_list;let i = index" [attr.data-index]="i">
+                        <label class="{{ obj.id }}" (click)="selectFloorPlans(obj,i)">
+                          <input type="checkbox" class="d-none" [checked]="obj.checked" id=obj{{obj.id}}>{{ obj.attachment_file_file_name }}
+
+                        </label>
+                      </span>
+                    </ng-container>
+                    <ng-container *ngIf="floorplan_file_list && floorplan_file_list.length ==0">
+                      <span class="text-muted">No Files Found......</span>
+                    </ng-container>
+                    <span class="btn-link pull-right mt-3">
+                      <a  (click)="openModal('floorplanModal')" class="image-upload">Browse
+                         </a>
+                     </span>
+
+                  </div>
+
+
+                </div>
+              </div>
+              <div class="card card-shadow mt-3">
+                <div class="card-header card-header-link p-0" id="headingThree">
+                  <h2 class="mb-0 panel-title px-2">
+                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThreeChange" aria-expanded="false" aria-controls="collapseThreeChange">
+                      Elevations
+                    </button>
+                  </h2>
+                </div>
+                <div id="collapseThreeChange" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExamples">
+                  <div class="card-body card-body-link">
+                    <ng-container *ngIf="elevation_file_list && elevation_file_list.length >0 " >
+                      <span class="boq-link ml-3" *ngFor="let obj of elevation_file_list;let i = index" [attr.data-index]="i">
+                        <label class="{{ obj.id }}" (click)="selectElevationList(obj,i)">
+                          <input type="checkbox" class="d-none" [checked]="obj.checked" id=obj{{obj.id}}>{{ obj.name }}
+
+                        </label>
+                      </span>
+                    </ng-container>
+                    <ng-container *ngIf="elevation_file_list && elevation_file_list.length == 0">
+                       <span class="text-muted">No Files Found......</span>
+                    </ng-container>
+                    <span class="btn-link pull-right mt-3">
+                      <a  class="image-upload" (click)="openModal('elevationModal')">Browse
+                         </a>
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="card card-shadow mt-3">
+                <div class="card-header card-header-link p-0" id="headingThree">
+                  <h2 class="mb-0 panel-title px-2">
+                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseFourChange" aria-expanded="false" aria-controls="collapseFourChange">
+                      PPT Files
+                    </button>
+                  </h2>
+                </div>
+                <div id="collapseFourChange" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExamples">
+                  <div class="card-body card-body-link"  >
+                    <ng-container *ngIf="ppt_file_list && ppt_file_list.length > 0">
+                      <span class="boq-link ml-3" *ngFor="let obj of ppt_file_list;let i = index" [attr.data-index]="i">
+                        <label class="{{ obj.id }}" (click)="selectPptList(obj,i)">
+                          <input type="checkbox" class="d-none" [checked]="obj.checked" id=obj{{obj.id}}>{{ obj.upload_file_name }}
+
+                        </label>
+                      </span>
+                    </ng-container>
+                    <ng-container *ngIf="ppt_file_list && ppt_file_list.length == 0">
+                      <span class="text-muted">No Files Found......</span>
+                    </ng-container >
+                    <span class="btn-link pull-right mt-3">
+                      <a  class="image-upload" (click)="openModal('pptModal')">Browse</a>
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="card card-shadow mt-3">
+                <div class="card-header card-header-link p-0" id="headingThree">
+                  <h2 class="mb-0 panel-title px-2">
+                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseFiveChange" aria-expanded="false" aria-controls="collapseFiveChange">
+                      3-D Images
+                    </button>
+                  </h2>
+                </div>
+                <div id="collapseFiveChange" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExamples">
+                  <div class="card-body card-body-link" >
+                    <ng-container *ngIf="three_d_file_list && three_d_file_list.length > 0">
+                      <span class="boq-link ml-3" *ngFor="let obj of three_d_file_list;let i = index" [attr.data-index]="i">
+                        <label class="{{ obj.id }}" (click)="selectThreeDList(obj,i)">
+                          <input type="checkbox" class="d-none" [checked]="obj.checked" id=obj{{obj.id}}>{{ obj.name }}
+
+                        </label>
+                      </span>
+                    </ng-container>
+                    <ng-container *ngIf="three_d_file_list && three_d_file_list.length == 0">
+                      <span class="text-muted">No Files Found......</span>
+                    </ng-container>
+                    <span class="btn-link pull-right mt-3">
+                      <a  (click)="openModal('threeDModal')" class="image-upload">Browse</a>
+                    </span>
+
+                  </div>
+                </div>
+              </div>
+              <div class="card card-shadow mt-3">
+                <div class="card-header card-header-link p-0" id="headingThree">
+                  <h2 class="mb-0 panel-title px-2">
+                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseSixChange" aria-expanded="false" aria-controls="collapseSixChange">
+                      Reference Images
+                    </button>
+                  </h2>
+                </div>
+                <div id="collapseSixChange" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExamples">
+                  <div class="card-body card-body-link">
+                    <ng-container  *ngIf="reference_file_list && reference_file_list.length > 0">
+                      <span class="boq-link ml-3" *ngFor="let obj of reference_file_list;let i = index" [attr.data-index]="i">
+                        <label class="{{ obj.id }}" (click)="selectreferenceList(obj,i)">
+                          <input type="checkbox" class="d-none" [checked]="obj.checked" id=obj{{obj.id}}>{{ obj.name }}
+
+                        </label>
+                      </span>
+                    </ng-container>
+                    <ng-container *ngIf="reference_file_list && reference_file_list.length == 0">
+                      <span class="text-muted">No Files Found......</span>
+
+                    </ng-container>
+                    <span class="btn-link pull-right mt-3">
+                        <a  class="image-upload" (click)="openModal('referenceModal')">Browse
+                           </a>
+                    </span>
+
+
+                  </div>
+                </div>
+              </div>
+              <div class="card card-shadow mt-3">
+                <div class="card-header card-header-link p-0" id="headingThree">
+                  <h2 class="mb-0 panel-title px-2">
+                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseSevenChange" aria-expanded="false" aria-controls="collapseSevenChange">
+                      Cad Files
+                    </button>
+                  </h2>
+                </div>
+                <div id="collapseSevenChange" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExamples">
+                  <div class="card-body card-body-link"  >
+                    <ng-container *ngIf="cad_file_list && cad_file_list.length > 0">
+                      <span class="boq-link ml-3" *ngFor="let obj of cad_file_list;let i = index" [attr.data-index]="i">
+                        <label class="{{ obj.id }}" (click)="selectcadList(obj,i)">
+                          <input type="checkbox" class="d-none" [checked]="obj.checked" id=obj{{obj.id}}>{{ obj.name }}
+
+                        </label>
+                      </span>
+
+                    </ng-container>
+                    <ng-container *ngIf="cad_file_list && cad_file_list.length == 0">
+                       <span class="text-muted">No Files Found......</span>
+                    </ng-container>
+                    <span class="btn-link pull-right mt-3">
+                      <a class="image-upload"  (click)="openModal('cadModal')">Browse</a>
+                    </span>
+
+
+                  </div>
+                </div>
+              </div>
+              <div class="card card-shadow mt-3">
+                <div class="card-header card-header-link p-0" id="headingThree">
+                  <h2 class="mb-0 panel-title px-2">
+                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseEightChange" aria-expanded="false" aria-controls="collapseEightChange">
+                      Site Request Files
+                    </button>
+                  </h2>
+                </div>
+                <div id="collapseEightChange" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExamples">
+                  <div class="card-body card-body-link">
+                    <ng-container  *ngIf="site_request_file_list && site_request_file_list.length > 0">
+                      
+                      <span class="boq-link ml-3" *ngFor="let obj of site_request_file_list;let i = index" [attr.data-index]="i">
+                        <span *ngIf="obj.request_status=='complete'">
+                      <label class="{{ obj.id }}" (click)="selectSiteRequestList(obj,i)">
+                        <input type="checkbox" class="d-none" [checked]="obj.checked" id=obj{{obj.id}}>{{ obj.request_type }}
+
+                      </label>
+                    </span>
+                  </span>
+ 
+                    </ng-container>
+                    <ng-container *ngIf="site_request_file_list && site_request_file_list.length == 0">
+                      <span class="text-muted">No Files Found......</span>
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+              <!-- writen by vivek -->
+              <div class="card card-shadow mt-3">
+                <div class="card-header card-header-link p-0" id="headingThree">
+                  <h2 class="mb-0 panel-title px-2">
+                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseLineMarkingChange" aria-expanded="false" aria-controls="collapseLineMarkingChange">
+                      Line Marking Files
+                    </button>
+                  </h2>
+                </div>
+                <div id="collapseLineMarkingChange" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExamples">
+                  <div class="card-body card-body-link"  >
+                    <ng-container *ngIf="line_marking_list && line_marking_list.length > 0">
+                      <span class="boq-link ml-3" *ngFor="let obj of line_marking_list;let i = index" [attr.data-index]="i">
+                        <label class="{{ obj.id }}" (click)="selectLineMarkingList(obj,i)">
+                          <input type="checkbox" class="d-none" [checked]="obj.checked" id=obj{{obj.id}}>{{ obj.name }}
+
+                        </label>
+                      </span>
+
+                    </ng-container>
+                    <ng-container *ngIf="line_marking_list && line_marking_list.length == 0">
+                       <span class="text-muted">No Files Found......</span>
+                    </ng-container>
+                    <span class="btn-link pull-right mt-3">
+                      <a class="image-upload"  (click)="openModal('LineMarkingModal')">Browse</a>
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <!-- ///end///// -->
+            </div>
+          </div>
+          <div class="col-md-12 mt-5">
+            <img src="./assets/img/handover/done.svg" (click)="submitForm()"  class="pull-right cursor-pointer">
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<!-- Ends here -->
+<!-- Modal For HandsOverModal -->
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="handoverModal" data-keyboard="false" data-backdrop="static" style="top: 20%">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-body modal-body-change">
+        <div class="row px-3 my-3">
+          <div class="col-md-12">
+            <span class="text-head pull-left">Handover/Feasibility</span>
+            <span class="pull-right"><img src='./assets/img/finance/close.png' class="cursor-pointer" (click)="closeFilesHand()"></span>
+
+          </div>
+        </div>
+        <div class="row px-3 my-3">
+          <div class="col-md-12 hand-scroll" *ngIf="selectedHandoverList">
+            <div class="accordion" id="accordionExamples">
+              <div class="card card-shadow mt-3">
+                <div class="card-header card-header-link p-0" id="headingOne">
+                  <h2 class="mb-0 panel-title px-2">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseNineChange" aria-expanded="true" aria-controls="collapseNineChange">
+                      BOQs
+                    </button>
+                  </h2>
+                </div>
+
+                <div id="collapseNineChange" class="collapse showCase" aria-labelledby="headingOne" data-parent="#accordionExamples">
+                  <div class="card-body card-body-link">
+                    <span class="boq-link ml-3" *ngFor="let obj of selectedHandoverList.Quotation;let i = index" [attr.data-index]="i">
+                      {{ obj.reference_number }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="card card-shadow mt-3">
+                <div class="card-header card-header-link p-0" id="headingOne">
+                  <h2 class="mb-0 panel-title px-2">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapsetenChange" aria-expanded="true" aria-controls="collapsetenChange">
+                      PPT
+                    </button>
+                  </h2>
+                </div>
+
+                <div id="collapsetenChange" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExamples">
+                  <div class="card-body card-body-link">
+                    <span class="boq-link ml-3" *ngFor="let obj of selectedHandoverList.BoqAndPptUpload;let i = index" [attr.data-index]="i">
+                      {{ obj.name }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="card card-shadow mt-3">
+                <div class="card-header card-header-link p-0" id="headingOne">
+                  <h2 class="mb-0 panel-title px-2">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseElevenChange" aria-expanded="true" aria-controls="collapseElevenChange">
+                      Cad Files
+                    </button>
+                  </h2>
+                </div>
+
+                <div id="collapseElevenChange" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExamples">
+                  <div class="card-body card-body-link">
+                    <span class="boq-link ml-3" *ngFor="let obj of selectedHandoverList.CadDrawing;let i = index" [attr.data-index]="i">
+                      {{ obj.name }}
+                    </span>
+
+
+                  </div>
+                </div>
+              </div>
+              <div class="card card-shadow mt-3">
+                <div class="card-header card-header-link p-0" id="headingOne">
+                  <h2 class="mb-0 panel-title px-2">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseTwelveChange" aria-expanded="true" aria-controls="collapseTwelveChange">
+                      Elevations
+                    </button>
+                  </h2>
+                </div>
+
+                <div id="collapseTwelveChange" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExamples">
+                  <div class="card-body card-body-link">
+                    <span class="boq-link ml-3" *ngFor="let obj of selectedHandoverList.Elevation;let i = index" [attr.data-index]="i">
+                      {{ obj.name }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="card card-shadow mt-3">
+                <div class="card-header card-header-link p-0" id="headingOne">
+                  <h2 class="mb-0 panel-title px-2">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseThirteenChange" aria-expanded="true" aria-controls="collapseThirteenChange">
+                      Refrence Images
+                    </button>
+                  </h2>
+                </div>
+
+                <div id="collapseThirteenChange" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExamples">
+                  <div class="card-body card-body-link">
+                    <span class="boq-link ml-3" *ngFor="let obj of selectedHandoverList.ReferenceImage;let i = index" [attr.data-index]="i">
+                      {{ obj.name }}
+                    </span>
+
+
+                  </div>
+                </div>
+              </div>
+              <div class="card card-shadow mt-3">
+                <div class="card-header card-header-link p-0" id="headingOne">
+                  <h2 class="mb-0 panel-title px-2">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseFourteenChange" aria-expanded="true" aria-controls="collapseFourteenChange">
+                      Site Requests
+                    </button>
+                  </h2>
+                </div>
+
+                <div id="collapseFourteenChange" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExamples">
+                  <div class="card-body card-body-link">
+                    <span class="boq-link ml-3" *ngFor="let obj of selectedHandoverList.SiteMeasurementRequest;let i = index" [attr.data-index]="i">
+                      {{ obj.request_type }}
+                    </span>
+
+
+                  </div>
+                </div>
+              </div>
+              <div class="card card-shadow mt-3">
+                <div class="card-header card-header-link p-0" id="headingOne">
+                  <h2 class="mb-0 panel-title px-2">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseFifteenChange" aria-expanded="true" aria-controls="collapseFifteenChange">
+                      3-D Images
+                    </button>
+                  </h2>
+                </div>
+
+                <div id="collapseFifteenChange" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExamples">
+                  <div class="card-body card-body-link">
+                    <span class="boq-link ml-3" *ngFor="let obj of selectedHandoverList.ThreeDImage;let i = index" [attr.data-index]="i">
+                      {{ obj.name }}
+                    </span>
+
+
+                  </div>
+                </div>
+              </div>
+               <div class="card card-shadow mt-3">
+                <div class="card-header card-header-link p-0" id="headingOne">
+                  <h2 class="mb-0 panel-title px-2">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseSixteenChange" aria-expanded="true" aria-controls="collapseSixteenChange">
+                       Floor Plans / Layout
+                    </button>
+                  </h2>
+                </div>
+
+                <div id="collapseSixteenChange" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExamples">
+                  <div class="card-body card-body-link">
+                    <span class="boq-link ml-3" *ngFor="let obj of selectedHandoverList.Floorplan;let i = index" [attr.data-index]="i">
+                      {{ obj.name }}
+                    </span>
+
+
+                  </div>
+                </div>
+              </div>
+             <!-- linemarking -->
+             <div class="card card-shadow mt-3">
+                <div class="card-header card-header-link p-0" id="headingOne">
+                  <h2 class="mb-0 panel-title px-2">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseLineMarkingChange" aria-expanded="true" aria-controls="collapseLineMarkingChange">
+                      Line Marking
+                     </button>
+                  </h2>
+                </div>
+
+                <div id="collapseLineMarkingChange" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExamples">
+                  <div class="card-body card-body-link">
+                    <span class="boq-link ml-3" *ngFor="let obj of selectedHandoverList.LineMarking;let i = index" [attr.data-index]="i">
+                      {{ obj.name }}
+                    </span>
+
+
+                  </div>
+                </div>
+              </div>
+ 
+            </div>
+          </div>
+          <div class="col-md-12 mt-5">
+            <input class="form-control form-control-lg" type="text" placeholder="Add Comments" id="handoverRemark">
+
+          </div>
+          <div class="col-md-12">
+            <img src="./assets/img/handover/sub.svg" class="pull-right btn_sub cursor-pointer" data-dismiss="modal" (click)="submitHandoverFiles()">
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<!-- Ends here -->
+<!-- Modal For Edit Modal -->
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="EditModal" data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-body modal-body-change">
+        <div class="row px-3 my-3">
+          <div class="col-md-12">
+            <span class="text-head pull-left">Select files to be revise</span>
+            <span class="pull-right"><img src='./assets/img/finance/close.png' class="cursor-pointer" (click)="closeEditModal()"></span>
+
+          </div>
+        </div>
+
+        <div class="row px-3 my-3">
+          <div class="col-md-12" *ngIf="revise_list">
+            <div class="accordion" id="accordionExamples">
+              <div class="card card-shadow mt-3" style="background-color: #EAEAEA">
+                <div class="card-header card-header-link p-0" id="headingOne">
+                  <h2 class="mb-0 panel-title px-2">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseTwentyChange" aria-expanded="true" aria-controls="collapseTwentyChange">
+                      {{ changeFileFormat() }}
+                    </button>
+                  </h2>
+                </div>
+
+                <div id="collapseTwentyChange" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExamples">
+                  <div class="card-body card-body-link p-0">
+                    <div class="form-check">
+                      <ul style="list-style-type: none;">
+                        <li *ngFor="let item of revise_list[category]"> 
+                          <label class="form-check-label boq-link ml-3">
+                            <ng-container *ngIf="category != 'SiteMeasurementRequest'">
+                              <input class="form-check-input" type="radio" name="exampleRadios"  value="{{ item.id }}" (change)="selectReviseList(item)">
+                               {{ item.name }}
+                            </ng-container>
+                            <ng-container *ngIf="category == 'SiteMeasurementRequest'">
+                              <input class="form-check-input" type="radio" name="exampleRadios"  value="{{ item.id }}" (change)="selectReviseList(item)">
+                               {{ item.request_type }}
+                            </ng-container>
+                          </label>
+                        </li>
+                      </ul>
+                      <span class="btn-link pull-right mb-2 mr-5">
+                      <a  (click)="openReviseModal(category)" class="image-upload">Browse
+                         </a>
+                     </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12 mt-5">
+            <img src="./assets/img/handover/done.svg" (click)="submitFormForRevise()"  class="pull-right cursor-pointer">
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<!-- Ends here -->
+
+<!-- CREATE SITE MODAL -->
+<div class="modal fade" id="siteModal" tabindex="-1" role="dialog" aria-labelledby="siteModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header modal-header-chng px-5" style="border-bottom: 1px solid #e4e4e4;">
+        <h6 class="modal-title mt-3" id="siteModalLabel" style="font-size: 22px">Create a site measurement request  </h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true"><img src="./assets/img/handover/cross-btn.svg"></span>
+        </button>
+      </div>
+      <div class="modal-body px-5">
+        <div class="row">
+          <div class="col-md-12">
+            <form [formGroup]="createRequestForm" (ngSubmit)="onRequest()" class="form-horizontal" enctype="multipart/form-data">
+              <div class="form-group">
+                <label for="request_type" class="ss-form-label">Request Type</label>
+                <select class="form-control " formControlName="request_type" id="request_type">
+                  <option [selected] = "true">Select request type</option>
+                  <option value="standalone_site_measurement_request">Standalone Site Measurement Request</option>
+                  <option value="approved_boq_site_measurement_request">Approved BOQ Site Measurement Request</option>
+                  <option value="line_marking_site_measurement_request">Line Marking</option>
+                </select>
+                <label for="address" class="ss-form-label mt-4">Address</label>
+                <textarea class="form-control " id="address" name="address" rows="5" placeholder="Please enter the address of site" formControlName="address"></textarea>
+
+                <label for="scheduled_at" class="ss-form-label mt-4">Date and Time</label>
+                <input type="datetime-local" class="form-control " name="scheduled_at" id="scheduled_at" formControlName="scheduled_at">
+
+                <button type="submit" class="btn btn-pink button_emi mx-auto d-block mt-4" [disabled]="!createRequestForm.valid"> Submit </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- CREATE CAD MODAL -->
+<div class="modal fade" id="cadModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header modal-header-chng px-5" style="border-bottom: 1px solid #e4e4e4;">
+        <h6 class="modal-title mt-3" id="exampleModalLabel" style="font-size: 22px">Upload a CAD file  </h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true"><img src="./assets/img/handover/cross-btn.svg"></span>
+        </button>
+      </div>
+      <div class="modal-body px-5">
+        <div class="row">
+          <div class="col-md-12">
+            <form (ngSubmit)="onSubmit(createCadForm.value); createCadForm.reset()" #createCadForm="ngForm" class="form-horizontal" enctype="multipart/form-data">
+              <div class="form-group">
+                <label for="name" class="ss-form-label">CAD Name</label>
+                <input type="text" class="form-control " id="name" placeholder="A proper name for cad file" required name="name" #name="ngModel" ngModel>
+
+                <label for="cad_drawing" class="ss-form-label mt-4">CAD File</label>
+                <input type="file" class="form-control " (change)="onChange($event)" name="cad_drawing" ngModel #cad_drawing="ngModel" id="cad_drawing" accept=".dwg" required >
+
+                <button type="submit" class="btn btn-pink button_emi mx-auto d-block mt-4" [disabled]="!createCadForm.valid || basefile == undefined"> Submit </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- CREATE Floorplan MODAL -->
+<div class="modal fade" id="floorplanModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header modal-header-chng px-5" style="border-bottom: 1px solid #e4e4e4;">
+        <h6 class="modal-title mt-3" id="exampleModalLabel" style="font-size: 22px">Upload a  Floor Plan / Layout  </h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true"><img src="./assets/img/handover/cross-btn.svg"></span>
+        </button>
+      </div>
+      <div class="modal-body px-5">
+        <div class="row">
+          <div class="col-md-12">
+            <form (ngSubmit)="onSubmitFloor(createFloorplanForm.value); createFloorplanForm.reset()" #createFloorplanForm="ngForm" class="form-horizontal" enctype="multipart/form-data">
+              <div class="form-group">
+                <label for="name" class="ss-form-label"> Floor Plan / Layout Name</label>
+                <input type="text" class="form-control " id="name" placeholder="A proper name for Floor Plan/Layout" required name="name" #name="ngModel" ngModel>
+
+                <label for="details" class="ss-form-label mt-4"> Floor Plan / Layout Detail</label>
+                <textarea class="form-control " id="details" name="details" #details="ngModel" rows="5"  ngModel placeholder="Please tell something about this Floor Plan/Layout" required ></textarea>
+
+                <label for="attachment_file" class="ss-form-label mt-4"> Floor Plan / Layout File</label>
+                <input type="file" class="form-control " (change)="onChange($event)" name="attachment_file" required ngModel #attachment_file="ngModel" id="attachment_file">
+
+                <button type="submit" class="btn btn-pink button_emi mx-auto d-block mt-4" [disabled]="!createFloorplanForm.valid || basefile == undefined"> Submit </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- CREATE ELEVATION MODAL -->
+<div class="modal fade" id="elevationModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header modal-header-chng px-5" style="border-bottom: 1px solid #e4e4e4;">
+        <h6 class="modal-title mt-3" id="exampleModalLabel" style="font-size: 22px">Upload a Elevation file  </h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true"><img src="./assets/img/handover/cross-btn.svg"></span>
+        </button>
+      </div>
+      <div class="modal-body px-5">
+        <div class="row">
+          <div class="col-md-12">
+            <form (ngSubmit)="onSubmitElevation(createElevationForm.value); createElevationForm.reset()" #createElevationForm="ngForm" class="form-horizontal" enctype="multipart/form-data">
+              <div class="form-group">
+                <label for="name" class="ss-form-label">Elevation Name</label>
+                <input type="text" class="form-control " id="name" placeholder="A proper name for elevation file" required name="name" #name="ngModel" ngModel>
+
+                <label for="elevation_drawing" class="ss-form-label mt-4">Elevation File</label>
+                <input type="file" class="form-control " (change)="onChange($event)" name="elevation_drawing" ngModel #elevation_drawing="ngModel" id="elevation_drawing" required>
+
+                <button type="submit" class="btn btn-pink button_emi mx-auto d-block mt-4" [disabled]="!createElevationForm.valid || basefile == undefined"> Submit </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Start ppt modal -->
+<div class="modal fade" id="pptModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header modal-header-chng px-5" style="border-bottom: 1px solid #e4e4e4;">
+        <h6 class="modal-title mt-3" id="exampleModalLabel" style="font-size: 22px">Upload a PPT file  </h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true"><img src="./assets/img/handover/cross-btn.svg"></span>
+        </button>
+      </div>
+      <div class="modal-body px-5">
+        <div class="row">
+          <div class="col-md-12">
+            <form (ngSubmit)="onSubmitPPt(createPptForm.value); createPptForm.reset()" #createPptForm="ngForm" class="form-horizontal" enctype="multipart/form-data">
+              <div class="form-group">
+                <label for="name" class="ss-form-label">PPT Name</label>
+                <input type="text" class="form-control " id="name" placeholder="A proper name for ppt file" required name="name" #name="ngModel" ngModel>
+
+                <label for="ppt_file" class="ss-form-label mt-4">PPt File</label>
+                <input type="file" class="form-control " (change)="onChangePPt($event)" name="ppt_file" ngModel #ppt_file="ngModel" id="ppt_file"accept="application/pdf,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.slideshow,application/vnd.openxmlformats-officedocument.presentationml.presentation">
+
+                <button type="submit" class="btn btn-pink button_emi mx-auto d-block mt-4" [disabled]="!createPptForm.valid || basefile == undefined"> Submit </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- CREATE Reference MODAL -->
+<div class="modal fade" id="referenceModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header modal-header-chng px-5" style="border-bottom: 1px solid #e4e4e4;">
+        <h6 class="modal-title mt-3" id="exampleModalLabel">Upload a Reference file : </h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true"><img src="./assets/img/handover/cross-btn.svg"></span>
+        </button>
+      </div>
+      <div class="modal-body px-5">
+        <div class="row">
+          <div class="col-md-12">
+            <form (ngSubmit)="onSubmitReference(createReferenceForm.value); createReferenceForm.reset()" #createReferenceForm="ngForm" class="form-horizontal" enctype="multipart/form-data">
+              <div class="form-group">
+                <label for="name" class="ss-form-label">Reference Name</label>
+                <input type="text" class="form-control " id="name" placeholder="A proper name for reference file" required name="name" #name="ngModel" ngModel>
+
+                <label for="reference_drawing" class="ss-form-label mt-4">Reference File</label>
+                <input type="file" class="form-control " (change)="onChange($event)" name="reference_drawing" ngModel #reference_drawing="ngModel" id="reference_drawing" required>
+
+                <button type="submit" class="btn btn-pink button_emi mx-auto d-block mt-4" [disabled]="!createReferenceForm.valid || basefile == undefined"> Submit </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- CREATE Reference MODAL -->
+<div class="modal fade" id="threeDModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header modal-header-chng px-5" style="border-bottom: 1px solid #e4e4e4;">
+        <h6 class="modal-title mt-3" id="exampleModalLabel" style="font-size: 22px">Upload a 3-D file : </h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true"><img src="./assets/img/handover/cross-btn.svg"></span>
+        </button>
+      </div>
+      <div class="modal-body px-5">
+        <div class="row">
+          <div class="col-md-12">
+            <form (ngSubmit)="onSubmitThree(createThreeDForm.value); createThreeDForm.reset()" #createThreeDForm="ngForm" class="form-horizontal" enctype="multipart/form-data">
+              <div class="form-group">
+                <label for="name" class="ss-form-label">3-D File Name</label>
+                <input type="text" class="form-control" id="name" placeholder="A proper name for 3-D file" required name="name" #name="ngModel" ngModel>
+
+                <label for="three_drawing" class="mt-4"> 3-D File</label>
+                <input type="file" class="form-control ss-form-control" (change)="onChange($event)" name="three_drawing" ngModel #three_drawing="ngModel" id="three_drawing" required>
+
+                <button type="submit" class="btn btn-pink button_emi mx-auto d-block mt-4" [disabled]="!createThreeDForm.valid || basefile == undefined"> Submit </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+		<!-- Edit Duration Modal -->
+
+<div class="modal fade" style="font-family: 'Open Sans', sans-serif;" id="editDurationModal">
+  <div class="modal-dialog modal-lg" style="max-width:546.46px !important">
+    <div class="modal-content" >
+      <div class="modal-header" style="border-bottom: 14px solid #810d0d;">
+        
+        <button style="margin-left:98%" type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" style="margin-left:5%;">
+        <div>
+          <div style="margin-bottom:1rem" class="row qcDiv">
+            <div class="col-md-7" style="padding-left:0px">
+              <b>Edit Duration: </b>
+            </div>
+          </div>
+          <div class="row">
+            <label style="width:30%">
+              Duration
+              <input [(ngModel)]="duration" style="width:40%" type="number">
+              
+            </label>
+            <button style="height:1.75rem;background-color: #810d0d;padding-top:0.2rem;color:white" (click)='updateDuration()' class="btn" type="button" data-dismiss="modal" >Update ! </button>
+          
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+<!-- CREATE Line Marking MODAL -->
+<div class="modal fade" id="LineMarkingModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header modal-header-chng px-5" style="border-bottom: 1px solid #e4e4e4;">
+        <h6 class="modal-title mt-3" id="exampleModalLabel" style="font-size: 22px">Upload a Line Marking  </h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true"><img src="./assets/img/handover/cross-btn.svg"></span>
+        </button>
+      </div>
+      <div class="modal-body px-5">
+        <div class="row">
+          <div class="col-md-12">
+            <form (ngSubmit)="onSubmitLineMarking(createLineMarkingForm.value); createLineMarkingForm.reset()" #createLineMarkingForm="ngForm" class="form-horizontal" enctype="multipart/form-data">
+              <div class="form-group">
+                <label for="name" class="ss-form-label">Line Marking Name</label>
+                <input type="text" class="form-control " id="name" placeholder="A proper name for Line Marking" required name="name" #name="ngModel" ngModel>
+
+                <label for="details" class="ss-form-label mt-4">Line Marking Detail</label>
+                <textarea class="form-control " id="details" name="details" #details="ngModel" rows="5" ngModel placeholder="Please tell something about this Line Marking" required ></textarea>
+
+                <label for="attachment_file" class="ss-form-label mt-4">Line Marking File</label>
+                <input type="file" class="form-control " (change)="onChange($event)" name="attachment_file" required ngModel #attachment_file="ngModel" id="attachment_file">
+
+                <button type="submit" class="btn btn-pink button_emi mx-auto d-block mt-4" [disabled]="!createLineMarkingForm.valid || basefile == undefined"> Submit </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- Design QC -->
+
+<div class="modal fade" style="font-family: 'Open Sans', sans-serif;" id="designQCModal">
+    <div class="modal-dialog modal-lg" style="max-width:381.4px !important">
+      <div class="modal-content" >
+        <div class="modal-header" style="border-bottom: 14px solid #810d0d;">
+          <h6 class="modal-title" style="color:#8d0528 ; font-size: 18px;font-weight:600;">Design QC</h6>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" style="margin-top:5%;margin-left:2%;margin-right:2%">
+          <div>
+            <div class="row qcDiv">
+              <div class="col-md-7">
+                <b>Current Status: </b><span *ngIf="!currentDesignQCStatus && currentDesignQCStatus!='Pending'" style="color:#ff2323;padding-left:1rem">Fail</span>
+                <span *ngIf="currentDesignQCStatus && currentDesignQCStatus!='Pending'" style="color:#2cc990;padding-left:1rem">Pass</span>
+                <span *ngIf="currentDesignQCStatus == 'Pending'" >Pending</span>
+              </div>
+              <div class="col-md-5">
+                <b style="cursor: pointer;text-decoration: underline;color:#868283" data-dismiss="modal" data-toggle="modal" (click)="viewHistory('design_qc');" data-target="#historyDesignQCModal">View History</b>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+<!-- Cost QC -->
+
+<div class="modal fade" style="font-family: 'Open Sans', sans-serif;" id="costQCModal">
+    <div class="modal-dialog modal-lg" style="max-width:381.4px !important">
+      <div class="modal-content" >
+        <div class="modal-header" style="border-bottom: 14px solid #810d0d;">
+          <h6 class="modal-title" style="color:#8d0528 ; font-size: 18px;font-weight:600;">Cost QC</h6>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" style="margin-top:5%;margin-left:2%;margin-right:2%">
+          <div>
+            <div class="row qcDiv">
+              <div class="col-md-7">
+                <b >Current Status: </b><span *ngIf="!currentCostQCStatus && currentCostQCStatus !='Pending'" style="color:#ff2323;padding-left:1rem">Fail</span>
+                <span *ngIf="currentCostQCStatus && currentCostQCStatus !='Pending' " style="color:#2cc990;padding-left:1rem">Pass</span>
+                <span *ngIf="currentCostQCStatus == 'Pending'" >Pending</span>
+              </div>
+              <div class="col-md-5">
+                <b style="cursor: pointer;text-decoration: underline;color:#868283" data-dismiss="modal" data-toggle="modal" data-target="#historyCostQCModal" (click)="viewHistory('cost_qc');">View History</b>
+              </div>
+            </div>
+           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- History Design QC -->
+
+<div class="modal fade" style="font-family: 'Open Sans', sans-serif;" id="historyDesignQCModal">
+    <div class="modal-dialog modal-lg" style="max-width:746.46px !important">
+      <div class="modal-content" >
+        <div class="modal-header" style="border-bottom: 14px solid #810d0d;">
+          <h6 class="modal-title" data-dismiss="modal" data-toggle="modal" data-target="#designQCModal" style="cursor:pointer;color:#8d0528 ; font-size: 18px;font-weight:600;">Go Back</h6>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" style="margin-top:5%;margin-left:5%;margin-right:5%;font-size: 15px">
+          <div>
+            <div class="row qcDiv">
+              <div class="col-md-7" style="padding-left:0px">
+                <b> Design QC History </b>
+              </div>
+            </div>
+            <div class="row">
+              <ng-container *ngIf="history">
+                <table class="table no-decoration">
+                    <thead>
+                      <tr>
+                        <th (click)="sort('created_at')" style="color:#a7a7a7;width:20%">Date Created<i class="fa ml-2" [ngClass]="{'fa-sort-asc': (column == 'created_at' && !isDesc), 'fa-sort-desc': (column == 'created_at' && isDesc) }" aria-hidden="true"> </i></th>
+                        
+                        <th style="width:23%;color:#a7a7a7;text-align:center">Status</th>
+                        <th style="width:23%;color:#a7a7a7;text-align:center">Remark</th>
+                        <th style="color:#a7a7a7;text-align:center">File Uploaded</th>
+                        <!-- <th style="color:#a7a7a7;widows:60%">Remark</th> -->
+                      </tr>
+                    </thead>
+                    <tbody style="font-weight:600">
+                      <tr *ngFor="let historyRow of history.project_quality_checks | sortDatewise: {property: column , direction: direction};">
+                        <td>{{historyRow.created_at | date:'short'}}</td>
+                        
+                        <td *ngIf="!historyRow.status" style="color:#ff2323;text-align:center">{{historyRow.status | passFail}}</td>
+                        <td *ngIf="historyRow.status" style="color:#2cc990;text-align:center">{{historyRow.status | passFail}}</td>
+                        <td data-toggle="tooltip" [title]="historyRow.remark || '-'" style="cursor: pointer; text-align:center;max-width:80px;text-overflow:ellipsis;white-space: nowrap;overflow: hidden;">{{historyRow.remark || '-'}}</td>
+                        <td *ngIf="historyRow.file_url" style="color:#2cc990" align="center"><a [href]="historyRow.file_url" target="_blank" download ><i data-toggle="tooltip" title="Click to download file." class="fa fa-file-pdf-o" aria-hidden="true"></i></a>
+                        <td *ngIf="!historyRow.file_url" style="color:#8d0528" align="center"><a><i data-toggle="tooltip" title="No new File Uploaded." class="fa fa-close" aria-hidden="true"></i></a></td>
+                        <!-- <td>{{historyRow.remark}}</td> -->
+                      </tr>
+                    </tbody>
+                  </table>
+                </ng-container>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Technician QC -->
+
+<div class="modal fade" style="font-family: 'Open Sans', sans-serif;" id="technicianQCModal">
+    <div class="modal-dialog modal-lg" style="max-width:381.4px !important">
+      <div class="modal-content" >
+        <div class="modal-header" style="border-bottom: 14px solid #810d0d;">
+          <h6 class="modal-title" style="color:#8d0528 ; font-size: 18px;font-weight:600;">Technician QC</h6>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" style="margin-top:5%;margin-left:2%;margin-right:2%">
+          <div>
+            <div class="row qcDiv">
+              <div class="col-md-7">
+                
+                <b >Current Status: </b><span *ngIf="!currentTechQCStatus && currentTechQCStatus != 'Pending'" style="color:#ff2323;padding-left:1rem">Fail</span>
+                <span *ngIf="currentTechQCStatus && currentTechQCStatus != 'Pending'" style="color:#2cc990;padding-left:1rem">Pass</span>
+                <span *ngIf="currentTechQCStatus == 'Pending'" >Pending</span>
+              </div>
+              <div class="col-md-5">
+                <b style="cursor: pointer;text-decoration: underline;color:#868283" data-dismiss="modal" data-toggle="modal" data-target="#historyQCModal" (click)="viewHistory('tech_qc');">View History</b>
+              </div>
+            </div>
+            
+             
+             
+             
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- History Technician QC -->
+
+<div class="modal fade" style="font-family: 'Open Sans', sans-serif;" id="historyQCModal">
+    <div class="modal-dialog modal-lg" style="max-width:746.46px !important">
+      <div class="modal-content" >
+        <div class="modal-header" style="border-bottom: 14px solid #810d0d;">
+          <h6 class="modal-title" data-dismiss="modal" data-toggle="modal" data-target="#technicianQCModal" style="cursor:pointer;color:#8d0528 ; font-size: 18px;font-weight:600;">Go Back</h6>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" style="margin-top:5%;margin-left:5%;margin-right:5%;font-size: 15px">
+          <div>
+            <div class="row qcDiv">
+              <div class="col-md-7" style="padding-left:0px">
+                <b> Technician QC History </b>
+              </div>
+            </div>
+            <div class="row">
+                <ng-container *ngIf="history">
+                <table class="table no-decoration">
+                  <thead>
+                    <tr>
+                      <th (click)="sort('created_at')" style="color:#a7a7a7;width:20%">Date Created<i class="fa ml-2" [ngClass]="{'fa-sort-asc': (column == 'created_at' && !isDesc), 'fa-sort-desc': (column == 'created_at' && isDesc) }" aria-hidden="true"> </i></th>
+                      
+                      <th style="width:23%;color:#a7a7a7;text-align:center">Status</th>
+                      <th style="width:23%;color:#a7a7a7;text-align:center">Remark</th>
+                      <th style="color:#a7a7a7;text-align:center">File Uploaded</th>
+                      <!-- <th style="color:#a7a7a7;widows:60%">Remark</th> -->
+                    </tr>
+                  </thead>
+                  <tbody style="font-weight:600">
+                    <tr *ngFor="let historyRow of history.project_quality_checks | sortDatewise: {property: column , direction: direction};">
+                      <td>{{historyRow.created_at | date:'short'}}</td>
+                      
+                      <td *ngIf="!historyRow.status" style="color:#ff2323;text-align:center">{{historyRow.status | passFail}}</td>
+                      <td *ngIf="historyRow.status" style="color:#2cc990;text-align:center">{{historyRow.status | passFail}}</td>
+                      <td data-toggle="tooltip" [title]="historyRow.remark || '-'" style="text-align:center;max-width:80px;text-overflow:ellipsis;white-space: nowrap;overflow: hidden;cursor:pointer">{{historyRow.remark || '-'}}</td>
+                      <td *ngIf="historyRow.file_url" style="color:#2cc990" align="center"><a [href]="historyRow.file_url" target="_blank" download ><i data-toggle="tooltip" title="Click to download file." class="fa fa-file-pdf-o" aria-hidden="true"></i></a>
+                      <td *ngIf="!historyRow.file_url" style="color:#8d0528" align="center"><a><i data-toggle="tooltip" title="No new File Uploaded." class="fa fa-close" aria-hidden="true"></i></a></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- History Cost QC -->
+
+<div class="modal fade" style="font-family: 'Open Sans', sans-serif;" id="historyCostQCModal">
+    <div class="modal-dialog modal-lg" style="max-width:746.46px !important">
+      <div class="modal-content" >
+        <div class="modal-header" style="border-bottom: 14px solid #810d0d;">
+          <h6 class="modal-title" data-dismiss="modal" data-toggle="modal" data-target="#costQCModal" style="cursor:pointer;color:#8d0528 ; font-size: 18px;font-weight:600;">Go Back</h6>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body" style="margin-top:5%;margin-left:5%;margin-right:5%;font-size: 15px">
+          <div>
+            <div class="row qcDiv">
+              <div class="col-md-7" style="padding-left:0px">
+                <b> Cost QC History </b>
+              </div>
+            </div>
+            <div class="row">
+              <ng-container *ngIf="history">
+              <table class="table no-decoration">
+                  <thead>
+                    <tr>
+                      <th (click)="sort('created_at')" style="color:#a7a7a7;width:20%">Date Created<i class="fa ml-2" [ngClass]="{'fa-sort-asc': (column == 'created_at' && !isDesc), 'fa-sort-desc': (column == 'created_at' && isDesc) }" aria-hidden="true"> </i></th>
+                      
+                      <th style="width:23%;color:#a7a7a7;text-align:center">Status</th>
+                      <th style="width:23%;color:#a7a7a7;text-align:center">Remark</th>
+                      <th style="color:#a7a7a7;text-align:center">File Uploaded</th>
+                      <!-- <th style="color:#a7a7a7;widows:60%">Remark</th> -->
+                    </tr>
+                  </thead>
+                  <tbody style="font-weight:600">
+                    <tr *ngFor="let historyRow of history.project_quality_checks | sortDatewise: {property: column , direction: direction};">
+                      <td>{{historyRow.created_at | date:'short'}}</td>
+                      
+                      <td *ngIf="!historyRow.status" style="color:#ff2323;text-align:center">{{historyRow.status | passFail}}</td>
+                      <td *ngIf="historyRow.status" style="color:#2cc990;text-align:center">{{historyRow.status | passFail}}</td>
+                      <td data-toggle="tooltip" [title]="historyRow.remark || '-'" style="cursor: pointer;text-align:center;max-width:80px;text-overflow:ellipsis;white-space: nowrap;overflow: hidden;">{{historyRow.remark || '-'}}</td>
+                      <td *ngIf="historyRow.file_url" style="color:#2cc990" align="center"><a [href]="historyRow.file_url" target="_blank" download ><i data-toggle="tooltip" title="Click to download file." class="fa fa-file-pdf-o" aria-hidden="true"></i></a>
+                      <td *ngIf="!historyRow.file_url" style="color:#8d0528" align="center"><a><i data-toggle="tooltip" title="No new File Uploaded." class="fa fa-close" aria-hidden="true"></i></a></td>
+                    </tr>
+                  </tbody>
+                </table>
+                </ng-container>
+          </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- View Gallery MODAL -->
+<div class="modal fade" id="viewGalleryModal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header" style="border-bottom: 1px solid #e4e4e4;">
+        <h6 class="modal-title">Gallery : </h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row m-0">
+           <div class="col-md-4 mt-4" *ngFor="let item of file_list">
+            <div class="card card-chng">
+              <div class="card-block" style="padding: 1rem;">
+                <div class="row">
+                  <div class="col-md-12">
+                    <p class="mb-0 mt-2" style="font-size:13px;">
+                       
+                      <span>Uploaded File Name: </span>
+                      <span style="color: #7E7E7E;">{{item[0]}}</span> 
+                    </p>
+                  </div>
+                  <div class="col-md-12 divbutton mt-2">
+                   <a class="btn btn-pink btn-chng pull-right" href="{{item[1]}}" download target="_blank">
+                      Download
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

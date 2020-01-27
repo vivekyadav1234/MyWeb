@@ -1,0 +1,177 @@
+<div class="row title">
+  <h3>Dashboard / <span>Portfolio Data</span></h3>
+  <p class="add" data-toggle="tooltip" title="Add Segment" data-placement="left" (click)="tooltipHide()" [routerLink]="['/portfolio/create']" routerLinkActive='active'><i class="fa fa-plus" aria-hidden="true"></i></p>
+  <input class="searchBox addCursor" id="in" #search (keyup)="0" placeholder="">
+  <p class="searchIcon"><i class="fa fa-search" aria-hidden="true"></i></p>
+</div>
+<div class="row body_height justify-content-center">
+  <div class="col-12" *ngIf="erroralert">
+    <div class="alert-box grid-100" *ngIf="errorMessage">
+      <div class="alert alert-danger mt-3 text-center">
+        <a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a>
+        {{errorMessage}}
+      </div>
+    </div>
+  </div>
+  <div class="col-12" *ngIf="successalert">
+    <div class="alert-box grid-100" *ngIf="successMessage">
+      <div class="alert alert-success mt-3 text-center">
+        <a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+        {{successMessage}}
+      </div>
+    </div>
+  </div>
+  <div class="col-12 table-responsive p-0" id="scrollTop">
+    <table class="table table-hover" *ngIf="portfolio">
+      <thead>
+        <tr>
+          <th class="text-center">ID</th>
+          <th>Segment</th>
+          <th>Space</th>
+          <th>Category</th>
+          <th>Price</th>
+          <th class="table_img_col">Image</th>
+          <th class="table_active_col text-center">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of portfolio | category: search.value; let i = index " [attr.data-index]="i">
+          <td class="text-center">{{data.id}}</td>
+          <td >{{data.segment}}</td>
+          <td>{{data.space}}</td>
+          <td><p *ngIf="data.theme != '' ">Theme- {{data.theme}} </p><p *ngIf="data.lifestage != '' ">Lifestage Kitchen - {{data.lifestage}} </p><p *ngIf="data.element != '' ">Element - {{data.element}}</p></td>
+          <td>{{data.price_cents}}</td>
+          <td>
+            <img class="my-2" src="{{data.attachment_file}}" width="200px" *ngIf="data.attachment_file !='/images/original/missing.png' "><img src="../../../../assets/v3/img/noimgicon.jpeg" height="240px" width="260px" *ngIf="data.attachment_file =='/images/original/missing.png' ">
+          </td>
+          <td class="text-center fa_icons">
+            <a data-toggle="modal" data-target="#exampleModalLong" (click)="getPortfolio(data.id)"><i data-toggle="tooltip" title="Edit" data-placement="top" class="fa fa-pencil" aria-hidden="true"></i></a>
+            <a (click)="confirmAndDelete(data.id)"><i data-toggle="tooltip" title="Delete" data-placement="top" class="fa fa-trash" aria-hidden="true"></i></a>
+
+            <div class="alert alert-warning my-2" *ngIf="(data.attachment_size/1024) > 120">
+              <strong>Warning!</strong> Image size exceeds 120kb.
+            </div>
+            <!-- <div class="alert alert-danger my-2"  *ngIf="((data.attachment_height != null) || (data.attachment_width != null)) && ((data.attachment_height != 583) || (data.attachment_width != 1010))">
+              <strong>Error!</strong> Image resolution doesn't match with the specified resolutions (1010 X 583).
+            </div> -->
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+
+
+<div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+    <form (ngSubmit)="onSubmit(editPortfolioForm.value); editPortfolioForm.reset();" #editPortfolioForm="ngForm">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Update Portfolio Details</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group label-floating">
+                        <label class="control-label">Segment</label>
+                        <select class="form-control"  name="segment" [(ngModel)]="segment" (change)="firstDropDownChanged($event.target.value)">
+                            <option value="">Select Segment</option>
+                            <option value="Home" [selected]="segment == 'Home'">Home</option>
+                            <option value="Office" [selected]="segment == 'Office'">Office</option>
+
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group label-floating">
+                        <label class="control-label"> Space</label>
+                        <select class="form-control" name="space" [(ngModel)]="space" (change)="spaceDropDownChanged($event.target.value)">
+                            <option value="">Select Space</option>
+                            <option *ngFor="let v of spaces" value="{{v}}" [selected]="space == v">
+                                   {{v}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6" *ngIf="segment=='Home' && (space == 'Living' || space == 'Kitchen')">
+                    <div class="form-group label-floating">
+                        <label class="control-label"> Theme</label>
+                        <select class="form-control" name="theme" [(ngModel)]="theme">
+                            <option value="">Select Theme</option>
+                            <option *ngFor="let v of themes" value="{{v}}" [selected]="theme == v" >
+                                   {{v}}
+                               </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6" *ngIf="segment=='Home' && space == 'Kitchen' && theme == 'Lifestage Kitchen' ">
+                    <div class="form-group label-floating">
+                        <label class="control-label"> Lifestage</label>
+                        <select class="form-control" name="lifestage" [(ngModel)]="lifestage">
+                            <option value="">Select Lifestage</option>
+                            <option *ngFor="let v of lifestages" value="{{v}}" [selected]="lifestage == v">
+                                   {{v}}
+                               </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6" *ngIf="segment=='Home' && space == 'Bedroom' ">
+                    <div class="form-group label-floating">
+                        <label class="control-label"> Element</label>
+                        <select class="form-control" name="element" [(ngModel)]="element">
+                            <option value="">Select Element</option>
+                            <option *ngFor="let v of elements" value="{{v}}" [selected]="element == v">
+                                   {{v}}
+                               </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group label-floating">
+                        <label class="control-label"> Price</label>
+                        <input type="number" class="form-control" name="price_cents" [(ngModel)]="price_cents" min=0>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group label-floating">
+                        <label class="control-label"> User Story Title</label>
+                        <input type="text" class="form-control" name="user_story_title" [(ngModel)]="user_story_title">
+                    </div>
+                </div>
+                <div class="col-md-12">
+                   <div class="form-group label-floating">
+                        <label class="control-label"> Description</label>
+                        <textarea  class="form-control" name="description" [(ngModel)]="description"></textarea>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                   <div class="form-group label-floating">
+                        <label class="control-label"> Portfolio Data</label>
+                        <textarea  class="form-control" name="portfolio_data" [(ngModel)]="portfolio_data"></textarea>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group label-floating">
+                        <label class="control-label"> Change Image</label>
+                       <input type="file" class="form-control" (change)="onChange($event)" name="attachment_file" ngModel #attachment_file="ngModel">
+
+                    </div>
+                    <img src="{{imgsrc}}" id="updateimgsrc" height="300px" width="100%" *ngIf="imgsrc"/>
+                </div>
+            </div>
+
+      </div>
+      <div class="modal-footer">
+        <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
+        <button type="submit"  class="button button_emi">Update</button>
+      </div>
+    </form>
+    </div>
+  </div>
+</div>

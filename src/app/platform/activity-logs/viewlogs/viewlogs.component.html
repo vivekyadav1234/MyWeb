@@ -1,0 +1,476 @@
+<div class="row ss-top-menu">
+  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6">
+    <span class="ss-text-light ss-link" style="vertical-align: -webkit-baseline-middle;" [routerLink]="['/']">Dashboard</span> 
+    <span style="vertical-align: -webkit-baseline-middle;"><i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-text-light ss-link" style="vertical-align: -webkit-baseline-middle;" [routerLink]="['/community_manager/leads']" [queryParams]="{lead_status: lead_status}" *ngIf="(role=='city_gm' || role=='business_head' || role=='community_manager' || role=='design_manager')">Lead </span>
+    <span class="ss-text-light ss-link" style="vertical-align: -webkit-baseline-middle;" [routerLink]="['/designer/leads']" [queryParams]="{customer_status: lead_logs.lead_status}" *ngIf="role=='designer'">Lead </span>
+    <span *ngIf="lead_logs" class="capitalize" style="vertical-align: -webkit-baseline-middle;"><i class="rightArrow fa fa-angle-right"></i> {{lead_logs.lead_status | replaceChar}}</span>
+    <span style="vertical-align: -webkit-baseline-middle;"><i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-text-dark capitalize" style="vertical-align: -webkit-baseline-middle;">{{lead_logs.name}}</span>
+  </div>
+</div>
+<div class="rk-ui-notification" *ngIf="successalert">
+  <span id="notificationMessageText">{{successMessage}}</span>
+  <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+
+<div class="row px-4">
+  <div class="col-md-12 p-0 mt-4">
+    <ul class="nav nav-tabs ss-nav-tabs" id="myTab" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link ss-nav-link" id="home-tab" data-toggle="tab" role="tab" aria-controls="home" aria-selected="true" routerLink="/lead/{{lead_id}}/overview" [queryParams]="{lead_status: lead_status}" *ngIf="isProjectInWip()">Overview</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link active ss-nav-link" id="home-tab" data-toggle="tab" role="tab" aria-controls="home" aria-selected="true" routerLink="/lead/{{lead_id}}/activity-logs" [queryParams]="{lead_status: lead_status}">Activity Logs</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link ss-nav-link" id="profile-tab" data-toggle="tab" role="tab" aria-controls="profile" aria-selected="false" routerLink="/lead/{{lead_id}}/basic-info" [queryParams]="{lead_status: lead_status}">Basic Info</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link ss-nav-link" id="contact-tab" data-toggle="tab" role="tab" aria-controls="contact" aria-selected="false" routerLink="/lead/{{lead_id}}/detailed-info" [queryParams]="{lead_status: lead_status}">Detailed Info</a>
+      </li>
+      <li class="nav-item" *ngIf="isProjectInWip()">
+        <a class="nav-link ss-nav-link" id="boq-tab" data-toggle="tab" role="tab" aria-controls="boq" aria-selected="false" routerLink="/lead/{{lead_id}}/boq" [queryParams]="{lead_status: lead_status}">BOQ</a>
+      </li>
+      <li class="nav-item" *ngIf="isProjectInWip()">
+        <a class="nav-link ss-nav-link" id="ppt-tab" data-toggle="tab" role="tab" aria-controls="ppt" aria-selected="false" routerLink="/lead/{{lead_id}}/ppt" [queryParams]="{lead_status: lead_status}">PPT</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link ss-nav-link" id="files-tab" data-toggle="tab" role="tab" aria-controls="files" aria-selected="false" routerLink="/lead/{{lead_id}}/files" [queryParams]="{lead_status: lead_status}">Files</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link ss-nav-link" id="calendar-tab" data-toggle="tab" href="#calendar" role="tab" aria-controls="calendar" aria-selected="false" routerLink="/lead/{{lead_id}}/calendar" [queryParams]="{lead_status: lead_status}">Calendar</a>
+      </li>
+      <li class="nav-item" *ngIf="isProjectInWip()">
+        <a class="nav-link ss-nav-link" id="proposal-tab" data-toggle="tab" href="#proposals" role="tab" aria-controls="proposals" aria-selected="false" routerLink="/lead/{{lead_id}}/proposals" [queryParams]="{lead_status: lead_status}">Proposals</a>
+      </li>
+      <li class="nav-item" *ngIf="isProjectInWip()">
+          <a class="nav-link ss-nav-link "  id="proposal-tab" data-toggle="tab" href="#custom" role="tab" aria-controls="custom" aria-selected="false" routerLink="/lead/{{lead_id}}/custom-view" [queryParams]="{lead_status: lead_status}">Custom Element</a>
+      </li>
+      <li class="nav-item" *ngIf="isProjectInWip()">
+        <a class="nav-link ss-nav-link" id="proposal-tab" data-toggle="tab" href="#proposals" role="tab" aria-controls="proposals" aria-selected="false" routerLink="/lead/{{lead_id}}/payments" >Payments</a>
+      </li>
+      <li class="nav-item" *ngIf="isProjectInWip() && role =='community_manager'">
+        <a class="nav-link ss-nav-link {{payment_approval_tab}}" id="proposal-approve-tab" data-toggle="tab" href="#proposals-approve" role="tab" aria-controls="proposal-approve" aria-selected="false" routerLink="/lead/{{lead_id}}/proposal-approve" >Proposal Approve</a>
+      </li>
+      <li class="nav-item" *ngIf="isProjectInWip()">
+        <a class="nav-link ss-nav-link {{handover_for_production}}" id="handover-for-production-tab" data-toggle="tab" href="#handover-for-production" role="tab" aria-controls="handover-for-production" aria-selected="false" routerLink="/lead/{{lead_id}}/handover-for-production" [queryParams]="{lead_status: lead_status}" >Handover/Feasibility</a>
+      </li>
+
+    </ul>
+  </div>
+  <div class="col-12 bg-white">
+
+    <!-- <div class="row leadDetailsMainDiv">
+      <div class="col-md-12 pl-4 borderBottom">
+        <div class="leadDetailsDiv">
+          <p class="my-2 vColor">Lead Details</p>
+        </div>
+      </div>
+      <div class="col-md-4 my-4 pl-4">
+        <p class="vColor fontSize14 mb-2">Name: <span class="text-dark">{{lead_logs.name}}</span></p>
+        <p class="vColor fontSize14 mb-2">Role: <span class="text-dark">{{lead_logs.lead_type}}</span></p>
+      </div>
+      <div class="col-md-4 my-4">
+        <p class="vColor fontSize14 mb-2">Contact: <span class="text-dark">{{lead_logs.contact}}</span></p>
+        <p class="vColor fontSize14 mb-2">Status: <span class="text-dark">{{lead_logs.lead_status}}</span></p>
+      </div>
+      <div class="col-md-4 my-4">
+        <p class="vColor fontSize14 mb-2">Date of Acquisition: <span class="text-dark">{{lead_logs.created_at | date:'dd MMMM, y , h:mm a'}}</span></p>
+        <p class="vColor fontSize14 mb-2">Assigned CS Agent: <span class="text-dark">{{lead_logs.agent.name}}</span></p>
+      </div>
+    </div> -->
+      <div class="row mt-4">
+        <div class="col-md-12">
+          <div class="phone pull-right">
+            <a   data-tooltip1="CALL/SMS TO CUSTOMER" data-toggle="modal" data-target="#alternateNumberModal"><i class="cursor-pointer" (click)="getCustomerDetails()" style="    font-size: 1rem; color: #8F0020;">CALL/SMS1</i></a>&nbsp;&nbsp;
+            <a   data-tooltip2="SMS HISTORY"><i class="fa fa-history cursor-pointer"style="font-size: 1.5rem; color: #8F0020;" data-target="#SmsModalHistory" data-toggle="modal" (click)="getSmsHis()"></i></a>
+            <a data-tooltip1="Munites of Meeting" class="ml-2 cursor-pointer" data-toggle="modal" data-target="#mom-modal" (click) ="getMOMevents();">
+              <img src="../../assets/img/MOM.svg" style="width: 20px;margin-top: -12px;">
+            </a>
+          </div>
+          
+          
+        </div>
+        
+      </div>
+
+    <div class="row my-4">
+      <div class="col-md-6">
+        <!-- <p class="vColor fontSize14 mb-2">DATE RANGE</p> -->
+      </div>
+      <div class="col-md-6">
+        <div class="row">
+          <div class="col-6 col-lg-7">
+            <p class="vColor fontSize14 mb-2">USER</p>
+            <div class="dropdown">
+
+              <button class="dropdown-toggle dropdownButton dropdownButton1" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <img src="../../assets/img/images/original/missing.png" class="img-fluid mobNone myFluit mr-2">
+                <span>All (logs)</span>
+              </button>
+
+              <div class="dropdown-menu dropdownMenu py-1" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item mt-2" (click) = "filterLogs($event, 'all')">
+                  <img src="../../assets/img/images/original/missing.png" class="img-fluid myFluit mr-2"> 
+                  All (logs)
+                </a>
+
+                <a class="dropdown-item mt-2" *ngFor="let owner of log_owners" (click) = "filterLogs($event,owner.email)">
+                  <img src="../../assets/img{{owner.image}}" class="img-fluid myFluit mr-2" onError="this.src='../../assets/img/images/original/missing.png'"> 
+                  {{owner.name}}
+                </a>
+              </div>
+
+            </div>
+          </div>
+          <div class="col-6 col-lg-5">
+            <p class="vColor fontSize14 mb-2">SORT BY</p>
+            <div class="dropdown">
+              <button class="dropdown-toggle dropdownButton dropdownButton2" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Oldest First
+              </button>
+              <div class="dropdown-menu dropdownMenu py-1" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" (click)="sortlog('created_at', 'oldest')">Oldest First</a>
+                <a class="dropdown-item" (click)="sortlog('created_at', 'newest')">Newest First</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mb-5">
+      <div class="col-md-12">
+        <!-- <h5 class="my-3 vColor1">Today <span class="vDate vColor ml-1">Thu Jun 23</span></h5> -->
+        <!-- *ngFor="let log of filtered_logs" -->
+        <div class="row justify-content-md-center" *ngFor = "let log of filtered_logs | sortDatewise:{property:columnlog, direction:directionlog}">
+          <div class="col-md-11">
+            <div class="row customRow mt-2 mb-1 card-shadow" data-toggle="collapse" attr.data-target="#{{log.custom_id}}" aria-expanded="false" aria-controls="collapseExample">
+              <div class="col-1 mobNone text-center">
+                <!-- <img src="../../assets/v3/img/profile.jpeg" class="img-fluid"> -->
+                <img src="../../assets/img{{log.user_image}}" class="img-fluid" onError="this.src='../../assets/img/images/original/missing.png'"/>
+              </div>
+              <div class="col-12 col-lg-11 pl-lg-0" *ngIf="log.exotel==false">
+                <p class="mb-0 mt-1 vColor1">
+                  <span class="vPara capitalize" *ngIf="log.name">{{log.name}}({{log.role}}) </span>
+                  <span class="vPara" *ngIf="!log.name">Someone </span>
+                  <span>{{log.event}}</span>
+                  <span>{{log.owner}}</span>
+                  <span>on</span>
+                  <span class="vPara">" {{log.date}} "</span></p>
+                <span class="vDate vColor">{{log.time}}</span>
+                <i class="cusDownArrow fa fa-caret-down"></i>
+              </div>
+              <div class="col-12 col-lg-11 pl-lg-0" *ngIf="log.exotel==true">
+                <p class="mb-0 mt-1 vColor1">
+                  <span class="vPara capitalize" *ngIf="log.whodunnit">{{log.whodunnit}}({{log.role}}) </span>
+                  <span class="vPara" *ngIf="!log.whodunnit">Someone </span>
+                  <span>called at</span>
+                  <span class="vPara">"{{log.called_at | date: 'dd MMM, y '}}"</span></p>
+                  <span class="vDate vColor">{{log.called_at | date:'h:mm a'}}</span>
+                <i class="cusDownArrow fa fa-caret-down"></i>
+              </div>
+
+              <!-- <div class="col-11 pl-0">
+                <p class="mb-0 mt-1 vColor1">
+                  <span class="vPara" *ngIf="log.name">{{log.name}}({{log.role}}) </span>
+                  <span class="vPara" *ngIf="!log.name">Someone </span>
+                  <span>{{log.event}}</span>
+                  <span>{{log.owner}}</span>
+                  <span>on</span>
+                  <span class="vPara">" {{log.date}} "</span></p>
+                <span class="vDate vColor">{{log.time}}</span>
+                <i class="cusDownArrow fa fa-caret-down"></i>
+              </div> -->
+            </div>
+
+            <div class="row collapse" id="{{log.custom_id}}" *ngIf="log.exotel==false">
+              <div class="col-md-12 p-0">
+                <div class="card card-body">
+                  <table class="table table-responsive">
+                    <tbody>
+                      <tr>
+                        <th style="border: 0;">Field</th>
+                        <th style="border: 0;">Original Value</th>
+                        <th style="border: 0;">New Value</th>
+                      </tr>
+                      <tr *ngFor = "let object of log.object_changes">
+                        <td style="border: 0;" class="vColor1 tableMob" *ngIf="(object.name != 'Contact') && (object.name != 'Phone')">{{object.name}}</td>
+                        <td style="border: 0;" class="tableMob" *ngIf="(object.name != 'Contact') && (object.name != 'Phone')">{{object.initial}}</td>
+                        <td style="border: 0;" class="tableMob" *ngIf="(object.name != 'Contact') && (object.name != 'Phone')">{{object.final}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="row collapse" id="{{log.custom_id}}" *ngIf="log.exotel==true">
+              <div class="col-md-12 p-0">
+                <div class="card card-body">
+                  <table class="table table-responsive">
+                    <tbody>
+                      <tr>
+                        <th style="border: 0;">Status</th>
+                        <th style="border: 0;">Duration</th>
+                        <th style="border: 0;">Recording Url</th>
+                      </tr>
+                      <tr>
+                        <td style="border: 0;" class="vColor1">{{log.status}}</td>
+                        <td style="border: 0;">{{log.duration}}</td>
+                        <td style="border: 0;">
+                          <audio controls *ngIf="log.recording_url!=null && log.recording_url!='' ">
+                            <source src="{{log.recording_url}}" type="audio/mpeg">
+                              Your browser does not support the audio element.
+                          </audio>
+                          <span *ngIf="log.recording_url==null || log.recording_url=='' ">NA</span>
+                      </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="SmsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Send SMS</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group row">
+            <label for="example-text-input" class="col-2 col-form-label">SMS: </label>
+            <div class="col-10">
+                <textarea rows="1" cols="4" name="sms_send" id="sms_send" class="form-control"></textarea>
+                
+            </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary btn-pink" (click)="sendSmsToLead()">Send</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- Modal for sms history -->
+<div id="SmsModalHistory" class="modal fade" role="dialog" data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content modal-change">
+      <div class="modal-header modal-header-chng">
+        <h4 class="modal-title modal-title-change">SMS History</h4>
+        <div class="iconbox">
+          <button type="button" class="close close-icon" data-dismiss="modal">&times;</button>
+        </div>
+      </div>
+      <div class="modal-body modal-body-change">
+        <div class="row">
+          <div class="col-md-12" *ngIf="smsList && smsList.length>0">
+
+
+            <div class="tableDiv">
+              <div class="table-responsive">
+                <table class="table ">
+                  <thead class="thead-dark">
+                    <tr>
+                      <th scope="col" class="firstTh">#</th>
+                      <th scope="col">SENT ON</th>
+                      <!-- <th scope="col">UPDATED AT</th> -->
+                      <th scope="col">MESSAGES</th>                     
+                      <th class="lastTh"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                   <tr  *ngFor="let sms of smsList; let i = index; " [attr.data-index]="i" class="box-list">
+                    <td>{{ i +1 }}</td>
+                    <td>{{ sms.created_at | date:'dd/MM/yyyy - h:mm a' }}</td>
+                    <!-- <td>{{ sms.updated_at | date:'dd/MM/yyyy - h:mm a' }}</td> -->
+                    <td>{{ sms.message }}</td>
+                    
+                    
+                    <!-- <td>{{ proposal.discount_status }}</td> -->
+                  
+                  </tr>
+                      
+                  </tbody>
+                </table>  
+                <!-- <p>{{paymentForm.value | json}}</p> -->
+              </div>
+            </div>          
+          </div>
+          <div class="col-md-12" *ngIf="smsList && smsList.length == 0">
+            <div class="boq-img" >
+              <img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+            </div>
+            <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing to show...</p>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- His -->
+
+<!-- Modal -->
+<div class="modal fade mt-5" id="alternateNumberModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg mt-4" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Select Contact</h5>
+          <button (click)="contact_number_for_sms = undefined" type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div class="bg-light col-12 font-weight-bold pr-0">
+                <label for="example-text-input" class="col-4">Name </label>
+                <label for="example-text-input" class="col-4">Relation </label>
+                <!-- <label for="example-text-input" class="col-3">Contact </label> -->
+            </div>
+          <div class="form-group" *ngFor="let user of customerDetails">
+            
+            <div class="col-12">
+                <label for="example-text-input" class="col-4">{{user.name}} </label>
+                <label for="example-text-input" class="col-4">{{user.relation}} </label>
+                <!-- <label for="example-text-input" class="col-3">{{user.contact}} </label> -->
+                <label><i class="fa fa-phone cursor-pointer" (click)="callToLead(user.contact)" style="    font-size: 1.5rem; color: #8F0020;"></i></label>
+                <a class="pl-5"  (click)="contact_number_for_sms=user.contact" data-tooltip="SEND SMS"><i class="fa fa-envelope-o cursor-pointer"style="font-size: 1.5rem; color: #8F0020;" data-target="#SmsModal" data-toggle="modal"></i></a>&nbsp;&nbsp;
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+<!--MOM modal-->
+<div class="modal fade mt-5" id="mom-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" style="overflow:auto;">
+  <div class="modal-dialog modal-dialog-centered modal-lg mt-4" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">ADD/SHARE MOM</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+
+        <div *ngIf = "mom_events.length>0">
+          <table class="table">
+            <tr>
+              <th>EVENT NAME</th>
+              <th>MOM STATUS</th>
+              <th>EVENT STATUS</th>
+              <th>SCHEDULE DATE AND TIME</th>
+              <th class="lastTh"></th> 
+            </tr>
+
+            <tr *ngFor="let events of mom_events">
+              <td>{{events.agenda | replaceChar}}</td>
+              <td>{{events.mom_status}}</td>
+              <td>{{events.status}}</td>
+              <td>{{events.datetime}}</td>
+              <td>
+                <div *ngIf="events.mom_status=='pending'">
+                  <a class="btn btn-pink" [routerLink]="['/mom-form']" [queryParams]="{id: events.id}" target="_blank">Add MOM</a>
+                </div>
+
+                <div *ngIf="events.mom_status=='present'">
+                  <a class="btn btn-pink" href="#" [routerLink]="['/mom-edit']" [queryParams]="{id: events.id}" target="_blank">Edit</a>
+                  <button class="btn btn-pink" (click) = "deleteMOM(events.id)">Delete</button>
+                  <a class="btn btn-pink" href="#" data-toggle="modal" data-target="#view-mom" (click) = "momView(events.id)">View MOM</a>
+                  <a class="btn btn-pink mt-1" href="#" data-toggle="modal" data-target="#share-mom" (click) = "share(events)">Share MOM</a>
+                </div>
+
+                <div *ngIf="events.mom_status=='shared'">
+                  <a class="btn btn-pink" href="#" data-toggle="modal" data-target="#view-mom" (click) = "momView(events.id)">View MOM</a>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="col-12" *ngIf = "mom_events.length==0">
+          <div class="boq-img text-center">
+            <img src="../../../assets/img/desktop.png">
+          </div>
+          <p class="nothing-to-show pb-4 text-center">Nothing to show...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!--Share MOM Modal-->
+<div class="modal fade mt-5" id="share-mom" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered mt-4" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Share MOM</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <form [formGroup]="mom" (ngSubmit)= "momShare()">
+          <p class="ml-3" style="font-weight: 500">Choose participants to share MOM</p>
+          <div *ngFor="let user of user_list">
+            <ng-container >
+              <input class="mt-2 ml-3" type="checkbox" value="{{user.email}}" (change)="OnEmailSelect($event)">
+             <label class="form-check-label" for="{{user.email}}" style="padding-left: 0.25rem;">{{user.name}} ({{user.email}})</label>
+            </ng-container>
+          </div>
+          
+          <button class="btn btn-pink mt-4 ml-3" type="submit">Share MOM</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--View mom modal-->
+<div class="modal fade mt-5" id="view-mom" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg mt-4" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">View MOM</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body" *ngIf="view_mom">
+        <p>{{view_mom.mom_description}}</p>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-pink" (click) = "closeViewMoM()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+

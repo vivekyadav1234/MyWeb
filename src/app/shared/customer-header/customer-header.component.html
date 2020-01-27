@@ -1,0 +1,58 @@
+<nav class="p-0 navbar navbar-expand-lg navbar-light custom-nav">
+  <!-- <a *ngIf="role=='customer'" class="navbar-brand" [routerLink]="['/']">
+    <img src="../../../assets/img/Logo resized.svg" width="111px">
+  </a>
+  <a class="navbar-brand p-0" [routerLink]="['/']" *ngIf="role=='catalog_viewer'">
+    <img src="../../../assets/img/logo polka1.png" width="230px">
+  </a> -->
+  <div class="text-center" *ngIf="this.url.includes( 'arrivae') || this.url.indexOf('arrivae') !== -1 ">
+    <a href="/"><img src="/assets/img/Logo resized.svg" style="width: 151px;margin-top:7%; margin-bottom: 2%"></a>
+  </div>
+  <div class="text-center" *ngIf="this.url.includes( 'polkahouse') || this.url.indexOf('polkahouse') !== -1 ">
+    <a [routerLink]="['/']"><img src="../../../assets/img/logo polka1.png" width="200px"></a>
+  </div>
+  <a *ngIf="this.url == 'http://localhost:4200'" class="navbar-brand" href="/"><img src="/assets/img/Logo resized.svg" style="width: 151px;margin-top:7%; margin-bottom: 2%"></a>
+  <!--   ///// -->
+   
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavDropdown">
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item dropdown border-left-2px">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <i class="fa fa-user avatar"></i><span>{{userDetailService.current_user()?.name | ucwords}}</span>
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+          <a class="dropdown-item cursor-pointer" [routerLink]="['/changepassword/'+userDetailService.current_user()?.email]" routerLinkActive="active">Change Password</a>
+          <a class="dropdown-item cursor-pointer" [routerLink]="['/changepassword/'+userDetailService.current_user()?.email]" routerLinkActive="active" *ngIf="role !='catalog_viewer'">View Details</a>
+          <a class="dropdown-item cursor-pointer" *ngIf = "is_champion=='true'"  data-toggle="modal" data-target="#inviteChampionModal" (click)="customerheadinvitechampions.getChampionList()">Invite Level 2 & Level 3 User</a>
+          <a class="dropdown-item cursor-pointer " (click) = "logOut()">Logout</a>
+        </div>
+      </li>
+    </ul>
+  </div>
+</nav>
+<!-- Invite Champion Modal -->
+<div class="modal fade customModal" id="inviteChampionModal" tabindex="-1" role="dialog" aria-labelledby="inviteChampionModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title modalTitle" id="inviteChampionModalLabel">User Details</h5>
+      </div>
+
+      <div class="modal-body">
+        <app-invite-champions #customerheadinvitechampions></app-invite-champions>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="rk-ui-notification err" *ngIf="erroralert"  style="z-index: 10000;">
+    <span id="notificationMessageText">{{errorMessage}}</span>
+    <a class="close rk-linknotification" (click)="erroralert=false">×</a>
+  </div>
+  <div class="rk-ui-notification" *ngIf="successalert"  style="z-index: 10000;">
+    <span id="notificationMessageText">{{successMessage}}</span>
+    <a class="close rk-linknotification" (click)="successalert=false">×</a>
+  </div>

@@ -1,0 +1,36 @@
+<div class="row justify-content-center bgColor" >
+	<div class="col-11" *ngIf="scheduledEvents && scheduledEvents.length >0">
+		<div class="tableDiv mt-4">
+		  <table class="table">
+		    <thead class="ss-thead">
+		      <tr>
+		        <th class="firstTh" style="min-width: 1rem;">#</th>
+		        <th>DATE</th>
+		        <th>ASSOCIATED DESIGNER</th>
+		        <th>AGENDA</th>
+		        <th>QUESTIONs</th>
+		        <th class="lastTh">STATUS</th>
+		      </tr>
+		    </thead>
+		    <tbody class="ss-tbody">
+		      <tr *ngFor="let event of scheduledEvents; let i = index">
+		        <td style="min-width: 1rem;">{{i +1}}</td>
+		        <td>{{event.datetime}}</td>
+		        <td class="capitalize">{{event.designers}}</td>
+		        <td>{{event.agenda | replaceChar}}</td>
+		        <td>{{event.description}}</td>
+		        <td class="capitalize">{{event.status}}</td>
+		      </tr>
+		    </tbody>
+		  </table>
+		</div>
+	</div>
+	<div class="col-md-11  " *ngIf="scheduledEvents.length==0 ">
+	    <div class="boq-img not-found">
+	      <img src="../../../assets/img/customer/schedule.png" style="height: 250px;width: 300px">
+	    </div>
+	    <p class=" pb-4 not-found" style="font-size: 21px;text-align: center;color: dimgray">No Recent Calls  Yet!!<br><span style="font-size: 20px;text-align: center;color: dimgray">You should schedule a call with your designer regarding any doubts !!</span></p> 
+
+	</div>
+
+</div>

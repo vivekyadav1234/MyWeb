@@ -1,0 +1,48 @@
+<div class="row ss-top-menu">
+  <div class="col-xl-5 col-lg-5 col-md-5 col-sm-5 col-xs-5">
+    <span class="ss-text-light" style="vertical-align: -webkit-baseline-middle;">Dashboard <i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;">Projects</span>
+  </div>
+</div>
+
+<div class="row body_height justify-content-center table-body">
+  <div class="col-12 not-found" *ngIf="wip_project_list && wip_project_list.length==0 ">
+    <div class="boq-img">
+      <img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+    </div>
+    <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing to show...</p> 
+  </div>
+  <div class="col-12" *ngIf="wip_project_list && wip_project_list.length>0">
+   
+    <div class="tableDiv">
+      <table class="table">
+        <thead class="ss-thead">
+          <tr>
+            <th class="firstTh" style="min-width: 1rem;">#</th>
+            <th style="min-width: 12rem;">LEAD NAME</th>
+            <th style="min-width: 12rem;">PROJECT ID</th>
+            <th style="min-width: 12rem;">PROJECT NAME</th>
+           <!--  <th style="min-width: 12rem;">PROJECT LOCATION</th> -->
+            <th style="min-width: 12rem;">DESIGNER </th>
+            <th style="min-width: 12rem;">COMMUNITY MANAGER</th>
+          </tr>
+        </thead>
+        <tbody class="ss-tbody">
+          <tr *ngFor="let obj of wip_project_list; let i = index" [attr.data-index]="i">
+            <td style="min-width: 1rem;">{{i+1}}</td>
+            <td style="min-width: 1rem;" class="capitalize">{{ obj.user.name }}</td>
+            <td style="min-width: 1rem;">{{obj.id}}</td>
+            <td  class="capitalize">
+              <a class="addCursor ss-link" href="" [routerLink]="['/projects/'+obj.id+'/list-boqs']" [queryParams]="{project_name: obj.name}">{{obj.name}}</a>
+              <ng-template #nolink>{{obj.name}}</ng-template>
+            </td>
+            <!-- <td style="min-width: 1rem;">{{obj.project_location}}</td> -->
+            <td style="min-width: 1rem;" class="capitalize">{{obj.designer.name}}<br><span class="email-chng">({{obj.designer.email }})</span></td>
+            <td style="min-width: 1rem;" class="capitalize">{{obj.community_manager.name}}<br><span class="email-chng">({{ obj.community_manager.email }})</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+</div>

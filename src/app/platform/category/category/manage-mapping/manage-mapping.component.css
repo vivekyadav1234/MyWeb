@@ -1,0 +1,227 @@
+#row1 span{
+	font-size: 20px;
+	color: #5A5A5A;
+}
+#row1 select {
+	width: 30%;
+	display: inline-block;
+	font-size: 14px;
+	color: #202021;
+	-webkit-appearance: menulist;
+}
+#row1{
+	border-bottom: 1px solid #e8e8e8;
+}
+
+.textHeadingColor {
+	color: #5A5A5A;
+}
+.table-responsive {
+	font-size: 13px;
+    border: 1px solid #f5f5f5;
+    box-shadow: 0px 2px 2px 0 rgba(0,0,0,0.1), 0px 0px 5px 2px #f5f5f5;
+}
+.tableHandle{
+    font-size: 13px;
+    border: 1px solid #f5f5f5;
+    box-shadow: 0px 2px 2px 0 rgba(0,0,0,0.1), 0px 0px 5px 2px #f5f5f5;
+    overflow-x: auto;
+}
+.ss-3-dot-drop{
+	font-size: 20px;
+}
+.table td, .table th {
+	padding: 4px;
+	vertical-align: middle;
+}
+.submitButton{
+	background: #fff;
+    border: 2px solid #d4546d;
+    border-radius: 5px;
+    color: #8c031f;
+    padding: 5px 10px;
+    width: 100px;
+    font-size: 14px;
+    cursor: pointer;
+}
+#addCoreMaterialForm .form-control, #addshutter_finisheFormRow .form-control{
+	font-size: 14px;
+	letter-spacing: 0.8px;
+}
+
+.addButton{
+    background: #8c031f;
+    color: white;
+    border: none;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    position: absolute;
+    margin-top: -30px;
+    right: 7px;
+    text-decoration: none;
+    z-index: 1;
+}
+.addButton i {
+    margin-top: 7px;
+    font-size: 20px;
+}
+.editRowButton{
+	border-radius: 50%;
+    height: 28px;
+    width: 28px;
+    background: #f3f3f3;
+    border: none;
+    cursor: pointer;
+    padding: 0px;
+    text-decoration: none;
+}
+.editRowButton i {
+	position: relative;
+    -webkit-transform: rotate(58deg);
+    -moz-transform: rotate(58deg);
+    -ms-transform: rotate(58deg);
+    -o-transform: rotate(58deg);
+    transform: rotate(58deg);
+    color: #8e8787;
+}
+.borderleft{
+	border-left: 1px solid #d3d3d3;
+}
+
+.col-md-1 {
+	max-width: 2px;
+}
+.table{
+    box-shadow: 0px 5px 10px 0px #dcdcdc;
+}
+.table thead th {
+    border-bottom: 1px solid #e9ecef;
+}
+.table td, .table th{
+    border-top: none;
+    border-left: 1px solid #e9ecef;
+    text-align: center;
+    font-size: 15px;
+    color: #333;
+    font-weight: 300;
+    padding: 9px 0;
+}
+.table td input{
+    font-size: 16px;
+}
+.submitBtn{
+    background-color: transparent;
+    padding: 0.3rem 2rem;
+    color: #8c031f;
+    font-weight: 300;
+    font-size: 15px;
+    border: 1px solid #8c031f;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.submitBtn :hover{
+    background-color: #8c031f;
+}
+
+
+input[type="checkbox"] {
+  visibility: hidden;
+}
+label {
+  cursor: pointer;
+  margin-left: -14px;
+}
+input[type="checkbox"] + label:before {
+    border: 1px solid #909090;
+    content: "\A0";
+    display: inline-block;
+    font: 13px/1em sans-serif;
+    height: 18px;
+    margin: 0 .25em 0 0;
+    padding: 0;
+    vertical-align: sub;
+    width: 18px;
+    padding-top: 2px;
+}
+input[type="checkbox"]:checked + label:before {
+    background: #8c031f;
+    color: #fff;
+    content: "\2713";
+    text-align: center;
+}
+input[type="checkbox"]:checked + label:after {
+  font-weight: bold;
+}
+
+input[type="checkbox"]:focus + label::before {
+    outline: rgb(59, 153, 252) auto 5px;
+}
+
+.d-none{
+    display: none;
+}
+
+:host ::ng-deep .c-token{
+    color: #5a5a5a !important;
+    background-color: #fff !important;
+    border: 1px solid #8c0420 !important;
+    font-size: 12px !important;
+}
+
+:host ::ng-deep .pure-checkbox[_ngcontent-c7] input[type="checkbox"][_ngcontent-c7]:checked + label[_ngcontent-c7]:before{
+    background: #8c0420;
+}
+
+:host ::ng-deep .pure-checkbox[_ngcontent-c7] input[type="checkbox"][_ngcontent-c7] + label[_ngcontent-c7]:before{
+    color: #8c0421;
+    border: 2px solid #8c0421;
+}
+
+:host ::ng-deep .btn-link{
+    color: #8c0420;
+}
+.table td, .table th{
+    min-width: 12rem;
+}
+.tableScroll{
+    overflow: auto;
+    border: 1px solid #eaeaea;
+}
+
+
+/*fixed left column of tab*/
+.zui-table {
+    border: none;
+    border-right: solid 1px #DDEFEF;
+    border-collapse: separate;
+    border-spacing: 0;
+    font: normal 13px Arial, sans-serif;
+}
+.zui-table thead th {
+    padding: 10px;
+    border: 1px solid #e0e0e0;
+}
+.zui-table tbody td {
+    border: solid 1px #e0e0e0;
+    color: #333;
+    padding: 10px;
+}
+.zui-wrapper {
+    position: relative;
+}
+.zui-scroller {
+    margin-left: 141px;
+    overflow-x: scroll;
+    overflow-y: visible;
+    padding-bottom: 5px;
+    width: inherit;
+}
+.zui-table .zui-sticky-col {
+    padding: 16px;
+    border-bottom: 1px solid #eaeaea;
+    left: 0;
+    /*position: absolute;*/
+    top: auto;
+    width: 142px;
+}

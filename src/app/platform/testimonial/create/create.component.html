@@ -1,0 +1,50 @@
+<div class="row title">
+<span class="ss-text-light rk-activeLink addCursor" routerLink="/">Dashboard/  </span><span class="ss-text-light rk-activeLink addCursor" routerLink="/testimonial">Testimonial/</span><span>Create</span>
+</div> 
+<div  class="mt-5">
+	<form [formGroup]="rForm" (ngSubmit)="addPost()">
+		<div class="form-container">
+			<div class="form-row">
+			    <div class="form-group col-md-6">
+			      <label>Name
+							<input type="text" formControlName="name" class="form-control" placeholder="Enter Your Name">
+						</label>
+						<div class="alert" *ngIf="!rForm.controls['name'].valid && rForm.controls['name'].touched">This is required</div>
+			    </div>
+			    <div class="form-group col-md-6">
+			      <label>Profession
+						<input type="text" formControlName="profession" class="form-control" placeholder="Enter Your Profession">
+						
+					</label>
+					<div class="alert" *ngIf="!rForm.controls['profession'].valid && rForm.controls['profession'].touched">This is required</div>
+			    </div>
+			   
+			</div>
+			<div class="form-row">
+				<div class="form-group col-md-6">
+				   <label>Video Url
+						<input type="text" formControlName="video_url" class="form-control" placeholder="Enter Your Video Url">
+						
+					</label>
+					<div class="alert" *ngIf="!rForm.controls['video_url'].valid && rForm.controls['video_url'].touched">This is required</div>
+			    </div>
+		        <div class="form-group col-md-6">
+				    <label>Testimonial
+						<textarea formControlName="testimonial" class="form-control" placeholder="Enter Your Text"></textarea> 
+						
+					</label>
+					<div class="alert" *ngIf="!rForm.controls['testimonial'].valid && rForm.controls['testimonial'].touched">This is required</div>
+			    </div>
+				
+			</div>
+			<div class="col-md-12">
+				<label for="validate">Featured?&nbsp;&nbsp;</label>
+				<input type="checkbox" name="validate" value="true" formControlName="feature">
+					
+			</div>
+
+			<input type="submit" class="btn btn-primary button expanded" value="Submit Form" [disabled]="!rForm.valid">
+		</div>
+	</form>
+	
+</div>

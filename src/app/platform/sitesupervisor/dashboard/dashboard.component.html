@@ -1,0 +1,287 @@
+<div class="row ss-top-menu">
+  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6">
+    <span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;">Dashboard</span>
+  </div>
+  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6">
+      <!-- <button class="addCursor btn btn-pink float-right downloadBtn mr-2" data-toggle="modal" data-target="#addNewLeadModal">Add Lead</button> -->
+      <button class="addCursor btn btn-pink float-right downloadBtn mr-2" data-toggle="modal" *ngIf = "is_champion=='true'" data-target="#inviteChampionModal" (click)="getChampionList()">Invite Level 2 & Level 3 User</button>
+  </div>
+</div>
+<div class="row">
+  <div class="col-12" *ngIf="erroralert">
+    <div class="alert-box grid-100" *ngIf="errorMessage">
+      <div class="alert alert-danger mt-3 text-center">
+        <a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a>
+        {{errorMessage}}
+      </div>
+    </div>
+  </div>
+  <div class="col-12" *ngIf="successalert">
+    <div class="alert-box grid-100" *ngIf="successMessage">
+      <div class="alert alert-success mt-3 text-center">
+        <a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+        {{successMessage}}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- <div class="row p-3">
+  <div class="col-md-12 pt-3 pb-3 bg-white">
+    <div class="row">
+      <div class="col-md-3 mt-3">
+        <span class="theme-font">Lead Count by Status</span>
+      </div>
+      <div class="col-md-9">
+        <div class="row">
+          <div class="col-md-4">
+            <span>From:</span>
+            <input type="date" name="from_date" class=" form-control from_date ss-date" id="from_date" (change)="changeDateFrom($event.target.value)">
+            
+          </div>
+          <div class="col-md-4">
+            <span>To:</span>
+            <input type="date" name="to_date" class=" form-control to_date ss-date" id="to_date" (change)="changeDateTo($event.target.value)" min = {{date_from}}>
+          </div>
+          <div class="col-md-3">
+            <span>Designer:</span>
+            <select class="form-control design_partner ss-design_partner" name="design_partner" id="design_partner" (change)="changeDesigner($event.target.value)">
+              <option>Select Designer</option>
+              <option *ngFor="let designer of my_designers" [value]="designer.id">{{designer.name}} ({{designer.email}})</option>
+            </select>
+          </div>
+          <div class="col-md-1 text-center cursor-pointer" style="margin-top: -15px;border-left: 1px solid #ecf0f1;margin-bottom: -15px;" (click)="filterDashboard()" >
+            <img src="./assets/img/dashboard/submit.png" style="margin-top: 10px;" class="pt-3">
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+</div> -->
+
+<div class="row">
+  <div class="col-md-4">
+    <!-- <div class="ss-card p-4 cursor-pointer mt-3" [routerLink]="['/list-request']" [queryParams]="{lead_status: 'leads_total_qualified'}" (click)="showDesignerStatusCountRow('leads_total_qualified')"> -->
+    <div class="ss-card p-4 cursor-pointer mt-3" [routerLink]="['/list-request']">
+      <div class="ss-card-head pt-2 pb-4">
+        <span>
+          <img src="/assets/img/dashboard/qualified_assigned.png">
+        </span>
+        <span class="theme-font ml-4">
+          Requests
+        </span>
+      </div>
+      <div class="ss-card-body text-center pt-5 pb-5">
+        <span class="h1">{{dashboardCount.total_requests}}</span>
+      </div>
+      <div class="ss-card-footer pt-4 pb-2">
+        <span> Total requests which has to be worked upon.</span>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <!-- <div class="ss-card p-4 cursor-pointer mt-3" [routerLink]="['/list-request']" [queryParams]="{lead_status: 'leads_total_qualified'}" (click)="showDesignerStatusCountRow('leads_total_qualified')"> -->
+    <div class="ss-card p-4 cursor-pointer mt-3" [routerLink]="['/live/list-projects']">
+      <div class="ss-card-head pt-2 pb-4">
+        <span>
+          <img src="/assets/img/dashboard/qualified_assigned.png">
+        </span>
+        <span class="theme-font ml-4">
+          Live Projects
+        </span>
+      </div>
+      <div class="ss-card-body text-center pt-5 pb-5">
+        <span class="h1">{{dashboardCount.live_projects}}</span>
+      </div>
+      <div class="ss-card-footer pt-4 pb-2">
+        <span> Currently running products.</span>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <!-- <div class="ss-card p-4 cursor-pointer mt-3" [routerLink]="['/list-request']" [queryParams]="{lead_status: 'leads_total_qualified'}" (click)="showDesignerStatusCountRow('leads_total_qualified')"> -->
+    <div class="ss-card p-4 cursor-pointer mt-3" [routerLink]="['/finished/list-projects']">
+      <div class="ss-card-head pt-2 pb-4">
+        <span>
+          <img src="/assets/img/dashboard/qualified_assigned.png">
+        </span>
+        <span class="theme-font ml-4">
+          Finished Projects
+        </span>
+      </div>
+      <div class="ss-card-body text-center pt-5 pb-5">
+        <span class="h1">{{dashboardCount.finished_projects}}</span>
+      </div>
+      <div class="ss-card-footer pt-4 pb-2">
+        <span> Projects which are handed over.</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="modal fade customModal" id="addNewLeadModal" tabindex="-1" role="dialog" aria-labelledby="addNewLeadModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <form (ngSubmit)="addLeadFormSubmit(addLeadForm.value); " [formGroup]="addLeadForm" class="form-horizontal" enctype="multipart/form-data" id="addLeadForm">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title modalTitle" id="exampleModalLabel"> Lead Details</h5>
+              </div>
+              <div class="modal-body">
+                <div class="row mx-2">
+                  <div class="col-sm-10 col-md-6 mb-2">
+                    <div class="form-group">
+                      <label class="text-left">Name </label>
+                      <input type="text" class="form-control" name="name" placeholder="Enter Lead Name" formControlName="name">
+                    </div>
+                  </div>
+                  <div class="col-sm-10 col-md-6 mb-2">
+                    <div class="form-group">
+                      <label class="text-left">Lead Email </label>
+                      <input type="email" class="form-control" name="email" placeholder="Enter Lead Email" formControlName="email">
+                      <div *ngIf="addLeadForm.controls['email'].errors && !addLeadForm.controls['email'].pristine" class="text-danger">
+                        <div [hidden]="addLeadForm.controls['email'].valid || addLeadForm.controls['email'].errors.required">Enter valid email.</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-10 col-md-6 mb-2">
+                    <div class="form-group">
+                      <label class="text-left">Lead Contact <span>*</span></label>
+                      <input type="number" class="form-control" name="contact" placeholder="Enter Lead Contact" formControlName="contact" required min="0" (keydown)="numberCheck($event)">
+                      <div *ngIf="addLeadForm.controls['contact'].errors && !addLeadForm.controls['contact'].pristine" class="text-danger">
+                        <div [hidden]="!addLeadForm.controls['contact'].errors.required">Contact is required.</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-10 col-md-6 mb-2">
+                    <div class="form-group">
+                      <label class="text-left">Pincode</label>
+                      <input type="number" class="form-control" name="pincode" placeholder="Enter Lead Pincode" formControlName="pincode" min="0" (keydown)="numberCheck($event)">
+                    </div>
+                  </div>
+  
+                  <div class="col-sm-10 col-md-6">
+                    <div class="form-group">
+                      <label class="text-left">Select Lead Type <span>*</span></label>
+                      <select formControlName="lead_type_id" class="form-control" (change)="onChangeOfLeadType($event.target.value)">
+                        <option value="" disabled>Select</option>
+                        <option value="{{type.id}}" *ngFor="let type of lead_types">{{type.name}}</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-sm-10 col-md-6">
+                    <div class="form-group">
+                      <label class="text-left">Select Lead Source <span>*</span></label>
+                      <select formControlName="lead_source_id" class="form-control capitalize">
+                        <option value="" disabled>Select</option>
+                        <option value="{{src.id}}" *ngFor="let src of lead_sources">{{src.name}}</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-sm-10 col-md-6">
+                    <div class="form-group">
+                      <label class="text-left">Select Lead Campaign </label>
+                      <select formControlName="lead_campaign_id" class="form-control capitalize">
+                        <option value="" disabled>Select</option>
+                        <option value="{{camp.id}}" *ngFor="let camp of lead_campaigns">{{camp.name}}</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-sm-10 col-md-6 mb-2" *ngIf="addLeadForm.controls['lead_type_name'].value=='designer'">
+                    <div class="form-group">
+                      <label class="text-left">Instagram Id</label>
+                      <input type="text" class="form-control" name="instagram_handle" placeholder="Enter Instagram Id" formControlName="instagram_handle">
+                    </div>
+                  </div>
+                  <div class="col-sm-10 col-md-6 mb-2" *ngIf="addLeadForm.controls['lead_type_name'].value=='designer'">
+                    <div class="form-group">
+                      <label class="text-left">Upload CV</label>
+                      <input type="file" name="" class="form-control" (change)="uploadCV($event)" name="attachment_file">
+                    </div>
+                  </div>
+                  <div class="col-sm-12 mt-3 text-right">
+                    <div class="mt-3">
+                    <button type="submit" [disabled]="!addLeadForm.valid" class="rk-interalBtnColor addCursor">Add</button>
+                    <button class="cancle ml-3 addCursor rk-btnCancel" data-dismiss="modal">Cancel</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </form>
+    </div>
+  </div> 
+
+  <!-- Invite Champion Modal -->
+<div class="modal fade customModal" id="inviteChampionModal" tabindex="-1" role="dialog" aria-labelledby="inviteChampionModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+		  <form [formGroup]="inviteChampionForm" class="form-horizontal" enctype="multipart/form-data" id="addLeadForm">
+			<div class="modal-content">
+			  <div class="modal-header">
+				<h5 class="modal-title modalTitle" id="inviteChampionModalLabel">User Details</h5>
+			  </div>
+			  <div class="modal-body">
+				<div class="row mx-2">
+				  <div class="col-sm-10 col-md-6 mb-2">
+					<div class="form-group">
+					  <label class="text-left">Name <span>*</span></label>
+					  <input type="text" class="form-control" name="name" placeholder="Enter Champion Name" formControlName="name">
+					  <div *ngIf="inviteChampionForm.controls['name'].errors && !inviteChampionForm.controls['name'].pristine" class="text-danger">
+						  <div [hidden]="!inviteChampionForm.controls['name'].errors.required">Name is required.</div>
+					  </div>
+					</div>
+				  </div>
+				  <div class="col-sm-10 col-md-6 mb-2">
+					<div class="form-group">
+					  <label class="text-left">Email<span>*</span></label>
+					  <input type="text" class="form-control" name="email" placeholder="Enter Champion Email" formControlName="email">
+					  <div *ngIf="inviteChampionForm.controls['email'].errors && !inviteChampionForm.controls['email'].pristine" class="text-danger">
+						  <div [hidden]="!inviteChampionForm.controls['email'].errors.required">Email is required.</div>
+						  <div [hidden]="inviteChampionForm.controls['email'].valid">Enter valid email.</div>
+					  </div>
+					</div>
+				  </div>
+				  <div class="col-sm-10 col-md-6 mb-2">
+					<div class="form-group">
+					  <label class="text-left"> Contact <span>*</span></label>
+					  <input type="number" class="form-control" name="contact" placeholder="Enter Champion Contact" formControlName="contact" required min="0" (keydown)="numberCheck($event)">
+					  <div *ngIf="inviteChampionForm.controls['contact'].errors && !inviteChampionForm.controls['contact'].pristine" class="text-danger">
+						<div [hidden]="!inviteChampionForm.controls['contact'].errors.required">Contact is required.</div>
+					  </div>
+					</div>
+				  </div>
+				  <div class="col-sm-10 col-md-6 mb-2">
+					  <div class="form-group">
+						  <label class="text-left">Select Champion Level <span>*</span></label>
+						  <select formControlName="champion_level" class="form-control capitalize" (change)="getChampionListByLevel()">
+							<option value="" disabled>Select</option>
+							<option value="{{type}}" *ngFor="let type of champion_types">{{type}}</option>
+						  </select>
+						  <div *ngIf="inviteChampionForm.controls['champion_level'].errors && !inviteChampionForm.controls['champion_level'].pristine" class="text-danger">
+							  <div [hidden]="!inviteChampionForm.controls['champion_level'].errors.required">Champion Level is required.</div>
+							</div>
+						</div>
+				  </div>
+				  <div class="col-sm-10 col-md-6 mb-2">
+					  <div class="form-group">
+						  <label class="text-left">Select Parent Champion</label>
+						  <select [disabled]="champion_user && champion_user.length <= 0" formControlName="parent_id" class="form-control capitalize">
+							<option value="" disabled>Select</option>
+							<option value="{{champion.id}}" *ngFor="let champion of champion_user">{{champion.email}}</option>
+						  </select>
+				  </div>
+				  </div>
+	
+				<div class="col-sm-12 mt-3 text-right">
+					<div class="mt-3">
+						<button class="btn btn-pink addCursor" [disabled]="!inviteChampionForm.valid" (click)="inviteChampionFormSubmit(inviteChampionForm.value);">Invite Champion</button>
+						<button class="cancle ml-3 addCursor rk-btnCancel" (click)="inviteChampionForm.reset();" data-dismiss="modal">Cancel</button>
+					</div>
+				  </div>
+				</div>
+			  </div>
+			</div>
+		  </form>
+		</div>
+	  </div>

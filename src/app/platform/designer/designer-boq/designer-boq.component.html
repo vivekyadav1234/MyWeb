@@ -1,0 +1,174 @@
+<div class="row ss-top-menu">
+    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-xs-4">
+      <span class="ss-link ss-text-light" style="vertical-align: -webkit-baseline-middle;" [routerLink]="['/']">Dashboard</span>
+        <span style="vertical-align: -webkit-baseline-middle;"> <i class="rightArrow fa fa-angle-right"></i> </span>
+        <span class="ss-link ss-text-light" style="vertical-align: -webkit-baseline-middle;" [routerLink]="['/tasks/task-list']">Tasks</span>
+        <span style="vertical-align: -webkit-baseline-middle;"  class="capitalize text-muted"><i class="rightArrow fa fa-angle-right"></i></span>
+        <span class="ss-link ss-text-light" style="vertical-align: -webkit-baseline-middle;">{{ project_name }}</span>
+    </div>  
+</div>
+
+<div class="row mt-4 justify-content-center">
+  <div class="col-sm-2">
+    <div class="card text-center active card-body-out"  [ngClass]="{'active': selectSection == 'outstanding'}">
+        <div class="card-body ">
+          <h5 class="card-title">{{ boqTaskCount.outstanding }}</h5>
+          <p class="card-text"><img src="../../../assets/img/shape.svg" *ngIf="shapeImage == true "><img src="../../../assets/img/vectorpaint.svg" *ngIf="shapeImage == false "><br><small>Outstanding Tasks</small></p>
+          
+        </div>
+    </div>
+    
+  </div>
+  <div class="col-sm-2">
+    <div class="card text-center card-body-complete" [ngClass]="{'active': selectSection == 'completed-task'}">
+        <div class="card-body">
+          <h5 class="card-title">{{ boqTaskCount.completed}}</h5>
+          <p class="card-text"><img src="../../../assets/img/check.svg"><br><small >Completed Tasks</small></p>
+          
+        </div>
+    </div>
+    
+  </div>
+  <div class="col-sm-2">
+    <div class="card text-center card-body-overdue"  [ngClass]="{'active': selectSection == 'overdue-task'}">
+        <div class="card-body ">
+          <h5 class="card-title card-title-change" [ngClass]="{'active': selectSection == 'overdue-task'}">{{ boqTaskCount.overdue}}</h5>
+          <p class="card-text"><img src="../../../assets/img/exclamation.svg" *ngIf="exclamImage == false"><img src="../../../assets/img/vectorpaint2.svg" *ngIf="exclamImage == true"><br><small >Overedue Tasks</small></p>
+          
+        </div>
+    </div>
+    
+  </div>
+  
+
+</div>
+
+<div class="row px-5 mt-4">
+  <div class="col-12">
+    <div class="row mx-0 bg-change">
+      <div class="col-sm-4">
+        <div class="text my-3">
+          {{ client_name }}
+        </div>
+        
+      </div>
+      <div class="col-sm-4">
+        <div class="text my-3">
+          PROJECT ID-{{ project_id }}
+        </div>
+        
+      </div>
+      <div class="col-sm-4">
+        <div class="text my-3">
+          LEAD ID-{{ lead_id }}
+        </div>
+        
+      </div>
+      
+    </div>
+    
+  </div>
+  <div class="col-12">
+    <div class="row px-3 rounded" >
+      <div class="col-12 bg-secondary">
+        <div class="boq_row">
+          <p class="my-3">{{ boq_reference }}</p>
+          
+        </div>
+        
+      </div>
+      
+    </div>
+    
+  </div>
+  <div class="col-md-12" *ngIf="selectSection == 'outstanding'">
+      <div class="tableDiv" >
+          <table class="table table-striped">
+
+            <thead class="thead-dark">
+
+                <tr>
+                  <th scope="col" class="firstTh"></th>
+                  <th scope="col">Progress</th>
+                  <th scope="col">TASKS</th>
+                  <!-- <th scope="col">OWNER </th> -->
+                  <th scope="col">STATUS</th>
+                  <th scope="col">TIMER</th>
+                  <!-- <th scope="col">OUTPUT</th> -->
+                  <th scope="col" class="lastTh"></th>
+                    
+                </tr>
+            </thead>
+                <ng-container>
+                  <tr *ngFor="let obj of taskList">
+                    <td></td>
+                    <td>
+                      
+                      <img src="../../../assets/img/designer/boq-check-red.svg" *ngIf="obj.attributes.task_escalation && obj.attributes.task_escalation.progress == 'yes'">
+
+                        <img src="../../../assets/img/designer/oval.svg" *ngIf="!obj.attributes.task_escalation">
+                        <img src="../../../assets/img/designer/oval.svg" *ngIf="obj.attributes.task_escalation && obj.attributes.task_escalation.progress == 'no'">
+                    </td>
+                    <td>{{ obj.attributes.task_name }}<span *ngIf="obj.attributes.optional  == true">(Optional)</span></td>
+                    <!-- <td>{{ obj.owner }}</td> -->
+                    <td>
+                      <span *ngIf="obj.attributes.task_escalation && obj.attributes.task_escalation.progress == 'yes'">Done</span>
+                      <span *ngIf="!obj.attributes.task_escalation"><button class="btn btn-sm btn-sec">Not Initiated</button></span></td>
+                    <td><button type="button" class="btn btn-sm btn-left" *ngIf="obj.attributes.task_escalation && obj.attributes.task_escalation.timer > 0 && obj.attributes.task_escalation.progress != 'yes'">{{ obj.attributes.task_escalation.timer }} hrs left</button>
+                    <span *ngIf="obj.attributes.task_escalation && obj.attributes.task_escalation.timer < 0">{{ convertToAbs(obj.attributes.task_escalation.timer) }} hrs Over</span>  
+                    <span class="timer" *ngIf="obj.attributes.task_escalation && obj.attributes.task_escalation.timer > 0 && obj.attributes.task_escalation.progress == 'yes'" >On Time</span> 
+                    </td>
+                    <!-- <td>{{ obj.tasks | replaceChar }}</td> -->
+                    <td></td>
+
+                </tr>
+                </ng-container>
+                
+                
+                
+             
+            <tbody>
+                
+            </tbody>     
+        </table>
+        <div class="row justify-content-center">
+          <div class="col-md-6">
+            <div class="progressRow my-3">
+              <img src="../../../assets/img/designer/prebid d.svg">
+                        <!--   Pre 10% stage -->
+              <img src="../../../assets/img/designer/10per.svg" class="rect" (click)="FortyChangeCheck()" *ngIf="this.stage != 'tenPercent'" class="rect">
+
+              <img src="../../../assets/img/designer/10perD.svg" class="rect" (click)="FortyChangeCheck()" *ngIf="this.stage == 'tenPercent'"> 
+                        
+
+                        <!--  Pre 10-40% stage -->
+              <img src="../../../assets/img/designer/ten-to-fortyL.svg" class="rect2" (click)="FortyChange()" id="fortyImage" *ngIf="this.stage != 'tenForty' && flag == false">
+              <img src="../../../assets/img/designer/ten-to-forty.svg" class="rect2" (click)="FortyChange()" *ngIf="this.stage == 'tenForty'">
+
+              <img src="../../../assets/img/designer/ten-to-fortyL.svg" class="rectChange"  *ngIf="this.stage != 'tenForty' && flag == true">
+
+              <!-- 40% stage -->
+
+              <img src="../../../assets/img/designer/fortyL.svg"  class="rect3" (click)="progressChange('forty')" *ngIf="this.progressStatus != 'forty'">
+              <img src="../../../assets/img/designer/fortyD.svg"  class="rect3" (click)="progressChange('forty')" *ngIf="this.progressStatus == 'forty'">
+
+                        <!-- Production  -->
+              <img src="../../../assets/img/designer/prodL.svg"  class="rect4">
+              <img src="../../../assets/img/designer/deliveryL.svg"  class="rect5">
+              
+            </div>
+            
+          </div>
+          
+        </div>
+      </div>
+        
+            
+         
+  </div>
+    
+
+      
+
+  
+</div>

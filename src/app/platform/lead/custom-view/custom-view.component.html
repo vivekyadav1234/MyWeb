@@ -1,0 +1,203 @@
+<div class="row ss-top-menu">
+  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6">
+    <span class="ss-link" style="vertical-align: -webkit-baseline-middle;" [routerLink]="['/']">Dashboard</span> 
+    <span style="vertical-align: -webkit-baseline-middle;"><i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-link" style="vertical-align: -webkit-baseline-middle;" routerLink="/community_manager/wip" *ngIf="(role=='city_gm' || role=='business_head' || role=='community_manager' || role=='design_manager')">Wip</span>
+    <span class="ss-link" style="vertical-align: -webkit-baseline-middle;" routerLink="/designer/wip" *ngIf="role=='designer'">Wip</span>
+    <span style="vertical-align: -webkit-baseline-middle;"><i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-link" style="vertical-align: -webkit-baseline-middle;" [routerLink]="['/community_manager/leads']" [queryParams]="{lead_status: lead_status}" *ngIf="(role=='city_gm' || role=='business_head' || role=='community_manager' || role=='design_manager')">Lead</span>
+    <span class="ss-link" style="vertical-align: -webkit-baseline-middle;" [routerLink]="['/designer/leads']" [queryParams]="{customer_status: lead_details.lead_status}" *ngIf="role=='designer'">Lead </span>
+    <span style="vertical-align: -webkit-baseline-middle;"><i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;" *ngIf="lead_details && lead_details.user_reference">{{lead_details.user_reference.name}} - {{lead_details.project_details.name}}</span>
+  </div>
+</div>
+<div class="rk-ui-notification" *ngIf="successalert">
+  <span id="notificationMessageText">{{successMessage}}</span>
+  <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+<div class="rk-ui-notification err" *ngIf="erroralert">
+  <span id="notificationMessageText">{{errorMessage}}</span>
+  <a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+<div class="row px-4">
+  <div class="col-md-12 p-0 mt-4">
+    <ul class="nav nav-tabs ss-nav-tabs mt-0" id="myTab" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link ss-nav-link" id="home-tab" data-toggle="tab" role="tab" aria-controls="home" aria-selected="true" routerLink="/lead/{{lead_id}}/overview" [queryParams]="{lead_status: lead_status}">Overview</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link ss-nav-link" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true" routerLink="/lead/{{lead_id}}/activity-logs" [queryParams]="{lead_status: lead_status}">Activity Logs</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link ss-nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false" routerLink="/lead/{{lead_id}}/basic-info" [queryParams]="{lead_status: lead_status}">Basic Info</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link ss-nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false" routerLink="/lead/{{lead_id}}/detailed-info" [queryParams]="{lead_status: lead_status}">Detailed Info</a>
+      </li>
+      <li class="nav-item" *ngIf="isProjectInWip()">
+        <a class="nav-link ss-nav-link " id="boq-tab" data-toggle="tab" href="#boq" role="tab" aria-controls="boq" aria-selected="false" routerLink="/lead/{{lead_id}}/boq" [queryParams]="{lead_status: lead_status}">BOQ</a>
+      </li>
+      <li class="nav-item" *ngIf="isProjectInWip()">
+        <a class="nav-link ss-nav-link" id="ppt-tab" data-toggle="tab" href="#ppt" role="tab" aria-controls="ppt" aria-selected="false" routerLink="/lead/{{lead_id}}/ppt" [queryParams]="{lead_status: lead_status}">PPT</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link ss-nav-link" id="files-tab" data-toggle="tab" href="#files" role="tab" aria-controls="files" aria-selected="false" routerLink="/lead/{{lead_id}}/files" [queryParams]="{lead_status: lead_status}">Files</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link ss-nav-link" id="calendar-tab" data-toggle="tab" href="#calendar" role="tab" aria-controls="files" aria-selected="false" routerLink="/lead/{{lead_id}}/calendar" [queryParams]="{lead_status: lead_status}">Calendar</a>
+      </li>
+      <li class="nav-item" *ngIf="isProjectInWip()">
+        <a class="nav-link ss-nav-link" id="proposal-tab" data-toggle="tab" href="#proposals" role="tab" aria-controls="proposals" aria-selected="false" routerLink="/lead/{{lead_id}}/proposals" [queryParams]="{lead_status: lead_status}">Proposals</a>
+      </li>
+      <li class="nav-item" *ngIf="isProjectInWip()">
+        <a class="nav-link ss-nav-link active" id="proposal-tab" data-toggle="tab" href="#proposals" role="tab" aria-controls="proposals" aria-selected="false" routerLink="/lead/{{lead_id}}/custom-view" [queryParams]="{lead_status: lead_status}">Custom Element</a>
+      </li>
+      <li class="nav-item">
+          <a class="nav-link ss-nav-link" id="payment-tab" data-toggle="tab" href="#payment" role="tab" aria-controls="payment" aria-selected="false" routerLink="/lead/{{lead_id}}/payments" [queryParams]="{lead_status: lead_status}">Payments</a>
+      </li>
+      <li class="nav-item" *ngIf="isProjectInWip() &&  role && (role=='city_gm' || role=='business_head' || role=='community_manager' || role=='design_manager')">
+          <a class="nav-link ss-nav-link" id="proposal-approve-tab" data-toggle="tab" href="#proposals-approve" role="tab" aria-controls="proposal-approve" aria-selected="false" routerLink="/lead/{{lead_id}}/proposal-approve" [queryParams]="{lead_status: lead_status}" >Proposal Approve</a>
+      </li> 
+      <li class="nav-item" *ngIf="isProjectInWip() &&  role && (role=='city_gm' || role=='business_head' || role=='community_manager' || role=='design_manager')">
+          <a class="nav-link ss-nav-link {{handover_for_production}}" id="handover-for-production-tab" data-toggle="tab" href="#handover-for-production" role="tab" aria-controls="handover-for-production" aria-selected="false" routerLink="/lead/{{lead_id}}/handover-for-production" [queryParams]="{lead_status: lead_status}" >Handover/Feasibility</a>
+      </li>
+    </ul>
+  </div>
+  <div class="col-12">
+    <div class="row mb-5">
+      <div class="col-md-12 bg-white pb-3">
+        <app-sms-call></app-sms-call>
+        <div class="row mt-4">
+          <div class="col-md-12">
+            <button type="button" class="btn btn-pink pull-right bt-boq" [routerLink]="['/lead/'+lead_id+'/custom-element']" >New Custom Element</button>
+          </div>
+        </div>
+        <div class="row" style="padding: 16px"  *ngIf="customList && customList.length >0">
+          <div class="col-md-4" *ngFor="let obj of customList;let i = index" [attr.data-index]="i">  
+            <div class="card myCard mb-4">
+              <!-- <div class="ribbon">
+                  <div class="txt">
+                      Example Text
+                  </div>
+              </div> -->
+              <div class="ribbon ribbon-top-right">
+              <img  *ngIf="obj.image_available == true" class="card-img-top" src="{{ obj.photo }}" alt="Card image cap" >
+              <img  *ngIf="obj.photo == '/images/original/missing.png'" class="card-img-top px-2 pt-2" src="../../../../../assets/img/no_image.svg" alt="Card image cap" >
+              <img  *ngIf="obj.image_available == false" class="card-img-top px-2 pt-2" src="../../../../../assets/img/no_image.svg" alt="Card image cap" >
+              <div class="card-body py-2">
+                <h6 class="capitalize hdng-chng ">{{ obj.name }}
+                  <span class="optionMenu pull-right"  *ngIf="obj.status==='pending'" ><i class="ion-android-more-vertical  ss-3-dot-drop" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"></i>
+                      <div class="dropdown-menu pt-2 pb-2" style="font-size: 14px;" >
+                        <p></p>
+                        <a *ngIf="!obj.price" class="dropdown-item addCursor" data-toggle="modal" data-target="#customEdit" (click)="getCustomDetails(obj.id)">Edit</a>
+                        <a class="dropdown-item addCursor" (click)="confirmAndDelete(obj.id)">Delete</a>
+                      </div>
+                  </span></h6>
+                <p class="paraChange">Finish:<span class="ml-2">{{ obj.shutter_finish }}</span></p>
+                <p class="paraChange">Core Material:<span class="ml-2">{{ obj.core_material }}</span></p>
+                <p>Dimension:<span class="ml-2">{{ obj.dimension }}</span></p>
+                <p class="paraChange">Remark:<span class="ml-2">{{ obj.designer_remark }}</span></p>
+                <p>Price:<span class="ml-2">{{ obj.ask_price }}</span></p>
+                <p *ngIf="obj.price">Category Price:<span class="ml-2">{{ obj.price }}</span></p>
+                <p *ngIf="obj.category_remark" class="paraChange">Category Remark:<span class="ml-2" >{{ obj.category_remark }}</span></p>
+                <p *ngIf="obj.status">Status:<span class="ml-2">{{ obj.status | replaceChar}}</span></p>
+                <p *ngIf="obj.status">Type:<span class="ml-2">{{ obj.category_split | replaceChar}}</span></p>
+                <p *ngIf="obj.timeline">Time of Delivery:<span class="ml-2">{{ obj.timeline }} days</span></p>
+                <p class="pull-right"  *ngIf="obj.photo != '/images/original/missing.png'"><a class="btn btn-pink btn-chng pull-right" href="{{obj.photo}}" download target="_blank">
+                  Download
+                </a></p>
+              </div>
+            </div>  
+          </div>   
+         </div> 
+
+        </div>
+        <div class="row">
+           <div class="col-md-12 not-found " *ngIf="customList && customList.length==0 ">
+            <div class="boq-img">
+              <img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+            </div>
+            <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing to show...</p> 
+           </div> 
+        </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal for Update custom Element -->
+<div id="customEdit" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+
+  
+    <div class="modal-content modal-change">
+      <form  [formGroup]="editCustomForm" (ngSubmit)="updateCustomElementDetails(editCustomForm.value)">
+          <div class="modal-header modal-header-chng">
+            <h4 class="modal-title modal-title-change">Upadate Custom Element</h4>
+            <div class="iconbox">
+              <button type="button" class="close close-icon" data-dismiss="modal">&times;</button>
+            </div>
+          </div>
+      
+          <div class="modal-body modal-body-change">
+            <div class="row">
+                <div class="col-md-4 mt-3">
+                    <label class="name">Name <span class="text-danger">*</span></label>
+                    <input type="text" formControlName="name" class="form-control" >
+                </div>
+                  <div class="col-md-4 mt-3">
+                    <label class="dimension">Dimension <span class="text-danger">*</span></label>
+                    <input type="text" formControlName="dimension" class="form-control" >
+                  </div>
+
+                  <div class="col-md-4 mt-3">
+                    <label class="core_material">Core material <span class="text-danger">*</span></label>
+                    <input type="text" formControlName="core_material" class="form-control" >
+                  </div>
+                  <div class="col-md-4 mt-3">
+                    <label class="shutter_finish">Shutter Finish<span class="text-danger">*</span></label>
+                    <input type="text" formControlName="shutter_finish" class="form-control" >
+                  </div>
+                  <div class="col-md-4 mt-3">
+                    <label class="designer_remark">Remarks<span class="text-danger">*</span></label>
+                    <input type="text" formControlName="designer_remark" class="form-control" >
+                  </div>
+                  <div class="col-md-4 mt-3">
+                    <label class="photo">Upload Image</label>
+                    <input type="file" class="form-control" name="photo" formControlName="photo" (change)="onEditCustomFormChange($event)">
+
+                  </div> 
+                  
+
+                  <div class="col-md-4 mt-3">
+                    <label class="ask_price">Ask Price<span class="text-danger">*</span></label>
+                    <input type="number" formControlName="ask_price" class="form-control" >
+                  </div>
+                  <div class="col-md-4 mt-3">
+                    <label class="name">Type :</label>
+                    <select formControlName="category_split" class="form-control">
+                      <option value="" disabled>Select Type</option>
+                      <option value="panel"  >Panel</option>
+                      <option value="non_panel" >Non Panel</option>
+                      <option value="services">Services</option>
+                    </select>
+                  </div>
+                  <div class="col-md-4" style="text-align: center;">
+                    <img src="" id="output" height="60px" width="100px" class="my-2 img-thumbnail" alt="No Image Available"> 
+                  </div>
+            </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div class="footer-chng">
+                <button class="btn btn-pink pull-right mt-3" type="submit" [disabled]="!editCustomForm.valid">UPDATE</button>
+              </div>
+            </div>
+          
+           
+           
+          </div>
+        </div>
+      </form>
+  </div>
+</div>
+<!-- End here -->

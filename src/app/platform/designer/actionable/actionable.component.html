@@ -1,0 +1,227 @@
+<div class="row ss-top-menu">
+  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6">
+    <span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;">Dashboard</span>
+    <span style="vertical-align: -webkit-baseline-middle;"><i class="rightArrow fa fa-angle-right"></i></span>
+    <span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;">Actionable</span>
+  </div>
+  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6">
+  </div>
+</div>
+<div class="row">
+  <div class="col-12" *ngIf="erroralert">
+    <div class="alert-box grid-100" *ngIf="errorMessage">
+      <div class="alert alert-danger mt-3 text-center">
+        <a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a>
+        {{errorMessage}}
+      </div>
+    </div>
+  </div>
+  <div class="col-12" *ngIf="successalert">
+    <div class="alert-box grid-100" *ngIf="successMessage">
+      <div class="alert alert-success mt-3 text-center">
+        <a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+        {{successMessage}}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row p-3">
+  <div class="col-md-12 pt-3 pb-3 bg-white">
+    <div class="row">
+      <div class="col-md-8">
+        <span class="theme-font">Actionable by Count</span>
+      </div>
+      <div class="col-md-4">
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-4 mb-3">
+    <div class="ss-card p-4 cursor-pointer" [routerLink]="['/designer/actionable/list']" routerLinkActive="active" [queryParams]="{project_status: 'no_action'}">
+      <div class="ss-card-head pb-4">
+        <span class="dashboard-icon">
+          <i class="fa fa-user-times"></i>
+        </span>
+        <span class="theme-font ml-4">
+          NO ACTION
+        </span>
+      </div>
+      <div class="ss-card-body text-center pt-5 pb-5">
+        <span class="h1">{{statusCountArr.qualified_but_no_actions_taken}}</span>
+      </div>
+      <div class="ss-card-footer pt-4 pb-2">
+        <span> All leads which are qualified but no action is taken on it.</span>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 mb-3">
+    <div class="ss-card p-4 cursor-pointer" [routerLink]="['/designer/actionable/list']" routerLinkActive="active" [queryParams]="{project_status: 'calls_today'}">
+      <div class="ss-card-head pb-4">
+        <span class="dashboard-icon">
+          <i class="fa fa-phone-square"></i>
+        </span>
+        <span class="theme-font ml-4">
+          TODAY's CALLS
+        </span>
+      </div>
+      <div class="ss-card-body text-center pt-5 pb-5">
+        <span class="h1">{{statusCountArr.follow_up_calls_for_today}}</span>
+      </div>
+      <div class="ss-card-footer pt-4 pb-2">
+        <span> All follow up calls to be taken today.</span>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 mb-3">
+    <div class="ss-card p-4 cursor-pointer" [routerLink]="['/designer/actionable/list']" routerLinkActive="active" [queryParams]="{project_status: 'not_contactable'}">
+      <div class="ss-card-head pb-4">
+        <span class="dashboard-icon">
+          <i class="fa fa-phone-square"></i>
+        </span>
+        <span class="theme-font ml-4">
+          NOT CONTACTABLE
+        </span>
+      </div>
+      <div class="ss-card-body text-center pt-5 pb-5">
+        <span class="h1">{{statusCountArr.not_contactable_calls_for_today}}</span>
+      </div>
+      <div class="ss-card-footer pt-4 pb-2">
+        <span> All not contactable calls to be done today.</span>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 mb-3">
+    <div class="ss-card p-4 cursor-pointer" [routerLink]="['/designer/actionable/list']" routerLinkActive="active" [queryParams]="{project_status: 'escalated_calls'}">
+      <div class="ss-card-head pb-4">
+        <span class="dashboard-icon">
+          <i class="fa fa-times"></i>
+        </span>
+        <span class="theme-font ml-4">
+          ESCALATED CALLS
+        </span>
+      </div>
+      <div class="ss-card-body text-center pt-5 pb-5">
+        <span class="h1">{{statusCountArr.escalated_follow_up_and_not_contactable}}</span>
+      </div>
+      <div class="ss-card-footer pt-4 pb-2">
+        <span> All follow up and not contactable calls to be done before today but are still pending.</span>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 mb-3">
+    <div class="ss-card p-4 cursor-pointer" id="wipbox-activator" [routerLink]="['/designer/actionable/list']" routerLinkActive="active" [queryParams]="{project_status: 'meetings_today'}">
+      <div class="ss-card-head pb-4">
+        <span class="dashboard-icon">
+          <i class="fa fa-calendar"></i>
+        </span>
+        <span class="theme-font ml-4">
+          TODAY's MEETINGS
+        </span>
+      </div>
+      <div class="ss-card-body text-center pt-5 pb-5">
+        <span class="h1">{{statusCountArr.meeting_scheduled}}</span>
+      </div>
+      <div class="ss-card-footer pt-4 pb-2">
+        <span> Meeting scheduled/ Call scheduled for today.</span>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 mb-3">
+    <div class="ss-card p-4 cursor-pointer" id="wipbox-activator" [routerLink]="['/designer/actionable/list']" routerLinkActive="active" [queryParams]="{project_status: 'escalated_meetings'}">
+      <div class="ss-card-head pb-4">
+        <span class="dashboard-icon">
+          <i class="fa fa-calendar-times-o"></i>
+        </span>
+        <span class="theme-font ml-4">
+          ESCALATED MEETINGS
+        </span>
+      </div>
+      <div class="ss-card-body text-center pt-5 pb-5">
+        <span class="h1">{{statusCountArr.meeting_scheduled_escalated}}</span>
+      </div>
+      <div class="ss-card-footer pt-4 pb-2">
+        <span> Meeting scheduled/ calls scheduled before today but still pending.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row p-3" id="wip-box">
+  <div class="col-md-12 bg-white pt-3 pb-3">
+    <div class="row">
+      <div class="col-md-3">
+        <div class="ss-card p-4 mb-4" style="min-height: 160px; padding-bottom: 0.5rem !important;">
+          <div class="ss-card-head pt-2 pb-2">
+            <span class="">
+              PRE 10%
+            </span>
+            <span class="dashboard-count">{{statusCountArr.pre_10_percent}}</span>
+          </div>
+          <div class="ss-card-footer pt-3 pb-2">
+            <span style="font-size: 11px;"> This count shows that the initial design is submitted to the lead.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="ss-card p-4 mb-4" style="min-height: 160px; padding-bottom: 0.5rem !important;">
+          <div class="ss-card-head pt-2 pb-2">
+            <span class="">
+              10% - 50%
+            </span>
+            <span class="dashboard-count">{{statusCountArr.s_10_50_percent}}</span>
+          </div>
+          <div class="ss-card-footer pt-3 pb-2">
+            <span style="font-size: 11px;"> This count shows that payment has been done for the first 10% of work.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="ss-card p-4 mb-4" style="min-height: 160px; padding-bottom: 0.5rem !important;">
+          <div class="ss-card-head pt-2 pb-2">
+            <span class="">
+              50%
+            </span>
+            <span class="dashboard-count">{{statusCountArr.s_50_percent}}</span>
+          </div>
+          <div class="ss-card-footer pt-3 pb-2">
+            <span style="font-size: 11px;"> This count shows that payment has been done for 40% of work.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="ss-card p-4 mb-4" style="min-height: 160px; padding-bottom: 0.5rem !important;">
+          <div class="ss-card-head pt-2 pb-2">
+            <span class="">
+              INSTALLATION
+            </span>
+            <span class="dashboard-count">{{statusCountArr.installation}}</span>
+          </div>
+          <div class="ss-card-footer pt-3 pb-2">
+            <span style="font-size: 11px;"> This count shows that payment is done for 50% of work and production is in progress.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="ss-card p-4 mb-4" style="min-height: 160px; padding-bottom: 0.5rem !important;">
+          <div class="ss-card-head pt-2 pb-2">
+            <span class="">
+              HANDOVER
+            </span>
+            <span class="dashboard-count">{{statusCountArr.handover}}</span>
+          </div>
+          <div class="ss-card-footer pt-3 pb-2">
+            <span style="font-size: 11px;"> This count shows that project is completed and full payment is received.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

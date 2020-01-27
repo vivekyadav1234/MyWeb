@@ -1,0 +1,293 @@
+<div class="row ss-top-menu">
+  <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-xs-4">
+    <span class="ss-text-light" style="vertical-align: -webkit-baseline-middle;">Dashboard </span>
+    <span style="vertical-align: -webkit-baseline-middle;"> <i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-text-light" style="vertical-align: -webkit-baseline-middle;">Designers </span>
+  </div>
+  <div class="col-xl-5 col-lg-5 col-md-5 col-sm-5 col-xs-5">
+    <!-- <div class="ss-searchbox">
+      <i class="fa fa-search"></i>
+      <input class="form-control" type="text" placeholder="Type in name, contact, status, role, date to search..." #search (keyup.enter)="onKey($event)">
+    </div> -->
+  </div>
+</div>
+<div class="row">
+  <div class="col-12" *ngIf="erroralert">
+    <div class="alert-box grid-100" *ngIf="errorMessage">
+      <div class="alert alert-danger mt-3 text-center">
+        <a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a>
+        {{errorMessage}}
+      </div>
+    </div>
+  </div>
+  <div class="col-12" *ngIf="successalert">
+    <div class="alert-box grid-100" *ngIf="successMessage">
+      <div class="alert alert-success mt-3 text-center">
+        <a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+        {{successMessage}}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row body_height justify-content-center mt-5">
+  <div class="col-12">
+    <h5 *ngIf="cmDesignerList && cmDesignerList.length ==0" class="text-center my-5">No leads Available</h5>
+    <div class="tableDiv lappyView">
+      <table class="table" >
+        <thead class="ss-thead">
+          <tr>
+            <th scope="col" class="firstTh">#</th>
+            <th scope="col">NAME</th>
+            <th scope="col">MOBILE NUMBER</th>
+            <th scope="col">SOCIAL HANDLE</th>
+            <th scope="col">EMAIL</th>
+            <th scope="col">STATUS </th>
+            <th scope="col"> CHANGE STATUS  TO</th>
+            <th scope="col"> DESIGNER CV</th>
+            <th scope="col"> Exophone</th>
+            <th scope="col"> Extension</th>
+            <th class="lastTh"></th>           
+          </tr>
+        </thead>
+        <tbody class="ss-tbody">
+          <tr *ngFor="let data of cmDesignerList ; let i = index; " [attr.data-index]="i" id="filteredLeadRow{{i}}">
+            <td>{{ i+1 }}</td>
+            <td><a href="#designerQuestionnaire" data-toggle="modal" (click)="getDpQuestionnaire(data.id)">{{data.name}}</a></td>
+            <td>
+              <ng-container>
+                {{data.contact}}
+              </ng-container>
+             
+            
+            </td>
+            <td>
+
+            {{data.instagram_handle}}
+            </td>
+            <td>
+              <ng-container >
+                {{data.email}}
+              </ng-container>
+               
+            </td>
+            <td class="capitalize">
+              <ng-container *ngIf="!data.status && data.status == false">
+                
+                <img src="assets/v3/img/redColor.svg">
+                <span class="ml-1">Inactive</span>
+              </ng-container>
+              <ng-container *ngIf="data.status == true">
+                
+                <img src="assets/v3/img/greenColor.svg">
+                <span class="ml-1">Active</span>
+              </ng-container>
+            <td>
+              <select (change)="onStatusChange($event,data.id)" class="custom-select">
+                  <option>Change Status</option>
+                  <option value="true">Active</option>
+                  <option value="false">Inactive</option>
+              </select>    
+            </td>
+            <td><a class="btn btn-pink btn-chng"  href="{{data.designer_cv}}" download >
+                  Download
+                </a></td>
+            <td>{{data.exophone}}</td>
+            <td>{{data.extension}}</td>
+            <td></td>
+          </tr>
+          
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+
+
+<div id="designerQuestionnaire" class="modal fade" role="dialog" data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content modal-change">
+      <div class="modal-header modal-header-chng">
+        <h4 class="modal-title modal-title-change">View Designer</h4>
+        <div class="iconbox">
+          <button type="button" class="close close-icon" data-dismiss="modal" (click)="closeDiv()">&times;</button>
+        </div>
+      </div>
+      <div class="modal-body modal-body-change">
+        <div class="row px-3" >
+          <div class="col-12" style="padding: 0">
+            
+              <div class="check" id="view_div" *ngIf="count == -1 ">
+                <div class="row">
+                  <div class="col-md-12" style="border-bottom: 1px solid  #cacaca">
+                    <div class="heading mt-4 mb-4">
+                      <p>Hello, Nice to Meet You!</p>
+                    </div>
+                    
+                  </div>          
+                </div>
+                <div class="row px-5" *ngIf="user_det">
+                  <div class="col-md-6 mt-4">
+                    <div class="form-group">
+                      <label for="exampleFormControlInput1" class="ss-form-label">Lead Name</label>
+                      <input type="text" class="form-control ss-form-control" id="exampleFormControlInput1" value="{{ user_det.name }}" readonly>
+                    </div>
+                  </div>
+                  <div class="col-md-6 mt-4">
+                    <div class="form-group">
+                      <label for="exampleFormControlInput1" class="ss-form-label">Email</label>
+                      <ng-container>
+                        <input type="text" class="form-control ss-form-control" id="exampleFormControlInput1" value="{{ user_det.email }}" readonly >
+                      </ng-container>
+                     
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="exampleFormControlInput1" class="ss-form-label">Mobile</label>
+                      <ng-container>
+                        <input type="text" class="form-control ss-form-control" id="exampleFormControlInput1" value="{{ user_det.contact }}" readonly >
+                      </ng-container>
+                      
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="exampleFormControlInput1" class="ss-form-label">Instagram Handle:</label>
+                      <input type="email" class="form-control ss-form-control" id="exampleFormControlInput1" value="{{ user_det.instagram_handle }}" readonly>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label for="exampleFormControlInput1" class="ss-form-label">Cv Upload</label>
+                      <input type="email" class="form-control ss-form-control" id="exampleFormControlInput1" value="{{ user_det.designer_cv }}" readonly>
+                      <span class="pull-right"><a style="color: darkred;" target="_blank" href="{{ user_det.designer_cv }}" download>View</a></span>
+                    </div>
+                  </div>      
+                </div>
+                <div class="row" >
+                  <div class="col-12">
+                    <button class="btn bt-boq pull-right mb-4 mr-4" (click)="selectDiv(0)">Next</button>
+                    
+                  </div>
+                </div>
+              </div>
+              <form [formGroup]="addquestionnaireForm">
+                <fieldset formArrayName="sections" class="mx-3">
+                  <div class="form-group  fieldsetBorder"
+                     *ngFor = "let item2 of addquestionnaireForm.get('sections')['controls']; let i=index "
+                     [formGroup]="item2">
+                      <div class="check" *ngIf="i == count">
+                        <div class="row">
+                          <div class="col-md-12" style="border-bottom: 1px solid  #cacaca">
+                            <div class="heading mt-4 mb-4">
+
+                              <p><span>{{getformArray(addquestionnaireForm,'sections').controls[i]['controls'].section_id.value}}.</span>{{getformArray(addquestionnaireForm,'sections').controls[i]['controls'].section_name.value}}</p>
+                            </div>
+                            
+                          </div>         
+                        </div> 
+                        <fieldset formArrayName="questions" class="mt-4" *ngIf="getformArray(addquestionnaireForm,'sections').controls[i]['controls'].section_id.value != 8">
+                          <div class="form-group  fieldsetBorder"
+                           *ngFor = "let item3 of addquestionnaireForm.get('sections').controls[i]['controls'].questions.controls; let k=index "
+                           [formGroup]="item3">
+                            <p style="color: gray;font-family: 'roboto'">{{addquestionnaireForm.get('sections').controls[i]['controls'].questions.controls[k].controls.question.value}}</p>
+                            <textarea formControlName="answer"  class="form-control"
+                                     [attr.id]="'answer'+k" readonly></textarea>
+                          </div>
+                        </fieldset>
+                        <fieldset formArrayName="questions" class="mt-4" *ngIf="getformArray(addquestionnaireForm,'sections').controls[i]['controls'].section_id.value == 8" >
+                          <div class="row">
+                              <div class="col-md-6" *ngFor = "let item3 of addquestionnaireForm.get('sections').controls[i]['controls'].questions.controls; let k=index "
+                           [formGroup]="item3">
+                              <div class="form-group">
+                                <label class="control-label">{{addquestionnaireForm.get('sections').controls[i]['controls'].questions.controls[k].controls.question.value}}</label>
+                                <input type="text" class="form-control" [attr.id]="'customer_name'+i" formControlName="answer" readonly>
+                              </div>  
+                                
+                              </div>
+                          
+                          </div>
+                        </fieldset>
+                        <fieldset formArrayName="projects">
+                          <div class="form-group  fieldsetBorder row"
+                           *ngFor = "let item4 of addquestionnaireForm.get('sections').controls[i]['controls'].projects.controls; let k1=index "
+                           [formGroup]="item4" style="border-bottom:  1px solid gray;">
+                            <div class="col-sm-12">
+                              <span class="span-chng1">PROJECT-{{ k1+1 }}</span>
+                            </div>
+                            <div class="row" >
+                              <div class="col-md-6">
+                              <div class="form-group label-floating" >
+                                <label class="control-label">Customer Name</label>
+                                <input type="text" class="form-control" [attr.id]="'customer_name'+i" formControlName="customer_name" readonly>
+                              </div>
+                              </div>
+                              <div class="col-md-6">
+                                <div class="form-group label-floating" >
+                                  <label class="control-label">Type</label>
+                                  <select class="form-control" [attr.id]="'type'+i" formControlName="type" readonly disabled>
+                                    <option value="">Select Type</option>
+                                    <option value="Residential">Residential</option>
+                                    <option value="Office">Office</option>  
+                                  </select>
+                                </div>
+                              </div>
+                              <div class="col-md-6">
+                                <div class="form-group label-floating" >
+                                  <label class="control-label">Budget</label>
+                                  <select class="form-control" [attr.id]="'budget'+i" formControlName="budget" readonly disabled>
+                                    <option value="" disabled>Choose</option>
+                                    <option value="Less than 1.5 Lac">Less than 1.5 Lac</option>
+                                    <option value="1.5 - 3 Lacs">1.5 - 3 Lacs</option>
+                                    <option value="3 - 5 Lacs">3 - 5 Lacs</option>
+                                    <option value="5 - 8 Lacs">5 - 8 Lacs</option>
+                                    <option value="8 - 12 Lacs">8 - 12 Lacs</option>
+                                    <option value="Above 12 Lacs">Above 12 Lacs</option>
+                                    
+                                  </select>
+                                </div>
+                              </div>
+                              <div class="col-md-6">
+                                <div class="form-group label-floating" >
+                                  <label class="control-label">Area </label>
+                                  <input type="text" class="form-control" [attr.id]="'area'+i" formControlName="area" readonly>
+                                </div>
+                              </div>
+                              <div class="col-md-6">
+                                <div class="form-group label-floating" >
+                                  <label class="control-label">Client Approval </label>
+                                  <select class="form-control" [attr.id]="'client_approval'+i" formControlName="client_approval" readonly disabled>
+                                    <option value="" disabled>Choose</option>
+                                    <option value="yes">Yes</option>
+                                    <option value="no">No</option>
+                                  </select>
+                                </div>
+                              </div>
+                            </div>
+
+                          
+                          </div>
+                        </fieldset>
+                        <div class="row" >
+                          <div class="col-md-6 mt-4">
+                            <button class="btn  bt-boqs  mb-4 ml-4" (click)="selectDiv(i-1)" *ngIf="i != 0 ">Back</button>
+                            <button class="btn  bt-boqs  mb-4 ml-4" (click)="selectDiv(i-1)" *ngIf="i == 0 ">Back</button>
+                          </div>
+                          <div class="col-6 mt-4">
+                            
+                            <button class="btn bt-boq pull-right mb-4 mr-4" (click)="selectDiv(i+1)" *ngIf="count < (getformArray(addquestionnaireForm,'sections').length-1) ">Next</button>
+                          </div>
+                        </div>
+                      </div>  
+                  </div>
+                </fieldset>     
+              </form> 
+          </div>             
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

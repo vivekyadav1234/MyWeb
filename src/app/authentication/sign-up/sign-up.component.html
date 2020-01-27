@@ -1,0 +1,57 @@
+
+<section class="section1">
+  <div class="row no-margin">
+    <div class="content" >
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 col-sm-6 col-md-offset-4 col-sm-offset-3" style="margin-top: 50px;">
+                    <form [formGroup]="signupForm" (ngSubmit)="submit(signupForm.value)">
+                        <div class="card card-login card-hidden">
+                            <div class="card-header text-center" data-background-color="orange">
+                                <h4 class="card-title">Book Design consultation</h4>
+                                <app-error-label [control]="signupForm" [submitted]="submitted"></app-error-label>
+                            </div>
+                            <div class="card-content">
+
+                                <app-input-field [attribute]="'Name'"
+                                   [type]="'text'"
+                                   [placeholder]="'Name'"
+                                   [icon]="'face'"
+                                   [control]="signupForm.controls['name']"
+                                   [submitted]="submitted">
+                                </app-input-field>
+                                <app-input-field [attribute]="'Email'"
+                                   [type]="'email'"
+                                   [placeholder]="'Email Address'"
+                                   [icon]="'email'"
+                                   [control]="signupForm.controls['email']"
+                                   [submitted]="submitted">
+                                </app-input-field>
+                                <app-input-field [attribute]="'Mobile'"
+                                   [type]="'text'"
+                                   [placeholder]="'Mobile'"
+                                   [icon]="'phone'"
+                                   [control]="signupForm.controls['contact']"
+                                   [submitted]="submitted">
+                                </app-input-field>
+                                <app-input-field [attribute]="'Password'"
+                                   [type]="'password'"
+                                   [placeholder]="'Password'"
+                                   [icon]="'lock_outline'"
+                                   [control]="signupForm.controls['password']"
+                                   [submitted]="submitted">
+                                </app-input-field>
+                            </div>
+                            <div class="footer text-center">
+                                <button type="submit" class="btn btn-orange btn-simple btn-wd btn-lg" [disabled]="!signupForm.valid">Let's go</button>
+                            </div>
+                        </div>
+                    </form>
+
+                   
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,115 @@
+<div class="rk-ui-notification err" *ngIf="erroralert" style="z-index: 10000;">
+  <span id="notificationMessageText">{{errorMessage}}</span>
+  <a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+<div class="rk-ui-notification" *ngIf="successalert" style="z-index: 10000;">
+  <span id="notificationMessageText">{{successMessage}}</span>
+  <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+
+<div class="row mt-4 right-section floorplan-section">
+  <div class="col-md-12">
+    <button type="button" *ngIf="project_id" class="btn btn-pink pull-right" data-toggle="modal" data-target="#floorplanModal">
+      Upload Floor Plan/Layout
+    </button>
+    <button type="button"  class="btn btn-pink pull-right mr-3" data-tooltip1="SEND LINK BUTTON" data-toggle="modal" data-target="#alternatNumberModal">SEND LINK BUTTON</button>&nbsp;&nbsp;
+  </div>
+  <div class="col-md-12 mt-5 text-center p-5" style="background-color: #fff;" *ngIf="floorplans_list.length <= 0">
+    <img src="../../../assets/img/nothing.png" class="img-fluid">
+  </div>
+  <div class="col-md-12 mt-5">
+    <div class="row">
+      <div class="col-md-4 mt-4" *ngFor="let obj of floorplans_list">
+        <div class="card card-chng">
+          <i class="fa fa-trash trash-card" (click) = "deleteObject(obj.id)" *ngIf="role =='community_manager'" ></i>
+        	<img onerror="this.src='./assets/img/no_image.svg';" class="card-img-top img-fluid" src="{{obj.attachment_file}}" alt="Card image cap" style="max-height: 165px;" />
+          <!-- <img class="card-img-top img-fluid" src="{{obj.attachment_file}}" alt="Card image cap" style="max-height: 165px;"> -->
+          <div class="card-block" style="padding: 1rem;">
+            <p class="card-text" style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap;border-bottom: 1px solid #e0e0e0;padding-bottom: 10px;">{{obj.name}}</p>
+            <div class="row">
+              <div class="col-md-12">
+                <p class="mb-0" style="font-size:13px;">
+                  <span>{{obj.details}} </span>
+                </p>
+                <p class="mb-0 mt-2" style="font-size:13px;">
+                  <span>Uploaded at: </span>
+                  <span style="color: #7E7E7E;">{{obj.updated_at | date:'dd MMMM, y - h:mm a'}}</span>
+                </p>
+              </div>
+              <div class="col-md-12 divbutton mt-2">
+                <a class="btn btn-pink btn-chng pull-right" target="_blank" href="{{obj.attachment_file}}" download target="_blank">
+                  Download
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CREATE Floorplan MODAL -->
+<div class="modal fade" id="floorplanModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="border-bottom: 1px solid #e4e4e4;">
+        <h6 class="modal-title" id="exampleModalLabel">Upload a Floor Plan/Layout: </h6>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12">
+            <form (ngSubmit)="onSubmit(createFloorplanForm.value); createFloorplanForm.reset()" #createFloorplanForm="ngForm" class="form-horizontal" enctype="multipart/form-data">
+              <div class="form-group">
+                <label for="name" class="ss-form-label">Floor Plan/Layout Name</label>
+                <input type="text" class="form-control ss-form-control" id="name" placeholder="A proper name for Floor Plan/Layout" required name="name" #name="ngModel" ngModel>
+
+                <label for="details" class="ss-form-label mt-4">Floor Plan/Layout Detail</label>
+                <textarea class="form-control ss-form-control" id="details" name="details" #details="ngModel" rows="5" ngModel placeholder="Please tell something about this Floor Plan/Layout"></textarea>
+
+                <label for="attachment_file" class="ss-form-label mt-4">Floor Plan/Layout File</label>
+                <input type="file" class="form-control ss-form-control" (change)="onChange($event)" name="attachment_file" ngModel #attachment_file="ngModel" id="attachment_file">
+
+                <button type="submit" class="btn btn-pink button_emi pull-right mt-4" [disabled]="!createFloorplanForm.valid || basefile == undefined"> Submit </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade mt-5" id="alternatNumberModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg mt-4" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Select Contact</h5>
+          <button  type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <div class="bg-light col-12 font-weight-bold pr-0">
+                <label for="example-text-input" class="col-4">Name </label>
+                <label for="example-text-input" class="col-4">Relation </label>
+                <!-- <label for="example-text-input" class="col-3">Contact </label> -->
+            </div>
+            {{neha}}
+          <div class="form-group" *ngFor="let user of customerDetails">
+            
+            <div class="col-12">
+                <label for="example-text-input" class="col-4">{{user.name}} </label>
+                <label for="example-text-input" class="col-4">{{user.relation}} </label>
+                <!-- <label for="example-text-input" class="col-3">{{user.contact}} </label> -->
+                <label><i class="fa fa-phone cursor-pointer" (click)="callToLead(user.contact)" style="    font-size: 1.5rem; color: #8F0020;"></i></label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

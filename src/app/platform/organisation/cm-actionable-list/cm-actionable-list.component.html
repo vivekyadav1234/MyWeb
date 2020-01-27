@@ -1,0 +1,193 @@
+<div class="row ss-top-menu">
+    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-xs-4">
+        <span class="ss-text-light ss-link" style="vertical-align: -webkit-baseline-middle;" [routerLink]="['/community_manager/actionable']">Actionable </span>
+        <span style="vertical-align: -webkit-baseline-middle;"> <i class="rightArrow fa fa-angle-right"></i> </span>
+        <span *ngIf="calls_for" class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;">{{calls_for | replaceChar}}</span>
+        <span *ngIf="lead_category" class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;">{{lead_category | replaceChar}}</span>
+        <span *ngIf="meetings_for" class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;">{{meetings_for | replaceChar}}</span>
+        <span *ngIf="customer_status" class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;">{{customer_status | replaceChar}}</span>
+    </div>
+    <div class="col-xl-5 col-lg-5 col-md-5 col-sm-5 col-xs-5">
+        <div class="ss-searchbox">
+            <i class="fa fa-search"></i>
+            <input class="form-control" type="text" placeholder="Type in name, contact, status, role, date to search..." #search (keyup.enter)="0">
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12" *ngIf="erroralert">
+        <div class="alert-box grid-100" *ngIf="errorMessage">
+            <div class="alert alert-danger mt-3 text-center">
+                <a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a> {{errorMessage}}
+            </div>
+        </div>
+    </div>
+    <div class="col-12" *ngIf="successalert">
+        <div class="alert-box grid-100" *ngIf="successMessage">
+            <div class="alert alert-success mt-3 text-center">
+                <a class="close link" data-dismiss="alert" (click)="successalert=false">×</a> {{successMessage}}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-end" *ngIf="calls_for == undefined && meetings_for == undefined ">
+    <div class="col-md-12">
+        <div class="filterMainDiv">
+            <span class="ss-text-dark mr-2">Filter By</span>
+            <select class="filterSelect form-control" (change)="filterColumDropdownChange($event.target.value)" [(ngModel)]="filtercol1Val" id="filter1dropdown">
+        <option value="all"><span class="capitalize" selected>All</span></option>
+        <option value="todays_lead"><span class="capitalize">Today's Leads</span></option>
+        <option value="old_lead"><span class="capitalize">Old Leads</span></option>
+      </select>
+            <i class="downArrow fa fa-angle-down d-none" id="downArrow"></i>
+            <div class="d-none" id="fromDateFilter" style="display: inline;">
+                <label class="ss-text-dark mr-2">From Date </label>
+                <input type="date" name="" [(ngModel)]="from_date" class="form-control filterSelect" style="font-size: 12px;">
+            </div>
+            <div class="d-none" id="toDateFilter" style="display: inline;">
+                <label class="ss-text-dark mr-2">To Date </label>
+                <input type="date" name="" [(ngModel)]="to_date" [min]="from_date" class="form-control filterSelect" style="font-size: 12px;">
+            </div>
+            <button class="filterBtn" (click)="filterSubmit()">GO</button>
+        </div>
+    </div>
+</div>
+
+
+<div class="row body_height justify-content-center">
+    <div class="col-12">
+        <h5 *ngIf="leadsList && leadsList.length ==0" class="text-center my-5">No leads Available</h5>
+        <div class="tableDiv">
+            <table class="table lappyView" *ngIf="leadsList && leadsList.length >0">
+                <thead class="ss-thead">
+                    <tr>
+                        <th class="firstTh" style="min-width: 1rem;">#</th>
+
+                        <th (click)="sort('name')">NAME<i class="fa ml-2" [ngClass]="{'fa-sort': column != 'name', 'fa-sort-asc': (column == 'name' && !isDesc), 'fa-sort-desc': (column == 'name' && isDesc) }" aria-hidden="true"></i></th>
+                        <th (click)="sort('id')">LEAD ID<i class="fa ml-2" [ngClass]="{'fa-sort': column != 'id', 'fa-sort-asc': (column == 'id' && !isDesc), 'fa-sort-desc': (column == 'id' && isDesc) }" aria-hidden="true"></i></th>
+                        <th style="min-width: 12rem;">LEAD ASSIGNED(CM) </th>
+
+                        <th style="min-width: 12rem;">LEAD ASSIGNED (DESIGNER)</th>
+
+                        <th style="min-width: 15rem;" *ngIf="lead_status != 'leads_not_assigned'">DESIGNER EMAIL</th>
+
+                        <th style="min-width: 15rem;" *ngIf="meetings_for == 'community_manager'">MEETING DATE&TIME</th>
+                        <th style="min-width: 15rem;" *ngIf="meetings_for == 'designer'">MEETING DATE & TIME</th>
+                        <th style="min-width: 15rem;" *ngIf="agenda == 'follow_up_for_not_contactable'">CALL BACK DATE & TIME</th>
+                        <th>CURRENT STATUS</th>
+                        <th class="lastTh"></th>
+                    </tr>
+                </thead>
+                <tbody class="ss-tbody">
+                    <tr *ngFor="let obj of leadsList | paginate: { itemsPerPage: per_page, currentPage: current_page, totalItems: total_page  } | category :search.value | sort: {property: column, direction: direction}; let i = index" [attr.data-index]="i">
+
+                        <td style="min-width: 1rem;">{{((current_page-1) * per_page) + (i+1)}}</td>
+                        <td class="capitalize">
+                            <a class="addCursor ss-link" href="" routerLink="/lead/{{obj.id}}/activity-logs" [queryParams]="query_params" *ngIf="obj.project_details;else nolink ">{{obj.name}}</a>
+                            <ng-template #nolink>{{obj.name}}</ng-template>
+                        </td>
+                        <td>{{obj.id}}</td>
+                        <td>
+                            <span *ngIf="obj.created_at">{{obj.created_at | date:'dd/MM/yyyy - h:mm a'}}</span>
+                        </td>
+                        <td class="capitalize">
+                            <span *ngIf="obj.assigned_at">
+                {{obj.assigned_at  | date:'dd/MM/yyyy - h:mm a'}}
+              </span>
+                        </td>
+                        <td *ngIf="lead_status != 'leads_not_assigned'"> <span>
+                            {{ obj.assigned_to_name }}</span><br>
+                            <strong *ngIf="lead_status != 'leads_not_assigned' && obj.assigned_to"> email-{{obj.assigned_to}}</strong> </td>
+                        <td *ngIf="meetings_for == 'community_manager'">{{ obj.event_scheduled_at.on_hold_time | date:'dd/MM/yyyy - h:mm a'}}</td>
+                        <td *ngIf="meetings_for == 'designer'">{{ obj.event_scheduled_at.on_hold_time | date:'dd/MM/yyyy - h:mm a'}}</td>
+                        <td *ngIf="agenda == 'follow_up_for_not_contactable'">{{ obj.event_scheduled_at.follow_up_for_not_contactable_time | date:'dd/MM/yyyy - h:mm a'}}</td>
+                        <td *ngIf="obj.project_details" class="capitalize">
+                            <span *ngIf="(obj.project_details.status!='follow_up' && obj.project_details.status!='lost')">{{obj.project_details.status | replaceChar}}</span>
+
+                            <ng-container *ngIf="(obj.project_details.status=='follow_up')">
+                                <a data-trigger="hover" title="Remarks" [attr.data-content]="obj.project_details.remarks " class="pop" (mouseenter)="openpopup($event)">{{obj.project_details.status | replaceChar}}</a><br>
+                                <span class="time-chng">{{obj.event_scheduled_at.follow_up_time | date:'dd/MM/yyyy - h:mm a'}}</span>
+                            </ng-container>
+                            <ng-container *ngIf="(obj.project_details.status=='lost')">
+                                <a data-trigger="hover" title="Remarks" [attr.data-content]="obj.project_details.remarks" class="pop" (mouseenter)="openpopup($event)">{{obj.project_details.status }}
+                    </a>
+                                <p>(Reason - {{obj.project_details.reason_for_lost}})</p>
+                            </ng-container>
+                            <br>
+                            <!-- <span *ngIf="(obj.project_details.status == 'follow_up') || (obj.project_details.status == 'not_contactable')" style="font-size: 12px;">{{ obj.event_scheduled_at | date:'dd/MM/yyyy - h:mm a'}}</span> -->
+                        </td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="text-center" *ngIf="leadsList && leadsList.length >0">
+                <pagination-controls autoHide="true" (pageChange)="current_page = nextPage($event)"></pagination-controls>
+            </div>
+            <div class="row my-4 mobView">
+                <div class="col-12">
+                    <div *ngIf="leadsList && leadsList.length >0">
+                        <div *ngFor="let obj of leadsList | category :search.value | sort: {property: column, direction: direction}; let i = index" [attr.data-index]="i">
+                            <div class="card card-body mobCard mb-2">
+                                <a data-toggle="collapse" href="#tableDiv{{i}}">
+                                    <i class="fa fa-angle-right"></i>
+                                </a>
+                                <h4 class="ss-link cursor-pointer" routerLink="/lead/{{obj.id}}/activity-logs" [queryParams]="query_params" *ngIf="obj.project_details;else nolink ">Name: {{obj.name}}</h4>
+                                <ng-template #nolink>{{obj.name}}</ng-template>
+                                <div class="row">
+                                    <p class="col-5 mb-0">LEAD ID: {{obj.id}}</p>
+                                    <h6 class="col-7 mb-0 text-center" *ngIf="obj.project_details">
+                                        <span *ngIf="(obj.project_details.status!='follow_up' && obj.project_details.status!='lost')">{{obj.project_details.status | replaceChar}}</span>
+                                        <ng-container *ngIf="(obj.project_details.status=='follow_up')">
+                                            <a data-trigger="hover" title="Remarks" [attr.data-content]="obj.project_details.remarks " class="pop" (mouseenter)="openpopup($event)">{{obj.project_details.status | replaceChar}}</a>
+                                            <br>
+                                            <span class="time-chng">{{obj.event_scheduled_at.follow_up_time | date:'dd/MM/yyyy - h:mm a'}}</span>
+                                        </ng-container>
+                                        <ng-container *ngIf="(obj.project_details.status=='lost')">
+                                            <a data-trigger="hover" title="Remarks" [attr.data-content]="obj.project_details.remarks" class="pop" (mouseenter)="openpopup($event)">{{obj.project_details.status }}
+                      </a>
+                                            <p>(Reason - {{obj.project_details.reason_for_lost}})</p>
+                                        </ng-container>
+                                        <br>
+                                        <span *ngIf="obj.project_details.status == 'follow_up' || obj.project_details.status == 'not_contactable'" style="font-size: 12px;">{{ obj.event_scheduled_at | date:'dd/MM/yyyy - h:mm a'}}</span>
+                                    </h6>
+                                </div>
+                            </div>
+                            <div class="collapse" id="tableDiv{{i}}">
+                                <div class="card card-body py-0 mb-3">
+                                    <div class="row">
+                                        <div class="col-12 py-3 borderRight">
+                                            <p class="tableInner">LEAD ASSIGNED(CM)</p>
+                                            <p class="tableInner capitalize" *ngIf="obj.created_at">{{obj.created_at | date:'dd/MM/yyyy - h:mm a'}}</p>
+                                        </div>
+                                        <div class="col-12 py-3 borderRight">
+                                            <p class="tableInner">LEAD ASSIGNED (DESIGNER)</p>
+                                            <p class="tableInner capitalize" *ngIf="obj.assigned_at">{{obj.assigned_at | date:'dd/MM/yyyy - h:mm a'}}</p>
+                                        </div>
+                                        <div class="col-12 py-3 borderRight" *ngIf="lead_status != 'leads_not_assigned'">
+                                            <p class="tableInner">DESIGNER EMAIL</p>
+                                            <p class="tableInner capitalize">{{obj.assigned_to}}</p>
+                                        </div>
+                                        <div class="col-12 py-3 borderRight" *ngIf="meetings_for == 'community_manager'">
+                                            <p class="tableInner">MEETING DATE&TIME</p>
+                                            <p class="tableInner capitalize">{{ obj.event_scheduled_at.on_hold_time | date:'dd/MM/yyyy - h:mm a'}}</p>
+                                        </div>
+                                        <div class="col-12 py-3 borderRight" *ngIf="meetings_for == 'designer'">
+                                            <p class="tableInner">MEETING DATE & TIME</p>
+                                            <p class="tableInner capitalize">{{ obj.event_scheduled_at.on_hold_time | date:'dd/MM/yyyy - h:mm a'}}</p>
+                                        </div>
+                                        <div class="col-12 py-3 borderRight" *ngIf="agenda == 'follow_up_for_not_contactable'">
+                                            <p class="tableInner">CALL BACK DATE & TIME</p>
+                                            <p class="tableInner capitalize">{{ obj.event_scheduled_at.follow_up_for_not_contactable_time | date:'dd/MM/yyyy - h:mm a'}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,79 @@
+<div class="row title">
+  <h3>Dashboard / <span>Create Project</span></h3>
+</div>
+<div class="row inputForm bg_dashboard justify-content-center">
+  <div class="col-12" *ngIf="erroralert">
+    <div class="alert-box grid-100" *ngIf="errorMessage">
+      <div class="alert alert-danger mt-3 text-center">
+        <a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a>
+        {{errorMessage}}
+      </div>
+    </div>
+  </div>
+  <div class="col-12" *ngIf="successalert">
+    <div class="alert-box grid-100" *ngIf="successMessage">
+      <div class="alert alert-success mt-3 text-center">
+        <a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+        {{successMessage}}
+      </div>
+    </div>
+  </div>
+  <div class="col-11 mt-5">
+      <div class="row">
+        <div class="col-7">
+          <form class="form-horizontal" [formGroup]="createProjectForm" (ngSubmit)="onSubmit(createProjectForm.value);" id="projectform"> 
+            <div class="input-group" *ngIf="role == 'admin' && customerlist && customerlist?.length != 0 ">
+              <label class="projectName">Select Customer</label>
+              <select class="form-control border border-1" id="customer_id" name="customer_id" formControlName="customer_id" ngModel >
+                <option value="" selected>Customer Name</option>
+                <option *ngFor="let obj of customerlist" value="{{obj.id}}">{{obj.name | ucwords}}</option>
+              </select>
+            </div>
+            <div class="input-group mt-2">
+              <label class="projectName">Project Name*</label>
+              <input type="text" class="form-control projectBorder" id="name" required name="name" formControlName="name">
+              <div *ngIf="createProjectForm.controls['name'].errors && !createProjectForm.controls['name'].pristine" class="text-danger">
+                <p class="errorMsg" [hidden]="!createProjectForm.controls['name'].errors.required"> Project Name is required.</p>
+              </div>
+            </div>
+            <div class="input-group mt-4">
+              <label class="projectDetails">Project Details</label>
+              <textarea class="form-control border border-dark" id="details" name="details" formControlName="details" rows="5" ngModel>
+              </textarea>
+            </div>
+            <button class="button pull-right mt-2" [disabled]="!createProjectForm.valid">Next</button>
+          </form>
+        </div>
+        <div class="col-11 mt-5">
+
+          <div class="box mt-2" id="floorplanform">
+            <form (ngSubmit)="onFloorplanSubmit(createFloorplanForm.value);" [formGroup]="createFloorplanForm" class="form-horizontal" enctype="multipart/form-data" >
+              <div class="row">
+                <div class="col-7">
+                  <label class="inputLabel">Floor Plan Name :</label>
+                  <input type="text" class="form-control boxInput" required name="name" id="name" formControlName="name">
+                  <div *ngIf="createFloorplanForm.controls['name'].errors && !createFloorplanForm.controls['name'].pristine" class="text-danger">
+                    <p class="FloorErrorMsg" [hidden]="!createFloorplanForm.controls['name'].errors.required"> Floorplan Name is required.</p>
+                  </div>
+                  <label class="inputLabel mt-3">Floor Plan Details :</label>
+                  <textarea class="form-control mt-4 boxInput border border-dark" id="details" name="details" formControlName="details"rows="5"></textarea>
+                </div>
+                <div class="col-5">
+                  <p class="fileName" (click)="upload()"><i class="fa fa-cloud-upload" aria-hidden="true"></i> Upload File*</p>
+                  <span id="uploadedfilename"></span>
+                  <input type="file" class="fileUpload d-none" id="fileupload" (change)="onChange($event)" formControlName="fileData">
+                  <button class="button SubmitBtm pull-right" [disabled]="!createFloorplanForm.valid || basefile==undefined ">Submit</button>
+                </div>
+              </div>
+            </form>
+            
+          </div>
+        <div class="mt-5 float-right">
+              <button class="cancel" (click)="redirectPage()">Cancel</button>
+        </div>
+      </div>
+      <div class="col-11 my-2">
+      </div>
+  </div>
+</div>
+</div>

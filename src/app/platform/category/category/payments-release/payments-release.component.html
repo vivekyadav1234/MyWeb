@@ -1,0 +1,165 @@
+<div class="col-sm-12   col-md-12 pr-0">
+  <div class="row mt-4 mb-1">
+    <div class="col-md-12 text-left">
+      <a class="select text-center">
+         <span class=" ">BOQ/2018/112 </span>
+      </a>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <table class="table">
+        <thead class="thead-dark">
+          <tr>
+            <th class="fTh">Section</th>
+            <th >Total Amt</th>
+            <th class="text-left">Vendor</th>
+            <th colspan="6" class="text-left">Payment History</th>
+            <th ></th>
+            <th ></th>
+            <th ></th>
+            <th >Balance</th>
+            <th class="Eth"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="addCursor" *ngFor="let item of po_pi_list;let j = index">
+            <ng-container *ngIf="rowSelected ==  item.po_details.id">
+              <td style=" " class="bradius1">{{ item.po_details.reference_no }}<span class="ml-1" (click)="toggleRow(item)"><i class="fa fa-angle-up"></i></span><p class="mb-0 colfont">{{ item.po_details.created_at | date:'dd.MM.yyyy'}} <br> {{ item.po_details.created_at |date:'h:mm a' }}</p></td>
+              <td class="border-check clr" style=" ">{{invoice_list.total_amount}}<br><span class="fontcolor">( {{invoice_list.base_value}} + {{invoice_list.tax_value}} )</span></td>
+              <td  class="border-check1" style="width: 16%;text-align: left;">{{ item.po_details.vendor_name }}</td>
+              <td class="p-0 w-100" colspan="9" >
+                <table class="table-child">
+                  <tbody>
+                    <tr *ngFor="let payment of invoice_list.pi_payments">
+                      <td>{{ payment.amount }}</td>
+                      <td class="">{{ payment.message }}</td>
+                      <td>{{ payment.updated_time | date:'dd.MM.yyyy | h:mm a' }}</td>
+                      <td><button *ngIf="payment.payment_status == 'pending'"  type="button" class="close" data-dismiss="modal" style="color: #ff4e66"  (click)="confirmAndDelete(payment.id)">&times;</button></td>
+                      <td *ngIf="payment.payment_status == 'approved'"><span style="font-size: 14px; color: rgba(0, 0, 0, 0.7); font-weight: 500;">Transaction No: </span>{{ payment.transaction_number }}</td>
+                      <td *ngIf="payment.payment_status == 'rejected'"><span style="font-size: 14px; color: rgba(0, 0, 0, 0.7); font-weight: 500;">Remark: </span>{{ payment.remarks }}</td>
+                      
+                    </tr> 
+                 </tbody>
+                </table>
+              </td>
+              
+              <td class="border-check" style="color: #ff4e66"> {{ invoice_list.balance }}</td>
+              <td style=" " class="bradius"><button class="addCursor btn btn-outline-secondary" data-toggle="modal" data-target="#raiseModal" (click)="SHowRaiseRequest(item.po_details.id);">Raise a Request</button><button class="addCursor btn btn-outline-secondary mt-2" data-toggle="modal" data-target="#uploadModal" (click)="openInvoiceModal(item.invoice_details);SHowRaiseRequest(item.po_details.id)">Upload Invoice</button>
+              </td>
+            </ng-container>
+            <ng-container *ngIf="rowSelected !=  item.po_details.id">
+              <td style=" " class="bradius1" colspan="1">{{ item.po_details.reference_no }}<span class="ml-1" (click)="toggleRow(item)"><i class="fa fa-angle-down"></i></span></td>
+              <td >{{ item.po_details.created_at | date:'dd.MM.yyyy | h:mm a'}} </td>
+              <td class="text-left" colspan="12">{{ item.po_details.vendor_name }}</td>
+            </ng-container>   
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<!-- modal raise requst -->
+<div class="modal" id="raiseModal">
+    <div class="modal-md modal-dialog">
+        <div class="modal-content" *ngIf="invoice_list">
+            <div class="modal-header mt-4">
+                <h4 class="modal-title ml-4">Raise a Request</h4>
+                <button class="close mr-5 pull-right addCursor" data-dismiss="modal" style="height: 38px;font-size: 40px;font-weight: 300; color: #8c031f" type="button" (click)="resetValue();">×</button>
+            </div>
+            <div class="modal-body text-left">
+                <div class="row ml-2">
+                    <div class="col-sm-5">
+                        <h6>Total Amount</h6>
+                    </div>
+                    <div class=" col-sm-5">
+                        <h6 style="color: #2cc990;text-align: center;">{{ invoice_list.total_amount }}</h6>
+                    </div>
+                </div>
+                <div class="row mt-3 ml-2">
+                    <div class=" col-sm-5">
+                        <h6>Balance</h6>
+                    </div>
+                    <div class="col-sm-5">
+                        <h6 style="color: #ff4e66;text-align: center;">{{ invoice_list.balance }}</h6>
+                    </div>
+                </div>
+                <div class="row mt-3 ml-2">
+                    <div class=" col-sm-5">
+                       <h6 class="mt-4">Value</h6>
+                    </div>
+                    <div class=" col-sm-5">
+                      <div class="inner ml-2">
+                            <input type="number" name="value" id="po_value" class="form-control" placeholder="Enter Value" style="height: 69px">
+                        </div>
+                   </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm-12 text-center">
+                      <button type="button" class="btn mb-3 mt-5 Btn cursor-pointer" (click)="raiseRequestPO(invoice_list.balance)">Submit</button>
+                  </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+<!-- modal upload invoice -->
+<div class="modal" id="uploadModal">
+    <div class="modal-sm modal-dialog">
+        <div class="modal-content" *ngIf="invoice_list">
+           <div class="modal-header pl-5 mt-2">
+                  <h4 class="modal-title   pt-3">Raise a Request</h4>
+                <button class="close mr-4 pull-right addCursor" data-dismiss="modal" style="height: 38px;font-size: 40px;font-weight: 300; color: #8c031f" type="button" >×</button>
+            </div>
+            <div class="modal-body">
+              <div class="row">
+                <div class="col-sm-12">
+                  <div class="btnborder text-left"> <p class=" bg-white mt-4 ml-4 mr-4"for="file-upload"style="font-weight: 700;font-size: 16px">
+                    <label id="getFileLabel" for="getFile">Upload</label>
+                    <input type="file" id="getFile" style="display: none;"  (change)="onChange($event)" />
+
+                     <img class="pull-right"  id="imgFileUpload" alt="Select File" title="Select File" src="/assets/img/Download Icon.png" (click)="openBrowseModal()"></p>
+                  </div>
+                </div>
+                <div class="col-md-12 mt-2">
+                  <label class="file-color" *ngIf="file_name">{{ file_name }}</label>
+                  
+                </div>
+                <div class="col-md-12 mt-2">
+                  <div  class="form-group">
+                      <label class="pull-left ml-5" for="exampleCheck1" style="margin-left: 64px;font-weight: 700;font-size: 16px">Tax Invoice? </label>
+                        <input  class="form-check-input-chng" id="Invoice" type="checkbox" (change)="checkInvoice($event)" style="margin-left: 75px">
+                      </div>
+                  
+                </div>
+              </div>
+              <div class="row mt-4">
+                <div class="col-sm-6 text-center"><p  style="font-weight: 700;font-size: 16px">Files</p></div>                
+              </div>
+              <div class="row px-2" *ngIf="invoice_list.invoice_files.length > 0">
+                <div class="col-sm-12" *ngFor="let file_c of invoice_list.invoice_files">
+                  <div  class="form-group mb-0">
+                    <label class="pull-left ml-5 mb-0" for="exampleCheck1"  id="file-upload-filename" style="font-weight: 700;font-size: 16px;color: darkred"> <a  target="_blank" href="{{ file_c.url }}" download target="_blank">{{ file_c.attachment_file_file_name}}</a></label>
+                     <label>{{ checkFile(file_c.tax_invoice,file_c.id) }}</label>
+                     <input  class="form-check-input-chng pull-right check-disable" id="exampleCheck-{{file_c.id}}" [checked]="file_c.tax_invoice" type="checkbox" disabled="disabled">
+                    
+                  </div>
+               </div>
+              </div>
+              <div class="row" *ngIf="invoice_list.invoice_files.length == 0">
+                <div class="col-sm-12 mt-2">
+                  <p class="text-muted">No Files Uploaded Yet...</p>
+                  
+                </div>
+                
+              </div>
+
+               <div class="row">
+                 <div class="col-sm-12">
+                   <button type="button" class="btn mb-3 mt-4 Btn" (click)="AddRequest()">Add</button>
+                 </div>
+               </div>
+            </div>
+        </div>
+    </div>
+</div>

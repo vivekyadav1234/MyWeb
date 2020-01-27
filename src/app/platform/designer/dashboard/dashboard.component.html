@@ -1,0 +1,477 @@
+<div class="row ss-top-menu">
+  <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-xs-3">
+    <span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;">Dashboard</span>
+  </div>
+  <div class="col-xl-9 col-lg-9 col-md-9 col-sm-9 col-xs-9">
+    <a class="addCursor float-right downloadBtn" (click)="downloadExcel()">Download Lead</a>
+    <a class="addCursor float-right downloadBtn mr-2" (click)="downloadExcelBoq()">Download BOQ Report</a>
+    <button class="addCursor float-right downloadBtn mr-2" type="button" data-toggle="modal" data-target="#addNewLeadModal">Add Lead</button>
+    <button *ngIf = "is_champion=='true'" class="addCursor float-right downloadBtn mr-2" type="button" data-toggle="modal" data-target="#inviteChampionModal" (click)="designerinvitechampions.getChampionList()">Invite Level 2 & Level 3 User</button>
+  </div>
+</div>
+<div class="row">
+  <div class="col-12" *ngIf="erroralert">
+    <div class="alert-box grid-100" *ngIf="errorMessage">
+      <div class="alert alert-danger mt-3 text-center">
+        <a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a>
+        {{errorMessage}}
+      </div>
+    </div>
+  </div>
+  <div class="col-12" *ngIf="successalert">
+    <div class="alert-box grid-100" *ngIf="successMessage">
+      <div class="alert alert-success mt-3 text-center">
+        <a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+        {{successMessage}}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row p-3">
+  <div class="col-md-12 pt-3 pb-3 bg-white">
+    <div class="row">
+      <div class="col-md-4 pt-3">
+        <span class="theme-font">Lead Status by Count</span>
+      </div>
+      <div class="col-md-8">
+        <div class="row">
+          <div class="col-md-4 mt-1">
+            <select class="form-control mt-3 ml-3 col-sm-5" (change)="filterColumDropdownChange($event.target.value)" [(ngModel)]="filtercol1Val" id="filter1dropdown">
+              <option value="all" selected><span class="capitalize">All</span></option>
+              <option value="lead_created_at"><span class="capitalize">Lead Acquisition Date</span></option>
+              <option value="assigned_to_cm"><span class="capitalize">CM Assignment Date</span></option>
+              <option value="assigned_to_designer"><span class="capitalize">Designer Assignment Date</span></option>
+            </select>
+            
+          </div>
+          <div class="col-md-3 d-none" id="from_date_div">
+            <span>From:</span>
+            <input type="date" name="from_date" class="form-control from_date ss-date" id="from_date" (change)="changeDateFrom($event.target.value)">
+            
+          </div>
+          <div class="col-md-3 d-none " id="to_date_div">
+            <span>To:</span>
+            <input type="date" name="to_date" class="form-control to_date ss-date" id="to_date" (change)="changeDateTo($event.target.value)" min = {{date_from}}>
+          </div>
+          <div class="col-md-2 text-center cursor-pointer destopSubmitDiv" (click)="filterDashboard()" >
+            <img src="./assets/img/dashboard/submit.png" style="margin-top: 20px;" class="pt-3 destopSubmit">
+            <button class="button mobSubmit" style="margin-top: 10px;">Submit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- <div class="row">
+
+</div> -->
+<div class="row my-4">
+  <div class="col-sm-12 col-md-6 col-lg-4 mb-lg-3 mb-sm-2">
+    <div class="ss-card p-4 cursor-pointer" [routerLink]="['/designer/leads']" routerLinkActive="active" [queryParams]="{customer_status: 'qualified',column_name:SelectedValue,from_date: date_from ,to_date: date_to}">
+      <div class="ss-card-head pt-2 pb-4">
+        <span>
+          <img src="/assets/img/dashboard/qualified_assigned.png">
+        </span>
+        <span class="theme-font ml-4" >
+          QUALIFIED & ASSIGNED
+        </span>
+      </div>
+      <div class="ss-card-body text-center pt-5 pb-5" *ngIf="statusCountArr">
+        <span class="h1">{{statusCountArr.qualified || 0}}</span>
+      </div>
+      <div class="ss-card-footer pt-4 pb-2">
+        <span> The number of count shows that what number of leads are assigned by the community manager.</span>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-12 col-md-6 col-lg-4 mb-lg-3 mb-sm-2">
+    <div class="ss-card p-4 cursor-pointer" [routerLink]="['/designer/leads']" routerLinkActive="active" [queryParams]="{customer_status: 'lost',column_name:SelectedValue,from_date: date_from ,to_date: date_to}">
+      <div class="ss-card-head pt-2 pb-4">
+        <span>
+          <img src="/assets/img/dashboard/lost.png">
+        </span>
+        <span class="theme-font ml-4">
+          LOST
+        </span>
+      </div>
+      <div class="ss-card-body text-center pt-5 pb-5" *ngIf="statusCountArr">
+        <span class="h1" style="color: #FF0018;">{{statusCountArr.lost || 0}}</span>
+      </div>
+      <div class="ss-card-footer pt-4 pb-2">
+        <span> The number of count shows the leads which cannot be further pursued.</span>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-12 col-md-6 col-lg-4 mb-lg-3 mb-sm-2">
+    <div class="ss-card p-4 cursor-pointer" [routerLink]="['/designer/leads']" routerLinkActive="active"  [queryParams]="{customer_status: 'follow_up',column_name:SelectedValue,from_date: date_from ,to_date: date_to}">
+      <div class="ss-card-head pt-2 pb-4">
+        <span>
+          <img src="/assets/img/dashboard/follow_up.png">
+        </span>
+        <span class="theme-font ml-4">
+          FOLLOW-UP
+        </span>
+      </div>
+      <div class="ss-card-body text-center pt-5 pb-5" *ngIf="statusCountArr">
+        <span class="h1">{{statusCountArr.follow_up || 0}}</span>
+      </div>
+      <div class="ss-card-footer pt-4 pb-2">
+        <span> The number of count shows that how many leads needed to be followed up on.</span>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-12 col-md-6 col-lg-4 mb-lg-3 mb-sm-2">
+    <div class="ss-card p-4 cursor-pointer" [routerLink]="['/designer/leads']" routerLinkActive="active"  [queryParams]="{customer_status: 'not_contactable',column_name:SelectedValue,from_date: date_from ,to_date: date_to}">
+      <div class="ss-card-head pt-2 pb-4">
+        <span>
+          <img src="/assets/img/dashboard/not_contactable.png">
+        </span>
+        <span class="theme-font ml-4">
+          NOT CONTACTABLE
+        </span>
+      </div>
+      <div class="ss-card-body text-center pt-5 pb-5" *ngIf="statusCountArr">
+        <span class="h1">{{statusCountArr.not_contactable || 0}}</span>
+      </div>
+      <div class="ss-card-footer pt-4 pb-2">
+        <span> The number of count shows the data of the leads that are not contactable for some reasons.</span>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-12 col-md-6 col-lg-4 mb-lg-3 mb-sm-2">
+    <div class="ss-card p-4 cursor-pointer" id="wipbox-activator" (click) = "showWip()">
+      <div class="ss-card-head pt-2 pb-4">
+        <span>
+          <img src="/assets/img/dashboard/wip.png">
+        </span>
+        <span class="theme-font ml-4">
+          WORK IN PROGRESS
+        </span>
+      </div>
+      <div class="ss-card-body text-center pt-5 pb-5" *ngIf="statusCountArr">
+        <span class="h1">{{statusCountArr.after_wip || 0}}</span>
+      </div>
+      <div class="ss-card-footer pt-4 pb-2">
+        <span> The number of count shows the leads which are in work in progress but no design is submitted.</span>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-12 col-md-6 col-lg-4 mb-lg-3 mb-sm-2">
+    <div class="ss-card p-4 cursor-pointer">
+      <div class="ss-card-head pt-2 pb-4">
+        <span>
+          <img src="/assets/img/dashboard/wip.png">
+        </span>
+        <span class="theme-font ml-4">
+          HANDOVER
+        </span>
+      </div>
+      <div class="ss-card-body text-center pt-5 pb-5" *ngIf="statusCountArr">
+        <span class="h1">{{statusCountArr.handover || 0}}</span>
+      </div>
+      <div class="ss-card-footer pt-4 pb-2">
+        <span> This count shows that project is completed and full payment is received.</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="row p-3" id="wip-box">
+  <div class="col-md-12 bg-white pt-3 pb-3">
+    <div class="row">
+      <div class="col-md-3">
+        <div class="ss-card p-4 mb-4" style="min-height: 160px; padding-bottom: 0.5rem !important;">
+          <div class="ss-card-head pt-2 pb-2">
+            <span class="">
+              WIP
+            </span>
+            <span class="dashboard-count" *ngIf="statusCountArr">{{statusCountArr.wip || 0}}</span>
+          </div>
+          <div class="ss-card-footer pt-3 pb-2">
+            <span style="font-size: 11px;"> This count shows that how many leads are in wip.</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="ss-card p-4 mb-4" style="min-height: 160px; padding-bottom: 0.5rem !important;">
+          <div class="ss-card-head pt-2 pb-2">
+            <span class="">
+              PRE 10%
+            </span>
+            <span class="dashboard-count" *ngIf="statusCountArr">{{statusCountArr.pre_10_percent || 0}}</span>
+          </div>
+          <div class="ss-card-footer pt-3 pb-2">
+            <span style="font-size: 11px;"> This count shows that the initial design is submitted to the lead.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="ss-card p-4 mb-4" style="min-height: 160px; padding-bottom: 0.5rem !important;">
+          <div class="ss-card-head pt-2 pb-2">
+            <span class="">
+              10% - 50%
+            </span>
+
+            <span class="dashboard-count" *ngIf="statusCountArr">{{statusCountArr['10_50_percent'] || 0}}</span>
+          </div>
+          <div class="ss-card-footer pt-3 pb-2">
+            <span style="font-size: 11px;"> This count shows that payment has been done for the first 10% of work.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="ss-card p-4 mb-4" style="min-height: 160px; padding-bottom: 0.5rem !important;">
+          <div class="ss-card-head pt-2 pb-2">
+            <span class="">
+              50%
+            </span>
+            <span class="dashboard-count" *ngIf="statusCountArr">{{statusCountArr['50_percent'] || 0}}</span>
+
+          </div>
+          <div class="ss-card-footer pt-3 pb-2">
+            <span style="font-size: 11px;"> This count shows that payment has been done for 40% of work.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="ss-card p-4 mb-4" style="min-height: 160px; padding-bottom: 0.5rem !important;">
+          <div class="ss-card-head pt-2 pb-2">
+            <span class="">
+              INSTALLATION
+            </span>
+            <span class="dashboard-count" *ngIf="statusCountArr">{{statusCountArr.installation || 0}}</span>
+          </div>
+          <div class="ss-card-footer pt-3 pb-2">
+            <span style="font-size: 11px;"> This count shows that payment is done for 50% of work and production is in progress.</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="ss-card p-4 mb-4" style="min-height: 160px; padding-bottom: 0.5rem !important;">
+          <div class="ss-card-head pt-2 pb-2">
+            <span class="">
+              INACTIVE
+            </span>
+            <span class="dashboard-count" *ngIf="statusCountArr">{{statusCountArr.inactive || 0}}</span>
+          </div>
+          <div class="ss-card-footer pt-3 pb-2">
+            <span style="font-size: 11px;"> This count shows that how many leads are INACTIVE.</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="ss-card p-4 mb-4" style="min-height: 160px; padding-bottom: 0.5rem !important;">
+          <div class="ss-card-head pt-2 pb-2">
+            <span class="">
+              ON HOLD
+            </span>
+            <span class="dashboard-count" *ngIf="statusCountArr">{{statusCountArr.on_hold || 0}}</span>
+          </div>
+          <div class="ss-card-footer pt-3 pb-2">
+            <span style="font-size: 11px;"> This count shows that how many leads are put on hold.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add lead modal -->
+<div class="modal fade customModal" id="addNewLeadModal" tabindex="-1" role="dialog" aria-labelledby="addNewLeadModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <form (ngSubmit)="addLeadFormSubmit(addLeadForm.value); " [formGroup]="addLeadForm" class="form-horizontal" enctype="multipart/form-data" id="addLeadForm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title modalTitle" id="exampleModalLabel"> Lead Details</h5>
+        </div>
+        <div class="modal-body">
+          <div class="row mx-2">
+            <div class="col-sm-10 col-md-6 mb-2">
+              <div class="form-group">
+                <label class="text-left">Name </label>
+                <input type="text" class="form-control" name="name" placeholder="Enter Lead Name" formControlName="name">
+              </div>
+            </div>
+            <div class="col-sm-10 col-md-6 mb-2">
+              <div class="form-group">
+                <label class="text-left">Lead Email</label>
+                <input type="text" class="form-control" name="email" placeholder="Enter Lead Email" formControlName="email">
+                <div *ngIf="addLeadForm.controls['email'].errors && !addLeadForm.controls['email'].pristine" class="text-danger">
+
+                  <div [hidden]="addLeadForm.controls['email'].valid">Enter valid email.</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-10 col-md-6 mb-2">
+              <div class="form-group">
+                <label class="text-left">Lead Contact <span>*</span></label>
+                <input type="number" class="form-control" name="contact" placeholder="Enter Lead Contact" formControlName="contact" required min="0" (keydown)="numberCheck($event)">
+                <div *ngIf="addLeadForm.controls['contact'].errors && !addLeadForm.controls['contact'].pristine" class="text-danger">
+                  <div [hidden]="!addLeadForm.controls['contact'].errors.required">Contact is required.</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-10 col-md-6 mb-2">
+              <div class="form-group">
+                <label class="text-left">Pincode</label>
+                <input type="number" class="form-control" name="pincode" placeholder="Enter Lead Pincode" formControlName="pincode" min="0" (keydown)="numberCheck($event)">
+              </div>
+            </div>
+
+            <div class="col-sm-10 col-md-6">
+              <div class="form-group">
+                <label class="text-left">Select Lead Type <span>*</span></label>
+                <select formControlName="lead_type_id" class="form-control capitalize" (change)="showLeadStatusDropdown($event.target.value); onChangeOfLeadType($event.target.value)">
+                  <option value="" disabled>Select</option>
+                  <!-- <option value="1" >customer</option> -->
+                  <option value="{{type.id}}" *ngFor="let type of add_lead_types">{{type.name}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-sm-10 col-md-6">
+              <div class="form-group">
+                <label class="text-left">Select Lead Source <span>*</span></label>
+                <select formControlName="lead_source_id" class="form-control capitalize">
+                  <option value="" disabled>Select</option>
+                  <option value="{{src.id}}" *ngFor="let src of lead_sources">{{src.name | replaceChar}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-sm-10 col-md-6">
+              <div class="form-group">
+                <label class="text-left">Select Lead Campaign </label>
+                <select formControlName="lead_campaign_id" class="form-control capitalize">
+                  <option value="" disabled>Select</option>
+                  <option value="{{camp.id}}" *ngFor="let camp of designer_lead_campaigns">{{camp.name | replaceChar}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-sm-10 col-md-6 d-none" id="addLeadStatusDropdown">
+              <div class="form-group">
+                <label class="text-left">Select Lead Status </label>
+                <select formControlName="lead_status" class="form-control capitalize" (change)="setLeadStatus1($event.target.value)">
+                  <option value="" disabled>Select</option>
+                  <option value="qualified">Qualified</option>
+                  <option value="follow_up">Follow Up</option>
+                  <option value="lost">Lost</option>
+                  <option value="not_contactable">Not Contactable</option>
+                </select>
+              </div>
+            </div>
+            <!--Dropdown added-->
+            <div class="col-sm-10 col-md-6">
+              <div class="form-group">
+                <label class="text-left">Referrer User Type <span class="astric">*</span></label>
+                <select formControlName="referrer_type" class="form-control capitalize" (change)="onChangeOfLeadSource($event.target.value)">
+                  <option value="" disabled>Select</option>
+                  <option value="{{src.name}}" *ngFor="let src of lead_referrer_list">{{src.name | replaceChar}}</option>
+                </select>
+              </div>
+            </div>
+            <!--Dropdown added-->
+            <div class="col-sm-10 col-md-6 mb-2" *ngIf="['display_dealer_referral','non_display_dealer_referral','client_referral','design_partner_referral','broker','employee_referral','dealer','arrivae_champion','others','associate_partner','non_display_dealer'].includes(addLeadForm.controls['lead_source_type'].value) == true ">
+              <div class="form-group">
+                <label class="text-left">Referrer User<span class="astric">*</span></label>
+                <ng-select formControlName="referrer_id" class="form-control capitalize border-0 p-0" placeholder="Select Referrer User">
+                  <ng-option value="" disabled>Select</ng-option>
+                  <ng-option value="{{camp.id}}" *ngFor="let camp of userList">{{camp.name }} - {{ camp.email}}</ng-option>
+                </ng-select>
+              </div>
+            </div>
+            <div class="col-sm-10 col-md-6" *ngIf="addLeadForm.controls['lead_type_name'].value=='designer'">
+              <div class="form-group">
+                <label class="text-left">Instagram Id </label>
+                <input type="text" formControlName="instagram_handle" name="" class="form-control">
+              </div>
+            </div>
+            <div class="col-sm-10 col-md-6" *ngIf="addLeadForm.controls['lead_type_name'].value=='designer'">
+              <div class="form-group">
+                <label class="text-left">Upload CV </label>
+                <input type="file" name="" class="form-control" (change)="uploadCV($event)" name="attachment_file">
+              </div>
+            </div>
+            <div class="col-md-6" id="addleadFormdatetime" style="display: none;">
+              <div class="form-group">
+                <label class="text-left">Follow up Time</label>
+                <input type="datetime-local" formControlName="follow_up_time" name="" class="form-control">
+              </div>
+            </div>
+            <div class="col-md-6" id="addleadFormRemark" style="display: none;">
+              <div class="form-group">
+                <label class="text-left">Follow up Remark</label>
+                <input type="text" formControlName="remark" name="" class="form-control">
+              </div>
+            </div>
+            <div class="col-md-6" id="addleadFormlostReason" style="display: none;">
+              <div class="form-group">
+                <label for="example-text-input" class="text-left">Reason for Lost <span class="text-danger">*</span></label>
+                <div class="">
+                  <select class="form-control" id="lost_reason" formControlName="lost_reason" (change)="reasonForLostDropdownChange($event.target.value)">
+                    <option value="" disabled>Select Reason</option>
+                    <option *ngFor="let reason of lostReasonsArr" value="{{reason}}">{{reason | replaceChar}}</option>
+                  </select>
+                  </div>
+              </div>
+            </div>  
+            <div class="col-md-6"  id="addleadFormlostremark" style="display: none;">
+              <div  class="form-group">
+                <label >Remarks</label>
+                <textarea class="form-control" rows="2" formControlName="lost_remark"></textarea>
+              </div>
+            </div>
+            <div class="col-sm-12 mt-3 text-right">
+              <div class="mt-3">
+              <button type="submit" [disabled]="!addLeadForm.valid" class="rk-interalBtnColor addCursor">Add</button>
+              <button class="cancle ml-3 addCursor rk-btnCancel" data-dismiss="modal">Cancel</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+    <div id="addleadquestionnaireForm" style="display: none;overflow-y: auto">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title modalTitle" id="exampleModalLabel">Lead Questionnaire</h5>
+        </div>
+        <div class="modal-body addleadQuestionnaireModal">
+          <div class="row justify-content-center">
+            <div class="col-12">
+              <app-leadquestionnaire [leadDetails]="addLeadDetails" (close)="closeModalQues($event)" [formtype]="'addlead'"></app-leadquestionnaire>
+            </div>
+          </div>
+        </div>
+      </div>     
+    </div>
+  </div>
+</div>
+
+<!-- Invite Champion Modal -->
+<div class="modal fade customModal" id="inviteChampionModal" tabindex="-1" role="dialog" aria-labelledby="inviteChampionModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title modalTitle" id="inviteChampionModalLabel">User Details</h5>
+      </div>
+
+      <div class="modal-body">
+        <app-invite-champions #designerinvitechampions></app-invite-champions>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="rk-ui-notification err" *ngIf="erroralert"  style="z-index: 10000;">
+  <span id="notificationMessageText">{{errorMessage}}</span>
+  <a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+<div class="rk-ui-notification" *ngIf="successalert"  style="z-index: 10000;">
+  <span id="notificationMessageText">{{successMessage}}</span>
+  <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>

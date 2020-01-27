@@ -1,0 +1,55 @@
+<div class="row title">
+  <h3>Dashboard / <span [routerLink]="['/projects/view/'+id]" routerLinkActive="active" [queryParams]="{customer_status: customer_status}" class="addCursor">Project</span> / <span [routerLink]="['/projects/'+id+'/floorplan/view/'+fpid]" routerLinkActive="active" [queryParams]="{customer_status: customer_status}"  class="addCursor">Floorplan</span> / <span>Design Details</span></h3>
+</div>
+<div class="row inputForm bg_dashboard justify-content-center">
+  <div class="col-12" *ngIf="erroralert">
+    <div class="alert-box grid-100" *ngIf="errorMessage">
+      <div class="alert alert-danger mt-3 text-center">
+        <a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a>
+        {{errorMessage}}
+      </div>
+    </div>
+  </div>
+  <div class="col-12" *ngIf="successalert">
+    <div class="alert-box grid-100" *ngIf="successMessage">
+      <div class="alert alert-success mt-3 text-center">
+        <a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+        {{successMessage}}
+      </div>
+    </div>
+  </div>
+  <div class="col-11">
+    <div class="card">
+      <div class="card-body card_main">
+        <form (ngSubmit)="onSubmit(createFloorplanDesignForm.value); createFloorplanDesignForm.reset()" #createFloorplanDesignForm="ngForm" class="form-horizontal">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-7">
+              <div class="form-check form-check-inline">
+                <label class="form-check-label">
+                  <input class="form-check-input" type="radio" #design_type="ngModel" ngModel name="design_type" id="initial" value="initial" required>
+                  Initial Design
+                </label>
+              </div>
+              <div class="form-check form-check-inline">
+                <label class="form-check-label">
+                  <input class="form-check-input" type="radio" #design_type="ngModel" ngModel name="design_type" id="final" value="final" required>
+                  Final Design
+                </label>
+              </div>
+              <input type="text" class="form-control" id="name" placeholder="Design Name*" required name="name" #name="ngModel" ngModel>
+              <textarea class="form-control" id="details" name="details" #details="ngModel" rows="3" ngModel placeholder="Design Details">
+              </textarea>
+            </div>
+            <div class="col-6 col-md-3 mt-3 pt-4">
+                <label class="text-left">Upload File*</label>
+                <input type="file" class="border-0" (change)="onChange($event)" name="attachment_file" ngModel #attachment_file="ngModel">
+            </div>
+            <div class="col-md-12">
+              <button type="submit" class="button button_emi pull-right mt-5" [disabled]="!createFloorplanDesignForm.valid || (basefile==undefined)">Submit</button>
+            </div>
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

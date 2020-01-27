@@ -1,0 +1,328 @@
+<div class="row ss-top-menu">
+    <div class="col-xl-5 col-lg-5 col-md-5 col-sm-5 col-xs-5">
+        <span class="ss-text-light addCursor" (click)="backClicked()" style="vertical-align: -webkit-baseline-middle;">Dashboard
+            <i class="rightArrow fa fa-angle-right"></i>
+        </span>
+        <span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;">Master Vendor Products</span>
+    </div>
+</div>
+<div class="rk-ui-notification" *ngIf="successalert">
+    <span id="notificationMessageText">{{successMessage}}</span>
+    <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+<div class="rk-ui-notification err" *ngIf="erroralert" style="z-index: 10000;">
+    <span id="notificationMessageText">{{errorMessage}}</span>
+    <a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+
+<div class="container-set container-set-change mt-4">
+  <div class="row">
+  	<div class="col-6">
+  		<div class="ss-searchbox">
+	      <i class="fa fa-search"></i>
+	      <input class="form-control" type="text" placeholder="Type in name, contact person,contact number, pan no.,email to search..." [(ngModel)]="search">
+	    </div>
+  		
+  	</div>
+  	<div class="col-md-6 pull-right">
+  		<div class="row mt-3">
+  
+  			<div class="col-md-12">
+  				<div class="filterdiv">
+  					<p class="d-inline-block m-0">Filter By - </p>
+		  	        <ng-select class="filterSelect dissplay-chng1"  placeholder="Select MLI" (change)="selectMliTypeId($event)">
+					  	<!-- <ng-option value="">Select MLI</ng-option> -->
+                        <ng-option *ngFor="let mli of search_mli_list" value="{{mli.id}}">{{mli.mli_name}}</ng-option>
+				    </ng-select> 
+				    <ng-select class="filterSelect dissplay-chng1"  placeholder="Select Vendor" (change)="selectVendorTypeId($event)">
+				    	<!-- <ng-option value="">Select Vendor</ng-option> -->
+                        <ng-option *ngFor="let vendor of vendors_list" value="{{vendor.id}}">{{vendor.name}}</ng-option>
+				    </ng-select> 
+
+				    <div class="planeIcon d-inline-block addCursor py-0 pull-right" (click)="getVendorProducts(1)">
+				        <img src="assets/v3/img/White_Arrow.svg" height="33px">
+				    </div>
+  					
+  				</div>
+  					
+  			</div>
+  			
+  		</div>
+  	   
+  	</div>
+   	
+  </div>
+	
+</div>
+<div class="">
+    <div class="pt-4 w-100">
+        <div class="">
+            <div class="col-12">
+                <div class="tableDiv project-table">
+                    <table class="table">
+                        <thead class="ss-thead">
+                            <tr *ngIf="vendor_products_list && vendor_products_list.length > 0">
+                                <th class="firstTh">SLI CODE</th>
+                                <th>SLI NAME</th>
+                                <th>VENDOR CODE</th>
+                                <th>UNIT</th>
+                                <th>RATE</th>
+                                <th>CREATION TIME</th>
+                                <th>VENDOR NAME</th>
+                                <th>MASTER LINE ITEM NAME</th>
+                                <th>Edit/Delete</th>
+                                <th class="lastTh">
+                                    <button data-toggle="modal" data-target="#addVendorProductModal" (click)="getProcurementList();openVendorProductForm('addVendorProductForm')"
+                                        class="add-other-items circularIcon addCursor addVendorProductBtn">
+                                        <i class="fa fa-plus"></i>
+                                    </button>
+                                </th>
+                            </tr>
+                            <tr *ngIf="vendor_products_list && vendor_products_list.length === 0">
+                                <th class="firstTh pl-5">Add Vendor Products
+                                </th>
+                                <th class="lastTh pull-right">
+                                    <button data-toggle="modal" data-target="#addVendorProductModal" (click)="openVendorProductForm('addVendorProductForm')"
+                                        class="add-other-items circularIcon addCursor addVendorProductBtn">
+                                        <i class="fa fa-plus"></i>
+                                    </button>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <ng-container *ngIf="vendor_products_list && vendor_products_list.length > 0">
+                                <tr class="ss-tbody" *ngFor="let obj of vendor_products_list 
+                                | paginate: { itemsPerPage: per_page, currentPage: current_page, totalItems: total_page  }; 
+                                let i = index" [attr.data-index]="i" class="addCursor">
+                                    <td class="capitalize">{{obj.sli_code}}</td>
+                                    <td class="capitalize">{{obj.sli_name}}</td>
+                                    <td class="capitalize">{{obj.vendor_code}}
+                                    </td>
+                                    <td>{{obj.unit}}</td>
+                                    <td>{{obj.rate}}</td>
+                                    <td>{{obj.created_at | date:'dd MMMM, y , h:mm a'}}</td>
+                                    <td>{{obj.vendor_name}}</td>
+                                    <td>{{obj.master_line_item_name}}</td>
+                                    <td>
+                                        <div class="d-inline-block py-0">
+                                            <span class="p-1 edit-icon addCursor pr-2" (click)="getDetailsOfVendorProduct(obj.id);" 
+                                            data-toggle="modal" data-target="#viewProductModal">
+                                                    <i class="fa fa-eye"></i>
+                                           </span>
+                                            <span class="p-1 edit-icon addCursor pr-2" (click)="openVendorProductForm('updateVendorProductForm',obj);" 
+                                            data-toggle="modal" data-target="#addVendorProductModal">
+                                                <i class="fa fa-pencil"></i>
+                                            </span>
+                                            <span class="p-1 delete-icon addCursor">
+                                                <i class="fa fa-trash" (click)="deleteVendorProduct(obj.id)"></i>
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            </ng-container>
+                            <ng-container>
+                                <tr *ngIf="vendor_products_list && vendor_products_list.length === 0">
+                                    <td colspan="2">
+                                        <div class="col-12 not-found" *ngIf="vendor_products_list && vendor_products_list.length===0 ">
+                                            <div class="boq-img text-center">
+                                                <img src="../../../assets/img/desktop.png">
+                                            </div>
+                                            <p class="pb-4 nothing-to-show">Nothing to show...</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </ng-container>
+
+                        </tbody>
+                    </table>
+                    <div class="text-center" *ngIf="vendor_products_list && vendor_products_list.length >0">
+                        <pagination-controls autoHide="true" (pageChange)="current_page = getVendorProducts($event)"></pagination-controls>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade m-auto" role="dialog" id="addVendorProductModal" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg mt-5 pt-4" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <button type="button" class="close addCursor" data-dismiss="modal" (click)="closeVendorProductModal()">&times;</button>
+                    </div>
+                </div>
+                <div class="row filterRow py-2 mx-1 mt-3" *ngIf="formType==='addVendorProductForm'">
+                	<div class="col-4 py-0 mb-0">
+                        <span class="filterHeading mr-1">Vendor </span>
+                        <ng-select class="dissplay-chng capitalize"   placeholder="Select Vendor" (change)="setVendorId($event)">
+                            <!-- <ng-option value="">Select Vendor</ng-option> -->
+                            <ng-option *ngFor="let vendor of vendors_list" value="{{vendor.id}}">{{vendor.name}}</ng-option>
+                        </ng-select>
+                    </div>
+                    <div class="col-4 py-0 mb-0">
+                        <span class="filterHeading mr-1">MLI Type </span>
+                        <ng-select class="dissplay-chng capitalize" (change)="getMasterLineItems($event)"  placeholder="Select MLI Type">  
+                            <ng-option *ngFor="let type of mli_type_list" value="{{type.value}}">{{type.name}}</ng-option>
+                        </ng-select>
+                    </div>
+                    <div class="col-3 py-0 mb-0">
+                        <span class="filterHeading mr-1">MLI </span>
+                        <ng-select [disabled]="!mli_list" class="dissplay-chng capitalize" [(ngModel)]="mli_id" placeholder="Select MLI">
+                            <!-- <ng-option value="">Select MLI</ng-option> -->
+                            <ng-option *ngFor="let mli of mli_list" value="{{mli.id}}">{{mli.mli_name}}</ng-option>
+                        </ng-select>
+                    </div>
+                    <div class="col-1 mb-0 pull-right py-0" [hidden]="!mli_id">
+                        <div class="planeIcon d-inline-block addCursor py-0 pull-right" (click)="getAddVendorProductFormDetails()">
+                            <img src="assets/v3/img/White_Arrow.svg" height="33px">
+                        </div>
+                    </div>
+                </div>
+                <div class="row boqlist-row mx-0" *ngIf="fields && fields.length > 0">
+                    <div>
+                        <form (ngSubmit)="save()" [formGroup]="addVendorProductForm">
+                            <!-- <div class="col-6 d-inline-block mb-3">
+                                <label class="filterHeading vendorForm">SLI CODE :</label>
+                                <input type="text" name="" formControlName="sli_code" class="form-control filterHeading vendorForm">
+                            </div>
+                            <div class="col-6 d-inline-block mb-3">
+                                <label class="filterHeading vendorForm">SLI NAME :</label>
+                                <input type="text" name="" formControlName="sli_name" class="form-control filterHeading vendorForm">
+                            </div>
+                            <div class="col-6 d-inline-block mb-3">
+                                <label class="filterHeading vendorForm">VENDOR CODE:</label>
+                                <input type="text" name="" formControlName="vendor_code" class="form-control filterHeading vendorForm">
+                            </div>
+                            <div class="col-6 d-inline-block mb-3">
+                                <label class="filterHeading vendorForm">RATE:</label>
+                                <input type="text" name="" formControlName="rate" class="form-control filterHeading vendorForm">
+                            </div>
+                            <div class="col-6 d-inline-block mb-3">
+                                <label class="filterHeading vendorForm">UOM :</label>
+                                <select class="" [formControlName]="unit">
+                                    <option *ngFor="let uof of unit_of_measurement" [value]="uof">{{uof}}</option>
+                                </select>
+                            </div> -->
+
+
+                            <div *ngFor="let field of fields" class="col-6 d-inline-block mb-3">
+                                <app-dynamic-form [field]="field" [form]="addVendorProductForm"></app-dynamic-form>
+                            </div>
+
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-pink" [disabled]="!addVendorProductForm.valid">Save</button>
+                            </div>
+                        </form>
+
+                        <div *ngIf="payLoad" class="form-row">
+                            <strong>Saved the following values</strong>
+                            <br>{{payLoad}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade m-auto" role="dialog" id="viewProductModal" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg mt-5 pt-4" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <button type="button" class="close addCursor" data-dismiss="modal" (click)="closeVendorProductModal()">&times;</button>
+                    </div>
+                </div>
+                <div class="boqlist-row mx-0" *ngIf="selected_vendor_product">
+                    <div class="">
+                        <div class="col-5 d-inline-block p-0">
+                            <span class="font-weight-bold">SLI Code</span>
+                        </div>
+                        <div class="col-6 d-inline-block p-0">
+                            <span>
+                                <span>{{selected_vendor_product.sli_code}}</span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="">
+                        <div class="col-5 d-inline-block p-0">
+                            <span class="font-weight-bold">SLI Name</span>
+                        </div>
+                        <div class="col-6 d-inline-block p-0">
+                            <span>
+                                <span>{{selected_vendor_product.sli_name}}</span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="">
+                        <div class="col-5 d-inline-block p-0">
+                            <span class="font-weight-bold">Vendor Code</span>
+                        </div>
+                        <div class="col-6 d-inline-block p-0">
+                            <span>
+                                <span>{{selected_vendor_product.vendor_code}}</span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="">
+                        <div class="col-5 d-inline-block p-0">
+                            <span class="font-weight-bold">Unit</span>
+                        </div>
+                        <div class="col-6 d-inline-block p-0">
+                            <span>
+                                <span>{{selected_vendor_product.unit}}</span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="">
+                        <div class="col-5 d-inline-block p-0">
+                            <span class="font-weight-bold">Rate</span>
+                        </div>
+                        <div class="col-6 d-inline-block p-0">
+                            <span>
+                                <span>{{selected_vendor_product.rate}}</span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="">
+                        <div class="col-5 d-inline-block p-0">
+                            <span class="font-weight-bold">Vendor Name</span>
+                        </div>
+                        <div class="col-6 d-inline-block p-0">
+                            <span>
+                                <span>{{selected_vendor_product.vendor_name}}</span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="">
+                        <div class="col-5 d-inline-block p-0">
+                            <span class="font-weight-bold">Master Line Item Name</span>
+                        </div>
+                        <div class="col-6 d-inline-block p-0">
+                            <span>
+                                <span>{{selected_vendor_product.master_line_item_name}}</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="boqlist-row mx-0" *ngIf="selected_vendor_product && selected_vendor_product.dynamic_attributes && selected_vendor_product.dynamic_attributes.length > 0">
+                    <h5 class="bg-light font-weight-normal mt-5">Dynamic Attributes:</h5>
+                    <div class="" *ngFor="let product of selected_vendor_product.dynamic_attributes">
+                        <div class="col-5 d-inline-block p-0">
+                            <span class="font-weight-bold">{{product.mli_attribute_name | replaceChar | titlecase}}</span>
+                        </div>
+                        <div class="col-6 d-inline-block p-0">
+                            <span>
+                                <span>{{product.reference_object_value ? product.reference_object_value : product.attr_value}}</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

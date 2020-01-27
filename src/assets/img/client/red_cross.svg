@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48 (47235) - http://www.bohemiancoding.com/sketch -->
+    <title>BOQ Cross red</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Client-Profile-Edit" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-280.000000, -524.000000)">
+        <g id="Group-11" transform="translate(90.000000, 447.000000)" stroke="#8F0021">
+            <g id="Cross-circle" transform="translate(191.000000, 78.000000)">
+                <g>
+                    <circle id="Oval-3" stroke-width="2" opacity="0.8" cx="15" cy="15" r="15"></circle>
+                    <path d="M15,16.0609025 L9.06125192,21.9996506 L8,20.9396754 L13.9394142,15.0003167 L8.0003494,9.06125192 L9.06032457,8 L15.000005,13.9397359 L20.9394469,8.0003494 L22,9.06090252 L16.0605809,15.0003217 L21.9996506,20.9394469 L20.9390975,22 L15,16.0609025 Z" id="Rectangle-136" stroke-width="0.8" fill="#8F0021"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

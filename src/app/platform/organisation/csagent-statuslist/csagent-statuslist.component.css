@@ -1,0 +1,108 @@
+
+
+.marginTop {
+  margin-top: 1rem;
+}
+
+.table{
+  border-collapse: separate;
+  border-spacing: 0 5px;
+}
+
+input.searchBox{
+    border-radius: 6px;
+    border: 1px solid #000;
+    padding: 3px;
+    position: absolute;
+    right: 7.6rem;
+    width: 2.2rem;
+    background-color: transparent;
+    z-index: 1;
+    top: 18px;
+}
+input.searchBox:focus{
+    outline: none;
+    width: 10rem;
+}
+p.searchIcon{
+    position: absolute;
+    right: 8.2rem;
+    font-size: 16px;
+    top: 23px;
+    margin: 0;
+    color: #666;
+}
+
+.close:focus{
+    outline: none;
+}
+
+
+.table td{
+    padding: 1.0rem 0.75rem;
+    vertical-align: middle;
+    font-size: 14px;
+    color: #212529;
+    color: rgba(0, 0, 0, 0.7);
+    border: none;
+}
+.table th {
+    padding: .9rem;
+    vertical-align: middle;
+    border: none;
+    font-size: 12px;
+    color: #fff;
+    text-transform: uppercase;
+    font-weight: normal;
+    background-color: #5A5A5A;
+}
+
+
+/* ################################################### */
+
+.tableDiv tbody{
+  background-color: #fff;
+}
+.tableDiv tbody tr{
+  box-shadow: 1px 1px 7px 0px #dadada;
+  border-radius: 5px;
+}
+.firstTh{
+  border-radius: 5px 0 0 0;
+}
+.lastTh{
+  border-radius: 0px 5px 0 0;
+}
+select.form-control:not([size]):not([multiple]){
+  font-size: 14px;
+}
+.ss-send-circle {
+  vertical-align: text-bottom;
+}
+.tabs-chng{
+  border-bottom: none;
+}
+.nav-items{
+  width: 170px;
+}
+.addCursor.active{
+  color: #980029;
+  border-color: #fff #fff #fff;
+}
+.addCursor{
+    font-size: 14px;
+    /* font-family: bold; */
+    font-weight: bold;
+
+}
+.container-set{
+  background-color: white;
+}
+.inputBorder {
+    border-color: red;
+}
+.sendIcon{
+  margin-top: -5px;
+  height: 30px;
+}
+/* ################################################### */

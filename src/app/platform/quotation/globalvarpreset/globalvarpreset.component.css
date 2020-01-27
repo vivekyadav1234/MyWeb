@@ -1,0 +1,99 @@
+.modalTitle{
+	padding: 10px 18px;
+  position: relative;
+  bottom: -17px;
+  background: #fff;
+  color: #848484;
+  font-size: 16px;
+  font-weight: normal;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+#presetModal .modal-header, #shadeCodeModal .modal-header,
+#edgebandingShadeModal .modal-header, #handleCodeModal .modal-header {
+	background: #F4f4f4;
+	padding-top: 0px;
+}
+#presetModal label{
+	color: #848484;
+}
+#presetModal .form-control,#presetModal span{
+	font-size: 13px;
+}
+#presetModal a{
+	color: blue;
+  font-size: 14px;
+}
+#shadeCodeModal, #edgebandingShadeModal, #handleCodeModal{
+  overflow-y: auto; 
+}
+.rk-ui-notification{
+  z-index: 10000;
+}
+#presetModal .close span{
+  font-size: 1.5rem;
+}
+#navcontainer {
+  margin:0px auto;
+  display:table;
+  white-space:nowrap;
+}
+.tabs-chng{
+  border-bottom: none;
+}
+.nav-items{
+  min-width: 170px;
+}
+ul
+{
+  color: gray;
+  margin-top: 40px;
+}
+.container-set{
+  background-color: white;
+}
+.table{
+  border-collapse: separate;
+  border-spacing: 0 5px;
+}
+.table td{
+  padding: 0.7rem 0.75rem;
+  vertical-align: middle;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.7);
+  border: none;
+}
+.table th {
+  padding: .9rem;
+  vertical-align: middle;
+  border: none;
+  font-size: 12px;
+  text-transform: uppercase;
+  color: #fff;
+  background-color: #5A5A5A;
+}
+.tableDiv tbody{
+  background-color: #fff;
+}
+.table thead{
+  
+}
+.tableDiv tbody tr{
+  box-shadow: 1px 1px 7px 0px #dadada;
+  border-radius: 5px;
+}
+.firstTh{
+  border-radius: 5px 0 0 0;
+}
+.lastTh{
+  border-radius: 0px 5px 0 0;
+}
+.rk-interalBtnColor{
+  padding: 6px 20px 7px 20px;
+}
+.rk-btnCancel{
+  padding-top: 10px;
+}
+.cursor-notallowed{
+  cursor: not-allowed;
+}

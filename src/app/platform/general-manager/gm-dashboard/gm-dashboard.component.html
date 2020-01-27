@@ -1,0 +1,573 @@
+<div style="z-index:1100!important" class="rk-ui-notification" *ngIf="successalert">
+	<span id="notificationMessageText">{{successMessage}}</span>
+	<a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+<div class="rk-ui-notification err" *ngIf="erroralert">
+	<span id="notificationMessageText">{{errorMessage}}</span>
+	<a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+<div class="row ss-top-menu">
+    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6">
+        <span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;font-size: 17px;">Dashboard</span>
+  </div>
+  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6">
+  </div>
+</div>
+<div class="row mt-4">
+    <div class="col-md-7 filter2 ml-4">
+        <span class="fltype">Filter by TIME</span>
+        <span class="fltype" style="margin-left:18rem;">Select DATE RANGE</span>
+        <span class="text-danger pull-right text-bold cursor-pointer mt-1" (click)="ClearDateFilter()" style="font-size: 12px">Clear</span>
+        <div class="floptions d-flex">
+            <button type="button" class="btn  btn-sm col_buttons" name="button" (click)="FilterByTime('days')" [ngClass]="{'active': filter_by_time == 'days'}">DAYS</button>
+            <button type="button" class="btn btn-sm col_buttons ml-1 mr-1" name="button" (click)="FilterByTime('weeks')" [ngClass]="{'active':filter_by_time == 'weeks'}">WEEK</button>
+            <button type="button" class="btn  btn-sm col_buttons" name="button" (click)="FilterByTime('months')" [ngClass]="{'active':filter_by_time == 'months'}">MONTH</button>
+            <span class="fltype ml-1 mr-1 mt-1">OR</span>
+            <input [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1" placeholder="Select Date"  class=" rk-form-fontsize d-block rounded px-2 p-1" [(ngModel)]="from_date">
+		    <owl-date-time #dt1 [pickerType]="'calendar'"></owl-date-time> <span style="font-weight:lighter;" class="ml-2 mt-1"> To </span>
+		    <input [owlDateTime]="dt2" [owlDateTimeTrigger]="dt2" placeholder="Select Date"  class=" rk-form-fontsize d-block  rounded px-2 ml-2 p-1" [(ngModel)]="to_date" [min]="from_date">
+		    <owl-date-time #dt2 [pickerType]="'calendar'" ></owl-date-time>
+		    <button class="btn btn-sm go-filter ml-3" (click)="submitByDate()">GO</button>
+        </div>
+    </div>
+    <div class="col-md-4 filter2 ml-4">
+    	<span class="text-danger pull-right text-bold cursor-pointer mt-1" (click)="ClearTypeFilter()" style="font-size: 12px">Clear</span>
+        <span class="fltype">Filter by TYPE</span>
+        <div class="floptions">
+            <button type="button" class="btn  btn-sm col_buttons" name="button" (click)="FilterByType('all')" [ngClass]="{'active': filter_by_type == 'all'}">All</button>
+            <button type="button" class="btn  btn-sm col_buttons" name="button" (click)="FilterByType('digital')" [ngClass]="{'active': filter_by_type == 'digital'}">Digital</button>
+            <button type="button" class="btn  btn-sm col_buttons" name="button" (click)="FilterByType('physical')" [ngClass]="{'active': filter_by_type == 'physical'}">Physical</button>
+        </div>
+    </div>
+</div>
+<div class="row">
+	<div class="col-md-3 filter2 ml-4" [ngClass]="{'d-none':role=='community_manager'|| role =='designer'|| role =='city_gm' || role=='design_manager'}">
+    	<span class="text-danger pull-right text-bold cursor-pointer mt-1" (click)="ClearGmFilter()" style="font-size: 12px">Clear</span>
+        <span class="fltype">Filter by GM</span>
+	    <div class="floptions">
+          <angular2-multiselect [data]="gm_dropdownList" [(ngModel)]="selectedGmItems"
+          [settings]="gm_dropdownSettings"
+          (onSelect)="onItemSelect($event,'gm',3)"
+          (onDeSelect)="OnItemDeSelect($event,'gm',3)"
+          (onSelectAll)="onSelectAll($event)"
+          (onDeSelectAll)="onDeSelectAll($event)"></angular2-multiselect>
+        </div>
+    </div>
+	<div class="col-md-3 filter2" [ngClass]="{'d-none':role=='community_manager'|| role =='designer'}" [ngStyle]="{'margin-left':(role =='city_gm' || role=='design_manager') ? '2%':'0%'}">
+    	<span class="text-danger pull-right text-bold cursor-pointer mt-1" (click)="ClearCmFilter()" style="font-size: 12px">Clear</span>
+        <span class="fltype">Filter by CM</span>
+	    <div class="floptions">
+          <angular2-multiselect [data]="cm_dropdownList" [(ngModel)]="selectedCmItems"
+          [settings]="cm_dropdownSettings"
+          (onSelect)="onItemSelect($event,'cm',1)"
+          (onDeSelect)="OnItemDeSelect($event,'cm',1)"
+          (onSelectAll)="onSelectAll($event)"
+          (onDeSelectAll)="onDeSelectAll($event)"></angular2-multiselect>
+        </div>
+
+    </div>
+    <div class="col-md-3 filter2" [ngClass]="{'d-none': role =='designer'}">
+    	<span class="text-danger pull-right text-bold cursor-pointer mt-1" (click)="CleardesignerFilter()" style="font-size: 12px">Clear</span>
+        <span class="fltype">Filter by DESIGNER</span>
+        <div class="floptions">
+	        <angular2-multiselect [data]="designer_dropdownList" [(ngModel)]="selectedDesignerItems"
+	        [settings]="designer_dropdownSettings"
+	        (onSelect)="onItemSelect($event,'designer',2)"
+	        (onDeSelect)="OnItemDeSelect($event,'designer',2)"
+	        (onSelectAll)="onSelectAll($event)"
+	        (onDeSelectAll)="onDeSelectAll($event)"></angular2-multiselect>
+        </div>
+    </div>
+	<div class="col-md-4 filter2">
+    	<span class="text-danger pull-right text-bold cursor-pointer mt-1" (click)="ClearAreaFilter()" style="font-size: 12px">Clear</span>
+        <span class="fltype">Filter by AREA</span>
+        <div class="floptions">
+            <button type="button" class="btn  active btn-sm col_buttons" name="button" (click)="FilterByArea('overall_data')" [ngClass]="{'active': filter_by_area == 'overall_data'}">All</button>
+            <button type="button" class="btn  btn-sm col_buttons" name="button" (click)="FilterByArea('fhi_data')" [ngClass]="{'active': filter_by_area == 'fhi_data'}">FHI Data</button>
+            <button type="button" class="btn  btn-sm col_buttons" name="button" (click)="FilterByArea('mkw_data')" [ngClass]="{'active': filter_by_area == 'mkw_data'}">MKW Data</button>
+        </div>
+    </div>
+</div>
+<div class="row mt-4 mb-4">
+   <span class="ml-4" style="font-size: 17px">Filters :</span> <a class="clear_all float-left cursor-pointer ml-1 mt-1" (click)="clearAllFilter()" style="color:#4b4bf9"> Clear All FILTERS</a>
+</div>
+
+<div id="tableFirst" class="row" style="background-color: #f2f5f8;"  >
+    <div class="col-md-12" style="background-color: #f2f5f8;">
+	    <div class="row mt-4">
+		    <table class="table table-bordered" style="background-color: #f2f5f8;">
+		        <thead>
+		            <tr>
+		                <th class="p-0" colspan="1" style="background-color: #f2f5f8"><button type="button" class="btn yellow">LEADS<i class="cursor-pointer ml-3 fa {{arrow ? 'fa-angle-down' : 'fa-angle-up'}}" (click)="sHowArrow()"></i></button>
+		                </th>
+		                <th class="p-0 text-center" *ngFor="let day of data"  style="vertical-align: middle;" > <button type="button" class="btn" style="color:white;background-color:#5454fa;font-size: 13px;min-width: 100px;">{{day.column_title}}</button></th>
+		            </tr>
+		        </thead>
+		        <tbody *ngIf="arrow">
+		            <tr>
+		              <td class="tcol text-left" colspan="1">Leads Assigned to CM</td>
+		              <td class="cursor-pointer" *ngFor="let day of data;let i=index" data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'leads_assigned_cm',this.data[i].column_title,day.data_hash.leads_assigned_cm)">{{ day.data_hash.leads_assigned_cm}}</td>
+		            </tr>
+		            <tr>
+		              <td class="tcol text-left" colspan="1">Dropped by CM</td>
+		              <td class="cursor-pointer" *ngFor="let day of data;let i=index" data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'leads_dropped_cm',this.data[i].column_title,day.data_hash.leads_dropped_cm)">{{ day.data_hash.leads_dropped_cm}}</td>
+		            </tr>
+		            <tr>
+		              <td class="tcol text-left" colspan="1">Not Assigned to Designer</td>
+		              <td class="cursor-pointer" *ngFor="let day of data;let i=index" data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'not_assigned_designer',this.data[i].column_title,day.data_hash.not_assigned_designer )">{{ day.data_hash.not_assigned_designer }}</td>
+		            </tr>
+		            <tr>
+		              <td  class="tcol text-left" colspan="1">Assigned to Designer</td>
+		              <td class="cursor-pointer" *ngFor="let day of data;let i=index"data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'assigned_designer',this.data[i].column_title,day.data_hash.assigned_designer)">{{ day.data_hash.assigned_designer}}</td>
+		            </tr>
+		            <tr>
+		              <td  class="tcol text-left" colspan="1">Delayed Projects</td>
+		              <td class="cursor-pointer" *ngFor="let day of data;let i=index"data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'delayed_projects',this.data[i].column_title,day.data_hash.delayed_projects)">{{ day.data_hash.delayed_projects}}</td>
+		            </tr>
+		            <tr>
+		              <td class="tcol text-left" colspan="1">Delayed Possessions</td>
+		              <td class="cursor-pointer" *ngFor="let day of data;let i=index"data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'delayed_possessions',this.data[i].column_title,day.data_hash.delayed_possessions)">{{ day.data_hash.delayed_possessions}}</td>
+		            </tr>
+		            <tr>
+		                <td class="tcol text-left" colspan="1">Designer Status - NC</td>
+		                <td class="cursor-pointer" *ngFor="let day of data;let i=index" data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'designer_not_contactable',this.data[i].column_title,day.data_hash.designer_not_contactable)">{{ day.data_hash.designer_not_contactable }}</td>
+		            </tr>
+		            <tr>
+		                <td class="tcol text-left" colspan="1">Designer Status - Lost</td>
+		                <td class="cursor-pointer" *ngFor="let day of data;let i=index" data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'designer_lost',this.data[i].column_title,day.data_hash.designer_lost)">{{ day.data_hash.designer_lost}}</td>
+		            </tr>
+		            <tr>
+		                <td class="tcol text-left" colspan="1">No Phone Call in 24 Hours <br>after Assignment</td>
+		                <td class="cursor-pointer" *ngFor="let day of data;let i=index"data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'no_call_24_hrs',this.data[i].column_title,day.data_hash.no_call_24_hrs)">{{ day.data_hash.no_call_24_hrs}}</td>
+		            </tr>
+		        </tbody>
+		    </table>
+	    </div>
+        <div class="row mt-4">
+		    <table class="table table-bordered " style="background-color: #f2f5f8;">
+		        <thead>
+		            <tr>
+		                <th class="p-0" colspan="1" style="background-color: #f2f5f8"><button type="button" class="btn yellow1">MEETINGS<i class="cursor-pointer ml-3 fa {{arrowOne ? 'fa-angle-down' : 'fa-angle-up'}}" (click)="mHowArrow()"></i></button>
+		                </th>
+		                <th class="p-0 text-center" *ngFor="let day of data" style="vertical-align: middle;"><button type="button" class="btn" style=" color:white;background-color:#5454fa;font-size: 13px;min-width: 100px;">{{day.column_title}}</button></th>
+		            </tr>
+		        </thead>
+		        <tbody *ngIf="arrowOne">
+		            <tr>
+		              <td class="tcol text-left" colspan="1">No of Clients Met</td>
+		              <td class="cursor-pointer" *ngFor="let day of data;let i=index"data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'clients_met',this.data[i].column_title,day.data_hash.clients_met)">{{day.data_hash.clients_met}}</td>
+		            </tr>
+		            <tr>
+		              <td class="tcol text-left" colspan="1">No of Clients Met on Header Date</td>
+		              <td class="cursor-pointer" *ngFor="let day of data;let i=index"data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'clients_met_total',this.data[i].column_title,day.data_hash.clients_met_total)">{{day.data_hash.clients_met_total}}</td>
+		            </tr>
+		            <tr>
+		              <td class="tcol text-left" colspan="1">No of Clients Not Met</td>
+		              <td class="cursor-pointer" *ngFor="let day of data;let i=index"data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'clients_not_met',this.data[i].column_title,day.data_hash.clients_not_met)">{{day.data_hash.clients_not_met}}</td>
+		            </tr>
+		        </tbody>
+		    </table>
+        </div>
+        <div class="row mt-4">
+		    <table class="table table-bordered  " style="background-color: #f2f5f8;">
+		        <thead>
+		            <tr>
+		                <th class="p-0" colspan="1" style="background-color: #f2f5f8"><button type="button" class="btn yellow">BOQs<i class="cursor-pointer ml-3 fa {{arrowTwo ? 'fa-angle-down' : 'fa-angle-up'}}" (click)="bHowArrow()"></i></button>
+		                </th>
+		                <th class="p-0 text-center" *ngFor="let day of data" style="vertical-align: middle;"><button type="button" class="btn" style=" color:white;background-color:#5454fa;font-size: 13px;min-width: 100px;">{{day.column_title}}</button></th>
+		            </tr>
+		        </thead>
+		        <tbody *ngIf="arrowTwo">
+		            <tr>
+		              <td class="tcol text-left" colspan="1">No of Clients for which BOQ Created</td>
+		              <td class="cursor-pointer" *ngFor="let day of data;let i=index"data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'boqs_created',this.data[i].column_title,day.data_hash.boqs_created)">{{day.data_hash.boqs_created}}</td>
+		            </tr>
+		            <tr>
+		              <td class="tcol text-left" colspan="1">Total Value of BOQ Created</td>
+		              <td class="cursor-pointer" *ngFor="let day of data;let i=index"data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'value_of_boqs_created',this.data[i].column_title,day.data_hash.value_of_boqs_created)">{{day.data_hash.value_of_boqs_created}}</td>
+		            </tr>
+		            <tr>
+		                <td class="tcol text-left" colspan="1">No of Clients for which BOQ Not Created</td>
+		                <td class="cursor-pointer" *ngFor="let day of data;let i=index"data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'boqs_not_created',this.data[i].column_title,day.data_hash.boqs_not_created)">{{day.data_hash.boqs_not_created}}</td>
+		            </tr>
+		            <tr>
+		                <td  class="tcol text-left" colspan="1">No of Clients for which BOQ Created on Header Date</td>
+		                <td class="cursor-pointer" *ngFor="let day of data;let i=index"data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'boqs_created_total',this.data[i].column_title,day.data_hash.boqs_created_total)">{{day.data_hash.boqs_created_total}}</td>
+		            </tr>
+		            <tr>
+		                <td  class="tcol text-left" colspan="1">Total Value of  BOQ Created on Header Date</td>
+		                <td class="cursor-pointer" *ngFor="let day of data;let i=index"data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'value_of_boqs_created_total',this.data[i].column_title,day.data_hash.value_of_boqs_created_total)">{{day.data_hash.value_of_boqs_created_total}}</td>
+		            </tr>
+		            <tr>
+		                <td class="tcol text-left" colspan="1">No of Clients for which BOQ Shared</td>
+		                <td class="cursor-pointer" *ngFor="let day of data;let i=index"data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'boqs_shared',this.data[i].column_title,day.data_hash.boqs_shared)">{{day.data_hash.boqs_shared}}</td>
+		            </tr>
+		            <tr>
+		                <td class="tcol text-left" colspan="1">Total Value of BOQ Shared</td>
+		                <td class="cursor-pointer" *ngFor="let day of data;let i=index"data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'value_of_boqs_shared',this.data[i].column_title,day.data_hash.value_of_boqs_shared)">{{day.data_hash.value_of_boqs_shared}}</td>
+		            </tr>
+		            <tr>
+		                <td class="tcol text-left" colspan="1">No of Clients for  which BOQ Not Shared</td>
+		                <td class="cursor-pointer" *ngFor="let day of data;let i=index"data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'boqs_not_shared',this.data[i].column_title,day.data_hash.boqs_not_shared)">{{day.data_hash.boqs_not_shared}}</td>
+		            </tr>
+		            <tr>
+		                <td class="tcol text-left" colspan="1">No of Clients for which  BOQ Shared on Header Date</td>
+		                <td class="cursor-pointer" *ngFor="let day of data;let i=index"data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'boqs_shared_total',this.data[i].column_title,day.data_hash.boqs_shared_total)">{{day.data_hash.boqs_shared_total}}</td>
+		            </tr>
+		          <!--   /////// -->
+		            <tr>
+		                <td class="tcol text-left" colspan="1">Total Value Of Select BOQ</td>
+		                <td class="cursor-pointer" *ngFor="let day of data;let i=index">{{day.data_hash.select_boq_value}}</td>
+		            </tr>
+		            <tr>
+		                <td class="tcol text-left" colspan="1">Total Value of Select BOQ  On Header Date</td>
+		                <td class="cursor-pointer" *ngFor="let day of data;let i=index">{{day.data_hash.select_boq_value_header}}</td>
+		            </tr>
+		            <tr>
+		                <td class="tcol text-left" colspan="1">Total Value Of Select BOQ Shared</td>
+		                <td class="cursor-pointer" *ngFor="let day of data;let i=index">{{day.data_hash.select_boq_shared_value}}</td>
+		            </tr>
+		            <tr>
+		                <td class="tcol text-left" colspan="1">Total Value of Select BOQ  Shared on Header Date</td>
+		                <td class="cursor-pointer" *ngFor="let day of data;let i=index">{{day.data_hash.select_boq_shared_value_header}}</td>
+		            </tr>
+		           <!--  //// -->
+		            <tr>
+		                <td class="tcol text-left" colspan="1">Total Value of BOQ  Shared on Header Date</td>
+		                <td class="cursor-pointer" *ngFor="let day of data;let i=index"data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'value_of_boqs_shared_total',this.data[i].column_title,day.data_hash.value_of_boqs_shared_total)">{{day.data_hash.value_of_boqs_shared_total}}</td>
+		            </tr>
+		            <tr>
+		                <td class="tcol text-left" colspan="1">Discount Approval Pending from CM</td>
+		                <td class="cursor-pointer" *ngFor="let day of data;let i=index"data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'discount_approval_pending',this.data[i].column_title,day.data_hash.discount_approval_pending)">{{day.data_hash.discount_approval_pending}}</td>
+		            </tr>
+		            <tr>
+		                <td class="tcol text-left" colspan="1">Payment approval pending (10% or 40%)</td>
+		                <td class="cursor-pointer" *ngFor="let day of data;let i=index"data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'payment_approval_pending',this.data[i].column_title,day.data_hash.payment_approval_pending)">{{day.data_hash.payment_approval_pending}}</td>
+		            </tr>
+		             
+		        </tbody>
+		    </table>
+        </div>
+        <div class="row mt-4">
+		    <table class="table table-bordered" style="background-color: #f2f5f8;">
+		        <thead>
+		            <tr>
+		                <th class="p-0" colspan="1" style="background-color: #f2f5f8"><button type="button" class="btn yellow">Closures<i class="cursor-pointer ml-3 fa {{arrowThree ? 'fa-angle-down' : 'fa-angle-up'}}" (click)="cHowArrow()"></i></button>
+		                </th>
+		                <th class="p-0 text-center" *ngFor="let day of data" style="vertical-align: middle;"><button type="button" class="btn" style=" color:white;background-color:#5454fa;font-size: 13px;min-width: 100px;">{{day.column_title}}</button></th>
+		            </tr>
+		        </thead>
+		        <tbody *ngIf="arrowThree">
+		            <tr>
+		                <td class="tcol text-left" colspan="1">No of Clients Closed (10% Received)</td>
+		                <td class="cursor-pointer" *ngFor="let day of data;let i=index" data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'closures',this.data[i].column_title,day.data_hash.closures)">{{day.data_hash.closures}}</td>
+		            </tr>
+		            <tr>
+		                <td class="tcol text-left" colspan="1">Total BOQ Value of <br>Closures (10% Received)</td>
+		                <td class="cursor-pointer" *ngFor="let day of data;let i=index" data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'value_of_closures',this.data[i].column_title,day.data_hash.value_of_closures)">{{day.data_hash.value_of_closures}}</td>
+		            </tr>
+		            <tr>
+		                <td class="tcol text-left p-1" colspan="1">No of Clients Closed<br> on Header Date (10% Received)</td>
+		                <td class="cursor-pointer" *ngFor="let day of data;let i=index" data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'closures_total',this.data[i].column_title,day.data_hash.closures_total)">{{day.data_hash.closures_total}}</td>
+		            </tr>
+		            <tr>
+		                <td class="tcol text-left p-1" colspan="1">Total BOQ Value of Closures<br> on Header Date (10% Received)</td>
+		                <td class="cursor-pointer" *ngFor="let day of data;let i=index" data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'value_of_closures_total',this.data[i].column_title,day.data_hash.value_of_closures_total)">{{day.data_hash.value_of_closures_total}}</td>
+		            </tr>
+		            <tr>
+		                <td class="tcol text-left p-1" colspan="1">Total Closer Value Of Select BOQ</td>
+		                <td class="cursor-pointer" *ngFor="let day of data;let i=index">{{day.data_hash.select_closer_value}}</td>
+		            </tr>
+		            <tr>
+		                <td class="tcol text-left p-1" colspan="1">Total Closer Value Of Select BOQ On Header Date</td>
+		                <td class="cursor-pointer" *ngFor="let day of data;let i=index">{{day.data_hash.select_closer_value_header}}</td>
+		            </tr>
+		        </tbody>
+		    </table>
+        </div>
+    </div>
+</div>
+<!-- ////////table Second for total////////// -->
+<div id="tableSecond" class="row" style="background-color: #f2f5f8; display: none;">
+    <div class="col-md-12" style="background-color: #f2f5f8;">
+	    <div class="row mt-4">
+		    <table class="table tbl2 table-bordered" style="background-color: #f2f5f8;">
+		        <thead>
+		            <tr>
+		                <th class="p-0" colspan="1" style="background-color: #f2f5f8"><button type="button" class="btn yellow">LEADS<i class="cursor-pointer ml-3 fa {{arrow ? 'fa-angle-down' : 'fa-angle-up'}}" (click)="sHowArrow()"></i></button>
+		                </th>
+		                <th class="p-0 text-center" *ngFor="let day of data"  style="vertical-align: middle;" > <button type="button" class="btn" style="color:white;background-color:#5454fa;font-size: 13px;min-width: 100px;">{{day.column_title}}</button></th>
+		            </tr>
+		        </thead>
+		        <tbody *ngIf="arrow">
+		            <tr>
+		              <td class="tcol text-left" colspan="1">Leads Assigned to CM</td>
+		              <td class="cursor-pointer" *ngFor="let day of data;let i=index" data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'leads_assigned_cm',this.data[i].column_title,day.data_hash.leads_assigned_cm)">{{ day.data_hash.leads_assigned_cm}}</td>
+		            </tr>
+		            <tr>
+		              <td class="tcol text-left" colspan="1">Dropped by CM</td>
+		              <td class="cursor-pointer" *ngFor="let day of data;let i=index"data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'leads_dropped_cm',this.data[i].column_title,day.data_hash.leads_dropped_cm)">{{ day.data_hash.leads_dropped_cm}}</td>
+		            </tr>
+		            <tr>
+		              <td class="tcol text-left" colspan="1">Not Assigned to Designer</td>
+		              <td class="cursor-pointer" *ngFor="let day of data;let i=index"data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'not_assigned_designer',this.data[i].column_title,day.data_hash.not_assigned_designer)">{{ day.data_hash.not_assigned_designer }}</td>
+		            </tr>
+		            <tr>
+		              <td  class="tcol text-left" colspan="1">Assigned to Designer</td>
+		              <td class="cursor-pointer" *ngFor="let day of data;let i=index"data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'assigned_designer',this.data[i].column_title,day.data_hash.assigned_designer)">{{ day.data_hash.assigned_designer}}</td>
+		            </tr>
+		            <tr>
+		              <td  class="tcol text-left" colspan="1">Delayed Projects</td>
+		              <td class="cursor-pointer" *ngFor="let day of data;let i=index"data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'delayed_projects',this.data[i].column_title,day.data_hash.delayed_projects)">{{ day.data_hash.delayed_projects}}</td>
+		            </tr>
+		            <tr>
+		              <td class="tcol text-left" colspan="1">Delayed Possessions</td>
+		              <td class="cursor-pointer" *ngFor="let day of data;let i=index"data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'delayed_possessions',this.data[i].column_title,day.data_hash.delayed_possessions)">{{ day.data_hash.delayed_possessions}}</td>
+		            </tr>
+		            <tr>
+		                <td class="tcol text-left" colspan="1">Designer Status - NC</td>
+		                <td class="cursor-pointer" *ngFor="let day of data;let i=index"data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'designer_not_contactable',this.data[i].column_title,day.data_hash.designer_not_contactable)">{{ day.data_hash.designer_not_contactable }}</td>
+		            </tr>
+		            <tr>
+		                <td class="tcol text-left" colspan="1">Designer Status - Lost</td>
+		                <td class="cursor-pointer" *ngFor="let day of data;let i=index"data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'designer_lost',this.data[i].column_title,day.data_hash.designer_lost)">{{ day.data_hash.designer_lost}}</td>
+		            </tr>
+		            <tr>
+		                <td class="tcol text-left" colspan="1">No Phone Call in 24 Hours <br>after Assignment</td>
+		                <td class="cursor-pointer" *ngFor="let day of data;let i=index"data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'no_call_24_hrs',this.data[i].column_title,day.data_hash.no_call_24_hrs)">{{ day.data_hash.no_call_24_hrs}}</td>
+		            </tr>
+		        </tbody>
+		    </table>
+	    </div>
+        <div class="row mt-4">
+		    <table class="table tbl2 table-bordered " style="background-color: #f2f5f8;">
+		        <thead>
+		            <tr>
+		                <th class="p-0" colspan="1" style="background-color: #f2f5f8"><button type="button" class="btn yellow1">MEETINGS<i class="cursor-pointer ml-3 fa {{arrowOne ? 'fa-angle-down' : 'fa-angle-up'}}" (click)="mHowArrow()"></i></button>
+		                </th>
+		                <th class="p-0 text-center" *ngFor="let day of data" style="vertical-align: middle;"><button type="button" class="btn" style=" color:white;background-color:#5454fa;font-size: 13px;min-width: 100px;">{{day.column_title}}</button></th>
+		            </tr>
+		        </thead>
+		        <tbody *ngIf="arrowOne">
+		            <tr>
+		              <td class="tcol text-left" colspan="1">No of Clients Met</td>
+		              <td class="cursor-pointer" *ngFor="let day of data;let i=index"data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'clients_met',this.data[i].column_title,day.data_hash.clients_met)">{{day.data_hash.clients_met}}</td>
+		            </tr>
+		            <tr>
+		              <td class="tcol text-left" colspan="1">No of Clients Met on Header Date</td>
+		              <td class="cursor-pointer" *ngFor="let day of data;let i=index"data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'clients_met_total',this.data[i].column_title,day.data_hash.clients_met_total)">{{day.data_hash.clients_met_total}}</td>
+		            </tr>
+		            <tr>
+		              <td class="tcol text-left" colspan="1">No of Clients Not Met</td>
+		              <td class="cursor-pointer" *ngFor="let day of data;let i=index"data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'clients_not_met',this.data[i].column_title,day.data_hash.clients_not_met)">{{day.data_hash.clients_not_met}}</td>
+		            </tr>
+		        </tbody>
+		    </table>
+        </div>
+        <div class="row mt-4">
+		    <table class="table tbl2 table-bordered  " style="background-color: #f2f5f8;">
+		        <thead>
+		            <tr>
+		                <th class="p-0" colspan="1" style="background-color: #f2f5f8"><button type="button" class="btn yellow">BOQs<i class="cursor-pointer ml-3 fa {{arrowTwo ? 'fa-angle-down' : 'fa-angle-up'}}" (click)="bHowArrow()"></i></button>
+		                </th>
+		                <th class="p-0 text-center" *ngFor="let day of data" style="vertical-align: middle;"><button type="button" class="btn" style=" color:white;background-color:#5454fa;font-size: 13px;min-width: 100px;">{{day.column_title}}</button></th>
+		            </tr>
+		        </thead>
+		        <tbody *ngIf="arrowTwo">
+		            <tr>
+		              <td class="tcol text-left" colspan="1">No of Clients for which BOQ Created</td>
+		              <td class="cursor-pointer" *ngFor="let day of data;let i=index"data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'boqs_created',this.data[i].column_title,day.data_hash.boqs_created)">{{day.data_hash.boqs_created}}</td>
+		            </tr>
+		            <tr>
+		              <td class="tcol text-left" colspan="1">Total Value of BOQ Created</td>
+		              <td class="cursor-pointer" *ngFor="let day of data;let i=index"data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'value_of_boqs_created',this.data[i].column_title,day.data_hash.value_of_boqs_created)">{{day.data_hash.value_of_boqs_created}}</td>
+		            </tr>
+		            <tr>
+		                <td class="tcol text-left" colspan="1">No of Clients for which BOQ Not Created</td>
+		                <td class="cursor-pointer" *ngFor="let day of data;let i=index"data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'boqs_not_created',this.data[i].column_title,day.data_hash.boqs_not_created)">{{day.data_hash.boqs_not_created}}</td>
+		            </tr>
+		            <tr>
+		                <td  class="tcol text-left" colspan="1">No of Clients for which BOQ Created on Header Date</td>
+		                <td class="cursor-pointer" *ngFor="let day of data;let i=index"data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'boqs_created_total',this.data[i].column_title,day.data_hash.boqs_created_total)">{{day.data_hash.boqs_created_total}}</td>
+		            </tr>
+		            <tr>
+		                <td  class="tcol text-left" colspan="1">Total Value of  BOQ Created on Header Date</td>
+		                <td class="cursor-pointer" *ngFor="let day of data;let i=index"data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'value_of_boqs_created_total',this.data[i].column_title,day.data_hash.value_of_boqs_created_total)">{{day.data_hash.value_of_boqs_created_total}}</td>
+		            </tr>
+		            <tr>
+		                <td class="tcol text-left" colspan="1">No of Clients for which BOQ Shared</td>
+		                <td class="cursor-pointer" *ngFor="let day of data;let i=index"data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'boqs_shared',this.data[i].column_title,day.data_hash.boqs_shared)">{{day.data_hash.boqs_shared}}</td>
+		            </tr>
+		            <tr>
+		                <td class="tcol text-left" colspan="1">Total Value of BOQ Shared</td>
+		                <td class="cursor-pointer" *ngFor="let day of data;let i=index"data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'value_of_boqs_shared',this.data[i].column_title,day.data_hash.value_of_boqs_shared)">{{day.data_hash.value_of_boqs_shared}}</td>
+		            </tr>
+		            <tr>
+		                <td class="tcol text-left" colspan="1">No of Clients for  which BOQ Not Shared</td>
+		                <td class="cursor-pointer" *ngFor="let day of data;let i=index"data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'boqs_not_shared',this.data[i].column_title,day.data_hash.boqs_not_shared)">{{day.data_hash.boqs_not_shared}}</td>
+		            </tr>
+		            <tr>
+		                <td class="tcol text-left" colspan="1">No of Clients for which  BOQ Shared on Header Date</td>
+		                <td class="cursor-pointer" *ngFor="let day of data;let i=index"data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'boqs_shared_total',this.data[i].column_title,day.data_hash.boqs_shared_total)">{{day.data_hash.boqs_shared_total}}</td>
+		            </tr>
+		            <tr>
+		                <td class="tcol text-left" colspan="1">Total Value Of Select BOQ</td>
+		                <td class="cursor-pointer" *ngFor="let day of data;let i=index">{{day.data_hash.select_boq_value}}</td>
+		            </tr>
+		            <tr>
+		                <td class="tcol text-left" colspan="1">Total Value of Select BOQ  On Header Date</td>
+		                <td class="cursor-pointer" *ngFor="let day of data;let i=index">{{day.data_hash.select_boq_value_header}}</td>
+		            </tr>
+		            <tr>
+		                <td class="tcol text-left" colspan="1">Total Value Of Select BOQ Shared</td>
+		                <td class="cursor-pointer" *ngFor="let day of data;let i=index">{{day.data_hash.select_boq_shared_value}}</td>
+		            </tr>
+		            <tr>
+		                <td class="tcol text-left" colspan="1">Total Value of Select BOQ  Shared on Header Date</td>
+		                <td class="cursor-pointer" *ngFor="let day of data;let i=index">{{day.data_hash.select_boq_shared_value_header}}</td>
+		            </tr>
+		            <tr>
+		                <td class="tcol text-left" colspan="1">Total Value of BOQ  Shared on Header Date</td>
+		                <td class="cursor-pointer" *ngFor="let day of data;let i=index"data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'value_of_boqs_shared_total',this.data[i].column_title,day.data_hash.value_of_boqs_shared_total)">{{day.data_hash.value_of_boqs_shared_total}}</td>
+		            </tr>
+		            <tr>
+		                <td class="tcol text-left" colspan="1">Discount Approval Pending from CM</td>
+		                <td class="cursor-pointer" *ngFor="let day of data;let i=index"data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'discount_approval_pending',this.data[i].column_title,day.data_hash.discount_approval_pending)">{{day.data_hash.discount_approval_pending}}</td>
+		            </tr>
+		            <tr>
+		                <td class="tcol text-left" colspan="1">Payment approval pending (10% or 40%)</td>
+		                <td class="cursor-pointer" *ngFor="let day of data;let i=index"data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'payment_approval_pending',this.data[i].column_title,day.data_hash.payment_approval_pending)">{{day.data_hash.payment_approval_pending}}</td>
+		            </tr>
+		        </tbody>
+		    </table>
+        </div>
+        <div class="row mt-4">
+		    <table class="table tbl2 table-bordered" style="background-color: #f2f5f8;">
+		        <thead>
+		            <tr>
+		                <th class="p-0" colspan="1" style="background-color: #f2f5f8"><button type="button" class="btn yellow">Closures<i class="cursor-pointer ml-3 fa {{arrowThree ? 'fa-angle-down' : 'fa-angle-up'}}" (click)="cHowArrow()"></i></button>
+		                </th>
+		                <th class="p-0 text-center" *ngFor="let day of data" style="vertical-align: middle;"><button type="button" class="btn" style=" color:white;background-color:#5454fa;font-size: 13px;min-width: 100px;">{{day.column_title}}</button></th>
+		            </tr>
+		        </thead>
+		        <tbody *ngIf="arrowThree">
+		            <tr>
+		                <td class="tcol text-left" colspan="1">No of Clients Closed (10% Received)</td>
+		                <td class="cursor-pointer" *ngFor="let day of data;let i=index"data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'closures',this.data[i].column_title,day.data_hash.closures)">{{day.data_hash.closures}}</td>
+		            </tr>
+		            <tr>
+		                <td class="tcol text-left" colspan="1">Total BOQ Value of <br>Closures (10% Received)</td>
+		                <td class="cursor-pointer" *ngFor="let day of data;let i=index"data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'value_of_closures',this.data[i].column_title,day.data_hash.value_of_closures)">{{day.data_hash.value_of_closures}}</td>
+		            </tr>
+		            <tr>
+		                <td class="tcol text-left p-1" colspan="1">No of Clients Closed<br> on Header Date (10% Received)</td>
+		                <td class="cursor-pointer" *ngFor="let day of data;let i=index"data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'closures_total',this.data[i].column_title,day.data_hash.closures_total)">{{day.data_hash.closures_total}}</td>
+		            </tr>
+		            <tr>
+		                <td class="tcol text-left p-1" colspan="1">Total BOQ Value of Closures<br> on Header Date (10% Received)</td>
+		                <td class="cursor-pointer" *ngFor="let day of data;let i=index"data-toggle="modal" data-target="#Modal" (click)="seeCountDetails(1,'value_of_closures_total',this.data[i].column_title,day.data_hash.value_of_closures_total)">{{day.data_hash.value_of_closures_total}}</td>
+		            </tr>
+		            <tr>
+		                <td class="tcol text-left p-1" colspan="1">Total Closer Value Of Select BOQ</td>
+		                <td class="cursor-pointer" *ngFor="let day of data;let i=index">{{day.data_hash.select_closer_value}}</td>
+		            </tr>
+		            <tr>
+		                <td class="tcol text-left p-1" colspan="1">Total Closer Value Of Select BOQ On Header Date</td>
+		                <td class="cursor-pointer" *ngFor="let day of data;let i=index">{{day.data_hash.select_closer_value_header}}</td>
+		            </tr>
+		        </tbody>
+		    </table>
+        </div>
+    </div>
+</div>
+ 
+<!-- ///////////////////////////// -->
+<div class="modal" tabindex="-1" role="dialog" id="Modal" data-backdrop="static" data-keyboard="false" *ngIf="this.count_values>0">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content modal-contentss">
+	        <div class="modal-header ss-top-menue mb-4">
+
+	            <div class="p-0 col-xl-5 col-lg-5 col-md-5 col-sm-5 col-xs-5">
+	                <button type="button" class="btn" style="background-color:#f9ff56;">{{ row_value | replaceChar}}&nbsp;-&nbsp;<span *ngIf="filter_by_time == 'days' || filter_by_time == 'weeks' || filter_by_time == 'months'" class="fonts"> {{filter_by_time |titlecase}}</span><span class="fontsize" *ngIf="this.date_filter_type == 'qualification'"> {{this.from_date| date:'dd/MM/yyyy'}}&nbsp;&nbsp;{{this.to_date| date:'dd/MM/yyyy'}}</span> </button>
+	                <button type="button" class="btn" style="background-color:#f9ff56;">{{this.count_values}}</button>
+	            </div>
+	            <div class="col-sm-4">
+	            	<div class="ss-searchbox">
+                        <i class="fa fa-search float-right"style="color:#5454fa;"></i>
+                        <input  class="form-control" placeholder="Search by name, lead ID etc" type="text" id="myInput"  #search (keyup.enter)="onKey($event)">
+                    </div>
+	            </div>
+	            <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-xs-3 text-right">
+	            	<button type="button" class="cursor-pointer btn" style="color: white;background-color:#5454fa"(click)="downloadExcelGmData()">Export </button>
+	  	            <button type="button" class="close addCursor ml-5" data-dismiss="modal" style="color:#5454fa;font-size:37px"> <i class="fa fa-remove"></i></button>
+	            </div>
+
+	        </div>
+	        <div class="modal-body p-1">
+ 				<div class="zui-wrapper">
+				    <div class="zui-scroller" id="style">
+				        <table class="zui-table table-bordered" id="myTable">
+				            <thead>
+				                <tr>
+				                    <th class="zui-sticky-col" style="width:15%">Customer Name</th>
+				                    <th style="width:9%" >lead id</th>
+				                    <th style="width:9%">CM Name</th>
+				                    <th style="width:9%">Designer Name</th>
+				                    <!-- <th style="width:9%">CM Status</th>
+				                    <th style="width:9%">Designer Status</th> -->
+				                    <th style="width:9%">Delayed Project / Possession</th>
+				                    <th style="width:9%">Lead Assignment to CM</th>
+				                    <th style="width:9%">Date of 1st Meeting</th>
+				                    <th style="width:9%">Date of First Attempt by Designer</th>
+				                    <th style="width:9%">Total BOQ Created Value</th>
+				                    <th style="width:9%">Total BOQ Shared Value</th>
+				                    <th style="width:9%">Total Closure Value</th>
+				                    <th style="width:9%">First BOQ Creation Date</th>
+				                    <th style="width:9%">First BOQ Sharing Date</th>
+				                    <th style="width:9%">First Closure Date (10% Payment Verified)</th>
+				                    <th style="width:9%">Lead Asgmt to Designer - First Attempt</th>
+				                    <th style="width:9%">Lead Asgmt to Designer - BOQ Creation</th>
+				                    <th style="width:9%">Lead Asgmt to Designer - BOQ Sharing</th>
+				                    <th style="width:9%">Lead Assignment to - Closure</th>
+				                </tr>
+				            </thead>
+				            <tbody style="background-color: white">
+				                <tr *ngFor="let lead of lead_list | paginate: { itemsPerPage: per_page, currentPage: current_page, totalItems: total_page}; let i = index"
+  		                         [attr.data-index]="i">
+				                    <td class="zui-sticky-col colr">{{lead.customer_name}}</td>
+				                    <td>{{lead.id}}</td>
+				                    <td>{{lead.cm_name}}</td>
+				                    <td>{{lead.designer_name}}</td>
+				                    <!-- <td>{{lead.cm_status}}</td>
+				                    <td>{{lead.designer_status}}</td> -->
+				                    <td>{{lead.delayed_project_possession}}</td>
+				                    <td>{{lead.cm_assignment_date}}</td>
+				                    <td>{{lead.date_of_first_meeting}}</td>
+				                    <td>{{lead.designer_first_attempt}}</td>
+				                    <td>{{lead.total_boq_created_value}}</td>
+				                    <td>{{lead.total_boq_shared_value}}</td>
+				                    <td>{{lead.total_closuer_value}}</td>
+				                    <td>{{lead.first_boq_creation_date}}</td>
+				                    <td>{{lead.first_sharing_date}}</td>
+				                    <td>{{lead.first_clouser_date}}</td>
+				                    <td>{{lead.lead_asgmt_to_designer_first_attempt}}</td>
+				                    <td>{{lead.lead_asgmt_to_designer_boq_creation}}</td>
+				                    <td>{{lead.lead_asgmt_to_designer_boq_sharing}}</td>
+				                    <td>{{lead.lead_assignment_to_closure}}</td>
+				                </tr>
+				                <!-- <div class="col-md-12 mt-5 text-center p-5" style="background-color: #fff;" *ngIf="!lead_list">
+                                  <img src="../../../assets/img/no_image.svg" class="img-fluid">
+                                </div> -->
+				            </tbody>
+				        </table>
+				    </div>
+				    <div class="text-center" *ngIf="lead_list && lead_list.length >0">
+  		               <pagination-controls autoHide="true" (pageChange)="current_page = seeCountDetails($event,row_value,column_value,values)"></pagination-controls>
+  		            </div>
+  		            
+				</div>
+	        </div>
+        </div>
+    </div>
+</div>
+ 

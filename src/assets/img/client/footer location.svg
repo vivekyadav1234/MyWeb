@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="30px" height="43px" viewBox="0 0 30 43" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48 (47235) - http://www.bohemiancoding.com/sketch -->
+    <title>footer location</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Client-BOQ-Approve" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-302.000000, -845.000000)">
+        <g id="Footer" transform="translate(0.000000, 812.000000)" fill="#FFFFFF" fill-rule="nonzero">
+            <g id="bottom-icons" transform="translate(83.000000, 27.500000)">
+                <g id="placeholder" transform="translate(219.500000, 6.000000)">
+                    <path d="M25.1826521,4.32076923 C22.3964983,1.53461538 18.6918829,0 14.7518829,0 C10.8111137,0 7.10726752,1.53461538 4.32111368,4.32076923 C-0.835040171,9.47615385 -1.4758094,19.1761538 2.93342137,25.0530769 L14.7518829,42.1207692 L26.5526521,25.0769231 C30.9795752,19.1761538 30.338806,9.47615385 25.1826521,4.32076923 Z M14.8880368,20 C11.9195752,20 9.50342137,17.5838462 9.50342137,14.6153846 C9.50342137,11.6469231 11.9195752,9.23076923 14.8880368,9.23076923 C17.8564983,9.23076923 20.2726521,11.6469231 20.2726521,14.6153846 C20.2726521,17.5838462 17.8564983,20 14.8880368,20 Z" id="footer-location"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

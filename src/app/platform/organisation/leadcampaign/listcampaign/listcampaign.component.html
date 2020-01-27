@@ -1,0 +1,164 @@
+
+<div class="row ss-top-menu">
+  <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-xs-3">
+    <span class="ss-text-light" style="vertical-align: -webkit-baseline-middle;">Dashboard <i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;">Lead Campaign</span>
+  </div>
+  <div class="col-xl-5 col-lg-5 col-md-5 col-sm-5 col-xs-5">
+    <div class="ss-searchbox">
+      <i class="fa fa-search"></i>
+      <input class="form-control" type="text" placeholder="Type name, status, location to search..." #search (keyup)="0">
+    </div>
+  </div>
+</div>
+<div class="rk-ui-notification" *ngIf="successalert">
+  <span id="notificationMessageText">{{successMessage}}</span>
+  <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+<div class="rk-firstRow row">
+  <div class="col-12" *ngIf="erroralert">
+    <div class="alert-box grid-100" *ngIf="errorMessage">
+      <div class="alert alert-danger mt-3 text-center">
+        <a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a>
+        {{errorMessage}}
+      </div>
+    </div>
+  </div>
+  <!-- <div class="col-12" *ngIf="successalert">
+    <div class="alert-box grid-100" *ngIf="successMessage">
+      <div class="alert alert-success mt-3 text-center">
+        <a class="close link" data-dismiss="alert"  (click)="successalert=false">×</a>
+        {{successMessage}}
+      </div>
+    </div>
+  </div> -->
+</div>
+<div class="container-fluid container-set mb-3">
+  <div class="row">
+    <div class="col-md-12 mb-2">
+      <button class="addCursor rk-interalBtnColor mt-3 pull-right mb-1" data-toggle="modal" data-target="#createcampaignModal">New Campaign</button>
+    </div>
+    <div class="col-md-12">
+      <div class="tableDiv">
+        <p class="text-center" *ngIf="campaigns &&  campaigns.length==0 ">No Campaigns</p>
+        <table class="table" *ngIf="campaigns &&  campaigns.length>0">
+          <thead>
+            <tr>
+              <th class="text-center firstTh">#</th>
+              <th (click)="sort('name')">Name <i class="fa ml-2" [ngClass]="{'fa-sort': column != 'name', 'fa-sort-asc': (column == 'name' && !isDesc), 'fa-sort-desc': (column == 'name' && isDesc) }" aria-hidden="true"></i></th>
+              <th (click)="sort('status')">Status <i class="fa ml-2" [ngClass]="{'fa-sort': column != 'status', 'fa-sort-asc': (column == 'status' && !isDesc), 'fa-sort-desc': (column == 'status' && isDesc) }" aria-hidden="true"></i></th>
+              <th>Location </th>
+              <th>Start Date</th>
+              <th class="lastTh">End Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngIf="(campaigns | category: search.value).length==0">
+              <td colspan="6" class="text-center">No Match</td>
+            </tr>
+            <tr *ngFor="let data of campaigns | category: search.value | sort: {property: column, direction: direction}; let i = index; " [attr.data-index]="i" id="campaignRow{{i}}">
+              <td class="text-center">{{i+1}}</td>
+              <td class="capitalize">
+                <span class="editRowSpan{{i}}">{{data.name}}</span>
+                <input type="text" name="name" class="form-control d-none editRowInput{{i}} inputSize" [(ngModel)]="editCampaignName">
+              </td>
+              <td>
+                <span class="editRowSpan{{i}} capitalize">
+                  <img src="assets/v3/img/active.svg" class="mr-1" *ngIf="data.status=='active'"><img src="assets/v3/img/Inactive.svg" class="mr-1" *ngIf="data.status=='inactive'">
+                  {{data.status}}
+                </span>
+                <select class="d-none editRowInput{{i}} form-control inputSize"[(ngModel)]="editCampaignStatus">
+                  <option value="active">Active</option>
+                  <option value="inactive">Inactive</option>
+                </select>
+                <!-- <input type="text" name="status" class="d-none editRowInput{{i}}"> -->
+              </td>
+              <td>
+                <span class="editRowSpan{{i}} capitalize">{{data.location}}</span>
+                <input type="text" name="location" class="form-control d-none editRowInput{{i}} inputSize" [(ngModel)]="editCampaignLocation">
+              </td>
+              <td>
+                <span class="editRowSpan{{i}}">{{data.start_date | date:"dd MMMM, y @ h:mma"}}</span>
+                <!-- <input [owlDateTime]="dt5" [owlDateTimeTrigger]="dt5" placeholder="Enter Date & Time" class="form-control d-none editRowInput{{i}}" [(ngModel)]="editCampaignStartDate">
+                <owl-date-time #dt5 ></owl-date-time> -->
+                <input type="datetime-local" name="startdate" [(ngModel)]="editCampaignStartDate" class="form-control d-none editRowInput{{i}} inputSize">
+              </td>
+              <td id="lastTdEditForm">
+                <span class="editRowSpan{{i}}">{{data.end_date| date:"dd MMMM, y @ h:mma"}}</span>
+                <!-- <input [owlDateTime]="dt4" [owlDateTimeTrigger]="dt4" placeholder="Enter Date & Time"class="form-control lastTdEditFormInput d-none editRowInput{{i}}" [(ngModel)]="editCampaignEndDate">
+                <owl-date-time #dt4 ></owl-date-time> -->
+                <input type="datetime-local" name="enddate" [(ngModel)]="editCampaignEndDate" class="form-control d-none editRowInput{{i}} inputSize" style="display: inline-block;width: 50%;" min="{{editCampaignStartDate}}">
+                <button class="d-none editRowInput{{i}} rk-interalBtnColor mx-2" (click)="updateCampaignData(i,data.id)">Update</button>
+                <button class="d-none editRowInput{{i}} rk-btnCancel" (click)="cancelEditCampaignRow(i)">Cancel</button>
+
+                <i class="ion-android-more-vertical pull-right mr-2 ss-3-dot-drop editRowSpan{{i}}" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"></i>
+                <div class="dropdown-menu editRowSpan{{i}}" style="font-size: 14px;">
+                 <a class="dropdown-item" (click)="editCampaign(i,data)">
+                   <i class="ion-edit"></i>
+                   Edit
+                 </a>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="createcampaignModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Create New Campaign</h5>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="createCampaignForm">
+          <div class="row">
+            <div class="col-md-11 mt-3 ml-3 rk-form-fontsize">
+              <label class="mr-3">Enter Campaign Name*</label>
+              <input type="text" name="" formControlName="name" class="form-control" required placeholder="Enter Something...">
+              <div *ngIf="createCampaignForm.controls['name'].errors && !createCampaignForm.controls['name'].pristine" class="text-danger">
+                <p class="errorMsg text-center" [hidden]="!createCampaignForm.controls['name'].errors.required">  Name is required.</p>
+              </div>
+            </div>
+            <div class="col-md-11 mt-3 ml-3 rk-form-fontsize">
+              <label class="mr-3">Enter Campaign Status *</label>
+              <select formControlName="status" class="form-control">
+                <option value="" disabled="">Select Status</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+              </select>
+            </div>
+            <div class="col-md-11 mt-3 ml-3 rk-form-fontsize">
+              <label class="mr-3">Enter Campaign Location *</label>
+              <input type="text" name="" formControlName="location" class="form-control" placeholder="Enter Something...">
+            </div>
+            <div class="col-md-11 mt-3 ml-3 rk-form-fontsize">
+              <label class="mr-3">Campaign Start Date*</label>
+              <!-- <input [owlDateTime]="dt3" [owlDateTimeTrigger]="dt3"  formControlName="start_date" class="form-control" placeholder="Enter Something...">
+              <owl-date-time #dt3 ></owl-date-time> -->
+              <input type="datetime-local" name="" formControlName="start_date" class="form-control">
+            </div>
+            <div class="col-md-11 mt-3 mb-4 ml-3 rk-form-fontsize">
+              <label class="mr-3">Campaign End Date*</label>
+              <!-- <input [owlDateTime]="dt2" [owlDateTimeTrigger]="dt2"  formControlName="end_date" class="form-control" placeholder="Enter Something...">
+              <owl-date-time #dt2 ></owl-date-time> -->
+              <input type="datetime-local" name="" formControlName="end_date" class="form-control" min="{{createCampaignForm.controls['start_date'].value}}">
+            </div>
+            <div class="col-md-12 text-right modal-footer">
+              <button [disabled]="!createCampaignForm.valid" class=" mt-2 rk-interalBtnColor addCursor" (click)="createNewCampaign(createCampaignForm.value)">Create</button>
+              <button data-dismiss="modal" class=" mt-2 mr-5 rk-btnCancel addCursor" (click)="closeForm()">Cancel</button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <!-- <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div> -->
+    </div>
+  </div>
+</div>

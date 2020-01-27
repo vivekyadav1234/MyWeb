@@ -1,0 +1,154 @@
+<div class="row title" *ngIf="section">
+  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6">
+    <span class="ss-text-light" style="vertical-align: -webkit-baseline-middle;">Dashboard</span> 
+    <span style="vertical-align: -webkit-baseline-middle;"><i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-text-light" style="vertical-align: -webkit-baseline-middle;">Catalogue</span>
+    <!-- <span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;">{{lead_logs.name}}</span> -->
+  </div>
+  <!-- <h3>Dashboard / <span class="addCursor" [routerLink]="['/catalogue/sections']" routerLinkActive='active'>Catalogue</span> / <span>{{section.name | ucwords}}</span></h3> -->
+  <span data-toggle="modal" data-target="#createSubSectionModal" *ngIf="(editAndDeleteSectionAccess.length>0) && (editAndDeleteSectionAccess.indexOf(role) > -1) "><p class="add" data-toggle="tooltip" title="Create Sub Section" data-placement="left"><i class="fa fa-plus" aria-hidden="true"></i></p></span>
+</div>
+<div class="rk-ui-notification err" *ngIf="erroralert"  style="z-index: 10000;">
+  <span id="notificationMessageText">{{errorMessage}}</span>
+  <a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+<div class="rk-ui-notification" *ngIf="successalert"  style="z-index: 10000;">
+  <span id="notificationMessageText">{{successMessage}}</span>
+  <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+<div class="row">
+  <div class="col-md-12 mt-2" style="background-color: #fff; padding-top:10rem; padding-bottom:10rem;">
+    <div class="row justify-content-center">
+      <div class="col-sm-4 card-upload">
+        <div class="row">
+          <div class="col-sm-12">
+            <input id="file" type="file" class="inputfile" name="" value="Upload Excel" (change)="uploadFile($event)" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" >
+            <label for="file">Upload Excel File For Loose Furniture</label>
+          </div>
+          <div class="col-sm-12">
+            <div class="row pt-2 pb-2 mt-4 file-col">
+              <div class="col-sm-9">
+                <div class="col-sm-12">
+                  <div id="fileName"></div>
+                </div>
+                <div class="col-sm-12">
+                  <span id="fileSize"></span>
+                </div>
+              </div>
+              <div class="col-sm-3 text-center">
+                <i class="fa fa-cloud-upload mt-2" (click) = "submit()"></i>
+                <!-- <i class="fa fa-hourglass-half mt-2"></i> -->
+                <span class = "wait-load">
+                  <div class="lds-css ng-scope">
+                    <div class="lds-spinner" style="100%;height:100%">
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                    </div>
+                  </div>
+                </span>
+                <i class="fa fa-check-circle mt-2"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="row justify-content-center">
+       
+
+        <div class="col-sm-6 card-upload mt-5 card-view">
+            <div class="row">
+                <div class="col-sm-12">
+                    <span> <i class="fa fa-close  card-view pull-right mb-2 cursor-pointer" (click)="hideForm()"></i></span>
+                       
+                </div> 
+                
+            </div>
+            <div class="row">
+              <div class="col-sm-12">
+
+                <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th>SKU</th>
+                        <th>Errors</th>
+                        
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let item of error_list">
+                        <td>{{ item.unique_sku }}</td>
+                        <td>
+                            <ng-container *ngFor="let obj of item.errors;let i=index">
+                               <span>{{ i +1 }}-</span> <span>{{ obj }}</span><br>
+                            </ng-container>    
+                        </td>
+                       
+                      </tr>
+                    </tbody>
+                </table>
+              </div>
+              
+            </div>
+            
+        </div>
+      
+    </div>
+    
+  </div>
+
+</div>    
+
+<div class="modal fade" id="createSubSectionModal" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Create Sub-Section</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)=" createCatalogueForm.reset();">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="createCatalogueForm" (ngSubmit)="onSubmit(createCatalogueForm.value); createCatalogueForm.reset()" class="form-horizontal">
+            <fieldset formArrayName="section">
+                <div class="form-group label-floating" *ngFor="let item of getJobAttributes(createCatalogueForm); let i=index" [formGroup]="item">
+                    <div class="col-sm-12">
+                        <i class="fa fa-minus-circle remove_button pull-right mr-2" (click)="createCatalogueForm.get('section').removeAt(i)"></i>
+                    </div>
+                    <div class="col-md-10">
+                        <label class="control-label mb-0 mt-2">Name*</label>
+                        <input type="text" class="form-control" placeholder="Enter Your Name" [attr.id]="'name'+i" formControlName="name">
+                    </div>
+                    <div class="col-md-10">
+                        <label class="control-label mb-0 mt-2">Description</label>
+                        <textarea class="form-control" placeholder="Enter Description" [attr.id]="'description'+i" formControlName="description" ></textarea>
+                    </div>
+                    <div class="col-md-10">
+                        <label class="control-label mb-0 mt-2">Upload Image</label>
+                        <input type="file" class="form-control" [attr.id]="'attachment_file'+i" formControlName="attachment_file" (change)="onChange($event,i)">
+                    </div>
+                </div>
+            </fieldset>
+            <button type="button" class="button addButton"  (click)="pushJobAttributes(createCatalogueForm)"><i class="fa fa-plus" aria-hidden="true"></i> Add another sub-section</button>
+            <hr>
+            <div class="pull-right">
+              <button type="submit" class="button" [disabled]="createCatalogueForm?.invalid">Submit</button>
+              <button type="button" class="btn addCursor btn-default" data-dismiss="modal" (click)=" createCatalogueForm.reset();">Close</button>
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+

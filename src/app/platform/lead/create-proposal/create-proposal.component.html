@@ -1,0 +1,213 @@
+<div class="row ss-top-menu">
+  <div class="col-sm-12">
+    <span class="ss-link addCursor" routerLink="/" style="vertical-align: -webkit-baseline-middle;">Dashboard</span>
+    <span style="vertical-align: -webkit-baseline-middle;"> <i class="rightArrow fa fa-angle-right"></i> </span>
+    <span class="ss-link addCursor" (click) = "backClicked()" style="vertical-align: -webkit-baseline-middle;">PROPOSALs</span>
+    <span style="vertical-align: -webkit-baseline-middle;" > <i class="rightArrow fa fa-angle-right"></i>  </span>
+    <span class="ss-text-dark" style="vertical-align: -webkit-baseline-middle;">Create</span>
+    <!-- <button class="btn btn-outline-secondary pull-right btn-lg bt-boq" type="button" data-toggle="modal" data-target="#addProductModal" (click)="getCatalogueProducts('all','all')">Add Product</button> -->
+  </div>
+</div>
+<div class="container-fluid container-set">
+	<div class="row" style="padding: 16px">
+		<div class="col-md-12 mb-2">
+     
+	    <button class="btn pull-right btn-lg bt-boq" type="button" data-toggle="modal" data-target="#myProposal">Add Proposal</button>
+	      
+	  </div>
+     <div class="col-md-12" *ngIf="boqProducts && boqProducts.length>0">
+      <h5>SELECTED PPTs FOR PROPOSAL</h5>
+      <div class="tableDiv ">
+        <div class="table-responsive">
+          <table class="table ">
+            <thead class="thead-dark">
+              <tr>
+                <th scope="col" class="firstTh">#</th>
+                <th scope="col">REFERENCE NUMBER</th>
+                <th scope="col">STATUS</th>
+                <th scope="col">PRICE</th>
+                <th scope="col">PERCENT DISCOUNT</th>
+                <th scope="col">FINAL AMOUNT</th>
+                <th class="lastTh"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr  *ngFor="let addedproduct of boqProducts; let i = index; " [attr.data-index]="i" class="box-list">
+                <td>{{ i +1 }}</td>
+                <td>{{addedproduct.reference_number}}</td>
+                <td>{{ addedproduct.status }}</td>
+                <td>{{ addedproduct.net_amount }}</td>
+                <td><input type="number"  min="0"  max="99"  onkeypress="return event.charCode >= 48" class="discountInput form-control" id="product_{{addedproduct.id}}" (input)="onInputDiscount($event.target.id,addedproduct,i)"></td>
+                <td>{{ final_amt[i]}}</td>
+                <!-- <td> <i class="fa fa-trash deleteRow addCursor" id="delete_row{{i}}" (click)="removeProductToProposals(addedproduct.id)"></i></td> -->
+                
+              </tr>
+            </tbody>
+          </table>  
+        </div>
+      </div>
+      
+             
+      <div class="text-right">
+        <button class="btnCancel btnchng  mt-3 mr-1 addCursor" (click)="cancelBoq()">Cancel</button>
+        <button class="cartBtn mt-3" (click)="saveProposal()">SAVE PROPOSAL</button>
+      </div>
+
+    </div>
+     <div class="tableDiv" *ngIf="ppt_value && ppt_value.length>0" >
+          <div class="table-responsive">
+            <table class="table ">
+              <thead class="thead-dark">
+                <tr>
+                  <th>#</th>
+                  <th>TITLE</th>
+                  <th>UPDATED AT</th>
+                  
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let obj of ppt_value;let i = index" [attr.data-index]="i">
+
+                  <td>{{ i+1 }}</td>
+                  <td><a [routerLink]="['/projects',project_id,'presentation',obj.id,'edit']" routerLinkActive="active"  (click)="modalhide()">{{ obj.title }}</a></td>
+                  <td>{{ obj.updated_at | date:"dd MMMM, y @ h:mma"}}</td>
+
+
+                  
+                </tr>
+              </tbody>
+            </table>
+             
+          </div>  
+     </div>  
+    
+		
+	</div>
+	
+</div>
+
+<!-- Modal create for proposal -->
+<div id="myProposal" class="modal fade" role="dialog">
+  <div class="modal-dialog modal-lg">
+
+  
+    <div class="modal-content modal-change">
+      <div class="modal-header">
+        <div class="row">
+          <div class="col-md-3">
+            <h5>Select proposal</h5>
+            
+          </div>
+          <div class="col-md-9">
+
+            <span class="rk-textColor">Choose from :</span>
+            <select class="form-control selectCatalogue ml-2" (change)="setProposal($event.target.value)">
+              <option>Change Proposal</option>
+              <option value="boq" >BOQ Proposal</option>
+              <option value="ppt">PPT Proposal</option>
+            </select>
+            <i class="downArrow fa fa-angle-down"></i>
+            
+          </div>
+          
+        </div>
+         
+      </div>
+      <div class="modal-body">
+        <div class="modal-header">
+	        <div class="container-fluid">
+	          <div class="row justify-content-center">
+              <div class="tableDiv" *ngIf="proposal_status == 'boq'">
+                <div class="table-responsive">
+                  <table class="table ">
+                    <thead class="thead-dark">
+                      <tr>
+                        <th></th>
+                        <th>#</th>
+                        <th>Reference No.</th>
+                        <th>LAST UPADTED AT</th>
+                        <th>EXPIRED AT</th>
+                        <th>STATUS</th>
+                        <th>PRICE</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let obj of quotation;let i = index" [attr.data-index]="i">
+                        <td><label class="form-check-label" for="obj{{obj.status}}">
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          id="obj{{obj.id}}"
+                          name="tagOptions"
+                          (change)="selectBoq($event,obj,i)"
+                          [checked]="obj.checked">
+                        
+                       </label></td>
+                        <td>{{ i+1 }}</td>
+                        <td><a [routerLink]="['/project/'+project_id+'/boq/'+obj.id]" class="a_hrefLink" routerLinkActive='active' (click)="modalhide()">{{ obj.reference_number }}</a></td>
+                        <td>{{ obj.updated_at |  date:"dd MMMM, y @ h:mma" }}</td>
+                        <td>{{ obj.expiration_date |  date:"dd MMMM, y @ h:mma" }}</td>
+                        <td>{{ obj.status}}</td>
+                        <td>{{ obj.net_amount }}</td>
+                        <td></td>                        
+                      </tr>
+                    </tbody>
+                  </table>
+                  <p>{{ obj }}</p>
+                   
+                </div>  
+              
+              </div>
+              <div class="tableDiv" *ngIf="proposal_status == 'ppt'">
+                <div class="table-responsive">
+                  <table class="table ">
+                    <thead class="thead-dark">
+                      <tr>
+                        <th></th>
+                        <th>#</th>
+                        <th>TITLE</th>
+                        <th>UPDATED AT</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let obj of pptList;let i = index" [attr.data-index]="i">
+                        <td><label class="form-check-label" for="obj{{obj.status}}">
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          id="obj{{obj.id}}"
+                          name="tagOptions"
+                          (change)="selectPpt($event,obj,i)"
+                          [checked]="obj.checked">
+                        
+                       </label></td>
+                        <td>{{ i+1 }}</td>
+                        <td><a [routerLink]="['/projects',project_id,'presentation',obj.id,'edit']" routerLinkActive="active"  (click)="modalhide()">{{ obj.title }}</a></td>
+                        <td>{{ obj.updated_at | date:"dd MMMM, y @ h:mma"}}</td>
+
+
+                        
+                      </tr>
+                    </tbody>
+                  </table>
+                   
+                </div>  
+              
+              </div>
+	           
+	          </div>
+	        </div>
+        </div>
+      <div class="modal-footer ">
+       
+        <button class="btn btn-primary interalBtnColor addCursor" >Create</button>
+         <button type="button" class=" btn btn-primary btnCancel btnchng" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Modal end here -->

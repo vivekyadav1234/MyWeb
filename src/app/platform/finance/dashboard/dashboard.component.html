@@ -1,0 +1,466 @@
+<div class="row ss-top-menu">
+	<!-- <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6"> -->
+  <div class="col-sm-12">
+  	<span class="ss-text-light">Dashboard <i class="rightArrow fa fa-angle-right"></i></span>
+  	<span class="ss-text-dark">Client  Collection</span> 
+    <!-- <a class="addCursor float-right downloadBtn mr-2" (click)="downloadPaymentReport()">Download Payment Report</a> -->
+    <a class="addCursor float-right downloadBtn mr-2" data-toggle="modal" data-target="#inviteChampionModal" (click)="getChampionList()" *ngIf = "is_champion=='true'">Invite Level 2 & Level 3 User</a>
+    <!-- <a class="addCursor float-right downloadBtn mr-2" data-toggle="modal" data-target="#addNewLeadModal">Add Lead</a> -->
+    <a class="addCursor float-right downloadBtn mr-2" (click)="downloadDp()">Download DP Payout Report</a>
+    <a class="addCursor float-right downloadBtn mr-2" (click)="downloadMarginReport()">Download Margin Report</a>
+    <a class="addCursor float-right downloadBtn mr-2" (click)="downloadExcelBoqLineItems()">BOQ Line Items Report</a>
+  </div>
+</div>
+<div class="col-12" *ngIf="erroralert">
+  <div class="alert-box grid-100" *ngIf="errorMessage">
+    <div class="alert alert-danger mt-3 text-center">
+      <a class="close link" data-dismiss="alert" (click)="erroralert=false">×</a>
+      {{errorMessage}}
+    </div>
+  </div>
+</div>
+<div class="col-12" *ngIf="successalert">
+  <div class="alert-box grid-100" *ngIf="successMessage">
+    <div class="alert alert-success mt-3 text-center">
+      <a class="close link" data-dismiss="alert"  (click)="successalert=false">x</a>
+      {{successMessage}}
+    </div>
+  </div>
+</div>
+<!-- <div class="rk-ui-notification err" *ngIf="erroralert"  style="z-index: 10000;">
+	<span id="notificationMessageText">{{errorMessage}}</span>
+	<a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>
+<div class="rk-ui-notification" *ngIf="successalert"  style="z-index: 10000;">
+	<span id="notificationMessageText">{{successMessage}}</span>
+	<a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div> -->
+<div class="row px-4 mt-4">
+  <div class="col-md-8">
+    <!-- <button class="btn btn-outline-danger cursor-pointer">Client Filter</button> -->
+    <div class="row">
+      <div class="col-md-11 bg-white rounded-left">
+        <span class="text-secondary">Filter By:</span>&nbsp;&nbsp;&nbsp;
+
+        <ng-select  (change)="filterColumDropdownChange1($event)"  id="filter1dropdown" placeholder="Select Client" style="width:17%">
+          <ng-option value="{{ item.id }}" *ngFor="let item of leadList">{{ item.name }}</ng-option>
+        </ng-select>
+        <ng-select  (change)="filterColumDropdownChange2($event)"  id="filter1dropdown" placeholder="Ageing" style="width:17%" >
+          <ng-option value="{{ data.id }}" *ngFor="let data of ageing">{{ data.name }}</ng-option>   
+        </ng-select>
+        <div class="form-check">
+          <input [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1" placeholder="Enter From Date" class="form-control form-control-change" (dateTimeChange)="takeFromDate($event)">
+          <owl-date-time #dt1 [pickerType]="'calendar'"></owl-date-time> 
+        </div>
+        <div class="form-check">
+          <input [owlDateTime]="dt2" [owlDateTimeTrigger]="dt2" placeholder="Enter To Date" class="form-control form-control-change" (dateTimeChange)="takeToDate($event)">
+          <owl-date-time #dt2 [pickerType]="'calendar'" ></owl-date-time> 
+        </div>       
+      </div>
+      <div class="col-md-1 bg-white rounded-right">
+        <img src="assets/img/dashboard/submit.png" class="ml-1 my-3 sendIcon filterRowIcon cursor-pointer" (click)="filterData()">
+      </div>
+    </div>  
+  </div>
+  <div class="col-md-2">
+    <div class="mb-2"> 
+    </div>
+  </div>
+  <div class="col-md-2 bg-white rounded cursor-pointer">
+    <div class="my-3" (click)="downloadPaymentReport()">
+      <img src="./assets/img/finance/down.png">
+      <span class="chng pull-right my-1">Download Report</span>
+    </div>   
+  </div>  
+</div>
+<div class="row mt-3 px-4">
+  <div id="navcontainer navcontainer-chnage" class="nav-chnage">
+    <ul class="nav nav-tabs tabs-chng" id="myTab" role="tablist" >
+      <li class="nav-item nav-items">
+        <a class="nav-link active addCursor text-center mr-3" (click)="selectSet('pending')" [ngClass]="{'active': selectedState == 'pending'}">Pending Request<span class="text-muted">({{ pending_request}})</span></a>
+      </li>
+      <li class="nav-item nav-items">
+        <a class="nav-link  addCursor text-center mr-3" (click)="selectSet('completed')" [ngClass]="{'active': selectedState == 'completed'}" >Completed Request<span class="text-muted">({{ completed_request}})</span></a>
+      </li>
+    </ul>
+  </div>
+</div>
+<div class="row mt-4 px-3">
+  <div class="col-12" *ngIf="paymentList && paymentList.length > 0">
+    <div class="tableDiv project-table">
+      <table class="table">
+        <thead class="ss-thead">
+          <tr>
+            <th class="firstTh"></th>
+            <th>Lead ID</th>
+            <th>Client</th>
+            <!-- code by anikesh -->
+            <!-- <th>BOQ#</th>
+            <th>BOQ Value</th>
+            <th>Cumulative Payment</th> -->
+            <th>Amount</th>
+            <th>Payment Addition  Date</th>
+            <th>Type</th>
+            <th>Transaction No/Cheque No</th>
+            <th></th>
+            <th></th>
+            <th class="lastTh">Approvals</th>
+          </tr>
+        </thead>
+        <!-- <pre>
+          {{boq_list | json}}
+        </pre> -->
+        <tbody class="ss-tbody" *ngFor="let obj of paymentList | paginate: { itemsPerPage: per_page, currentPage: current_page, totalItems: total_page}; let i = index"
+          [attr.data-index]="i">
+          <tr class="addCursor" (click)="toggleRow(obj,i);">
+            <td ><div class="cursor-img" [ngClass]="{'active': selectedArrow == i}"></div></td>
+            <td class="capitalize">{{ obj.attributes.payment.lead_id}}</td>
+            <td class="capitalize">{{ obj.attributes.payment.lead_name}}
+            </td>
+            <!-- <td>{{ obj.attributes.quotation_details.reference_number}}&nbsp;(<span class="arrivae-color" >{{ obj.attributes.quotation_details.stage}}</span>)</td>  
+            <td class="capitalize">{{ obj.attributes.quotation_details.total_amount | currency:'INR':'symbol' }} </td>
+            <td *ngIf="obj.attributes.past_payments.amount || obj.attributes.past_payments.amount==0 " class="capitalize payment-color" data-toggle="tooltip" title="Click to get complete payment details." ><a data-toggle="modal" data-target="#previousPayment" (click)="getPreviousPaymentDetails(obj.attributes.past_payments)">{{ (obj.attributes.past_payments.amount).toFixed(2) | currency:'INR':'symbol' }}&nbsp;({{obj.attributes.past_payments.percentage}}%)</a></td> --> 
+            <td *ngIf="obj.attributes.past_payments.amount==null" class="capitalize payment-color" data-toggle="tooltip" title="Click to get complete payment details." ><a data-toggle="modal" data-target="#previousPayment" (click)="getPreviousPaymentDetails(obj.attributes.past_payments)">-</a></td>
+            <td>{{ obj.attributes.payment.amount | currency:'INR':'symbol'}} <span  *ngIf=" obj.attributes.payment.is_approved!=false &&  obj.attributes.payment.is_approved!=true &&  obj.attributes.payment.is_approved!='false' &&  obj.attributes.payment.is_approved!='true'"><i class="fa fa-pencil-square-o pencil" aria-hidden="true"  data-target="#editamountModal" data-toggle="modal" (click)="filterDataForEdit(obj.attributes.payment.id,obj.attributes.payment.amount,obj.attributes.quotation_details.project_id,obj.attributes.quotation_details.balance_amount)"></i></span></td>
+            <td class="capitalize">
+              <span *ngIf="obj.attributes.payment.mode_of_payment == 'cheque'">
+                  {{ obj.attributes.payment.created_at | date:'dd/MM/yyyy' }}
+              </span>  
+              <span *ngIf="obj.attributes.payment.mode_of_payment != 'cheque'">
+                  {{ obj.attributes.payment.created_at  | date:'dd/MM/yyyy - h:mm a'}}
+              </span>   
+
+            </td>
+             <td>{{ obj.attributes.payment.mode_of_payment }}</td>
+            <td class="text-center">{{ obj.attributes.payment.transaction_number }}</td>
+            <td><a data-toggle="modal" data-target="#tanModal" (click) = "getPaymentDetails(obj.attributes.payment)"><i style="font-size:24px" class="fa">&#xf05a;</i></a></td>
+            <td class="p-0"><i class="fa fa-arrow-circle-down p-0" *ngIf="selectedState != 'pending' && obj.attributes.payment.is_approved == true" aria-hidden="true" data-toggle="modal" data-target="#PaymentReceipt" (click)="PaymentReceiptData(obj.attributes.quotation_details.quotation_id,obj.attributes.payment,true)" style="font-size: 24px"></i></td>
+            <td class="p-0" style="position: relative;" *ngIf="selectedState == 'pending'">
+              <div class="row p-0 row-format">
+                <div class="col-6 p-0 text-center col-format">
+                  <img src="./assets/img/finance/path.png" style="margin-top: 28%" (click)="takePaymentDetail(obj.attributes.quotation_details.quotation_id,obj.attributes.payment,true)">  
+                </div>
+                <div class="col-6 p-0 text-center  col-format">
+                  <img src="./assets/img/finance/close.png" style="margin-top: 28%" data-target="#rejectPaymentModal" data-toggle="modal" (click)="takePaymentDetail(obj.attributes.quotation_details.quotation_id,obj.attributes.payment,false)">
+                </div>
+              </div>
+            </td>
+            <td class="completed" *ngIf="selectedState == 'completed' && obj.attributes.payment.is_approved == true ">
+              Approved
+            </td>
+            <td class="rejected" *ngIf="selectedState == 'completed' && obj.attributes.payment.is_approved == false ">
+              Rejected 
+            </td>
+          </tr>
+          <tr class="expanded-col expanded-col-{{obj.id}}">
+            <td colspan="10" style="padding: 0.3rem 0.75rem;">
+              <ng-container *ngFor="let item of obj.attributes.quotation_details">
+                <div class="row p-0 justify-content-center">
+              
+                  <div class="col-md-11 p-0 bg-green">
+                    <div class="row p-0">
+                      <span class="text-underline"><u>Details</u></span>
+                      
+                    </div>
+                    <div class="row p-0">
+                      <div class="col-md-7 p-0">
+                        <span class="text-format">Signed BOQ: <span class="text-for-chng ml-2 cursor-pointer" (click)="downloadBoq(item.quotation_id,item.project_id)">{{ item.reference_number }}</span></span><br>
+                        <span class="text-format">Parent Boq:<strong>
+                        {{ item.parent_boq }}</strong></span><br>
+                        <span class="text-format" *ngIf="item.signed_booking_forms && item.signed_booking_forms['project_booking_form_files'].length > 0">Signed Booking Form:<span class="text-success font-weight-bold cursor-pointer"><a  href="" class="ml-1  text-success" data-target="#bookingFormModal" data-toggle="modal" (click)="getBookingFormList(item.signed_booking_forms)">View All<br></a></span></span>
+                        <span class="text-format"  *ngIf="!item.signed_booking_forms">Signed Booking Form:<span class="text-danger ml-2" style="font-size: 12px;font-weight: bold">Booking Form Not Present</span></span>
+                        <span class="text-format">Stage:<strong>{{ item.stage }}</strong></span><br>
+                        <span class="text-format">% of BOQ:<strong>
+                        {{ obj.attributes.percentage_and_amount.percentage }}</strong></span><br>
+                      </div>
+                      <div class="col-md-4 p-0">
+                        <div class="text-format"><strong>Address: </strong>{{ item.project_address }} </div>
+                        <span class="text-format">Community manager: <strong>{{ item.cm }}</strong></span><br />
+                        <span class="text-format">Designer: <strong>{{ item.designer }}</strong></span><br />
+                        <span class="text-format">Ageing: <strong>{{ obj.attributes.payment.created_at | timeAgo }}</strong></span><br />
+                        <!-- <span class="text-format">Added by Designer/Bank Integration</span> -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>        
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="text-center" *ngIf="leadList && leadList.length >0">
+      <pagination-controls (pageChange)="current_page = getPaymentList($event,this.clientId,this.FromDate,this.ToDate,this.ageingVal)"></pagination-controls>
+    </div>
+  </div>
+  <div class="col-12 text-center bg-white" *ngIf="paymentList && paymentList.length == 0">
+    <div class="boq-img mt-5">
+      <img src="../../../assets/img/desktop.png" style="height: 250px;width: 300px">
+    </div>
+    <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing To Show.... 
+  </div>
+</div> 
+<!-- Approve modal starts here -->
+<div class="modal fade modal-center modal-top" id="approveModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog  modal-width" role="document">
+    <div class="modal-content modal-content-chng">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="btn-chnges m-4">
+            <img src="./assets/img/finance/cancel.png" (click)="closeDiv()" class="pull-right cursor-pointer">
+          </div>  
+        </div>   
+      </div>
+      <div class="modal-header header-chng">
+        <span class="modal-title title-chnage" id="exampleModalLabel">Enter Transaction Details</span>
+      </div>
+      <div class="modal-body">
+        <div class="row justify-content-center">
+          <div class="col-md-10">
+            <form [formGroup]="paymentFinanceForm">
+              <label class="select">Select paymend Mode:</label>
+              <ng-select  (change)="changePaymentMode($event)"  formControlName = "mode_of_payment"  placeholder="Select Payment Mode" class="ng-select-cnhg">
+                <ng-option value="NEFT/RTGS">NEFT/RTGS</ng-option>
+                <ng-option value="cheque">Cheque</ng-option>                          
+              </ng-select>
+              <label class="neft-mode">Enter Transaction Reference Number:</label>
+              <input type="text" class="form-control mb-2 neft-mode" formControlName = "transaction_number">
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 text-center">
+          <button type="button" class="btn btn-primary btn-pink my-4" [disabled]="!paymentFinanceForm.valid" (click)="savePayment()">Submit</button>
+        </div>  
+      </div>
+    </div>
+  </div>
+</div><!-- /.modal -->
+
+
+<!-- Reject modal starts here -->
+<div class="modal fade modal-center modal-top" id="rejectPaymentModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog  modal-width" role="document">
+    <div class="modal-content modal-content-chng">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="btn-chnges m-4">
+            <img src="./assets/img/finance/cancel.png" (click)="closeDiv()" class="pull-right cursor-pointer">
+          </div>  
+        </div>
+      </div>
+      <div class="modal-header header-chng">
+        <span class="modal-title title-chnage" id="exampleModalLabel">Enter Remarks  Details</span>
+      </div>
+      <div class="modal-body">
+        <div class="row justify-content-center">
+          <div class="col-md-10">
+            <label class="text-muted">Enter Remark</label>
+              <input type="text" class="form-control mb-2" id="remarks" placeholder="Enter Remarks...">
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 text-center">
+          <button type="button" class="btn btn-primary btn-pink my-4" (click)="rejectPayment()">Submit</button>
+        </div>  
+      </div>
+    </div>
+  </div>
+</div><!-- /.modal -->
+
+
+<!-- Edit Modal -->
+<div class="modal  animated fadeIn" id="editamountModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header border">
+        <h5 class="modal-title" id="exampleModalLabel" style="font-family: 'algerian';">  UPDATE PAID AMOUNT</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="removeFormItem()">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="approvalEditForm">
+          <label for="example-text-input" class="col-2 col-form-label" style="display: inline;">OLD AMOUNT:</label>   
+          <input type="text" class="form-control my-2  place-chng"  placeholder="Eter New Amount"  value="{{ old_amt  }}" readonly>
+          <br>
+          <label for="example-text-input" class="col-2 col-form-label" style="display: inline;">NEW AMOUNT:</label>   
+          <input type="number" class="form-control my-2    place-chng" placeholder="Enter New Amount" formControlName = "amount" id="pending_amt" (input)="checkPendingAmt($event.target.id)">
+            <div class="modal-footer">
+              <input type="button" value="Update" class="btn btn-pink" [disabled]="!approvalEditForm.valid" (click) = "paymentEditApprove()" 
+              >
+            </div>   
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!--  -->
+
+<!-- Booking Form Modal -->
+<div class="modal fade modal-top" id="bookingFormModal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content modal-content-change">
+      <!-- Modal body -->
+      <div class="modal-body" *ngIf="bookingForm_list">
+        <div class="row">
+          <div class="col-md-12 mt-2">
+            <span class="text-muted-col pull-right cursor-pointer" data-dismiss="modal"><img src="./assets/img/finance/cancel.png" (click)="closeDiv()"></span> 
+          </div>
+          <div class="col-md-12 text-center mb-3">
+            <span class="text-muted-col"></span> 
+          </div>
+        </div>
+        <div class="row justify-content-center">
+          <div class="col-md-11">
+            <table class="table table-borderless">
+              <thead>
+                <tr>
+                  <th scope="col">Sr.No</th>
+                  <th scope="col">Booking Form Name</th>
+                  <th scope="col">Download</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let booked of bookingForm_list['project_booking_form_files'] ; let j=index">
+                  <td>{{ j+1 }}</td>
+                  <td>{{ booked.attachment_file_file_name}}</td>
+                  <td><a href="{{ booked.url }}" target="_blank" class="btn btn-pink cursor-pointer">DownLoad</a></td> 
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>     
+    </div>
+  </div>
+</div>
+<!--Ends Here  -->
+
+
+<!-- Previous Payments Modal -->
+<div id="previousPayment" class="modal fade" role="dialog">
+  <div class="modal-dialog" style="margin-left:23%">
+    <!-- Modal content-->
+    <div class="modal-content payment-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Payment Details</h5>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Parent BOQ</th>
+              <th *ngIf="paymentDetails.parent_payments || paymentDetails.parent_payments==0">Parent Payments</th>
+              <th>Current Payments Completed</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{{paymentDetails.parent_boq  || 'Not Present'}}</td>
+              <td *ngIf="paymentDetails.parent_payments || paymentDetails.parent_payments==0">{{(paymentDetails.parent_payments).toFixed(2) | currency:'INR':'symbol' || '-'}}</td>
+              <td>{{paymentDetails.prev_payments | currency:'INR':'symbol' || '-'}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+ 
+<!-- Payment Receipt -->
+<div id="PaymentReceipt" class="modal" role="dialog">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" style="margin-left: 105px;">Download Billing Receipt</h5>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form class="personal-data-form" [formGroup]="ReceiptForm">
+          <div class=""> 
+            <label class="d-flex">Customer Name:
+              <input class="form-control" placeholder="Customer name" type="text" formControlName="customer_name" style="margin-left:7px;">
+            </label>
+          </div>
+          <div class=""> 
+            <label class="d-flex">Amount:
+              <input class="form-control" placeholder="Amount" type="number" formControlName="amount" style="margin-left:37px;">
+            </label>
+          </div>
+          <div class="" *ngIf="this.details"> 
+            <label class="d-flex">Date:
+             <!--  <input class="form-control" placeholder="Date: &nbsp;&nbsp;" type="date" formControlName="date" value="{{this.details.date | date:'yyyy-MM-dd'}}" style="margin-left:61px;"> -->
+              <input [owlDateTime]="dt8" [owlDateTimeTrigger]="dt8" placeholder="Enter Date" formControlName="date" class="form-control"  style="margin-left:61px;">
+            <owl-date-time #dt8 [pickerType]="'calendar'"></owl-date-time> 
+            <!-- <input [owlDateTime]="dt8" [owlDateTimeTrigger]="dt8" placeholder="Date Time" formControlName="date" class="form-control" style="margin-left:61px;">
+            <owl-date-time #dt8 ></owl-date-time> -->
+            </label>
+          </div>
+          <div class="" *ngIf="this.details && this.details.mode_of_payment == 'NEFT/RTGS'">
+            <label class="d-flex">NEFT/RTGS Trx No:
+              <input class="form-control" placeholder="RTGS Trx No" type="text" formControlName="rtgs_trx_no" style="margin-left:-10px;">
+            </label> 
+          </div>
+          <div class="" *ngIf="this.details && this.details.mode_of_payment == 'cheque'"> 
+            <label class="d-flex">Bank:
+              <input class="form-control" placeholder="Bank" type="text" formControlName="bank" style="margin-left:58px;">
+            </label>
+            <label class="d-flex">Branch:
+              <input class="form-control" placeholder="Branch" type="text" formControlName="branch" style="margin-left: 45px;">
+            </label> 
+          </div>
+        </form>
+        <div class="col-12 mt-5 text-right">
+          <i class="fa fa-arrow-circle-down p-0 mr-4" (click)="getReceipt('')" style="font-size: 24px" data-toggle="tooltip" title="Click Here To Download Payment Receipt."></i>
+          <i class="fas fa-share" (click)="share('share')" style="font-size: 24px" data-toggle="tooltip" title="Click Here To Share Payment Receipt."></i>
+         </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- code by anikesh --> 
+<!-- The Transaction detail modal  -->
+<div class="modal" id="tanModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Transaction Detail</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <ng-container  *ngIf="paymentView && paymentView.mode_of_payment != 'cheque'">
+          <p class="mb-1">Transaction No:<span> {{paymentView.transaction_number}}</span></p>
+          <p class="mb-1">Date : <span>{{paymentView.date | date:'dd/MM/yyyy'}} </span></p>
+          <span>Image/Ref. #: <strong *ngIf="paymentView.mode_of_payment != 'cheque'"><a *ngIf="paymentView.image!='/images/original/missing.png'" href="{{ paymentView.image}}" target="_blank">Neft.png</a><a *ngIf="paymentView.image=='/images/original/missing.png'" target="_blank">-</a>&nbsp;/&nbsp;<span style="cursor:pointer" data-toggle="tooltip" [title]="paymentView.transaction_number"><ng-container *ngIf="!paymentView.transaction_number"> - </ng-container><ng-container *ngIf="paymentView.transaction_number && paymentView.transaction_number.length>5" >{{ paymentView.transaction_number.substring(0,5) + '...'  }}</ng-container><ng-container *ngIf="paymentView.transaction_number && paymentView.transaction_number.length<=5">{{ paymentView.transaction_number }}</ng-container></span></strong></span>
+          <br />
+        </ng-container>
+
+        <ng-container *ngIf=" paymentView && paymentView.mode_of_payment == 'cheque'">
+          <!-- <p class="mb-1">Cheque No:</p> -->
+          <p class="mb-1">Cheque Date : <span *ngIf="paymentView.mode_of_payment == 'cheque'">{{paymentView.date_of_checque | date:'dd/MM/yyyy'}} </span></p>
+          <span>Image/Ref. #: <strong *ngIf="paymentView.mode_of_payment == 'cheque'"><a *ngIf="paymentView.image!='/images/original/missing.png'" href="{{ paymentView.image}}" target="_blank">cheque.png</a><a *ngIf="paymentView.image=='/images/original/missing.png'" target="_blank">-</a></strong></span>
+          <br />
+          <p class="mb-1 mt-1">Bank Name : <span *ngIf="paymentView.bank != ''">{{paymentView.bank}}</span> <span *ngIf="paymentView.bank == ''">-</span></p>
+          <p class="mb-1">Branch Name :  <span *ngIf="paymentView.branch != ''">{{paymentView.branch}}</span> <span *ngIf="paymentView.branch == ''">-</span></p>
+        </ng-container>
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-pink" data-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>

@@ -1,0 +1,299 @@
+<div class="row pl-1 w-100">
+  <div class="component-parent col-xs-12 col-sm-12 col-md-12 col-lg-12">
+      <div class="col-12 not-found" *ngIf="project_list && project_list.length==0 ">
+        <div class="boq-img text-center">
+          <img src="../../../assets/img/desktop.png">
+        </div>
+        <p class=" pb-4" style="font-size: 21px;text-align: center;color: dimgray">Nothing to show...</p>
+      </div>
+    <div class="col-12" *ngIf="project_list && project_list.length>0">
+      <div class="tableDiv project-table">
+        <table class="table">
+          <thead class="ss-thead">
+            <tr>
+              <th class="firstTh">LEAD ID</th>
+              <th>CLIENT NAME</th>
+              <th> DESIGNER & CM </th>
+              <th> BOQ </th>
+              <th> TAT </th>
+              <th> NEW TASK? </th>
+              <th> TIME OF BOQ </th>
+              <th> DUE DATE </th>
+              <th> APPROVAL </th>
+              <th class="lastTh">REJECT REASON</th>
+            </tr>
+          </thead>
+          <tbody class="ss-tbody">
+            <tr *ngFor="let obj of project_list | paginate: { itemsPerPage: per_page, currentPage: current_page, totalItems: total_page}; let i = index" [attr.data-index]="i" >
+              <td>{{obj.lead_id}}</td>
+              <td class="capitalize">{{ obj.client_name }}</td>
+              <td class="capitalize">
+                {{obj.assigned_designer}}<br>
+                {{obj.assigned_cm}}
+              </td>
+              <td class="capitalize">{{obj.boq_reference_no}}</td>
+              <td class="capitalize">{{obj.tat<0 ? convertToAbs(obj.tat)+' hours over' : obj.tat+' hours left'}}</td>
+              <td class="capitalize new-notify new-{{obj.id}}" style="color: #89081c;font-weight: 600;">{{obj.new ? "New!" : ""}}</td>
+              <td class="capitalize">{{obj.created_at}}</td>
+              <td class="capitalize">{{obj.due_date}}</td>
+              <td>
+                  <button class="category-btn rounded addCursor py-2 px-2" (click) ="openBoq(obj.project_id,obj.ownerable_id,obj); update_seen(obj.id, obj.project_id, obj.ownerable_id)" data-toggle="modal" data-target="#InvoiceModal" *ngIf="[true,false].includes(obj.category_approval)">View BOQ</button>
+                  <!-- <ng-container *ngIf="obj.approval_required">Moved to Preproduction</ng-container> -->
+                  <button class="category-btn rounded addCursor py-2 px-2" (click) ="openBoq(obj.project_id,obj.ownerable_id,obj); update_seen(obj.id, obj.project_id, obj.ownerable_id)" data-toggle="modal" data-target="#InvoiceModal" *ngIf="obj.category_approval == null" [ngClass]="{'d-none':obj.category_approval}">Approve</button>
+              </td>
+              <td class="capitalize">{{obj.remark}}</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="text-center" *ngIf="project_list && project_list.length >0">
+          <pagination-controls autoHide="true" (pageChange)="current_page = getProjectList($event)"></pagination-controls>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--BOQ list modal start-->
+<div class="modal fade" id="boqModal" role="dialog" data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="col-12 text-right">
+          <button type="button" class="close pull-right addCursor" data-dismiss="modal" style="height: 38px;">&times;</button>
+        </div>
+      </div>
+      <div class="modal-body mb-5">
+        <div class="card d-inline-block mt-2 mb-4" *ngFor="let obj of boq_list">
+          <div class="card-chng">
+            <div (click)="openBoq(obj.quotation.project_id,obj.quotation.id,obj)" data-toggle="modal" class="addCursor"><img class="card-img-top px-2 pt-2" src="https://5.imimg.com/data5/CW/YW/MY-418425/sliding-door-wardrobe-500x500.jpeg" alt="Card image cap" style="max-height: 235px;" /></div>
+            <div class="card-block px-2 py-2">
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="d-inline-block" style="border: 1px solid #f1f0f0; padding: 5px">
+                    <img src="../../../../../assets/img/customer/BOQ.png" class="img-fluid">
+                  </div>
+                  <div class="d-inline-block ml-2 addCursor" (click)="openBoq(obj.quotation.project_id,obj.quotation.id,obj)" data-toggle="modal">
+                    {{obj.quotation.reference_number}}<br>
+                  </div>
+                  <div class="d-inline-block pull-right">
+                    <span class="boq optionMenu" data-toggle="collapse" [attr.data-target]="'#menuOption'+obj.id" *ngIf=" obj.quotation.category_approval == null "
+                    >
+                    <i class="fa fa-ellipsis-v"></i></span>
+                    <span *ngIf="obj.quotation.category_approval"><i class="fa fa-check-circle" style="font-size: 37px;color: #53a019;"></i></span>
+                    <span *ngIf="obj.quotation.category_approval==false || obj.quotation.category_approval=='false'"><i class="fa fa-times-circle" style="font-size: 37px;color: #a01919;"></i></span>
+                  </div>
+                </div>
+              </div>
+              <div class="collapse myCollapse" id="menuOption{{obj.id}}">
+                <p class="pArrow"></p>
+                <div class="card card-body optionDiv text-right py-2 px-3" *ngIf="obj.have_approved_cad_files && obj.cad_file_uploaded">
+                  <button class="approve addCursor" (click)="boqApproval(obj.quotation.id,true,obj.quotation.project_id)" >Approve</button>
+                  <button class="reject addCursor" (click)= "boqApproval(obj.quotation.id,false,obj.quotation.project_id)" >Reject</button>
+                </div>
+                <div class="card card-body optionDiv text-right py-2 px-3" *ngIf="!obj.have_approved_cad_files || obj.have_approved_cad_files === null">
+                    <span>Cad files pending.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--BOQ list modal end-->
+
+<!--Invoice modal start-->
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="InvoiceModal" data-keyboard="false" data-backdrop="static">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <button type="button" class=" custom-close" data-dismiss="modal" aria-label="Close" (click)="closeInvoiceModal()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <div class="modal-body" *ngIf="selected_boq_details">
+        <div class="container-fluid px-4">
+          <div class="row borders border-bottom-0 border-dark">
+            <div class="col-md-8 border-right border-dark">
+              <div class="logo">
+                 <img src="../../../assets/img/mainLogo.svg" width="100%">
+              </div>
+
+            </div>
+            <div class="col-md-4">
+              <p class="quoteFont">Quotation</p>
+            </div>
+
+          </div>
+          <div class="row borders border-dark">
+            <div class="col-md-8 border-right border-dark">
+              <div class="address">
+                AZB Services LLP
+            B501/502, Everest House, Suren Road, Gundavali
+            Andheri East, Mumbai - 400093
+
+              </div>
+
+            </div>
+            <div class="col-md-4">
+              <div class="row">
+                <div class="col-md-6 border border-top-0 border-dark">
+                  Date
+                </div>
+                <div class="col-md-6 border border-top-0  border-dark">
+                  {{selected_boq_details.generation_date}}
+                </div>
+
+              </div>
+              <div class="row  ">
+                <div class="col-md-6 border border-dark">
+                  Lead ID
+                </div>
+                <div class="col-md-6 border border-dark">
+                  {{selected_boq_details.lead_id}}
+                </div>
+
+              </div>
+              <div class="row">
+                <div class="col-md-6 border  border-bottom-0 border-dark">
+                  BOQ Number
+                </div>
+                <div class="p-1 col-md-6 border border-bottom-0 border-dark">
+                  {{selected_boq_details.reference_number}}
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+
+          <div class="row mt-3">
+            <table class="table table-bordered">
+              <thead>
+              </thead>
+              <tbody>
+                  <tr>
+                      <td>Name</td>
+                      <td>{{selected_boq_details.lead_name}}</td>
+                      <td>Designer Name</td>
+                      <td>{{selected_boq_details.designer_name}}</td>
+                  </tr>
+                  <tr>
+                      <td>Contact</td>
+                      <td>{{selected_boq_details.lead_contact}}</td>
+                      <td>Designer Contact</td>
+                      <td>{{selected_boq_details.designer_contact}}</td>
+                  </tr>
+                  <tr>
+                      <td class="minTdWidth">Project Name and Address</td>
+                      <td class="minTdWidth">
+                        {{selected_boq_details.project_name}},
+                        <br>
+                        {{selected_boq_details.lead_location}}
+                      </td>
+                      <td>Designer Email ID</td>
+                      <td>{{selected_boq_details.designer_email}}</td>
+                  </tr>
+
+              </tbody>
+            </table>
+
+          </div>
+          <div *ngFor="let space of selected_boq_details.all_spaces">
+            <span class="spanChange">{{space}}</span>
+            <div class="row mt-3">
+              <table class="table table-bordered">
+                <thead>
+                  <th scope="col">Sr. No.</th>
+                  <th scope="col">Product</th>
+                  <th scope="col">Name</th>
+                  <th scope="col">Description</th>
+                  <th scope="col">Qty.</th>
+
+                </thead>
+                <tbody>
+                  <tr class="rowChng" *ngFor="let item of selected_boq_details.quotation_body.boq_hash[space];let i = index">
+                    <td>{{ i+1}}</td>
+                    <td>{{item.product}}</td>
+                    <td>{{item.name}}</td>
+                    <td>
+                      {{item.description}}
+                    </td>
+                    <td>
+                      {{item.quantity}}
+                    </td>
+
+                  </tr>
+                </tbody>
+
+              </table>
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-md-6">
+
+            </div>
+            <div class="col-md-6">
+              <div class="row">
+                <div class="col-md-8 borders border-bottom-0 border-dark">
+                  <div class="text">
+                    Net Amount
+                  </div>
+
+                </div>
+                <div class="col-md-4 borders border-left-0 border-bottom-0 border-dark">
+                  <div class="text">
+                    {{selected_boq_details.net_amount}}
+                  </div>
+                </div>
+                <div class="col-md-8 borders border-bottom-0 border-dark">
+                  <div class="text">
+                    Discount Applied
+                  </div>
+                </div>
+                <div class="col-md-4 borders border-left-0 border-bottom-0 border-dark">
+                  <div class="text" *ngIf="selected_boq_details && selected_boq_details.discount_value">
+                    {{selected_boq_details.discount_value}}%
+                  </div>
+                  <div class="text" *ngIf="selected_boq_details && !selected_boq_details.discount_value">
+                    0 %
+                  </div>
+                </div>
+                <div class="col-md-8 borders border-dark">
+                  <div class="text">
+                    Total
+                  </div>
+                </div>
+                <div class="col-md-4 borders border-left-0 border-dark">
+                  <div class="text">
+                    {{selected_boq_details.total_amount}}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row mt-5" *ngIf="invoicemodal_data && invoicemodal_data.category_approval == null">
+            <div class="col-md-6">
+              <button type="button" class="btn btn-secondary btn-lg btn-reject pull-right" (click) = "boqApproval(invoicemodal_data.ownerable_id,false,invoicemodal_data.project_id)">Reject</button>
+            </div>
+            <div class="col-md-6">
+              <button type="button" class="btn btn-secondary btn-lg btn-red" (click) = "boqApproval(invoicemodal_data.ownerable_id,true,invoicemodal_data.project_id)">Approve</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--Invoice modal end-->
+
+<div class="rk-ui-notification" *ngIf="successalert">
+  <span id="notificationMessageText">{{successMessage}}</span>
+  <a class="close rk-linknotification" (click)="successalert=false">×</a>
+</div>
+<div class="rk-ui-notification err" *ngIf="erroralert">
+  <span id="notificationMessageText">{{errorMessage}}</span>
+  <a class="close rk-linknotification" (click)="erroralert=false">×</a>
+</div>

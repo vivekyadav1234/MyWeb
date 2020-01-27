@@ -1,0 +1,123 @@
+/*.modal-content{
+    margin-top: 31%;
+    margin-left: -41%;
+    width: 183%;
+}*/
+.close{
+    font-size:40px;
+    font-weight: 300;
+    color: #8c031f!important;
+}
+.card{
+    width: 38%;
+    margin-left: 8%;
+    box-shadow: 1px 1px 7px 0px #dadada;
+    border:none;
+}
+.modal-body{
+    margin-left: 0px;
+}
+
+/*  Css FOr Invoice modal start here*/
+
+.border-right{
+  border-right: 2px solid black;
+
+}
+
+.logo{
+  padding: 17px 25px;
+  text-align: center;
+
+}
+.logo img{
+  width: 145px;
+}
+.quoteFont
+{
+  font-family: Courier;
+  text-align: center;
+  padding: 18px 24px;
+  font-size: 1.5rem;
+}
+.address{
+  text-align: center;
+  font-size: .9rem;
+  padding-left: 30px;
+  padding-right: 30px;
+}
+#InvoiceModal p{
+  font-family: 'Helvetica';
+  font-size: 0.8rem;
+  word-wrap: break-word;
+}
+
+#InvoiceModal .table-bordered td, #InvoiceModal .table-bordered th {
+  border: 2px solid #0e1013;
+  font-size: .9rem;
+  min-width: 9rem;
+}
+#InvoiceModal .table-bordered {
+  border-collapse: collapse;
+}
+#InvoiceModal .table td, #InvoiceModal .table th {
+  padding: 0.25rem;
+  background: #fff;
+  color: #000;
+}
+#InvoiceModal .minTdWidth{
+  width: 30%;
+}
+#InvoiceModal .spanChange{
+  margin-left: -12px;
+}
+#InvoiceModal .rowChng td:nth-child(1) {
+  width: 60px;  
+}
+#InvoiceModal .rowChng td:nth-child(2) {
+  width: 90px;  
+}  
+
+#InvoiceModal .rowChng td:nth-child(3) {
+  width: 130px;  
+}  
+#InvoiceModal .rowChng td:nth-child(4) {
+  width: 240px;  
+}  
+#InvoiceModal .rowChng td:nth-child(5) {
+  width: 70px;  
+}  
+#InvoiceModal table th{
+  text-align: center;
+}   
+#InvoiceModal .rowChng td{
+  font-family: 'Helvetica';
+  font-size: .7rem;
+} 
+
+.borders {
+  border:2px solid black;
+}
+.text{
+  text-align: center;
+  font-family: 'Helvetica';
+  font-size: .9rem;
+}
+.custom-close{
+  position: absolute;
+  right: -53px;
+  top: -37px;
+  border: none;
+  height: 3rem;
+  text-align: center;
+  width: 3rem;
+  background-color: transparent;
+  color: #fff;
+  z-index: 9;
+  font-size: 42px;
+  cursor: pointer;
+}
+a, a:hover{
+  text-decoration: none;
+  color:black;
+}

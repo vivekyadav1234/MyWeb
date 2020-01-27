@@ -1,0 +1,220 @@
+.bgDiv{
+	background-color: #f3f5f7;
+}
+.headerBg{
+  background-color: #505050;
+  border-radius: 5px 5px 0px 0px;
+  padding: 10px 0;
+}
+.headerBg p{
+  display: inline-block;
+  color: #bfbfbf;
+  font-weight: 300;
+  margin-bottom: 0;
+  padding: 10px 22px;
+  border-radius: 35px;
+  font-size: 14px;
+}
+.headerBg p.active{
+  border: 1px solid #dcdcdc;
+  color: #fff;
+}
+.proposalBoxBg{
+	background-color: #fff;
+  padding: 11px 22px;
+  box-shadow: 0 1px 4px #ccc;
+  white-space: nowrap;
+  overflow-x: auto;
+}
+.proposalBox{
+	width: 13rem;
+	padding: 10px 15px;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	display: inline-block;
+}
+.proposalBox.addShadow{
+	box-shadow: 0 0 3px #bbbbbb;
+	border: 1px solid darkred;
+}
+.proposalBoxImg img{
+	border: 1px solid #ccc;
+	border-radius: 50px;
+	padding: 1px;
+	width: 100%;
+}
+.proposalBoxBody h6{
+	color: #333;
+}
+.proposalBoxBody p{
+	font-size: 13px;
+	color: #777;
+	font-weight: 400;
+}
+.proposalBoxBody span{
+	position: absolute;
+  font-size: 11px;
+  color: #777;
+  bottom: -8px;
+  right: 7px;
+}
+.myCard{
+	border: none;
+	box-shadow: 0 0 6px #ccc;
+}
+.mainBody{
+	background-color: #fff;
+	box-shadow: 0 0px 4px #ccc;
+	padding: 20px 6px 10px 6px;
+	margin-bottom: 2.4rem;
+  min-height: 75vh;
+}
+.ppt,.boq{
+	padding: 6px;
+	border: 1px solid #eaeaea;
+}
+.pptNon{
+	display: none;
+}
+.boqNon{
+	display: none
+}
+.optionMenu{
+	float: right;
+	padding: 5px 10px 3px 10px;
+	margin-top: 3px;
+	border-radius: 50px;
+	border: 1px solid #dedede;
+	color: #5a5a5a;
+	cursor: pointer;
+}
+.myCollapse{
+	margin-top: 7px;
+}
+.pArrow{
+	position: absolute;
+	width: 10px;
+	height: 10px;
+	background-color: #fff;
+	-ms-transform: rotate(45deg);
+	-webkit-transform: rotate(45deg);
+	transform: rotate(45deg);
+	right: 28px;
+	margin-top: -5px;
+	border: 1px solid #ccc;
+}
+.optionDiv span{
+	font-size: 14px;
+  cursor: pointer;
+  padding: 4px 10px;
+  color: #777;
+  border: 1px solid #ccc;
+}
+.approve{
+	background-color: #a7eaaf;
+}
+.reject{
+	background-color: #ffcbcb;
+}
+.approve:hover{
+	background-color: #118e1a;
+	color: #fff !important;
+}
+.reject:hover{
+	background-color: #a70303;
+	color: #fff !important;
+}
+.schedule{
+	text-align: center;
+	padding: 10px 0;
+	background-color: #e7f0f1;
+}
+.callDiv{
+  border-radius: 5px;
+  box-shadow: 0 0 5px #ccc;
+}
+.callSubmit{
+	border: 0;
+	background-color: #8c031f;
+	color: #fff;
+	padding: 14px 0;
+	border-radius: 0 0 5px 5px;
+	cursor: pointer;
+}
+.scheduleForm label{
+	color: #888;
+	font-weight: 400;
+	font-size: 15px;
+}
+.scheduleForm input{
+	border: 1px solid #e0e0e0;
+	color: #888;
+}
+.modalCloseSpan{
+	position: absolute;
+	right: 10px;
+	top: -10px;
+	font-size: 3rem;
+	color: #8e8e8e;
+	font-weight: 200;
+	cursor: pointer;
+	padding: 0;
+}
+.myModalContent{
+	border-radius: 5px 5px 5px 5px;
+}
+.myModalHeader{
+	background-color: #f1f1f1;
+	border-radius: 8px 8px 0px 0px;
+	padding: 2rem;
+	box-shadow: 0 1px 2px #c3c3c3;
+}
+.innerScheduledModal h4{
+	color: #666;
+	font-weight: 400;
+	font-size: 22px;
+}
+.innerScheduledModal img{
+	width: 6rem;
+	border-radius: 60px;
+	border: 1px solid #ccc;
+	padding: 2px;
+}
+.innerScheduledModal h5{
+	color: #666;
+	font-weight: 400;
+	letter-spacing: 1px;
+}
+.innerScheduledModal p{
+	color: #666;
+}
+.innerScheduledModal span{
+  display: block;
+  color: #777;
+}
+.innerScheduledModal .para{
+	font-size: 15px;
+	color: #ababab;
+}
+.meet{
+	cursor: pointer;
+}
+.alert{
+	color: #b90000;
+	font-size: 15px;
+}
+.hdr-chng{
+	font-size: 0.8rem;
+}
+
+.pill-tab{
+	cursor: pointer;
+}
+
+.cursorPointer{
+	cursor: pointer;
+}
+.boq-img{
+	text-align: center;
+	margin-top: 45px;
+}
