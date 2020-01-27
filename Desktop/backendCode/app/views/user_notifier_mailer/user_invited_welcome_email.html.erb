@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+  <body>
+
+    <!-- Nav -->
+      <%= render("header") %>
+    <!-- Nav -->
+
+    <p>Dear <%= @user.name.present? ? @user.name : @user.email %>,</p>
+
+    <p>Welcome to "Arrivae", the one stop shop for designer homes. We are excited to have you as a part of our family and promise to make this journey a memorable one.</p>
+    <br>
+    <p>An account was created for you as you were invited to arrivae.com. Below are the login details for you:</p>
+    <b><p><span>Username: </span><span><%= @user.email %></span></p>
+    <p><span>Password: </span><span><%= @password %></span></p></b>
+    <br>
+
+    <p>Please feel free to get back to us or write to wecare@arrivae.com for any queries.</p>
+
+    <br>
+    <p>Thank You!</p>
+    <p>Team Arrivae</p>
+    <%= render("footer") %>
+  </body>
+</html>

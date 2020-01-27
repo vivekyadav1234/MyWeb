@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Email</title>
+  <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+
+  <!-- Nav -->
+    <%= render("header") %>
+  <!-- Nav -->
+
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <h4 class="mt-5">Hello </h4>
+        <p>Payment of Rs. <%= @pi_payment.amount%> made against PO reference number <b><%= @pi_payment.performa_invoice.purchase_order.reference_no %></b> has been <%= @pi_payment.payment_status%>.<br>
+          BOQ Reference Number: <%= @quotation.reference_number%><br>
+          Vendor Name : <%= @vendor.name%><br>
+          <% if @pi_payment.payment_status == "rejected"%>
+            Remark : <%= @pi_payment.remarks%>
+          <%else%>
+          Transaction Number: <%= @pi_payment.transaction_number%><br>
+          Account Holder:  <%= @vendor.account_holder%> <br> 
+          Account Number:  <%= @vendor.account_number%> <br> 
+          Bank Name:  <%= @vendor.bank_name%> <br> 
+          Branch Name:  <%= @vendor.branch_name%> <br>
+          IFSC Code: <%= @vendor.ifsc_code%> 
+          <%end %>
+        </p>
+      </div>
+    </div>
+  </div>
+
+    <%= render("footer") %>
+</body>
+</html>

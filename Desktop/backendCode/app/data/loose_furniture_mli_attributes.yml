@@ -1,0 +1,9 @@
+# This file contains the list of dynamic attributes for all lakhs_modular master line items. Each attribute's
+# data type as well as reference_table_name is included as well, where applicable.
+---
+attr_type: lakhs_modular
+master_line_items:
+- name: Loose Furniture
+  attributes:
+  - attr_name: unique_sku
+    attr_data_type: string

@@ -1,0 +1,50 @@
+variable_cost:
+  kitchen_cabinets:
+    base: 15000
+    wall: 7500
+    tall: 26000
+  kitchen_shutters:
+    basic: 500
+    highend: 2000
+  modular_wadrobe:
+    basic: 1500
+    highend: 2000
+  granite_platform:
+    default: 1500
+  tiles:
+    default: 350
+  wallpaper:
+    default: 100
+  paint:
+    default: 30
+  window:
+    default: 400
+  customissed_curtains:
+    default: 250
+  pop_false_ceiling:
+    default: 60
+fixed_cost:
+  sofa_set:
+    seater_center_2side: 125000
+  kitchen_accessories:
+    soft_close_drawer: 5000
+    highend_accessories_for_base: 50000
+    baskets: 2000
+    highend_accessories_for_tall: 55000
+  kitchen_appliances:
+    chimney_2: 18995
+    chimney_3: 36995
+    hob_2: 12990
+    hob_2_5: 27995
+  bedroom_set:
+    double_2side_drawer: 60000
+  living_room_furniture:
+    bar_unit: 9000
+    entertainment_unit: 10000
+    shoe_rack: 5000
+  ready_curtain:
+    cotton: 500
+  lights:
+    default: 250
+  bath_fittings:
+    bathroom: 75000

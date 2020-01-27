@@ -1,0 +1,350 @@
+# This file contains the list of dynamic attributes for all indoline master line items. Each attribute's
+# data type as well as reference_table_name is included as well, where applicable.
+---
+attr_type: indoline
+master_line_items:
+- name: Aluminium Profile Shutter
+  attributes:
+    - attr_name: core_material
+      attr_type: dropdown
+      attr_data_type: reference
+      reference_table_name: CoreMaterial
+      required: true
+    - attr_name: module
+      attr_type: dropdown
+      attr_data_type: reference
+      reference_table_name: ProductModule
+      required: true
+    - attr_name: ai_h
+      attr_data_type: integer
+    - attr_name: ai_v
+      attr_data_type: integer
+- name: Carcass
+  attributes:
+  - attr_name: core_material
+    attr_type: dropdown
+    attr_data_type: reference
+    reference_table_name: CoreMaterial
+    required: true
+  - attr_name: module
+    attr_type: dropdown
+    attr_data_type: reference
+    reference_table_name: ProductModule
+    required: true
+  - attr_name: sub_category
+    attr_data_type: string
+- name: Carcass 1S Glossy
+  attributes:
+  - attr_name: vendor_edge_banding_type
+    attr_data_type: string
+  - attr_name: size
+    attr_data_type: string
+  - attr_name: vendor_edge_banding_name
+    attr_data_type: string
+  - attr_name: drawer_bottom_width
+    attr_data_type: integer
+  - attr_name: drawer_bottom_height
+    attr_data_type: integer
+  - attr_name: drawer_bottom_quantity
+    attr_data_type: float
+  - attr_name: core_material
+    attr_type: dropdown
+    attr_data_type: reference
+    reference_table_name: CoreMaterial
+    required: true
+  - attr_name: module
+    attr_type: dropdown
+    attr_data_type: reference
+    reference_table_name: ProductModule
+    required: true
+- name: Carcass 1S
+  attributes:
+  - attr_name: vendor_edge_banding_type
+    attr_data_type: string
+  - attr_name: size
+    attr_data_type: string
+  - attr_name: vendor_edge_banding_name
+    attr_data_type: string
+  - attr_name: drawer_bottom_width
+    attr_data_type: integer
+  - attr_name: drawer_bottom_height
+    attr_data_type: integer
+  - attr_name: drawer_bottom_quantity
+    attr_data_type: float
+  - attr_name: core_material
+    attr_type: dropdown
+    attr_data_type: reference
+    reference_table_name: CoreMaterial
+    required: true
+  - attr_name: module
+    attr_type: dropdown
+    attr_data_type: reference
+    reference_table_name: ProductModule
+    required: true
+- name: Carcass 2S Glossy
+  attributes:
+  - attr_name: core_material
+    attr_type: dropdown
+    attr_data_type: reference
+    reference_table_name: CoreMaterial
+    required: true
+  - attr_name: module
+    attr_type: dropdown
+    attr_data_type: reference
+    reference_table_name: ProductModule
+    required: true
+- name: Carcass 2S
+  attributes:
+  - attr_name: core_material
+    attr_type: dropdown
+    attr_data_type: reference
+    reference_table_name: CoreMaterial
+    required: true
+  - attr_name: module
+    attr_type: dropdown
+    attr_data_type: reference
+    reference_table_name: ProductModule
+    required: true
+- name: Prelam Carcass
+  attributes:
+  - attr_name: core_material
+    attr_type: dropdown
+    attr_data_type: reference
+    reference_table_name: CoreMaterial
+    required: true
+  - attr_name: module
+    attr_type: dropdown
+    attr_data_type: reference
+    reference_table_name: ProductModule
+    required: true
+- name: Concealed Handles
+  attributes:
+  - attr_name: oem
+    attr_data_type: string
+  - attr_name: type_of_handle
+    attr_data_type: string
+  - attr_name: vendor_description
+    attr_data_type: string
+  - attr_name: mrp
+    attr_data_type: float
+  - attr_name: arrivae_handle
+    attr_type: dropdown
+    attr_data_type: reference
+    reference_table_name: Handle
+    required: false
+- name: Insert Handles
+  attributes:
+  - attr_name: oem
+    attr_data_type: string
+  - attr_name: type_of_handle
+    attr_data_type: string
+  - attr_name: vendor_description
+    attr_data_type: string
+  - attr_name: mrp
+    attr_data_type: float
+  - attr_name: arrivae_handle
+    attr_type: dropdown
+    attr_data_type: reference
+    reference_table_name: Handle
+    required: false
+- name: Laminate Exposed Panels
+  attributes:
+  - attr_name: vendor_material_code
+    attr_data_type: string
+  - attr_name: vendor_description
+    attr_data_type: string
+  - attr_name: oem
+    attr_data_type: string
+  - attr_name: matching_edge_banding_arrivae_code
+    attr_data_type: string
+  - attr_name: shutter_material
+    attr_type: dropdown
+    attr_data_type: reference
+    reference_table_name: CoreMaterial
+    required: true
+  - attr_name: arrivae_shade
+    attr_type: dropdown
+    attr_data_type: reference
+    reference_table_name: Shade
+    required: false
+- name: Normal Handles
+  attributes:
+  - attr_name: oem
+    attr_data_type: string
+  - attr_name: type_of_handle
+    attr_data_type: string
+  - attr_name: vendor_description
+    attr_data_type: string
+  - attr_name: mrp
+    attr_data_type: float
+  - attr_name: arrivae_handle
+    attr_type: dropdown
+    attr_data_type: reference
+    reference_table_name: Handle
+    required: false
+- name: Profile Handles
+  attributes:
+  - attr_name: oem
+    attr_data_type: string
+  - attr_name: type_of_handle
+    attr_data_type: string
+  - attr_name: vendor_description
+    attr_data_type: string
+  - attr_name: mrp
+    attr_data_type: float
+  - attr_name: arrivae_handle
+    attr_type: dropdown
+    attr_data_type: reference
+    reference_table_name: Handle
+    required: false
+- name: Special Handles
+  attributes:
+  - attr_name: oem
+    attr_data_type: string
+  - attr_name: type_of_handle
+    attr_data_type: string
+  - attr_name: vendor_description
+    attr_data_type: string
+  - attr_name: mrp
+    attr_data_type: float
+  - attr_name: arrivae_handle
+    attr_type: dropdown
+    attr_data_type: reference
+    reference_table_name: Handle
+    required: false
+- name: Drawer Back
+  attributes:
+  - attr_name: drawer_back_1_width
+    attr_data_type: integer
+  - attr_name: drawer_back_1_height
+    attr_data_type: integer
+  - attr_name: drawer_back_1_quantity
+    attr_data_type: float
+  - attr_name: drawer_back_2_width
+    attr_data_type: integer
+  - attr_name: drawer_back_2_height
+    attr_data_type: integer
+  - attr_name: drawer_back_2_quantity
+    attr_data_type: float
+  - attr_name: core_material
+    attr_type: dropdown
+    attr_data_type: reference
+    reference_table_name: CoreMaterial
+    required: true
+  - attr_name: module
+    attr_type: dropdown
+    attr_data_type: reference
+    reference_table_name: ProductModule
+    required: true
+- name: Drawer Bottom
+  attributes:
+  - attr_name: drawer_bottom_width
+    attr_data_type: integer
+  - attr_name: drawer_bottom_height
+    attr_data_type: integer
+  - attr_name: drawer_bottom_quantity
+    attr_data_type: float
+  - attr_name: core_material
+    attr_type: dropdown
+    attr_data_type: reference
+    reference_table_name: CoreMaterial
+    required: true
+  - attr_name: module
+    attr_type: dropdown
+    attr_data_type: reference
+    reference_table_name: ProductModule
+    required: true
+- name: Exposed Panels
+  attributes: []
+- name: Glass Shelf
+  attributes:
+  - attr_name: width
+    attr_data_type: integer
+  - attr_name: depth
+    attr_data_type: integer
+  - attr_name: height
+    attr_data_type: integer
+  - attr_name: number_of_shelves
+    attr_data_type: integer
+  - attr_name: shelf_dimensions
+    attr_data_type: string
+  - attr_name: module
+    attr_type: dropdown
+    attr_data_type: reference
+    reference_table_name: ProductModule
+    required: true
+- name: Shelf
+  attributes:
+  - attr_name: width
+    attr_data_type: integer
+  - attr_name: depth
+    attr_data_type: integer
+  - attr_name: height
+    attr_data_type: integer
+  - attr_name: number_of_shelves
+    attr_data_type: integer
+  - attr_name: shelf_dimensions
+    attr_data_type: string
+  - attr_name: module
+    attr_type: dropdown
+    attr_data_type: reference
+    reference_table_name: ProductModule
+    required: true
+  - attr_name: core_material
+    attr_type: dropdown
+    attr_data_type: reference
+    reference_table_name: CoreMaterial
+    required: true
+- name: Shutter 1S
+  attributes:
+  - attr_name: oem
+    attr_data_type: string
+  - attr_name: edge_banding_required
+    attr_data_type: string
+  - attr_name: vendor_description
+    attr_data_type: string
+  - attr_name: vendor_material_code
+    attr_data_type: string
+  - attr_name: matching_arrivae_edge_banding_code
+    attr_data_type: string
+  - attr_name: shutter_material
+    attr_type: dropdown
+    attr_data_type: reference
+    reference_table_name: CoreMaterial
+    required: true
+  - attr_name: arrivae_shade
+    attr_type: dropdown
+    attr_data_type: reference
+    reference_table_name: Shade
+    required: false
+- name: Shutter 2S
+  attributes:
+  - attr_name: oem
+    attr_data_type: string
+  - attr_name: vendor_description
+    attr_data_type: string
+  - attr_name: vendor_material_code
+    attr_data_type: string
+  - attr_name: matching_arrivae_edge_banding_code
+    attr_data_type: string
+  - attr_name: shutter_material
+    attr_type: dropdown
+    attr_data_type: reference
+    reference_table_name: CoreMaterial
+    required: true
+  - attr_name: arrivae_shade
+    attr_type: dropdown
+    attr_data_type: reference
+    reference_table_name: Shade
+    required: false
+- name: PVC Exposed Panels
+  attributes:
+  - attr_name: vendor_description
+    attr_data_type: string
+  - attr_name: oem
+    attr_data_type: string
+  - attr_name: arrivae_shade
+    attr_type: dropdown
+    attr_data_type: reference
+    reference_table_name: Shade
+    required: false

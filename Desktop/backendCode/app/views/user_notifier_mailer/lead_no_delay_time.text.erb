@@ -1,0 +1,8 @@
+Hi Team,
+
+Following lead was set to delayed possession or project, but no possession date or project start date was set:
+
+id: <%= @lead&.id %>
+status: <%= @lead&.lead_status %>
+possession date: <%= @lead&.note_records&.last&.possession_status_date %>
+project start date: <%= @lead&.note_records&.last&.intended_date %>

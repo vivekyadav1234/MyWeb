@@ -1,0 +1,2 @@
+class FloorPlanCrawl < ApplicationRecord
+end

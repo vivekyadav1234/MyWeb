@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Email</title>
+  <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+
+  <!-- Nav -->
+    <%= render("header") %>
+  <!-- Nav -->
+
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <h4 class="mt-5">Hello</h4>
+        <p>
+          Dispatch Request has been raised
+        </p>
+        <p>Date of Dispatch: <%= @dispatch_schedule.schedule_date.strftime("%-d/%-m/%y")%></p>
+        <p>Billing address: <%= @dispatch_schedule.billing_address%> </p>
+        <p>Shipping address: <%= @dispatch_schedule.shipping_address%> </p>
+        <p>Remarks: <%= @dispatch_schedule.remarks%></p>
+      </div>
+      <div class="col-12">
+          <div>
+            <table border="1" style="max-width:75%;">
+                <thead class="thead-dark">
+                  <tr>
+                      <th>PO No.</th>
+                      <th>Sli</th>
+                      <th>Quantity</th>
+                      <th>Shipping Address</th>
+                      <th>Vendor Name</th>
+                  </tr>
+                </thead>
+                <tr>
+                  <td><%= @purchase_order&.reference_no%></td>
+                  <td><%= @job_element&.element_name%></td>
+                  <td><%= @quantity%></td>
+                  <td><%= @purchase_order&.shipping_address%></td>
+                  <td><%= @purchase_order&.vendor&.name%></td>
+                </tr>
+            </table>
+          </div>
+      </div>
+    </div>
+  </div>
+
+    <%= render("footer") %>
+</body>
+</html>

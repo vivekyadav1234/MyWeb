@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Email</title>
+  <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Nav -->
+    <%= render("header") %>
+  <!-- Nav -->
+
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <h5>Dear <%= @user.name.titleize %></h5>
+        <h5><b>Greetings from Arrivae!</b></h5>
+        <p>We welcome you to the world of Arrivae, an integrated home improvement company specialising in full home interiors having a footprint in more than 10 cities. Our core belief is to empower and guide people to achieve their dream of a home made up of their vision and ideas. To accomplish this, we have highly esteemed designers in our panel who make sure that their home is in line with their dreams. We partner with some highly credible vendors for a steady supply of high quality materials. We also give our full assistance in simplifying the financial aspect by providing easy payment options.</p>
+        <p>To sum it up, what makes us truly stand apart is our commitment towards aesthetic designs, world class product quality and strict commitments to timelines.</p><br />
+        <br/>
+        <p>
+
+          1.Click on the link to download warranty document - <a href= <%= @link %> ><%= @link %> </a>
+        </p>
+
+        <br />
+        <p><strong>We would be more than happy to meet you and take you through our profile in person.</strong></p>
+        <br />
+        <p>Best regards,<br />
+           Team Arrivae</p>
+      </div>
+    </div>
+  </div>
+
+    <%= render("footer") %>
+</body>
+</html>

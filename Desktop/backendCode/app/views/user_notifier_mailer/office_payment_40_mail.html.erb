@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Email</title>
+  <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+
+  <!-- Nav -->
+    <%= render("header") %>
+  <!-- Nav -->
+
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <h4 class="mt-5">Dear <%= @name.split.map(&:capitalize).join(' ') rescue "" %>,</h4>
+        <p> 40% Payment has been verified by Finance for the below BOQ</p>   
+        <ol>
+          <li>Lead ID: <%= @lead_id%></li>
+          <li>Client Name: <%= @lead_name%></li>
+          <li>Date of Payment Addition: <%= @payment_added_date%></li>
+          <li>Date of Payment Verification: <%= @payment_verification%></li>
+          <li>BOQ number: <%= @boq_number%></li>
+          <li>BOQ value: <%= @boq_value%> rs</li>
+        </ol>
+        <p>The BOQ should be visible in your Post 40% Tab</p>
+
+        <h5><b>For Login</b></h5>
+        <ol>
+          <li>On Website: <a href="https://office.arrivae.com">https://office.arrivae.com</a></li>
+          <li>Download Site Supervisor app: <a href="https://play.google.com/store/apps/details?id=com.arrivaesitesupervisorapp" target="_blank">Android</a></li>
+        </ol>
+        <h5><b><u>About Arrivae</u></b></h5>
+        <p>
+          Arrivae is Mumbai based Interior designing firm specializing in interior designing services for Residential and commercial Offices.
+          <br>
+          <a href="https://arrivae.com">www.arrivae.com</a>
+        </p>
+        <div style="margin-top: 20px;">
+          <p>
+            Thanks,
+            <br> 
+            Arrivae Team
+            <br>
+            <a href="mailto:wecare@arrivae.com" target="_top">wecare@arrivae.com</a> 
+            <br>
+            B 501/502, Everest House Surren Road, 
+            <br>
+            Gundavali, Andheri East,
+            <br>
+            Mumbai, Maharashtra 400093           
+          </p>
+        </div>
+        <p>
+          <b>Cities We Serve:</b>
+          <br>
+          Mumbai | Pune | Bangalore | Delhi NCR | Chennai |
+          <br>
+          Kochi | Aurangabad | Chandigarh | Faridabad 
+        </p>
+
+      </div>
+    </div>
+  </div>
+
+  <%= render("footer") %>
+
+</body>
+</html>

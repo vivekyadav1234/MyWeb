@@ -1,0 +1,5 @@
+queue: 300
+follow_up_leads: 100
+not_contactable_leads: 50
+escalated_leads: 50
+new_leads: 100

@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="1e674af0-7c62-48d9-9d50-e4c51d00ca6b" name="Default" comment="">
+      <change beforePath="" afterPath="$PROJECT_DIR$/app/controllers/api/v1/testimonials_controller.rb" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/app/models/testimonial.rb" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/app/serializers/testimonial_serializer.rb" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/app/views/user_notifier_mailer/event_created_email_for_outsider.html.erb" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/app/views/user_notifier_mailer/event_reminder.html.erb" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/app/views/user_notifier_mailer/fb_lead_test.html.erb" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/app/views/user_notifier_mailer/lead_credential_mail.html.erb" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/db/migrate/20180223094003_create_testimonials.rb" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/db/migrate/20180316073540_add_lead_queue_id_to_lead_users.rb" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/db/migrate/20180319092918_add_reason_for_lost_to_projects.rb" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/db/migrate/20180322163814_add_user_to_testimonial.rb" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/db/migrate/20180323074538_add_remark_to_events.rb" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/db/migrate/20180323115405_add_sub_status_to_projects.rb" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/lib/fb_module.rb" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/lib/tasks/fb_lead.rake" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/spec/factories/testimonials.rb" />
+      <change beforePath="" afterPath="$PROJECT_DIR$/spec/models/testimonial_spec.rb" />
+      <change beforePath="$PROJECT_DIR$/Gemfile" afterPath="$PROJECT_DIR$/Gemfile" />
+      <change beforePath="$PROJECT_DIR$/Gemfile.lock" afterPath="$PROJECT_DIR$/Gemfile.lock" />
+      <change beforePath="$PROJECT_DIR$/app/controllers/api/v1/events_controller.rb" afterPath="$PROJECT_DIR$/app/controllers/api/v1/events_controller.rb" />
+      <change beforePath="$PROJECT_DIR$/app/controllers/api/v1/inhouse_calls_controller.rb" afterPath="$PROJECT_DIR$/app/controllers/api/v1/inhouse_calls_controller.rb" />
+      <change beforePath="$PROJECT_DIR$/app/controllers/api/v1/leads_controller.rb" afterPath="$PROJECT_DIR$/app/controllers/api/v1/leads_controller.rb" />
+      <change beforePath="$PROJECT_DIR$/app/controllers/api/v1/projects_controller.rb" afterPath="$PROJECT_DIR$/app/controllers/api/v1/projects_controller.rb" />
+      <change beforePath="$PROJECT_DIR$/app/controllers/api/v1/quotations_controller.rb" afterPath="$PROJECT_DIR$/app/controllers/api/v1/quotations_controller.rb" />
+      <change beforePath="$PROJECT_DIR$/app/controllers/api/v1/sections_controller.rb" afterPath="$PROJECT_DIR$/app/controllers/api/v1/sections_controller.rb" />
+      <change beforePath="$PROJECT_DIR$/app/controllers/api/v1/users_controller.rb" afterPath="$PROJECT_DIR$/app/controllers/api/v1/users_controller.rb" />
+      <change beforePath="$PROJECT_DIR$/app/controllers/application_controller.rb" afterPath="$PROJECT_DIR$/app/controllers/application_controller.rb" />
+      <change beforePath="$PROJECT_DIR$/app/mailers/user_notifier_mailer.rb" afterPath="$PROJECT_DIR$/app/mailers/user_notifier_mailer.rb" />
+      <change beforePath="$PROJECT_DIR$/app/models/ability.rb" afterPath="$PROJECT_DIR$/app/models/ability.rb" />
+      <change beforePath="$PROJECT_DIR$/app/models/concerns/community_manager_concern.rb" afterPath="$PROJECT_DIR$/app/models/concerns/community_manager_concern.rb" />
+      <change beforePath="$PROJECT_DIR$/app/models/concerns/designer_concern.rb" afterPath="$PROJECT_DIR$/app/models/concerns/designer_concern.rb" />
+      <change beforePath="$PROJECT_DIR$/app/models/concerns/lead_priority_engine.rb" afterPath="$PROJECT_DIR$/app/models/concerns/lead_priority_engine.rb" />
+      <change beforePath="$PROJECT_DIR$/app/models/design.rb" afterPath="$PROJECT_DIR$/app/models/design.rb" />
+      <change beforePath="$PROJECT_DIR$/app/models/designer_project.rb" afterPath="$PROJECT_DIR$/app/models/designer_project.rb" />
+      <change beforePath="$PROJECT_DIR$/app/models/event.rb" afterPath="$PROJECT_DIR$/app/models/event.rb" />
+      <change beforePath="$PROJECT_DIR$/app/models/inhouse_call.rb" afterPath="$PROJECT_DIR$/app/models/inhouse_call.rb" />
+      <change beforePath="$PROJECT_DIR$/app/models/lead.rb" afterPath="$PROJECT_DIR$/app/models/lead.rb" />
+      <change beforePath="$PROJECT_DIR$/app/models/lead_queue.rb" afterPath="$PROJECT_DIR$/app/models/lead_queue.rb" />
+      <change beforePath="$PROJECT_DIR$/app/models/lead_user.rb" afterPath="$PROJECT_DIR$/app/models/lead_user.rb" />
+      <change beforePath="$PROJECT_DIR$/app/models/project.rb" afterPath="$PROJECT_DIR$/app/models/project.rb" />
+      <change beforePath="$PROJECT_DIR$/app/models/quotation.rb" afterPath="$PROJECT_DIR$/app/models/quotation.rb" />
+      <change beforePath="$PROJECT_DIR$/app/models/user.rb" afterPath="$PROJECT_DIR$/app/models/user.rb" />
+      <change beforePath="$PROJECT_DIR$/app/serializers/event_serializer.rb" afterPath="$PROJECT_DIR$/app/serializers/event_serializer.rb" />
+      <change beforePath="$PROJECT_DIR$/app/serializers/floorplan_serializer.rb" afterPath="$PROJECT_DIR$/app/serializers/floorplan_serializer.rb" />
+      <change beforePath="$PROJECT_DIR$/app/serializers/lead_serializer.rb" afterPath="$PROJECT_DIR$/app/serializers/lead_serializer.rb" />
+      <change beforePath="$PROJECT_DIR$/app/views/user_notifier_mailer/event_created_email.html.erb" afterPath="$PROJECT_DIR$/app/views/user_notifier_mailer/event_created_email.html.erb" />
+      <change beforePath="$PROJECT_DIR$/app/views/user_notifier_mailer/event_rescheduled_email.html.erb" afterPath="$PROJECT_DIR$/app/views/user_notifier_mailer/event_rescheduled_email.html.erb" />
+      <change beforePath="$PROJECT_DIR$/app/views/user_notifier_mailer/project_assigned_email.html.erb" afterPath="$PROJECT_DIR$/app/views/user_notifier_mailer/project_assigned_email.html.erb" />
+      <change beforePath="$PROJECT_DIR$/config.ru" afterPath="$PROJECT_DIR$/config.ru" />
+      <change beforePath="$PROJECT_DIR$/config/routes.rb" afterPath="$PROJECT_DIR$/config/routes.rb" />
+      <change beforePath="$PROJECT_DIR$/config/schedule.rb" afterPath="$PROJECT_DIR$/config/schedule.rb" />
+      <change beforePath="$PROJECT_DIR$/db/schema.rb" afterPath="$PROJECT_DIR$/db/schema.rb" />
+      <change beforePath="$PROJECT_DIR$/lib/script_module.rb" afterPath="$PROJECT_DIR$/lib/script_module.rb" />
+      <change beforePath="$PROJECT_DIR$/public/BOQ_2018-02-22.xlsx" afterPath="" />
+    </list>
+    <ignored path="$PROJECT_DIR$/.tmp/" />
+    <ignored path="$PROJECT_DIR$/temp/" />
+    <ignored path="$PROJECT_DIR$/tmp/" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf>
+      <file leaf-file-name="schema.rb" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/db/schema.rb">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="302">
+              <caret line="800" column="27" lean-forward="false" selection-start-line="800" selection-start-column="27" selection-end-line="800" selection-end-column="27" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>&lt;&lt;&lt;</find>
+    </findStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/db/schema.rb" />
+      </list>
+    </option>
+  </component>
+  <component name="JsBuildToolGruntFileManager" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsBuildToolPackageJson" detection-done="true" sorting="DEFINITION_ORDER" />
+  <component name="JsGulpfileManager">
+    <detection-done>true</detection-done>
+    <sorting>DEFINITION_ORDER</sorting>
+  </component>
+  <component name="ProjectFrameBounds" fullScreen="true">
+    <option name="width" value="1440" />
+    <option name="height" value="900" />
+  </component>
+  <component name="ProjectInspectionProfilesVisibleTreeState">
+    <entry key="Project Default">
+      <profile-state>
+        <expanded-state>
+          <State>
+            <id />
+          </State>
+        </expanded-state>
+        <selected-state>
+          <State>
+            <id>AngularJS</id>
+          </State>
+        </selected-state>
+      </profile-state>
+    </entry>
+  </component>
+  <component name="ProjectView">
+    <navigator currentView="ProjectPane" proportions="" version="1">
+      <flattenPackages />
+      <showMembers />
+      <showModules />
+      <showLibraryContents />
+      <hideEmptyPackages />
+      <abbreviatePackageNames />
+      <autoscrollToSource />
+      <autoscrollFromSource />
+      <sortByType />
+      <manualOrder />
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="Scratches" />
+      <pane id="Scope" />
+      <pane id="ProjectPane" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="settings.editor.selected.configurable" value="preferences.sourceCode" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="ShelveChangesManager" show_recycled="false">
+    <option name="remove_strategy" value="false" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="1e674af0-7c62-48d9-9d50-e4c51d00ca6b" name="Default" comment="" />
+      <created>1522214115165</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1522214115165</updated>
+      <workItem from="1522214116818" duration="705000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="705000" />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="0" y="0" width="1440" height="900" extended-state="0" />
+    <editor active="true" />
+    <layout>
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24947146" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+    </layout>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="*.rb" />
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager />
+    <watches-manager />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/db/schema.rb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="302">
+          <caret line="800" column="27" lean-forward="false" selection-start-line="800" selection-start-column="27" selection-end-line="800" selection-end-column="27" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>

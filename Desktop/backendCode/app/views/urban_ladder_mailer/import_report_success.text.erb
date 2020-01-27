@@ -1,0 +1,24 @@
+Hi Team,
+
+This is a report on the import of products from Urban Ladder.
+
+Total number of products queued:
+<%= @data_hash[:ul_queues].count %>
+
+Total number of jobs:
+<%= @data_hash[:ul_jobs].count %>
+
+Total number of queues with success status:
+<%= @data_hash[:ul_queue_success].count %>
+
+Total number of queues with pending status:
+<%= @data_hash[:ul_queue_pending].count %>
+
+Total number of failed jobs:
+<%= @data_hash[:ul_jobs_failed].count %>
+
+Import of following products is pending (from UrbanLadderQueue):
+<%= @data_hash[:pending_product_ids] %>
+
+Import of following products has failed (from Delayed::Job and UrbanLadderQueue):
+<%= @data_hash[:failed_product_ids] %>

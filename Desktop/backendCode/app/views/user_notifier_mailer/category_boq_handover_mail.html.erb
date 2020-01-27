@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Email</title>
+  <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+
+  <!-- Nav -->
+    <%= render("header") %>
+  <!-- Nav -->
+
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <h4 class="mt-5">Hello</h4>
+        <p>A BOQ has been handed over that is applicable to your category segment. Details can be found below.</p>
+        <p>A separate email has been sent to all category users as the handover may contain items other than BOQ.</p>
+        <p>BOQs in handover:</p>
+        <% @quotations.each do |quotation| %>
+          <p><b>BOQ Number: </b><%= quotation.reference_number %>, <b>Segments included: </b><%= quotation.get_segments.join(",") %></p>
+        <% end %>
+
+        <p>Project Handover Link</p>
+        <p><a href= <%= @link%>>click here</a></p>
+        <table border="1">
+          <tr>
+            <th>
+            </th>
+            <th>
+              ID
+            </th>
+            <th>
+              Name
+            </th>
+          </tr>
+          <tr>
+            <td><b>Client</b></td>
+            <td><%= @lead.id%></td>
+            <td><%= @lead.name%></td>
+          </tr>
+          <tr>
+            <td><b>Community Manager</b></td>
+            <td><%= @cm.id%></td>
+            <td><%= @cm.name%></td>
+          </tr>
+          <tr>
+            <td><b>Designer</b></td>
+            <td><%= @designer.id%></td>
+            <td><%= @designer.name%></td>
+          </tr>
+        </table>
+
+      </div>
+    </div>
+  </div>
+
+    <%= render("footer") %>
+</body>
+</html>

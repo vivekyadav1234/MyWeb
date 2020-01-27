@@ -1,0 +1,217 @@
+# This file contains the list of dynamic attributes for all lakhs_modular master line items. Each attribute's
+# data type as well as reference_table_name is included as well, where applicable.
+---
+attr_type: lakhs_modular
+master_line_items:
+- name: 0.8mm Edge Banding
+  attributes:
+  - attr_name: vendor_edge_banding_type
+    attr_data_type: string
+  - attr_name: size
+    attr_data_type: string
+  - attr_name: vendor_edge_banding_name
+    attr_data_type: string
+  - attr_name: matching_arrivae_edge_banding_shade
+    attr_data_type: string
+- name: 2mm Edge Banding
+  attributes:
+  - attr_name: vendor_edge_banding_type
+    attr_data_type: string
+  - attr_name: size
+    attr_data_type: string
+  - attr_name: vendor_edge_banding_name
+    attr_data_type: string
+  - attr_name: matching_arrivae_edge_banding_shade
+    attr_data_type: string
+- name: 4mm Glass
+  attributes: []
+- name: 10mm Glass
+  attributes: []
+- name: 18mm White Carcass
+  attributes:
+  - attr_name: core_material
+    attr_type: dropdown
+    attr_data_type: reference
+    reference_table_name: CoreMaterial
+    required: true
+- name: 16mm White Carcass
+  attributes: []
+- name: 12mm White Carcass
+  attributes:
+  - attr_name: core_material
+    attr_type: dropdown
+    attr_data_type: reference
+    reference_table_name: CoreMaterial
+    required: true
+- name: Add Ons
+  attributes:
+  - attr_name: oem
+    attr_data_type: string
+  - attr_name: mrp
+    attr_data_type: float
+  - attr_name: vendor_description
+    attr_data_type: string
+  - attr_name: arrivae_addon
+    attr_type: dropdown
+    attr_data_type: reference
+    reference_table_name: Addon
+    required: true
+- name: Aluminium Frame
+  attributes: []
+- name: 6mm White Back Panel
+  attributes:
+  - attr_name: core_material
+    attr_type: dropdown
+    attr_data_type: reference
+    reference_table_name: CoreMaterial
+    required: true
+- name: 0.8mm Laminates
+  attributes:
+  - attr_name: internal_finish
+    attr_data_type: string
+  - attr_name: matching_edge_banding_arrivae_code
+    attr_data_type: string
+- name: Other Processing
+  attributes: []
+- name: Packaging
+  attributes: []
+- name: Routing for G Profile
+  attributes: []
+- name: Routing for Shutters
+  attributes: []
+- name: Dry Fit
+  attributes: []
+- name: Both Side C, EB
+  attributes: []
+- name: Both Side P,C,EB,G,D
+  attributes: []
+- name: Both Side P,C,EB
+  attributes: []
+- name: Both Side P,C
+  attributes: []
+- name: C, EB, G, D
+  attributes: []
+- name: Cutting
+  attributes: []
+- name: Hardware
+  attributes:
+  - attr_name: vendor_description
+    attr_data_type: string
+  - attr_name: mrp
+    attr_data_type: float
+  - attr_name: oem
+    attr_data_type: string
+  - attr_name: hardware_code
+    attr_type: dropdown
+    attr_data_type: reference
+    reference_table_name: HardwareElement
+    required: false
+- name: Skirting Hardware
+  attributes:
+  - attr_name: oem
+    attr_data_type: string
+  - attr_name: vendor_description
+    attr_data_type: string
+  - attr_name: mrp
+    attr_data_type: float
+- name: Skirting
+  attributes:
+  - attr_name: oem
+    attr_data_type: string
+  - attr_name: mrp
+    attr_data_type: float
+  - attr_name: vendor_description
+    attr_data_type: string
+  - attr_name: skirting_config
+    attr_type: dropdown
+    attr_data_type: reference
+    reference_table_name: SkirtingConfig
+    required: true
+- name: Concealed Handles
+  attributes:
+  - attr_name: oem
+    attr_data_type: string
+  - attr_name: type_of_handle
+    attr_data_type: string
+  - attr_name: vendor_description
+    attr_data_type: string
+  - attr_name: mrp
+    attr_data_type: float
+  - attr_name: arrivae_handle
+    attr_type: dropdown
+    attr_data_type: reference
+    reference_table_name: Handle
+    required: false
+- name: Insert Handles
+  attributes:
+  - attr_name: oem
+    attr_data_type: string
+  - attr_name: type_of_handle
+    attr_data_type: string
+  - attr_name: vendor_description
+    attr_data_type: string
+  - attr_name: mrp
+    attr_data_type: float
+  - attr_name: arrivae_handle
+    attr_type: dropdown
+    attr_data_type: reference
+    reference_table_name: Handle
+    required: false
+- name: Normal Handles
+  attributes:
+  - attr_name: oem
+    attr_data_type: string
+  - attr_name: type_of_handle
+    attr_data_type: string
+  - attr_name: vendor_description
+    attr_data_type: string
+  - attr_name: mrp
+    attr_data_type: float
+  - attr_name: arrivae_handle
+    attr_type: dropdown
+    attr_data_type: reference
+    reference_table_name: Handle
+    required: false
+- name: Profile Handles
+  attributes:
+  - attr_name: oem
+    attr_data_type: string
+  - attr_name: type_of_handle
+    attr_data_type: string
+  - attr_name: vendor_description
+    attr_data_type: string
+  - attr_name: mrp
+    attr_data_type: float
+  - attr_name: arrivae_handle
+    attr_type: dropdown
+    attr_data_type: reference
+    reference_table_name: Handle
+    required: false
+- name: Special Handles
+  attributes:
+  - attr_name: oem
+    attr_data_type: string
+  - attr_name: type_of_handle
+    attr_data_type: string
+  - attr_name: vendor_description
+    attr_data_type: string
+  - attr_name: mrp
+    attr_data_type: float
+  - attr_name: arrivae_handle
+    attr_type: dropdown
+    attr_data_type: reference
+    reference_table_name: Handle
+    required: false
+- name: Finish Material
+  attributes:
+  - attr_name: oem
+    attr_data_type: string
+  - attr_name: vendor_description
+    attr_data_type: string
+  - attr_name: matching_arrivae_edge_banding_code
+    attr_data_type: string
+  - attr_name: arrivae_shade
+    attr_type: dropdown
+    attr_data_type: reference
+    reference_table_name: Shade
+    required: true

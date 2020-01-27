@@ -1,0 +1,105 @@
+---
+# This file should be an exact copy of mkw_global_data.yml except factors which need to be reduced
+# to calculate estimated margins.
+sale_cost_factor:
+  overall: 1.00   #it has to be 1 as this is for cost calculation.
+  loose_furniture: 0.75 #since actual factor, this needs to be lower to get margin > 0
+  custom_sku: 0.75 #since actual factor, this needs to be lower to get margin > 0
+  services_base: 1.00
+  services_installation: 1.00
+  wardrobe:
+    carcass_elements: 1.00
+    hardware_elements: 1.00
+    finishes:
+      default: 1.00
+      fast_moving_modifier: 1.00
+      non_fast_moving_modifier: 1.00
+    edge_banding: 1.00
+    handles: 1.00
+    addons:
+      default: 1.00
+      economy: 1.00
+      standard: 1.00
+      premium: 1.00
+    extras: 1.00
+  kitchen:
+    carcass_elements: 1.00
+    hardware_elements: 1.00
+    finishes:
+      default: 1.00
+      fast_moving_modifier: 1.00
+      non_fast_moving_modifier: 1.00
+    edge_banding: 1.00
+    handles: 1.00
+    addons:
+      default: 1.00
+      economy: 1.00
+      standard: 1.00
+      premium: 1.00
+    skirting: 1.00
+    extras: 1.00
+    appliances: 1.00
+    countertop: 1.00
+  shangpin:
+    factor1: 1.0
+    factor2: 1.0
+
+default_hardware_brand: "Hettich"
+
+soft_close_hinge_prices:
+  wardrobe: 511.0
+  kitchen: 511.0
+
+soft_close_channel_prices:
+  wardrobe:
+    Hettich: 341.0
+    Hafele: 341.0
+    Ebco: 242.0
+    Arrivae: 100.0
+  kitchen:
+    Hettich: 352.0
+    Hafele: 352.0
+    Ebco: 242.0
+    Arrivae: 200.0
+    Evershine: 200.0
+
+glass_prices:
+  4.0: 100.0
+  10.0: 150.0
+
+aluminium_prices:
+  default: 105.3
+
+g_section_price: 280.0  #per running feet
+j_section_price: 160.0  #per running feet
+
+gola_profile_prices:  #per running feet
+  c_section: 394.0
+  l_section: 414.0
+
+# price variation with width of module
+top_insert_handle_prices:
+  150: 0
+  200: 0
+  300: 250
+  400: 400
+  450: 450
+  500: 500
+  600: 600
+  800: 800
+  900: 900
+  100: 1000
+  110: 600
+  120: 600
+
+countertop_prices:
+  none: 0.0
+  telephone_black: 1500.0
+  black_galaxy: 1800.0
+  pearl_granite: 2200.0
+
+countertop_lead_times:
+  none: 0
+  telephone_black: 45
+  black_galaxy: 45
+  pearl_granite: 45

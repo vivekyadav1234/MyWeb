@@ -1,0 +1,75 @@
+---
+property_usage: ["Residential","Commercial","Retail","Other"]
+property_age: ["Old","New"]
+property_type: ["Apartment","Independent House","Villa","Farmhouse"]
+number_of_rooms: ["1 BHK","2 BHK","3 BHK","4 BHK","5 BHK"]
+possession_status: ["Occupied","Ready for possession","Possession in 1 month","Possession in 3 months","Possession in 6 months"]
+use_type: ["For own residence","Weekend home","For giving on rent"]
+requirement: ["Complete Interior","Only Furniture","Only kitchen","Only Wardrobe","Only services"]
+project_type: ["New","Renovation"]
+scope_of_work: ["Furniture","Painting","Ceiling","Flooring","Electrical and Lighting",
+  "Sofa","Dining Table","Bed","Window Dressing","Others"]
+
+kitchen:
+  platform: ["Existing","Not given","Ready to Demolish"]
+  shape_of_kitchen: ["L shape","Straight","U shape","Island","Other"]
+  type_of_kitchen: ["Modular","Semimodular","Trollies"]
+  furniture: ["Base Unit","Wall Unit","Tall unit","Breakfast Unit","Crockery Unit"]
+  services: ["Electrical","Plumbing","Gas piping","Tiling"]
+  appliances: ["Hob","Chimney","Microwave","Dishwasher"]
+  apliances_ii: ["Sink","Tap"]
+  preferred_material: ["Ply","MDF","Partical Board"]
+  preferred_finish: ["Gloss", "Matte"]
+  preferred_finish_material: ["Laminate","Acrylic","Paint","Glass","Veneer"]
+  more_used_by : ["Lady of house","Cook /Maid"]
+
+master_bedroom:
+  furniture: ["Wardrobe","Loft","TV unit","Study table","Bed"]
+  type_of_wardrobe: ["Hinged","Sliding"]
+  type_of_bed: ["With storage","Without storage"]
+  services: ["Electrical and lighting","False Ceiling","Wall paper","Flooring","AC"]
+  preferred_material: ["Ply","MDF","Partical Board"]
+  preferred_finish: ["Gloss", "Matte"]
+  preferred_finish_material: ["Laminate","Acrylic","Paint","Glass","Veneer"]
+
+kids_bedroom:
+  furniture: ["Wardrobe","Loft","TV unit","Study table","Bed"]
+  type_of_wardrobe: ["Hinged","Sliding"]
+  type_of_bed: ["Single","Double","Bunk"]
+  services: ["Electrical and lighting","False Ceiling","Wall paper","Flooring","AC"]
+  preferred_material: ["Ply","MDF","Partical Board"]
+  preferred_finish: ["Gloss", "Matte"]
+  preferred_finish_material: ["Laminate","Acrylic","Paint","Glass","Veneer"]
+
+parent_bedroom:
+  furniture: ["Wardrobe","Loft","TV unit","Study table","Bed"]
+  type_of_wardrobe: ["Hinged","Sliding"]
+  type_of_bed: ["With storage","Without storage","Single","Double"]
+  services: ["Electrical and lighting","False Ceiling","Wall paper","Flooring","AC"]
+  preferred_material: ["Ply","MDF","Partical Board"]
+  preferred_finish: ["Gloss", "Matte"]
+  preferred_finish_material: ["Laminate","Acrylic","Paint","Glass","Veneer"]
+
+guest_bedroom:
+  furniture: ["Wardrobe","Loft","TV unit","Study table","Bed"]
+  type_of_wardrobe: ["Hinged","Sliding"]
+  type_of_bed: ["With storage","Without storage","Single","Double"]
+  services: ["Electrical and lighting","False Ceiling","Wall paper","Flooring","AC"]
+  preferred_material: ["Ply","MDF","Partical Board"]
+  preferred_finish: ["Gloss", "Matte"]
+  preferred_finish_material: ["Laminate","Acrylic","Paint","Glass","Veneer"]
+
+living_room:
+  furniture: ["TV unit","Book shelf","Sofa","Study table","Bed"]
+  services: ["Electrical and lighting","False Ceiling","Wall paper","Flooring","AC","Window Dressing"]
+  preferred_material: ["Ply","MDF","Partical Board"]
+  preferred_finish: ["Gloss", "Matte"]
+  preferred_finish_material: ["Laminate","Acrylic","Paint","Glass","Veneer"]
+
+pooja_room:
+  furniture: ["Pooja unit","Partition"]
+  services: ["Electrical and lighting","Granite/Marble","False ceiling","Door","Partitions","Wallpaper"]
+
+foyer:
+  furniture: ["Shoe rack","Storage","Sitting "]
+  services: ["Electrical and lighting","granite/marble","false Ceiling","Door","partitions","Wall paper"]

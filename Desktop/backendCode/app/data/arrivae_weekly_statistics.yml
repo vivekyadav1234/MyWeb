@@ -1,0 +1,22 @@
+#These targets are per CM.
+fhi_targets:
+  number_of_leads: 20
+  opt_in_to_qualified_percent: 22
+  first_meeting_7days_percent: 50
+  boqs_shared_15days_percent: 35
+  closures: 20
+  number_days_closure: 45
+  avg_boq_value: 800000
+  digital_leads_percent: 90
+  physical_leads_percent: 10
+
+mkw_targets:
+  number_of_leads: 132
+  opt_in_to_qualified_percent: 80
+  first_meeting_7days_percent: 70
+  boqs_shared_15days_percent: 60
+  closures: 20
+  number_days_closure: 30
+  avg_boq_value: 200000
+  digital_leads_percent: 77.27
+  physical_leads_percent: 22.73

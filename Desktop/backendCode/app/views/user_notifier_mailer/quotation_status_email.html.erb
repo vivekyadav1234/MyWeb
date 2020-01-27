@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%= render("header") %>
+
+</head>
+<body>
+
+  <!-- Nav -->
+    <%= render("header") %>
+  <!-- Nav -->
+
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <h4 class="mt-5">Hello <%= @designer.name %></h4>
+        <p>Quotation status for Design <%= @design.name%> - <%= @quotation.status%></p>
+      </div>
+    </div>
+  </div>
+
+  <%= render("footer") %>
+
+</body>
+</html>

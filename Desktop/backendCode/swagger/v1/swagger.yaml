@@ -1,0 +1,794 @@
+---
+swagger: '2.0'
+info:
+  title: ARRIVAE API V1
+  version: v1
+paths:
+  "/v1/mobile/events":
+    get:
+      summary: Get all events
+      tags:
+      - Events
+      parameters:
+      - name: from_date
+        in: query
+        type: string
+        required: true
+      - name: to_date
+        in: query
+        type: string
+        required: true
+      - name: access-token
+        in: header
+        type: string
+        required: true
+      - name: client
+        in: header
+        type: string
+        required: true
+      - name: uid
+        in: header
+        type: string
+        required: true
+      - name: status
+        in: query
+        type: string
+      responses:
+        '200':
+          description: Events found
+        '404':
+          description: Event Page not found
+        '406':
+          description: unsupported accept header
+    post:
+      summary: Create new event
+      tags:
+      - Events
+      parameters:
+      - name: access-token
+        in: header
+        type: string
+        required: true
+      - name: client
+        in: header
+        type: string
+        required: true
+      - name: uid
+        in: header
+        type: string
+        required: true
+      - name: event
+        in: body
+        schema:
+          type: object
+          properties:
+            agenda:
+              type: string
+            description:
+              type: string
+            scheduled_at:
+              type: string
+            status:
+              type: string
+            ownerable_type:
+              type: string
+            ownerable_id:
+              type: integer
+            location:
+              type: string
+            contact_type:
+              type: string
+            remark:
+              type: string
+      responses:
+        '200':
+          description: Events created
+  "/v1/mobile/events/history":
+    get:
+      summary: History of one lead
+      tags:
+      - Events
+      parameters:
+      - name: from_date
+        in: query
+        type: string
+      - name: to_date
+        in: query
+        type: string
+      - name: access-token
+        in: header
+        type: string
+        required: true
+      - name: client
+        in: header
+        type: string
+        required: true
+      - name: uid
+        in: header
+        type: string
+        required: true
+      - name: status
+        in: query
+        type: string
+      - name: ownerable_id
+        in: query
+        type: string
+        required: true
+      - name: history_type
+        in: query
+        type: string
+        required: true
+      responses:
+        '200':
+          description: Events found
+        '404':
+          description: Event Page not found
+        '406':
+          description: unsupported accept header
+  "/v1/mobile/events/last_call":
+    get:
+      summary: Last call of one lead
+      tags:
+      - Events
+      parameters:
+      - name: access-token
+        in: header
+        type: string
+        required: true
+      - name: client
+        in: header
+        type: string
+        required: true
+      - name: uid
+        in: header
+        type: string
+        required: true
+      - name: ownerable_id
+        in: query
+        type: string
+        required: true
+      responses:
+        '200':
+          description: Events found
+        '404':
+          description: Event Page not found
+        '406':
+          description: unsupported accept header
+  "/v1/mobile/events/last_meeting":
+    get:
+      summary: Last meeting of one lead
+      tags:
+      - Events
+      parameters:
+      - name: access-token
+        in: header
+        type: string
+        required: true
+      - name: client
+        in: header
+        type: string
+        required: true
+      - name: uid
+        in: header
+        type: string
+        required: true
+      - name: ownerable_id
+        in: query
+        type: string
+        required: true
+      responses:
+        '200':
+          description: Events found
+        '404':
+          description: Event Page not found
+        '406':
+          description: unsupported accept header
+  "/v1/mobile/events/{event_id}/":
+    patch:
+      summary: Update Event
+      tags:
+      - Events
+      parameters:
+      - name: event_id
+        in: path
+        type: string
+        required: true
+      - name: access-token
+        in: header
+        type: string
+        required: true
+      - name: client
+        in: header
+        type: string
+        required: true
+      - name: uid
+        in: header
+        type: string
+        required: true
+      - name: event
+        in: body
+        schema:
+          type: object
+          properties:
+            agenda:
+              type: string
+            description:
+              type: string
+            scheduled_at:
+              type: string
+            status:
+              type: string
+            ownerable_type:
+              type: string
+            ownerable_id:
+              type: integer
+            location:
+              type: string
+            contact_type:
+              type: string
+            remark:
+              type: string
+      responses:
+        '200':
+          description: Events created
+        '422':
+          description: invalid request
+          headers:
+            X-Rate-Limit-Limit:
+              type: integer
+              description: The number of allowed requests in the current period
+            X-Rate-Limit-Remaining:
+              type: integer
+              description: The number of remaining requests in the current period
+  "/v1/mobile/leads":
+    get:
+      summary: Get all events
+      tags:
+      - Leads
+      parameters:
+      - name: access-token
+        in: header
+        type: string
+        required: true
+      - name: client
+        in: header
+        type: string
+        required: true
+      - name: uid
+        in: header
+        type: string
+        required: true
+      - name: is_in_pipeline
+        in: query
+        type: boolean
+      responses:
+        '200':
+          description: Events found
+        '404':
+          description: Event Page not found
+        '406':
+          description: unsupported accept header
+  "/v1/mobile/leads/{lead_id}/":
+    patch:
+      summary: Update Lead | Move to Pipeline
+      tags:
+      - Leads
+      parameters:
+      - name: lead_id
+        in: path
+        type: string
+        required: true
+      - name: access-token
+        in: header
+        type: string
+        required: true
+      - name: client
+        in: header
+        type: string
+        required: true
+      - name: uid
+        in: header
+        type: string
+        required: true
+      - name: lead
+        in: body
+        schema:
+          type: object
+          properties:
+            is_in_pipeline:
+              type: boolean
+          required:
+          - is_in_pipeline
+      responses:
+        '200':
+          description: Lead updated
+        '422':
+          description: invalid request
+          headers:
+            X-Rate-Limit-Limit:
+              type: integer
+              description: The number of allowed requests in the current period
+            X-Rate-Limit-Remaining:
+              type: integer
+              description: The number of remaining requests in the current period
+  "/v1/mobile/leads/{lead_id}/mark_as_read":
+    get:
+      summary: Update Lead | Mark as Read
+      tags:
+      - Leads
+      parameters:
+      - name: lead_id
+        in: path
+        type: string
+        required: true
+      - name: access-token
+        in: header
+        type: string
+        required: true
+      - name: client
+        in: header
+        type: string
+        required: true
+      - name: uid
+        in: header
+        type: string
+        required: true
+      responses:
+        '200':
+          description: Lead updated
+        '422':
+          description: invalid request
+          headers:
+            X-Rate-Limit-Limit:
+              type: integer
+              description: The number of allowed requests in the current period
+            X-Rate-Limit-Remaining:
+              type: integer
+              description: The number of remaining requests in the current period
+  "/v1/users/{user_id}/cm_wip_leads":
+    get:
+      summary: 'Get all Leads '
+      tags:
+      - Search Lead
+      parameters:
+      - name: user_id
+        in: path
+        type: string
+        required: true
+      - name: access-token
+        in: header
+        type: string
+        required: true
+      - name: client
+        in: header
+        type: string
+        required: true
+      - name: uid
+        in: header
+        type: string
+        required: true
+      - name: page
+        in: query
+        type: integer
+      - name: status
+        in: query
+        type: string
+        required: true
+        description: 'Options are: active'
+      - name: search
+        in: query
+        type: string
+        required: true
+      responses:
+        '200':
+          description: Lead found
+        '404':
+          description: Event Page not found
+        '406':
+          description: unsupported accept header
+  "/v1/leads":
+    post:
+      summary: Lead Generation
+      tags:
+      - Leads
+      parameters:
+      - name: access-token
+        in: header
+        type: string
+        required: true
+      - name: client
+        in: header
+        type: string
+        required: true
+      - name: uid
+        in: header
+        type: string
+        required: true
+      - name: lead
+        in: body
+        schema:
+          type: object
+          properties:
+            name:
+              type: string
+            email:
+              type: string
+              required: true
+            contact:
+              type: string
+            created_by:
+              type: string
+            instagram_handle:
+              type: string
+            lead_campaign_id:
+              type: string
+            lead_source_id:
+              type: string
+            lead_source_type:
+              type: string
+            lead_status:
+              type: string
+            lead_type_id:
+              type: string
+            lead_type_name:
+              type: string
+            pincode:
+              type: string
+            referrer_id:
+              type: string
+            referrer_type:
+              type: string
+            user_id:
+              type: string
+      responses:
+        '200':
+          description: Lead created
+  v1/leads/{id}/assign_lead:
+    get:
+      summary: Lead Assignment
+      tags:
+      - Leads
+      parameters:
+      - name: id
+        in: path
+        type: string
+        required: true
+      - name: agent_id
+        in: query
+        type: string
+        required: true
+      - name: access-token
+        in: header
+        type: string
+        required: true
+      - name: client
+        in: header
+        type: string
+        required: true
+      - name: uid
+        in: header
+        type: string
+        required: true
+      responses:
+        '200':
+          description: Events found
+        '404':
+          description: Event Page not found
+  "/v1/leads/{id}":
+    patch:
+      summary: Lead Update
+      tags:
+      - Leads
+      parameters:
+      - name: id
+        in: path
+        type: string
+        required: true
+      - name: access-token
+        in: header
+        type: string
+        required: true
+      - name: client
+        in: header
+        type: string
+        required: true
+      - name: uid
+        in: header
+        type: string
+        required: true
+      - name: lead
+        in: body
+        schema:
+          type: object
+          properties:
+            name:
+              type: string
+            email:
+              type: string
+            contact:
+              type: string
+            pincode:
+              type: string
+            lead_type_id:
+              type: string
+            lead_source_id:
+              type: string
+            lead_campaign_id:
+              type: string
+            referrer_type:
+              type: string
+            referrer_id:
+              type: string
+            change_status:
+              type: string
+            follow_up_time:
+              type: string
+            instagram_handle:
+              type: string
+            lead_cv:
+              type: string
+            lead_status:
+              type: string
+            lead_type_name:
+              type: string
+            lost_reason:
+              type: string
+            lost_remark:
+              type: string
+            remark:
+              type: string
+      responses:
+        '200':
+          description: Lead created
+  "/v1/events":
+    post:
+      summary: Create Event
+      tags:
+      - Events
+      parameters:
+      - name: access-token
+        in: header
+        type: string
+        required: true
+      - name: client
+        in: header
+        type: string
+        required: true
+      - name: uid
+        in: header
+        type: string
+        required: true
+      - name: event
+        in: body
+        schema:
+          type: object
+          properties:
+            agenda:
+              type: string
+            contact_type:
+              type: string
+            description:
+              type: string
+            emails:
+              type: string
+            location:
+              type: string
+            ownerable_id:
+              type: string
+            ownerable_type:
+              type: string
+            scheduled_at:
+              type: string
+            status:
+              type: string
+      responses:
+        '200':
+          description: event created
+    get:
+      summary: Get all events
+      tags:
+      - Events
+      parameters:
+      - name: from_date
+        in: query
+        type: string
+        required: true
+      - name: to_date
+        in: query
+        type: string
+        required: true
+      - name: access-token
+        in: header
+        type: string
+        required: true
+      - name: client
+        in: header
+        type: string
+        required: true
+      - name: uid
+        in: header
+        type: string
+        required: true
+      responses:
+        '200':
+          description: Events found
+        '404':
+          description: Event Page not found
+  v1/events/{id}/reschedule_event:
+    patch:
+      summary: Update Event
+      tags:
+      - Events
+      parameters:
+      - name: id
+        in: path
+        type: string
+        required: true
+      - name: access-token
+        in: header
+        type: string
+        required: true
+      - name: client
+        in: header
+        type: string
+        required: true
+      - name: uid
+        in: header
+        type: string
+        required: true
+      - name: event
+        in: body
+        schema:
+          type: object
+          properties:
+            agenda:
+              type: string
+            contact_type:
+              type: string
+            description:
+              type: string
+            emails:
+              type: string
+            location:
+              type: string
+            ownerable_id:
+              type: string
+            ownerable_type:
+              type: string
+            remark:
+              type: string
+            scheduled_at:
+              type: string
+            status:
+              type: string
+      responses:
+        '200':
+          description: event created
+  "/v1/note_records":
+    get:
+      summary: Get Questionnaire for a Lead
+      tags:
+      - Questionnaire
+      parameters:
+      - name: access-token
+        in: header
+        type: string
+        required: true
+      - name: client
+        in: header
+        type: string
+        required: true
+      - name: uid
+        in: header
+        type: string
+        required: true
+      - name: ownerable_id
+        in: query
+        type: string
+        required: true
+        description: Pass the Lead ID
+      - name: ownerable_type
+        in: query
+        type: string
+        required: true
+        description: Pass the value as Lead
+      responses:
+        '200':
+          description: Questionnaire found
+        '404':
+          description: Questionnaire not found
+        '406':
+          description: unsupported accept header
+        '401':
+          description: unauthorised
+        '402':
+          description: unauthorised
+        '403':
+          description: unauthorised
+        '422':
+          description: unsupported data
+  "/v1/recordings":
+    get:
+      summary: Get all Recordings
+      tags:
+      - Recordings
+      parameters:
+      - name: access-token
+        in: header
+        type: string
+        required: true
+      - name: client
+        in: header
+        type: string
+        required: true
+      - name: uid
+        in: header
+        type: string
+        required: true
+      - name: event_id
+        in: query
+        type: string
+      - name: lead_id
+        in: query
+        type: string
+      responses:
+        '200':
+          description: Recordings found
+        '404':
+          description: Event Page not found
+        '406':
+          description: unsupported accept header
+        '422':
+          description: unsupported data
+    post:
+      summary: Create new recording | Create Event For Follow up
+      tags:
+      - Recordings
+      parameters:
+      - name: access-token
+        in: header
+        type: string
+        required: true
+      - name: client
+        in: header
+        type: string
+        required: true
+      - name: uid
+        in: header
+        type: string
+        required: true
+      - name: event_id
+        in: query
+        type: string
+        description: Event ID | In case of follow up | You can pass "new" (project_id
+          is required in that case) to create new event.
+      - name: call_recording
+        in: body
+        description: Recording File
+        schema:
+          type: string
+          format: binary
+      - name: duration
+        in: query
+        type: string
+        description: Duration | If case of iPhone | You can use this field to store
+          call duration.
+      - name: note
+        in: query
+        type: string
+        description: Note | If case of iPhone | You can use this field to store call
+          recording related data.
+      - name: project_id
+        in: query
+        type: integer
+        description: Project Id | If event id is not there (i.e. in case of Follow
+          up) you can use this field to create new event for the project.
+      responses:
+        '200':
+          description: Recordings created
+        '404':
+          description: Event Page not found
+        '406':
+          description: unsupported accept header
+        '422':
+          description: unsupported data

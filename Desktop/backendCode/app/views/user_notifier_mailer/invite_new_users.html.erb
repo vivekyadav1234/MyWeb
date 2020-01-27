@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Email</title>
+  <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+
+  <!-- Nav -->
+    <%= render("header") %>
+  <!-- Nav -->
+
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <h5>Dear Sir/ Ma’am,</h5>
+        <h5>Greetings from Arrivae!</h5>
+        <p>We are an integrated home improvement company specialising in full home interiors and elements such as modular kitchen, kid’s bedroom, living room, bedroom and specially designed wardrobes. Actively present in more than 10 cities, we are soon expanding to other geographies. While we partner with the finest interior designers, we also have our own production assembly for modular panels for a factory finished output. For other materials, we only deal with credible vendors to maintain a steady supply of high quality material. Having a wide range of finishes and options, we assure a 10 year product warranty (on select range) and delivery within 45 days. We also offer easy payment options to simplify the finance. </p>
+        <p>In a way, Arrivae makes a dream home come true in the most efficient way possible.</p><br />
+        <p>We would like to invite you to pass on the leads to us, using our app. The app is simple and user friendly. You can enter leads in it and also track the status on the leads you have entered e.g. if it has been initiated or has the prospect purchased. It is available on both Android and IOS platforms. Links for downloading the app are:<br />
+        Android: <a href="https://goo.gl/WPGygJ" target="_blank">https://goo.gl/WPGygJ</a><br />
+        iOS: <a href="https://goo.gl/XpyFRR" target="_blank">https://goo.gl/XpyFRR</a></p>
+        <br />
+        <p>
+          The user ID and password are as follows:<br />
+          <strong> Username: <%= @user.email %> </strong><br />
+          <strong> Password: arrivae123 </strong>
+        </p>
+
+        <p>The below given links will guide you on how to use the app.<br /> 
+          About us - <a href="https://www.youtube.com/watch?v=e_h1Y6gTJLw" target="_blank">https://www.youtube.com/watch?v=e_h1Y6gTJLw</a><br />
+          Sign in - <a href="https://www.youtube.com/watch?v=DAszIUUHwqM" target="_blank">https://www.youtube.com/watch?v=DAszIUUHwqM</a><br />
+          Create Lead - <a href="https://www.youtube.com/watch?v=KEokaSBcyuE" target="_blank">https://www.youtube.com/watch?v=KEokaSBcyuE</a><br />
+          Edit Lead - <a href="https://www.youtube.com/watch?v=qkZTKQTBVj0" target="_blank">https://www.youtube.com/watch?v=qkZTKQTBVj0</a><br />
+          Qualified Lead - <a href="https://www.youtube.com/watch?v=doc85AxjNQE" target="_blank">https://www.youtube.com/watch?v=doc85AxjNQE</a><br />
+          Media Engagement - <a href="https://www.youtube.com/watch?v=T_0JelccLrY" target="_blank">https://www.youtube.com/watch?v=T_0JelccLrY</a><br />
+          In case of any concerns in downloading or using the app, please contact our Helpdesk on 080-39345808.</p>
+          <br />  
+          <p><strong>Looking forward to a great association with you.</strong></p>
+          <br />
+          <p>Best regards,<br />
+             Team Arrivae</p>
+      </div>
+    </div>
+  </div>
+
+    <%= render("footer") %>
+</body>
+</html>

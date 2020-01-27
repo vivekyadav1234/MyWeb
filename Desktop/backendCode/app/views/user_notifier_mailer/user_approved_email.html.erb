@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+  <body>
+
+    <!-- Nav -->
+      <%= render("header") %>
+    <!-- Nav -->
+
+    <p>Dear <%= @user.name.present? ? @user.name : @user.email %>,</p>
+
+    <% if @role == "customer" %>
+      <p>Welcome to "Arrivae" the one stop shop for your designer home. We are excited to have you as a part of our family and promise to make this journey a memorable one.</p>
+      <br>
+      <p>Below are the login details for you:</p>
+      <b><p><span>Username: </span><span><%= @user.email %></span></p>
+      <p><span>Password: </span><span><%= @password %></span></p></b>
+      <br>
+      <p>The customer portal enables you to perform multiple activities like uploading a floor map, access to the initial design submitted, order status and much more. To find out click <a href = "https://arrivae.com">here</a></p>
+
+      <p>Please feel free to get back to us or write to wecare@arrivae.com for any queries.</p>
+
+    <% elsif %>
+      <p>Thank you for choosing Arrivae. We are delighted to have you as a member of the Arrivae community.</p>
+      <br>
+      <p>Below are the login details for you to check the projects:</p>
+      <b><p><span>Username: </span><span><%= @user.email %></span></p>
+      <p><span>Password: </span><span><%= @password %></span></p></b>
+      <br>
+      <p>The designer portal will enable you to upload designs basis customer's floor map and the customer can approve or deny the same. Addtionally, you will have a room for discussion and commenting on the design/floor map uploaded.</p>
+
+      <p>To find out more, please click <a href = "https://arrivae.com">here</a>.</p>
+    <% end %>
+
+    <br>
+    <p>Thank You!</p>
+    <p>Team Arrivae</p>
+    <%= render("footer") %>
+  </body>
+</html>
